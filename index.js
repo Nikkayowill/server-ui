@@ -57,26 +57,92 @@ app.get('/about', (req, res) => res.sendFile(__dirname + '/about.html'));
 app.get('/contact', csrfProtection, (req, res) => {
   res.send(`
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
 <head>
-  <title>Contact - LocalBiz MVP</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - LocalBiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
+    a { text-decoration: none; color: inherit; }
+    
+    .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
+        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
+    
+    nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000;
+        background: rgba(2, 8, 20, 0.85); backdrop-filter: blur(16px); padding: 16px 32px; border-radius: 8px;
+        box-shadow: 0 0 30px rgba(136, 254, 0, 0.12), inset 0 0 0 1px rgba(136, 254, 0, 0.1); }
+    nav ul { display: flex; gap: 40px; justify-content: space-between; align-items: center; flex-wrap: wrap; list-style: none; }
+    .logo { font-size: 22px; font-weight: 700; color: #cfff90; text-shadow: 0 0 10px rgba(136, 254, 0, 0.5); }
+    nav li a { text-transform: uppercase; letter-spacing: 1.5px; color: #8892a0; font-size: 11px; transition: .3s; }
+    nav a:hover { color: var(--glow); text-shadow: 0 0 8px var(--glow); }
+    
+    .contact-container { min-height: 100vh; padding: 140px 5vw 60px; max-width: 700px; margin: 0 auto; }
+    h1 { font-size: 42px; margin-bottom: 16px; color: var(--glow); }
+    .subtitle { color: #8892a0; font-size: 15px; margin-bottom: 40px; }
+    
+    form { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; padding: 40px; }
+    label { display: block; margin-bottom: 24px; }
+    label span { display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--glow); }
+    input, textarea { width: 100%; padding: 12px 16px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(136, 254, 0, 0.2); 
+        border-radius: 4px; color: #e0e6f0; font-family: inherit; font-size: 14px; transition: .3s; }
+    input:focus, textarea:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 10px rgba(136, 254, 0, 0.2); }
+    textarea { min-height: 150px; resize: vertical; }
+    
+    button { width: 100%; padding: 16px; background: var(--glow); color: #0a0812; border: none; border-radius: 4px; 
+        font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
+        cursor: pointer; transition: .3s; }
+    button:hover { box-shadow: 0 0 30px var(--glow); transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    
+    footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
+  </style>
 </head>
 <body>
-<nav>
-  <a href="/">Home</a> |
-  <a href="/about">About</a> |
-  <a href="/contact">Contact</a> |
-  <a href="/terms">Terms</a>
-</nav>
-  <h1>Contact Us</h1>
-  <form method="POST" action="/contact">
-    <input type="hidden" name="_csrf" value="${req.csrfToken()}">
-    <label>Name: <input type="text" name="name" required></label><br>
-    <label>Email: <input type="email" name="email" required></label><br>
-    <label>Message: <textarea name="message" required></textarea></label><br>
-    <button type="submit">Send</button>
-  </form>
+  <div class="matrix-bg"></div>
+  
+  <nav>
+    <ul>
+      <li class="logo">LocalBiz</li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/terms">Terms</a></li>
+    </ul>
+  </nav>
+  
+  <div class="contact-container">
+    <h1>Contact Us</h1>
+    <p class="subtitle">Get in touch with our team</p>
+    
+    <form method="POST" action="/contact">
+      <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+      
+      <label>
+        <span>Name</span>
+        <input type="text" name="name" required>
+      </label>
+      
+      <label>
+        <span>Email</span>
+        <input type="email" name="email" required>
+      </label>
+      
+      <label>
+        <span>Message</span>
+        <textarea name="message" required></textarea>
+      </label>
+      
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+  
+  <footer>
+    <p>LocalBiz © 2026</p>
+  </footer>
 </body>
 </html>
   `);
@@ -109,15 +175,75 @@ app.post('/contact',
 app.get('/terms', (req, res) => res.sendFile(__dirname + '/terms.html'));
 
 app.get('/pay', csrfProtection, (req, res) => res.send(`
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - LocalBiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
+        a { text-decoration: none; color: inherit; }
+        
+        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
+            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
+            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
+        
+        nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000;
+            background: rgba(2, 8, 20, 0.85); backdrop-filter: blur(16px); padding: 16px 32px; border-radius: 8px;
+            box-shadow: 0 0 30px rgba(136, 254, 0, 0.12), inset 0 0 0 1px rgba(136, 254, 0, 0.1); }
+        nav ul { display: flex; gap: 40px; justify-content: space-between; align-items: center; flex-wrap: wrap; list-style: none; }
+        .logo { font-size: 22px; font-weight: 700; color: #cfff90; text-shadow: 0 0 10px rgba(136, 254, 0, 0.5); }
+        nav li a { text-transform: uppercase; letter-spacing: 1.5px; color: #8892a0; font-size: 11px; transition: .3s; }
+        nav a:hover { color: var(--glow); text-shadow: 0 0 8px var(--glow); }
+        
+        .checkout-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 5vw 60px; }
+        .checkout-card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; 
+            padding: 48px; max-width: 500px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+        .checkout-card h1 { font-size: 32px; margin-bottom: 12px; color: var(--glow); text-align: center; }
+        .checkout-card .price { font-size: 48px; font-weight: 700; color: #fff; text-align: center; margin: 24px 0; }
+        .checkout-card .description { text-align: center; color: #8892a0; font-size: 14px; margin-bottom: 32px; }
+        
+        .btn { width: 100%; padding: 16px 32px; border: 1px solid var(--glow); background: var(--glow); color: #0a0812; 
+            font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
+            cursor: pointer; transition: .3s; border-radius: 4px; }
+        .btn:hover { box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
+        .btn:active { transform: translateY(0); }
+        
+        footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
+    </style>
+</head>
 <body>
-  <h1>Checkout</h1>
-  <form action="/create-checkout-session" method="POST">
-    <input type="hidden" name="_csrf" value="${req.csrfToken()}">
-    <button type="submit">Pay with Stripe</button>
-  </form>
-  <script src="https://js.stripe.com/v3/"></script>
+    <div class="matrix-bg"></div>
+    
+    <nav>
+        <ul>
+            <li class="logo">LocalBiz</li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/terms">Terms</a></li>
+        </ul>
+    </nav>
+    
+    <div class="checkout-container">
+        <div class="checkout-card">
+            <h1>Checkout</h1>
+            <div class="price">$20<span style="font-size: 20px;">.00</span></div>
+            <p class="description">LocalBiz Service - Secure payment powered by Stripe</p>
+            <form action="/create-checkout-session" method="POST">
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+                <button type="submit" class="btn">Pay with Stripe</button>
+            </form>
+        </div>
+    </div>
+    
+    <footer>
+        <p>LocalBiz © 2026</p>
+    </footer>
+    <script src="https://js.stripe.com/v3/"></script>
 </body>
 </html>
 `))
