@@ -13,5 +13,7 @@ app.post('/contact', (req, res) => {
 res.redirect('/');
 });
 
+// route for privacy policy (next)
+
 app.get('/terms', (req, res) => res.sendFile(__dirname + '/terms.html'));
 app.listen(3000, () => console.log('Server on http://localhost:3000'));
