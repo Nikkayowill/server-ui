@@ -1,0 +1,56 @@
+/* Home Page Styles */
+.hero {
+    padding: 180px 5vw 120px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, #fff 0%, #cfff90 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(136, 254, 0, 0.3);
+}
+
+.hero .sub {
+    font-size: 18px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+
+.cta-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.btn.primary {
+    background: var(--glow);
+    color: var(--bg-dark);
+    font-weight: 600;
+}
+
+.btn.primary:hover {
+    box-shadow: 0 0 40px var(--glow);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding-top: 140px;
+    }
+}

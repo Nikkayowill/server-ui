@@ -1,0 +1,201 @@
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: 1px solid var(--glow);
+    background: transparent;
+    color: var(--glow);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+    margin-right: 12px;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.btn:hover {
+    background: var(--glow);
+    color: var(--bg-dark);
+    box-shadow: 0 0 25px var(--glow);
+}
+
+.btn-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.card h2 {
+    font-size: 18px;
+    color: var(--glow);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.card p:last-child {
+    margin-bottom: 0;
+}
+
+/* Alerts */
+.alert {
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+
+.alert.success {
+    background: rgba(136, 254, 0, 0.1);
+    border: 1px solid rgba(136, 254, 0, 0.3);
+    color: var(--glow);
+}
+
+.alert.error {
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    color: #ff4444;
+}
+
+.alert-close {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+/* Copy Box */
+.copy-box {
+    background: rgba(136, 254, 0, 0.05);
+    border: 1px solid var(--border-glow);
+    border-radius: 4px;
+    padding: 12px;
+    margin: 12px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copy-btn {
+    background: var(--glow);
+    color: var(--bg-dark);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.copy-btn:hover {
+    box-shadow: 0 0 15px var(--glow);
+}
+
+/* Status Badges */
+.status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status.running {
+    background: var(--success);
+    color: var(--glow);
+}
+
+.status.stopped {
+    background: var(--error);
+    color: #ff4444;
+}
+
+.status.provisioning {
+    background: var(--warning);
+    color: #ffb800;
+}
+
+.status.failed {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+}
+
+/* Forms */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glow);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--glow);
+    box-shadow: 0 0 20px rgba(136, 254, 0, 0.3);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--glow);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

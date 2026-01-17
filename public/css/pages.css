@@ -1,0 +1,69 @@
+/* About Page Styles */
+.content {
+    padding: 140px 5vw 60px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 42px;
+    margin-bottom: 16px;
+    color: var(--glow);
+}
+
+h2 {
+    font-size: 24px;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: #e0e6f0;
+}
+
+p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+ul {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    margin-left: 24px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+.link-back {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 12px 24px;
+    border: 1px solid var(--glow);
+    color: var(--glow);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.link-back:hover {
+    background: var(--glow);
+    color: var(--bg-dark);
+    box-shadow: 0 0 25px var(--glow);
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid var(--glow);
+    background: var(--bg-card);
+    display: block;
+    margin: 40px auto 0;
+    box-shadow: 0 0 30px rgba(136, 254, 0, 0.2);
+    object-fit: cover;
+}
