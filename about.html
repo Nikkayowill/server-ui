@@ -29,6 +29,10 @@
             font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; border-radius: 4px; transition: .3s; }
         .link-back:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
         
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--glow); 
+            background: rgba(2, 8, 20, 0.6); display: block; margin: 40px auto 0; 
+            box-shadow: 0 0 30px rgba(136, 254, 0, 0.2); object-fit: cover; }
+        
         footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
     </style>
 </head>
@@ -40,14 +44,39 @@
             <li class="logo">LocalBiz</li>
             <li><a href="/">Home</a></li>
             <li><a href="/about">About</a></li>
+            <li><a href="/pricing">Pricing</a></li>
             <li><a href="/contact">Contact</a></li>
             <li><a href="/terms">Terms</a></li>
         </ul>
     </nav>
     
     <div class="content">
-        <h1>About Us</h1>
-        <p>Put the real content here later.</p>
+        <h1>ABOUT LOCALBIZ</h1>
+        
+        <p>Hi, I'm Kayo — an IT Web Programming student at NSCC in Halifax, Nova Scotia, graduating May 2026. Before diving into code, I worked as a tradesman, bouncing between odd jobs. Now I'm applying those same problem-solving skills in a different way.</p>
+        
+        <p>I've always been an entrepreneur at heart. Before I even knew what a "backend" was, I was curious about how things worked — pre-built websites, Amazon book selling, Shopify stores, Substack's publishing platform. That curiosity eventually led me here.</p>
+        
+        <h2 style="color: var(--glow); font-size: 24px; margin: 32px 0 16px;">WHY I BUILT THIS</h2>
+        
+        <p>A local hardware store owner approached me about setting up a web server. He wanted something reliable with that personal touch — local customer service that's seriously underrated. While we haven't reconnected recently, the conversation sparked something.</p>
+        
+        <p>I wanted to prove I could build, deploy, and ship a real money-making application from scratch. End-to-end ownership. This project pushes my skills beyond the classroom and demonstrates I can deliver production-ready solutions.</p>
+        
+        <p>We're not stuck in the early 2000s anymore. Physical servers, local databases, clunky setups — that's legacy thinking. Cloud hosting makes enterprise-grade infrastructure accessible and affordable for local businesses. Why sell hosting hardware when you can deliver scalable cloud solutions?</p>
+        
+        <h2 style="color: var(--glow); font-size: 24px; margin: 32px 0 16px;">TECH STACK</h2>
+        
+        <p>Built with <strong style="color: #e0e6f0;">Node.js</strong>, <strong style="color: #e0e6f0;">Express.js</strong>, <strong style="color: #e0e6f0;">Stripe</strong> payments, deployed on <strong style="color: #e0e6f0;">DigitalOcean</strong> with <strong style="color: #e0e6f0;">PM2</strong> process management. Security hardened with rate limiting, Helmet.js, CSRF protection, and input validation. Everything I learned in school, applied in production.</p>
+        
+        <h2 style="color: var(--glow); font-size: 24px; margin: 32px 0 16px;">OPEN SOURCE</h2>
+        
+        <p>This project is completely open source. Transparency matters. You can view the full codebase, contribute, or learn from it here: <a href="GITHUB_LINK_HERE" style="color: var(--glow); text-decoration: underline;" target="_blank" rel="noopener noreferrer">GitHub Repository</a></p>
+        
+        <p style="margin-top: 40px;">This isn't just a school project — it's proof that I can deliver real value to real companies. If you're looking for someone who can architect, build, and ship full-stack solutions, let's talk.</p>
+        
+        <img src="" alt="Kayo" class="profile-img">
+        
         <a href="/" class="link-back">Back to home</a>
     </div>
     
