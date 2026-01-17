@@ -18,9 +18,7 @@ ghp\_RK2DG63yqJVHiDDt8Jg3vX0wYNGfLd16rpaK - GitHub personal key
 
 
 
-
-
-sk\_live\_51Rm5j7BSxf4y7vL55EiHN9JKcDIeyn3dnSGUVCbapkGR9AevYK0aC1ArLe4SbZUsCKBB5sM5YmSdE7xyrt6YqIPz000FCTXH4V - Stripe key
+sk\_live\_51SqbmVDxumAMMAyyeDtVdmElvTr8WuleraeSsW5I2JHAIE1QqU6EjFxomQsrBfggCwJ9XyCoVnNZDIVNvn1BybI200CWN9XXdU - Stripe key
 
 --
 

@@ -1,7 +1,8 @@
 const express = require('express');
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-console.log('🔑 Stripe Key:', process.env.STRIPE_SECRET_KEY?.substring(0, 20) + '...');
+const axios = require('axios');
+const { Client } = require('ssh2');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { body, validationResult } = require('express-validator');
@@ -11,6 +12,7 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const pool = require('./db');
 const bcrypt = require('bcrypt');
+const { getHTMLHead, getDashboardHead, getScripts, getFooter, getAuthLinks, getResponsiveNav } = require('./helpers');
 
 const app = express();
 
@@ -82,213 +84,174 @@ function requireAuth(req, res, next) {
   }
 }
 
-// Helper function to generate auth links in nav
-function getAuthLinks(req) {
-  if (req.session.userId) {
-    return '<li><a href="/dashboard">Dashboard</a></li><li><a href="/logout">Logout</a></li>';
-  } else {
-    return '<li><a href="/login">Login</a></li>';
+// Helper function to create real DigitalOcean server
+async function createRealServer(userId, plan, stripeChargeId = null) {
+  const specs = {
+    basic: { ram: '1 GB', cpu: '1 CPU', storage: '25 GB SSD', bandwidth: '1 TB', slug: 's-1vcpu-1gb' },
+    priority: { ram: '2 GB', cpu: '2 CPUs', storage: '50 GB SSD', bandwidth: '2 TB', slug: 's-2vcpu-2gb' },
+    premium: { ram: '4 GB', cpu: '2 CPUs', storage: '80 GB SSD', bandwidth: '4 TB', slug: 's-2vcpu-4gb' }
+  };
+
+  const selectedSpec = specs[plan] || specs.basic;
+  const password = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase() + '!@#';
+
+  // Setup script for automatic Nginx + Certbot installation
+  const setupScript = `#!/bin/bash
+# Update system
+apt-get update
+
+# Install Nginx and Certbot
+apt-get install -y nginx certbot python3-certbot-nginx
+
+# Configure firewall
+ufw allow 'Nginx Full'
+ufw allow OpenSSH
+echo "y" | ufw enable
+
+# Create basic Nginx config
+cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    
+    root /var/www/html;
+    index index.html index.htm;
+    
+    server_name _;
+    
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+EOF
+
+# Restart Nginx
+systemctl restart nginx
+systemctl enable nginx
+
+# Create welcome page
+cat > /var/www/html/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server Ready</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; background: #1a1a1a; color: #e0e0e0; }
+        h1 { color: #88fe00; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Your Server is Ready!</h1>
+    <p>Nginx is installed and running.</p>
+    <p>SSL ready with Certbot - just add your domain!</p>
+</body>
+</html>
+EOF
+
+echo "Setup complete!" > /root/setup.log
+`;
+
+  try {
+    // Create droplet via DigitalOcean API
+    const response = await axios.post('https://api.digitalocean.com/v2/droplets', {
+      name: `basement-${userId}-${Date.now()}`,
+      region: 'nyc3',
+      size: selectedSpec.slug,
+      image: 'ubuntu-22-04-x64',
+      ssh_keys: null,
+      backups: false,
+      ipv6: false,
+      user_data: setupScript,
+      monitoring: true,
+      tags: ['basement-server']
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const droplet = response.data.droplet;
+    console.log('Droplet created:', droplet.id);
+    
+    // Save to database
+    const result = await pool.query(
+      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id)
+       VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6)
+       RETURNING *`,
+      [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId]
+    );
+
+    // Always poll for IP - droplet might not have it immediately
+    console.log('Starting polling for droplet:', droplet.id, 'server:', result.rows[0].id);
+    pollDropletStatus(droplet.id, result.rows[0].id);
+
+    return result.rows[0];
+  } catch (error) {
+    console.error('DigitalOcean API error:', error.response?.data || error.message);
+    
+    // Save failed server to database
+    const result = await pool.query(
+      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id)
+       VALUES ($1, $2, 'failed', 'N/A', 'root', 'N/A', $3, $4)
+       RETURNING *`,
+      [userId, plan, JSON.stringify(specs[plan] || specs.basic), stripeChargeId]
+    );
+    
+    return result.rows[0];
   }
 }
 
-// Helper function to create mock server
-async function createMockServer(userId, plan) {
-  const specs = {
-    basic: { ram: '1 GB', cpu: '1 CPU', storage: '25 GB SSD', bandwidth: '1 TB' },
-    priority: { ram: '2 GB', cpu: '2 CPUs', storage: '50 GB SSD', bandwidth: '2 TB' },
-    premium: { ram: '4 GB', cpu: '2 CPUs', storage: '80 GB SSD', bandwidth: '4 TB' }
-  };
+// Poll droplet until IP is assigned
+async function pollDropletStatus(dropletId, serverId) {
+  const maxAttempts = 30;
+  let attempts = 0;
 
-  // Generate fake IP address (192.0.2.x is reserved for documentation)
-  const fakeIp = `192.0.2.${Math.floor(Math.random() * 254) + 1}`;
-  
-  // Generate random password for SSH
-  const fakePassword = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12).toUpperCase() + '!@#';
+  const interval = setInterval(async () => {
+    attempts++;
+    try {
+      const response = await axios.get(`https://api.digitalocean.com/v2/droplets/${dropletId}`, {
+        headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
+      });
 
-  const result = await pool.query(
-    `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs)
-     VALUES ($1, $2, 'running', $3, 'ubuntu', $4, $5)
-     RETURNING *`,
-    [userId, plan, fakeIp, fakePassword, JSON.stringify(specs[plan])]
-  );
+      const droplet = response.data.droplet;
+      const ip = droplet.networks?.v4?.[0]?.ip_address;
 
+      if (ip && droplet.status === 'active') {
+        await pool.query(
+          'UPDATE servers SET ip_address = $1, status = $2 WHERE id = $3',
+          [ip, 'running', serverId]
+        );
+        console.log(`Server ${serverId} is now running at ${ip}`);
+        clearInterval(interval);
+      } else if (attempts >= maxAttempts) {
+        await pool.query(
+          'UPDATE servers SET status = $1 WHERE id = $2',
+          ['failed', serverId]
+        );
+        console.error(`Server ${serverId} provisioning failed - timeout`);
+        clearInterval(interval);
+      }
+    } catch (error) {
+      console.error('Polling error:', error.message);
+      if (attempts >= maxAttempts) {
+        await pool.query(
+          'UPDATE servers SET status = $1 WHERE id = $2',
+          ['failed', serverId]
+        );
+        clearInterval(interval);
+      }
+    }
+  }, 10000); // Check every 10 seconds
   return result.rows[0];
 }
 
 // Helper function to generate footer HTML
-function getFooter() {
-  return `
-    <footer style="background: rgba(2, 8, 20, 0.8); border-top: 1px solid rgba(136, 254, 0, 0.1); padding: 60px 5vw 30px; margin-top: 80px;">
-      <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
-        <div>
-          <h3 style="color: var(--glow); font-size: 18px; margin-bottom: 16px; letter-spacing: 1px;">LocalBiz</h3>
-          <p style="color: #8892a0; font-size: 13px; line-height: 1.6; margin-bottom: 16px;">Empowering local businesses with modern web solutions and dedicated support.</p>
-          <div style="display: flex; gap: 12px; margin-top: 20px;">
-            <a href="#" style="width: 36px; height: 36px; border: 1px solid rgba(136, 254, 0, 0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--glow); transition: .3s; text-decoration: none;" onmouseover="this.style.background='var(--glow)'; this.style.color='#0a0812';" onmouseout="this.style.background='transparent'; this.style.color='var(--glow)';">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-            <a href="#" style="width: 36px; height: 36px; border: 1px solid rgba(136, 254, 0, 0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--glow); transition: .3s; text-decoration: none;" onmouseover="this.style.background='var(--glow)'; this.style.color='#0a0812';" onmouseout="this.style.background='transparent'; this.style.color='var(--glow)';">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
-            </a>
-            <a href="#" style="width: 36px; height: 36px; border: 1px solid rgba(136, 254, 0, 0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--glow); transition: .3s; text-decoration: none;" onmouseover="this.style.background='var(--glow)'; this.style.color='#0a0812';" onmouseout="this.style.background='transparent'; this.style.color='var(--glow)';">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </a>
-          </div>
-        </div>
-        
-        <div>
-          <h4 style="color: #e0e6f0; font-size: 14px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Quick Links</h4>
-          <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;"><a href="/" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">Home</a></li>
-            <li style="margin-bottom: 10px;"><a href="/about" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">About</a></li>
-            <li style="margin-bottom: 10px;"><a href="/pricing" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">Pricing</a></li>
-            <li style="margin-bottom: 10px;"><a href="/contact" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">Contact</a></li>
-            <li style="margin-bottom: 10px;"><a href="/faq" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">FAQ</a></li>
-          </ul>
-        </div>
-        
-        <div>
-          <h4 style="color: #e0e6f0; font-size: 14px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Legal</h4>
-          <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;"><a href="/privacy" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">Privacy Policy</a></li>
-            <li style="margin-bottom: 10px;"><a href="/terms" style="color: #8892a0; font-size: 13px; text-decoration: none; transition: .3s;" onmouseover="this.style.color='var(--glow)'" onmouseout="this.style.color='#8892a0'">Terms of Service</a></li>
-          </ul>
-        </div>
-        
-        <div>
-          <h4 style="color: #e0e6f0; font-size: 14px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Contact</h4>
-          <p style="color: #8892a0; font-size: 13px; line-height: 1.8; margin-bottom: 8px;">Email: <a href="mailto:support@localbiz.com" style="color: var(--glow); text-decoration: none;">support@localbiz.com</a></p>
-          <p style="color: #8892a0; font-size: 13px; line-height: 1.8; margin-bottom: 8px;">Response Time: 24-48hrs</p>
-          <p style="color: #8892a0; font-size: 13px; line-height: 1.8;">Available Mon-Fri, 9AM-5PM EST</p>
-        </div>
-      </div>
-      
-      <div style="border-top: 1px solid rgba(136, 254, 0, 0.1); padding-top: 24px; text-align: center;">
-        <p style="color: #666; font-size: 12px;">&copy; 2026 LocalBiz. All rights reserved.</p>
-      </div>
-    </footer>
-  `;
-}
-
 // Helper function to generate responsive nav HTML
-function getResponsiveNav(req) {
-  return `
-    <nav>
-        <div class="nav-container">
-            <div class="logo">LocalBiz</div>
-            <button class="hamburger" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/docs">Docs</a></li>
-                <li><a href="/pricing">Pricing</a></li>
-                <li><a href="/contact">Contact</a></li>
-                ${getAuthLinks(req)}
-            </ul>
-        </div>
-    </nav>
-    
-    <style>
-        nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000;
-            background: rgba(2, 8, 20, 0.85); backdrop-filter: blur(16px) saturate(120%); padding: 16px 32px; border-radius: 8px;
-            box-shadow: 0 0 30px rgba(136, 254, 0, 0.12), inset 0 0 0 1px rgba(136, 254, 0, 0.1); }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .logo { font-size: 22px; font-weight: 700; color: #cfff90; text-shadow: 0 0 10px rgba(136, 254, 0, 0.5); flex-shrink: 0; }
-        .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; 
-            flex-shrink: 0; z-index: 1001; margin-left: auto; width: 41px; height: 41px; justify-content: center; align-items: center; }
-        .hamburger span { width: 25px; height: 2px; background: var(--glow); transition: .3s; display: block; }
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
-        
-        .nav-links { display: flex; gap: 40px; list-style: none; margin: 0; padding: 0; }
-        .nav-links li a { text-transform: uppercase; letter-spacing: 1.5px; color: #8892a0; font-size: 11px; transition: .3s; text-decoration: none; }
-        .nav-links a:hover { color: var(--glow); text-shadow: 0 0 8px var(--glow); }
-        
-        @media (max-width: 768px) {
-            nav { top: 0; left: 0; transform: none; width: 100%; border-radius: 0; padding: 16px 20px; max-width: 100%; }
-            .nav-container { width: 100%; }
-            .hamburger { display: flex; }
-            .nav-links { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; flex-direction: column; 
-                background: rgba(2, 8, 20, 0.98); padding: 80px 30px 30px; gap: 24px; transition: right 0.3s ease;
-                box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5); z-index: 1000; }
-            .nav-links.active { right: 0; }
-            .nav-links li a { font-size: 14px; display: block; padding: 12px 0; }
-        }
-    </style>
-    
-    <script>
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
-        
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
-        
-        // Close menu when clicking a link
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('nav')) {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
-            }
-        });
-    </script>
-  `;
-}
-
 app.get('/', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basement - Cloud Hosting Without the Headache</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; scroll-behavior: smooth; --glow: #88FE00; }
-        ul li, ol li { list-style: none; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .hero { padding: 180px 5vw 120px; text-align: center; position: relative; overflow: hidden; }
-        .hero h1 { font-size: clamp(36px, 8vw, 72px); font-weight: 700; line-height: 1.1; letter-spacing: -2px; margin-bottom: 20px;
-            background: linear-gradient(180deg, #fff 0%, #cfff90 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 20px rgba(136, 254, 0, 0.3); }
-        .hero .sub { font-size: 18px; color: #8892a0; max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
-        .cta-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
-        
-        .btn { padding: 14px 32px; border: 1px solid var(--glow); background: transparent; color: var(--glow); font-family: inherit;
-            font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; position: relative; overflow: hidden;
-            transition: .3s; border-radius: 4px; text-decoration: none; display: inline-block; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
-        .btn:active { transform: scale(0.98); }
-        .btn.primary { background: var(--glow); color: #0a0812; font-weight: 600; }
-        .btn.primary:hover { box-shadow: 0 0 40px var(--glow); }
-        
-        footer { text-align: center; padding: 60px 5vw 40px; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-        
-        @media (max-width: 768px) {
-            .hero { padding-top: 140px; }
-        }
-    </style>
+${getHTMLHead('Basement - Cloud Hosting Without the Headache')}
+    <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -305,41 +268,13 @@ app.get('/', (req, res) => {
     </section>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 app.get('/about', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .content { padding: 140px 5vw 60px; max-width: 800px; margin: 0 auto; }
-        h1 { font-size: 42px; margin-bottom: 16px; color: var(--glow); }
-        p { color: #8892a0; font-size: 15px; line-height: 1.8; margin-bottom: 20px; }
-        .link-back { display: inline-block; margin-top: 32px; padding: 12px 24px; border: 1px solid var(--glow); color: var(--glow);
-            font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; border-radius: 4px; transition: .3s; }
-        .link-back:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
-        
-        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--glow); 
-            background: rgba(2, 8, 20, 0.6); display: block; margin: 40px auto 0; 
-            box-shadow: 0 0 30px rgba(136, 254, 0, 0.2); object-fit: cover; }
-        
-        footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('About - Basement')}
+    <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -379,52 +314,20 @@ app.get('/about', (req, res) => {
     </div>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 
 // Register route (GET)
 app.get('/register', csrfProtection, (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
-        .auth-card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; 
-            padding: 48px; max-width: 450px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        h1 { font-size: 32px; margin-bottom: 24px; color: var(--glow); text-align: center; }
-        
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #8892a0; margin-bottom: 8px; }
-        input { width: 100%; padding: 12px 16px; background: rgba(2, 8, 20, 0.8); border: 1px solid rgba(136, 254, 0, 0.2); 
-            border-radius: 4px; color: #e0e6f0; font-family: inherit; font-size: 14px; transition: .3s; }
-        input:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 15px rgba(136, 254, 0, 0.2); }
-        
-        .btn { width: 100%; padding: 14px; border: none; background: var(--glow); color: #0a0812; 
-            font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            cursor: pointer; transition: .3s; border-radius: 4px; margin-top: 8px; }
-        .btn:hover { box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        
-        .link { display: block; text-align: center; margin-top: 20px; color: #8892a0; font-size: 13px; }
-        .link a { color: var(--glow); text-decoration: none; }
-        .link a:hover { text-decoration: underline; }
-    </style>
+${getHTMLHead('Register - Basement')}
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
+    
+    ${getResponsiveNav(req)}
     
     <div class="auth-container">
         <div class="auth-card">
@@ -453,48 +356,15 @@ app.get('/register', csrfProtection, (req, res) => {
             <p class="link">Already have an account? <a href="/login">Login</a></p>
         </div>
     </div>
-</body>
-</html>
+    
+    ${getFooter()}
+    ${getScripts('nav.js')}
   `);
 });
 app.get('/contact', csrfProtection, (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact - LocalBiz</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-    a { text-decoration: none; color: inherit; }
-    
-    .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-    
-    .contact-container { min-height: 100vh; padding: 140px 5vw 60px; max-width: 700px; margin: 0 auto; }
-    h1 { font-size: 42px; margin-bottom: 16px; color: var(--glow); }
-    .subtitle { color: #8892a0; font-size: 15px; margin-bottom: 40px; }
-    
-    form { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; padding: 40px; }
-    label { display: block; margin-bottom: 24px; }
-    label span { display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--glow); }
-    input, textarea { width: 100%; padding: 12px 16px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(136, 254, 0, 0.2); 
-        border-radius: 4px; color: #e0e6f0; font-family: inherit; font-size: 14px; transition: .3s; }
-    input:focus, textarea:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 10px rgba(136, 254, 0, 0.2); }
-    textarea { min-height: 150px; resize: vertical; }
-    
-    button { width: 100%; padding: 16px; background: var(--glow); color: #0a0812; border: none; border-radius: 4px; 
-        font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-        cursor: pointer; transition: .3s; }
-    button:hover { box-shadow: 0 0 30px var(--glow); transform: translateY(-2px); }
-    button:active { transform: translateY(0); }
-    
-    footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-  </style>
+${getHTMLHead('Contact - Basement')}
+    <link rel="stylesheet" href="/css/contact.css">
 </head>
 <body>
   <div class="matrix-bg"></div>
@@ -528,8 +398,7 @@ app.get('/contact', csrfProtection, (req, res) => {
   </div>
   
   ${getFooter()}
-</body>
-</html>
+  ${getScripts('nav.js')}
   `);
 });
 
@@ -604,47 +473,8 @@ app.get('/login', csrfProtection, (req, res) => {
   const message = req.query.message || '';
   const error = req.query.error || '';
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; padding-top: 100px; }
-        .auth-card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; 
-            padding: 48px; max-width: 450px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        h1 { font-size: 32px; margin-bottom: 24px; color: var(--glow); text-align: center; }
-        
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #8892a0; margin-bottom: 8px; }
-        input { width: 100%; padding: 12px 16px; background: rgba(2, 8, 20, 0.8); border: 1px solid rgba(136, 254, 0, 0.2); 
-            border-radius: 4px; color: #e0e6f0; font-family: inherit; font-size: 14px; transition: .3s; }
-        input:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 15px rgba(136, 254, 0, 0.2); }
-        
-        .btn { width: 100%; padding: 14px; border: none; background: var(--glow); color: #0a0812; 
-            font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            cursor: pointer; transition: .3s; border-radius: 4px; margin-top: 8px; }
-        .btn:hover { box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        
-        .message { background: rgba(136, 254, 0, 0.1); border: 1px solid rgba(136, 254, 0, 0.3); color: var(--glow); 
-            padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; text-align: center; }
-        
-        .error { background: rgba(255, 68, 68, 0.1); border: 1px solid rgba(255, 68, 68, 0.3); color: rgba(255, 120, 120, 0.9); 
-            padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; text-align: center; }
-        
-        .link { display: block; text-align: center; margin-top: 20px; color: #8892a0; font-size: 13px; }
-        .link a { color: var(--glow); text-decoration: none; }
-        .link a:hover { text-decoration: underline; }
-    </style>
+${getHTMLHead('Login - Basement')}
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -677,8 +507,7 @@ app.get('/login', csrfProtection, (req, res) => {
     </div>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 
@@ -731,6 +560,313 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
+// Server action route (restart/stop)
+app.post('/server-action', requireAuth, async (req, res) => {
+  try {
+    const action = req.body.action;
+    const userId = req.session.userId;
+
+    // Get user's server
+    const serverResult = await pool.query(
+      'SELECT * FROM servers WHERE user_id = $1',
+      [userId]
+    );
+
+    if (serverResult.rows.length === 0) {
+      return res.redirect('/dashboard?error=No server found');
+    }
+
+    // Update server status based on action
+    let newStatus;
+    let successMessage;
+    
+    if (action === 'start') {
+      newStatus = 'running';
+      successMessage = 'Server started successfully';
+    } else if (action === 'restart') {
+      newStatus = 'running';
+      successMessage = 'Server restarted successfully';
+    } else if (action === 'stop') {
+      newStatus = 'stopped';
+      successMessage = 'Server stopped successfully';
+    } else {
+      return res.redirect('/dashboard?error=Invalid action');
+    }
+
+    await pool.query(
+      'UPDATE servers SET status = $1 WHERE user_id = $2',
+      [newStatus, userId]
+    );
+
+    res.redirect('/dashboard?success=' + successMessage);
+  } catch (error) {
+    console.error('Server action error:', error);
+    res.redirect('/dashboard?error=Action failed');
+  }
+});
+
+// Delete server route
+app.post('/delete-server', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    // Get user's server
+    const serverResult = await pool.query(
+      'SELECT * FROM servers WHERE user_id = $1',
+      [userId]
+    );
+
+    if (serverResult.rows.length === 0) {
+      return res.redirect('/dashboard?error=No server found');
+    }
+
+    const server = serverResult.rows[0];
+
+    // Find and destroy the DigitalOcean droplet
+    // Droplet name format: basement-{userId}-{timestamp}
+    try {
+      // List all droplets with our tag
+      const dropletsResponse = await axios.get('https://api.digitalocean.com/v2/droplets?tag_name=basement-server', {
+        headers: {
+          'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      // Find droplet matching this user
+      const droplet = dropletsResponse.data.droplets.find(d => 
+        d.name.startsWith(`basement-${userId}-`)
+      );
+
+      if (droplet) {
+        // Destroy the droplet
+        await axios.delete(`https://api.digitalocean.com/v2/droplets/${droplet.id}`, {
+          headers: {
+            'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(`Destroyed droplet ${droplet.id} for user ${userId}`);
+      } else {
+        console.log(`No droplet found for user ${userId}, proceeding with database cleanup`);
+      }
+    } catch (doError) {
+      console.error('DigitalOcean deletion error:', doError.response?.data || doError.message);
+      // Continue with database deletion even if DO call fails
+    }
+
+    // Delete server from database
+    await pool.query(
+      'DELETE FROM servers WHERE user_id = $1',
+      [userId]
+    );
+
+    console.log(`Deleted server record for user ${userId}`);
+    res.redirect('/pricing?message=Server deleted successfully');
+  } catch (error) {
+    console.error('Delete server error:', error);
+    res.redirect('/dashboard?error=Failed to delete server');
+  }
+});
+
+// Deploy route
+app.post('/deploy', requireAuth, async (req, res) => {
+  try {
+    const gitUrl = req.body.git_url;
+    const userId = req.session.userId;
+
+    // Validate Git URL format
+    if (!gitUrl || !gitUrl.includes('github.com') && !gitUrl.includes('gitlab.com') && !gitUrl.includes('bitbucket.org')) {
+      return res.redirect('/dashboard?error=Invalid Git URL');
+    }
+
+    // Get user's server
+    const serverResult = await pool.query(
+      'SELECT id FROM servers WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1',
+      [userId]
+    );
+
+    if (serverResult.rows.length === 0) {
+      return res.redirect('/dashboard?error=No server found');
+    }
+
+    const serverId = serverResult.rows[0].id;
+
+    // Store deployment in database
+    await pool.query(
+      'INSERT INTO deployments (server_id, user_id, git_url, status, output) VALUES ($1, $2, $3, $4, $5)',
+      [serverId, userId, gitUrl, 'pending', 'Deployment queued...']
+    );
+
+    // In real implementation, this would:
+    // 1. SSH into the droplet
+    // 2. Clone the repo
+    // 3. Install dependencies
+    // 4. Start the app
+    
+    res.redirect('/dashboard?success=Deployment initiated! Check deployment history below.');
+  } catch (error) {
+    console.error('Deploy error:', error);
+    res.redirect('/dashboard?error=Deployment failed');
+  }
+});
+
+// Add domain route
+app.post('/add-domain', requireAuth, async (req, res) => {
+  try {
+    const domain = req.body.domain.toLowerCase().trim();
+    const userId = req.session.userId;
+
+    // Validate domain format
+    const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/;
+    if (!domain || !domainRegex.test(domain)) {
+      return res.redirect('/dashboard?error=Invalid domain format');
+    }
+
+    // Get user's server
+    const serverResult = await pool.query(
+      'SELECT id FROM servers WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1',
+      [userId]
+    );
+
+    if (serverResult.rows.length === 0) {
+      return res.redirect('/dashboard?error=No server found');
+    }
+
+    const serverId = serverResult.rows[0].id;
+
+    // Check if domain already exists
+    const existingDomain = await pool.query(
+      'SELECT id FROM domains WHERE domain = $1',
+      [domain]
+    );
+
+    if (existingDomain.rows.length > 0) {
+      return res.redirect('/dashboard?error=Domain already in use');
+    }
+
+    // Store domain in database
+    await pool.query(
+      'INSERT INTO domains (server_id, user_id, domain, ssl_enabled) VALUES ($1, $2, $3, $4)',
+      [serverId, userId, domain, false]
+    );
+
+    // In real implementation, this would:
+    // 1. Configure Nginx on the droplet
+    // 2. Set up SSL certificate with Let's Encrypt
+    
+    res.redirect('/dashboard?success=Domain added! Configure your DNS as shown above.');
+  } catch (error) {
+    console.error('Add domain error:', error);
+    res.redirect('/dashboard?error=Failed to add domain');
+  }
+});
+
+// Helper function to execute SSH command
+function executeSSHCommand(host, username, password, command) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    
+    conn.on('ready', () => {
+      conn.exec(command, (err, stream) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+        
+        let output = '';
+        let errorOutput = '';
+        
+        stream.on('close', (code) => {
+          conn.end();
+          if (code === 0) {
+            resolve(output);
+          } else {
+            reject(new Error(`Command failed with code ${code}: ${errorOutput}`));
+          }
+        });
+        
+        stream.on('data', (data) => {
+          output += data.toString();
+        });
+        
+        stream.stderr.on('data', (data) => {
+          errorOutput += data.toString();
+        });
+      });
+    });
+    
+    conn.on('error', (err) => {
+      reject(err);
+    });
+    
+    conn.connect({
+      host,
+      port: 22,
+      username,
+      password,
+      readyTimeout: 30000
+    });
+  });
+}
+
+// Enable SSL route
+app.post('/enable-ssl', requireAuth, async (req, res) => {
+  try {
+    const domain = req.body.domain.toLowerCase().trim();
+    const userId = req.session.userId;
+    const email = req.session.userEmail || 'admin@basement.com';
+
+    // Validate domain
+    const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/;
+    if (!domain || !domainRegex.test(domain)) {
+      return res.redirect('/dashboard?error=Invalid domain format');
+    }
+
+    // Get user's server
+    const serverResult = await pool.query(
+      'SELECT * FROM servers WHERE user_id = $1 AND status = $2',
+      [userId, 'running']
+    );
+
+    if (serverResult.rows.length === 0) {
+      return res.redirect('/dashboard?error=No running server found');
+    }
+
+    const server = serverResult.rows[0];
+
+    // Execute certbot command via SSH
+    const certbotCommand = `certbot --nginx -d ${domain} --non-interactive --agree-tos --email ${email} --redirect`;
+    
+    console.log(`[SSL] Enabling SSL for ${domain} on server ${server.ip_address}`);
+    
+    try {
+      const output = await executeSSHCommand(
+        server.ip_address,
+        server.ssh_username,
+        server.ssh_password,
+        certbotCommand
+      );
+      
+      console.log(`[SSL] Success for ${domain}:`, output);
+      
+      // Update domain in database
+      await pool.query(
+        'UPDATE domains SET ssl_enabled = true WHERE domain = $1 AND user_id = $2',
+        [domain, userId]
+      );
+      
+      res.redirect('/dashboard?success=SSL enabled! Your site is now secure with HTTPS');
+    } catch (sshError) {
+      console.error('[SSL] SSH error:', sshError.message);
+      res.redirect('/dashboard?error=Failed to enable SSL. Make sure your domain points to your server IP');
+    }
+  } catch (error) {
+    console.error('Enable SSL error:', error);
+    res.redirect('/dashboard?error=Failed to enable SSL');
+  }
+});
+
 // Dashboard route
 app.get('/dashboard', requireAuth, async (req, res) => {
   try {
@@ -740,77 +876,90 @@ app.get('/dashboard', requireAuth, async (req, res) => {
       [req.session.userId]
     );
 
+    // No server state - show simplified dashboard
     if (serverResult.rows.length === 0) {
-      return res.redirect('/pricing?message=Please select a plan to get started');
-    }
-
-    const server = serverResult.rows[0];
-    const specs = typeof server.specs === 'string' ? JSON.parse(server.specs) : server.specs;
-
-    res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Basement</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .content { padding: 140px 5vw 60px; max-width: 1200px; margin: 0 auto; }
-        h1 { font-size: 42px; margin-bottom: 32px; color: var(--glow); }
-        
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px; }
-        
-        .card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 8px; padding: 24px; }
-        .card h2 { font-size: 18px; color: var(--glow); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-        .card p { color: #8892a0; font-size: 14px; line-height: 1.8; margin-bottom: 12px; }
-        .card p:last-child { margin-bottom: 0; }
-        
-        .status { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-        .status.running { background: rgba(136, 254, 0, 0.2); color: var(--glow); }
-        .status.stopped { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
-        
-        .copy-box { background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 4px; 
-            padding: 12px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 13px; display: flex; 
-            justify-content: space-between; align-items: center; }
-        .copy-btn { background: var(--glow); color: #0a0812; border: none; padding: 6px 12px; border-radius: 4px; 
-            cursor: pointer; font-size: 11px; font-weight: 600; text-transform: uppercase; transition: .3s; }
-        .copy-btn:hover { box-shadow: 0 0 15px var(--glow); }
-        
-        .btn { display: inline-block; padding: 12px 24px; border: 1px solid var(--glow); background: transparent; 
-            color: var(--glow); font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; 
-            border-radius: 4px; transition: .3s; margin-right: 12px; text-decoration: none; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
-        
-        .resource-item { margin-bottom: 20px; }
-        .resource-item:last-child { margin-bottom: 0; }
-        .resource-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
-        .resource-label span:first-child { color: #8892a0; }
-        .resource-label span:last-child { color: var(--glow); font-weight: 600; }
-        .progress-bar { height: 8px; background: rgba(136, 254, 0, 0.1); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--glow), #cfff90); border-radius: 4px; transition: width 0.3s; }
-    </style>
-</head>
-<body>
-    <div class="matrix-bg"></div>
+      return res.send(`
+${getDashboardHead('Dashboard - Basement')}
     
     ${getResponsiveNav(req)}
     
     <div class="content">
         <h1>Dashboard</h1>
         
+        ${req.query.success ? `<div class="alert success">${req.query.success}<span class="alert-close" onclick="this.parentElement.style.display='none'">&times;</span></div>` : ''}
+        ${req.query.error ? `<div class="alert error">${req.query.error}<span class="alert-close" onclick="this.parentElement.style.display='none'">&times;</span></div>` : ''}
+        ${req.query.message ? `<div class="alert success">${req.query.message}<span class="alert-close" onclick="this.parentElement.style.display='none'">&times;</span></div>` : ''}
+        
+        <div class="card" style="text-align: center; padding: 64px 32px;">
+            <h2 style="font-size: 32px; margin-bottom: 16px;">Welcome to Basement</h2>
+            <p style="color: #8892a0; font-size: 16px; margin-bottom: 32px;">You don't have a server yet. Get started by choosing a plan.</p>
+            <a href="/pricing" class="btn" style="display: inline-block; padding: 16px 32px; font-size: 16px;">View Plans</a>
+        </div>
+        
+        <div class="dashboard-grid" style="margin-top: 32px;">
+            <div class="card">
+                <h3 style="color: var(--glow); margin-bottom: 16px;">📊 Monitor</h3>
+                <p style="color: #8892a0; font-size: 14px;">Track your server's performance, CPU usage, memory, and disk space in real-time.</p>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: var(--glow); margin-bottom: 16px;">🚀 Deploy</h3>
+                <p style="color: #8892a0; font-size: 14px;">Connect your Git repository and deploy applications with a single click.</p>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: var(--glow); margin-bottom: 16px;">🌐 Domains</h3>
+                <p style="color: #8892a0; font-size: 14px;">Add custom domains and manage DNS settings for your applications.</p>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: var(--glow); margin-bottom: 16px;">🔒 SSH Access</h3>
+                <p style="color: #8892a0; font-size: 14px;">Full SSH access to your server with secure credentials and connection details.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/nav.js"></script>
+</body>
+</html>
+      `);
+    }
+
+    const server = serverResult.rows[0];
+    
+    // Get deployment history
+    const deploymentsResult = await pool.query(
+      'SELECT * FROM deployments WHERE user_id = $1 ORDER BY deployed_at DESC LIMIT 10',
+      [req.session.userId]
+    );
+
+    // Get domains
+    const domainsResult = await pool.query(
+      'SELECT * FROM domains WHERE user_id = $1 ORDER BY created_at DESC',
+      [req.session.userId]
+    );
+    
+    const deployments = deploymentsResult.rows;
+    const domains = domainsResult.rows;
+    const specs = typeof server.specs === 'string' ? JSON.parse(server.specs) : server.specs;
+
+    res.send(`
+${getDashboardHead('Dashboard - Basement')}
+    
+    ${getResponsiveNav(req)}
+    
+    <div class="content">
+        <h1>Dashboard</h1>
+        
+        ${req.query.success ? `<div class="alert success">${req.query.success}<span class="alert-close" onclick="this.parentElement.style.display='none'">&times;</span></div>` : ''}
+        ${req.query.error ? `<div class="alert error">${req.query.error}<span class="alert-close" onclick="this.parentElement.style.display='none'">&times;</span></div>` : ''}
+        
         <div class="dashboard-grid">
             <div class="card">
                 <h2>Server Status</h2>
                 <p><span class="status ${server.status}">${server.status}</span></p>
+                ${server.status === 'provisioning' ? '<p style="color: #8892a0; font-size: 13px; margin-top: 12px;">⏳ Setting up your server... This page will auto-refresh.</p>' : ''}
+                ${server.status === 'failed' ? '<p style="color: #ff4444; font-size: 13px; margin-top: 12px;">❌ Server provisioning failed. Please contact support.</p>' : ''}
                 <p style="margin-top: 16px;"><strong>Plan:</strong> ${server.plan.charAt(0).toUpperCase() + server.plan.slice(1)}</p>
                 <p><strong>Created:</strong> ${new Date(server.created_at).toLocaleDateString()}</p>
             </div>
@@ -890,23 +1039,134 @@ app.get('/dashboard', requireAuth, async (req, res) => {
         <div class="card">
             <h2>Server Controls</h2>
             <p style="margin-bottom: 16px;">Manage your server</p>
-            <button class="btn" disabled>Restart Server</button>
-            <button class="btn" disabled>View Logs</button>
-            <p style="margin-top: 16px; font-size: 12px; color: #666;">Controls coming soon</p>
+            
+            ${server.status === 'stopped' ? `
+                <form action="/server-action" method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="start">
+                    <button type="submit" class="btn">Start Server</button>
+                </form>
+            ` : `
+                <form action="/server-action" method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="restart">
+                    <button type="submit" class="btn">Restart Server</button>
+                </form>
+                <form action="/server-action" method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="stop">
+                    <button type="submit" class="btn">Stop Server</button>
+                </form>
+            `}
+            
+            <form action="/delete-server" method="POST" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255, 68, 68, 0.2);" onsubmit="return confirm('Are you sure? This will permanently destroy your server and all data on it.');">
+                <p style="color: #ff4444; font-size: 13px; margin-bottom: 12px;">⚠️ Danger Zone</p>
+                <button type="submit" class="btn" style="background: transparent; border-color: #ff4444; color: #ff4444;">Delete Server</button>
+            </form>
+        </div>
+        
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>Deployment</h2>
+            <p style="margin-bottom: 16px; color: #8892a0;">Deploy your application from a Git repository</p>
+            <form action="/deploy" method="POST">
+                <label style="display: block; margin-bottom: 8px;">
+                    <span style="color: var(--glow); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Git Repository URL</span>
+                    <input type="url" name="git_url" placeholder="https://github.com/username/repo.git" 
+                        style="width: 100%; padding: 12px; margin-top: 8px; background: rgba(0, 0, 0, 0.3); 
+                        border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 4px; color: #e0e6f0; font-family: inherit;" required>
+                </label>
+                <button type="submit" class="btn" style="margin-top: 12px;">Deploy from Git</button>
+            </form>
+            
+            ${deployments.length > 0 ? `
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(136, 254, 0, 0.1);">
+                <h3 style="font-size: 14px; margin-bottom: 16px; color: var(--glow); text-transform: uppercase; letter-spacing: 1px;">Recent Deployments</h3>
+                ${deployments.map(dep => `
+                <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(136, 254, 0, 0.1); border-radius: 4px; padding: 16px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <code style="font-size: 12px; color: #e0e6f0; word-break: break-all;">${dep.git_url}</code>
+                        <span style="font-size: 10px; padding: 4px 12px; background: ${dep.status === 'success' ? 'rgba(136, 254, 0, 0.2)' : dep.status === 'failed' ? 'rgba(255, 68, 68, 0.2)' : 'rgba(255, 184, 0, 0.2)'}; color: ${dep.status === 'success' ? 'var(--glow)' : dep.status === 'failed' ? '#ff4444' : '#ffb800'}; border-radius: 4px; text-transform: uppercase; font-weight: 600; white-space: nowrap; margin-left: 12px;">${dep.status}</span>
+                    </div>
+                    <p style="font-size: 11px; color: #666; margin: 0;">${new Date(dep.deployed_at).toLocaleString()}</p>
+                </div>
+                `).join('')}
+            </div>
+            ` : '<p style="color: #666; font-size: 12px; margin-top: 16px; font-style: italic;">No deployments yet. Deploy your first app above!</p>'}
+        </div>
+        
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>Custom Domains</h2>
+            <p style="margin-bottom: 16px; color: #8892a0;">Connect a domain you own to your server</p>
+            
+            <form action="/add-domain" method="POST" style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 8px;">
+                    <span style="color: var(--glow); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Domain Name</span>
+                    <input type="text" name="domain" placeholder="example.com" 
+                        style="width: 100%; padding: 12px; margin-top: 8px; background: rgba(0, 0, 0, 0.3); 
+                        border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 4px; color: #e0e6f0; font-family: inherit;" required>
+                </label>
+                <button type="submit" class="btn" style="margin-top: 12px;">Add Domain</button>
+            </form>
+            
+            <div style="background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 6px; padding: 20px; margin-bottom: 24px;">
+                <h3 style="color: var(--glow); font-size: 16px; margin-bottom: 16px;">🔒 One-Click SSL</h3>
+                <p style="color: #8892a0; font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
+                    Secure your domain with free HTTPS certificate from Let's Encrypt. Make sure your domain's DNS is pointing to your server IP before enabling SSL.
+                </p>
+                <form action="/enable-ssl" method="POST">
+                    <label style="display: block; margin-bottom: 8px;">
+                        <span style="color: var(--glow); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Domain to Secure</span>
+                        <input type="text" name="domain" placeholder="example.com" 
+                            style="width: 100%; padding: 12px; margin-top: 8px; background: rgba(0, 0, 0, 0.3); 
+                            border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 4px; color: #e0e6f0; font-family: inherit;" required>
+                    </label>
+                    <button type="submit" class="btn" style="margin-top: 12px; background: rgba(136, 254, 0, 0.9); color: #000;">Enable SSL</button>
+                </form>
+            </div>
+            
+            <div style="background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 6px; padding: 16px;">
+                <h3 style="color: var(--glow); font-size: 14px; margin-bottom: 12px;">DNS Configuration</h3>
+                <p style="color: #8892a0; font-size: 13px; line-height: 1.6; margin-bottom: 8px;">
+                    To point your domain to this server, add these DNS records at your domain registrar (GoDaddy, Namecheap, etc.):
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 4px; font-family: monospace; font-size: 12px; margin-top: 12px;">
+                    <div style="margin-bottom: 8px;">
+                        <strong style="color: var(--glow);">A Record:</strong><br>
+                        Name: <span style="color: #e0e6f0;">@</span> (or leave blank)<br>
+                        Value: <span style="color: #e0e6f0;">${server.ip_address}</span><br>
+                        TTL: <span style="color: #e0e6f0;">3600</span>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <strong style="color: var(--glow);">A Record (www):</strong><br>
+                        Name: <span style="color: #e0e6f0;">www</span><br>
+                        Value: <span style="color: #e0e6f0;">${server.ip_address}</span><br>
+                        TTL: <span style="color: #e0e6f0;">3600</span>
+                    </div>
+                </div>
+                <p style="color: #666; font-size: 11px; margin-top: 12px;">
+                    DNS changes can take 24-48 hours to propagate worldwide
+                </p>
+            </div>
+            
+            ${domains.length > 0 ? `
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(136, 254, 0, 0.1);">
+                <h3 style="font-size: 14px; margin-bottom: 16px; color: var(--glow); text-transform: uppercase; letter-spacing: 1px;">Your Domains</h3>
+                ${domains.map(dom => `
+                <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(136, 254, 0, 0.1); border-radius: 4px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <code style="font-size: 14px; color: #e0e6f0; font-weight: 500;">${dom.domain}</code>
+                        <p style="font-size: 11px; color: #666; margin: 6px 0 0 0;">Added ${new Date(dom.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        ${dom.ssl_enabled ? '<span style="font-size: 11px; padding: 6px 12px; background: rgba(136, 254, 0, 0.2); color: var(--glow); border-radius: 4px; font-weight: 600;">🔒 SSL Active</span>' : '<span style="font-size: 11px; padding: 6px 12px; background: rgba(255, 184, 0, 0.2); color: #ffb800; border-radius: 4px; font-weight: 600;">⚠️ No SSL</span>'}
+                    </div>
+                </div>
+                `).join('')}
+            </div>
+            ` : '<p style="color: #666; font-size: 12px; margin-top: 16px; font-style: italic;">No domains configured yet. Add your first domain above!</p>'}
         </div>
     </div>
     
     ${getFooter()}
     
-    <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            });
-        }
-    </script>
-</body>
-</html>
+    ${getScripts('nav.js', 'dashboard.js')}
     `);
   } catch (error) {
     console.error('Dashboard error:', error);
@@ -917,54 +1177,8 @@ app.get('/dashboard', requireAuth, async (req, res) => {
 // route for privacy policy (next)
 
 app.get('/pricing', (req, res) => res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; scroll-behavior: smooth; --glow: #88FE00; }
-        ul li, ol li { list-style: none; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .page-header { padding: 160px 5vw 80px; text-align: center; max-width: 800px; margin: 0 auto; }
-        .page-header h1 { font-size: clamp(32px, 6vw, 56px); font-weight: 700; letter-spacing: -2px; margin-bottom: 16px; color: var(--glow); }
-        .page-header p { color: #8892a0; font-size: 15px; line-height: 1.7; }
-        
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; padding: 40px 5vw 80px; max-width: 1200px; margin: 0 auto; }
-        .plan { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; padding: 40px 32px;
-            position: relative; transition: .3s; display: flex; flex-direction: column; }
-        .plan:hover { transform: translateY(-8px); box-shadow: 0 15px 50px rgba(136, 254, 0, 0.18); }
-        .plan.featured { border-color: var(--glow); box-shadow: 0 0 40px rgba(136, 254, 0, 0.2); }
-        .plan-header { border-bottom: 1px solid rgba(136, 254, 0, 0.2); padding-bottom: 24px; margin-bottom: 24px; }
-        .plan-name { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--glow); margin-bottom: 8px; }
-        .plan-price { font-size: 42px; font-weight: 700; color: #fff; margin: 8px 0; }
-        .plan-cycle { font-size: 12px; color: #8892a0; }
-        .plan-features { flex-grow: 1; margin: 24px 0; }
-        .plan-features li { padding: 10px 0; color: #8892a0; font-size: 13px; position: relative; padding-left: 24px; }
-        .plan-features li::before { content: '> '; position: absolute; left: 0; color: var(--glow); }
-        .plan-features li.highlight { color: #e0e6f0; font-weight: 500; }
-        .plan-features li.highlight::before { content: '+ '; color: var(--glow); text-shadow: 0 0 8px var(--glow); font-weight: 700; }
-        .plan-features li.divider { color: #666; font-size: 12px; font-style: italic; margin-top: 12px; padding-top: 12px; 
-            border-top: 1px solid rgba(136, 254, 0, 0.1); }
-        .plan-features li.divider::before { content: ''; }
-        
-        .btn { width: 100%; padding: 14px 32px; border: 1px solid var(--glow); background: transparent; color: var(--glow); 
-            font-family: inherit; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; 
-            transition: .3s; border-radius: 4px; margin-top: auto; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
-        .btn.primary { background: var(--glow); color: #0a0812; font-weight: 600; }
-        .btn.primary:hover { box-shadow: 0 0 40px var(--glow); }
-        
-        footer { text-align: center; padding: 60px 5vw 40px; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('Pricing - Basement')}
+    <link rel="stylesheet" href="/css/pricing.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1053,37 +1267,13 @@ app.get('/pricing', (req, res) => res.send(`
     </section>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
 `));
 
 app.get('/terms', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .content { padding: 140px 5vw 60px; max-width: 800px; margin: 0 auto; }
-        h1 { font-size: 42px; margin-bottom: 16px; color: var(--glow); }
-        p { color: #8892a0; font-size: 15px; line-height: 1.8; margin-bottom: 20px; }
-        .link-back { display: inline-block; margin-top: 32px; padding: 12px 24px; border: 1px solid var(--glow); color: var(--glow);
-            font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; border-radius: 4px; transition: .3s; }
-        .link-back:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
-        
-        footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('Terms of Service - Basement')}
+    <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1105,34 +1295,8 @@ app.get('/terms', (req, res) => {
 // Privacy Policy route
 app.get('/privacy', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .content { padding: 140px 5vw 60px; max-width: 800px; margin: 0 auto; }
-        h1 { font-size: 42px; margin-bottom: 16px; color: var(--glow); }
-        h2 { font-size: 24px; margin-top: 32px; margin-bottom: 12px; color: #e0e6f0; }
-        p { color: #8892a0; font-size: 15px; line-height: 1.8; margin-bottom: 20px; }
-        ul { color: #8892a0; font-size: 15px; line-height: 1.8; margin-bottom: 20px; margin-left: 24px; }
-        li { margin-bottom: 8px; }
-        .link-back { display: inline-block; margin-top: 32px; padding: 12px 24px; border: 1px solid var(--glow); color: var(--glow);
-            font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; border-radius: 4px; transition: .3s; }
-        .link-back:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 25px var(--glow); }
-        
-        footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('Privacy Policy - Basement')}
+    <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1302,67 +1466,15 @@ app.get('/privacy', (req, res) => {
     </div>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 
 // FAQ page
 app.get('/faq', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .content { padding: 140px 5vw 60px; max-width: 900px; margin: 0 auto; }
-        h1 { font-size: 48px; margin-bottom: 16px; color: var(--glow); text-align: center; }
-        .subtitle { text-align: center; color: #8892a0; font-size: 16px; margin-bottom: 60px; }
-        
-        .faq-section { margin-bottom: 48px; }
-        .section-title { font-size: 24px; color: var(--glow); margin-bottom: 24px; text-transform: uppercase; 
-            letter-spacing: 2px; border-bottom: 1px solid rgba(136, 254, 0, 0.2); padding-bottom: 12px; }
-        
-        .faq-item { background: rgba(2, 8, 20, 0.4); border: 1px solid rgba(136, 254, 0, 0.1); border-radius: 6px; 
-            margin-bottom: 16px; overflow: hidden; transition: .3s; }
-        .faq-item:hover { border-color: rgba(136, 254, 0, 0.3); }
-        
-        .faq-question { padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
-            user-select: none; transition: .3s; }
-        .faq-question:hover { background: rgba(136, 254, 0, 0.05); }
-        .faq-question h3 { font-size: 16px; color: #e0e6f0; font-weight: 500; }
-        .faq-toggle { color: var(--glow); font-size: 24px; font-weight: 300; transition: .3s; }
-        .faq-item.active .faq-toggle { transform: rotate(45deg); }
-        
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .faq-answer-content { padding: 0 24px 20px; color: #8892a0; font-size: 14px; line-height: 1.8; }
-        .faq-answer-content p { margin-bottom: 12px; }
-        .faq-answer-content ul { margin-left: 20px; margin-bottom: 12px; }
-        .faq-answer-content li { margin-bottom: 8px; }
-        .faq-answer-content a { color: var(--glow); text-decoration: underline; }
-        
-        .cta-box { background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 8px; 
-            padding: 32px; text-align: center; margin-top: 60px; }
-        .cta-box h2 { font-size: 24px; color: var(--glow); margin-bottom: 12px; }
-        .cta-box p { color: #8892a0; font-size: 15px; margin-bottom: 24px; }
-        .btn { display: inline-block; padding: 14px 28px; border: 1px solid var(--glow); color: var(--glow); 
-            font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            border-radius: 4px; transition: .3s; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        
-        footer { text-align: center; padding: 40px 5vw; border-top: 1px solid rgba(136, 254, 0, 0.1); color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('FAQ - Basement')}
+    <link rel="stylesheet" href="/css/faq.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1579,77 +1691,15 @@ app.get('/faq', (req, res) => {
     </div>
     
     ${getFooter()}
-    
-    <script>
-        function toggleFaq(element) {
-            const item = element.parentElement;
-            const answer = item.querySelector('.faq-answer');
-            const isActive = item.classList.contains('active');
-            
-            // Close all other FAQs
-            document.querySelectorAll('.faq-item').forEach(faq => {
-                faq.classList.remove('active');
-                faq.querySelector('.faq-answer').style.maxHeight = null;
-            });
-            
-            // Toggle current FAQ
-            if (!isActive) {
-                item.classList.add('active');
-                answer.style.maxHeight = answer.scrollHeight + 'px';
-            }
-        }
-    </script>
-</body>
-</html>
+    ${getScripts('nav.js', 'faq.js')}
   `);
 });
 
 // Documentation page
 app.get('/docs', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - Basement</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .content { padding: 140px 5vw 60px; max-width: 900px; margin: 0 auto; }
-        h1 { font-size: 48px; margin-bottom: 16px; color: var(--glow); }
-        .subtitle { color: #8892a0; font-size: 18px; margin-bottom: 60px; line-height: 1.6; }
-        
-        h2 { font-size: 28px; margin-top: 48px; margin-bottom: 16px; color: #e0e6f0; }
-        h3 { font-size: 20px; margin-top: 32px; margin-bottom: 12px; color: var(--glow); }
-        p { color: #8892a0; font-size: 15px; line-height: 1.8; margin-bottom: 20px; }
-        
-        ul, ol { color: #8892a0; font-size: 15px; line-height: 1.8; margin-bottom: 20px; margin-left: 24px; }
-        li { margin-bottom: 12px; }
-        
-        code { background: rgba(136, 254, 0, 0.1); color: var(--glow); padding: 2px 8px; border-radius: 3px; font-size: 14px; }
-        
-        .info-box { background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 6px; 
-            padding: 24px; margin: 32px 0; }
-        .info-box h3 { margin-top: 0; }
-        
-        .cta-box { background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 8px; 
-            padding: 32px; text-align: center; margin-top: 60px; }
-        .cta-box h2 { margin-top: 0; font-size: 24px; color: var(--glow); margin-bottom: 12px; }
-        .cta-box p { margin-bottom: 24px; }
-        .btn { display: inline-block; padding: 14px 28px; border: 1px solid var(--glow); color: var(--glow); 
-            font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            border-radius: 4px; transition: .3s; margin: 0 8px; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        .btn.primary { background: var(--glow); color: #0a0812; }
-    </style>
+${getHTMLHead('Documentation - Basement')}
+    <link rel="stylesheet" href="/css/docs.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1743,10 +1793,10 @@ app.get('/docs', (req, res) => {
                 <li>Contribute improvements or report issues</li>
                 <li>Fork it and modify for your needs</li>
                 <li>Verify security practices</li>
-            </ul>
-            <p style="margin-top: 16px; margin-bottom: 0;"><a href="#" style="color: var(--glow); text-decoration: underline;">View source on GitHub →</a></p>
-        </div>
-        
+            </ul>real provisioning)
+    if (existingServer.rows.length === 0) {
+      const plan = req.query.plan || 'basic';
+      await createReal
         <h2>Who This Works For</h2>
         <p>Basement is designed for:</p>
         <ul>
@@ -1790,24 +1840,47 @@ app.get('/docs', (req, res) => {
     </div>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 
 // Payment Success page
 app.get('/payment-success', requireAuth, async (req, res) => {
   try {
+    const sessionId = req.query.session_id;
+    
     // Check if user already has a server
     const existingServer = await pool.query(
       'SELECT * FROM servers WHERE user_id = $1',
       [req.session.userId]
     );
 
-    // If no server exists, create one (mock for now)
+    // If no server exists, create one (real provisioning)
     if (existingServer.rows.length === 0) {
-      const plan = req.query.plan || 'basic'; // Get plan from query param
-      await createMockServer(req.session.userId, plan);
+      const plan = req.query.plan || 'basic';
+      
+      // Get the checkout session to retrieve the charge ID
+      let chargeId = null;
+      if (sessionId) {
+        try {
+          const session = await stripe.checkout.sessions.retrieve(sessionId, {
+            expand: ['payment_intent']
+          });
+          
+          // Get charge ID from payment intent
+          if (session.payment_intent && typeof session.payment_intent === 'object') {
+            const paymentIntent = session.payment_intent;
+            if (paymentIntent.charges && paymentIntent.charges.data.length > 0) {
+              chargeId = paymentIntent.charges.data[0].id;
+              console.log('Retrieved charge ID:', chargeId);
+            }
+          }
+        } catch (stripeError) {
+          console.error('Error retrieving session:', stripeError.message);
+        }
+      }
+      
+      await createRealServer(req.session.userId, plan, chargeId);
     }
 
   } catch (error) {
@@ -1815,54 +1888,8 @@ app.get('/payment-success', requireAuth, async (req, res) => {
   }
 
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Successful - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .success-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; padding-top: 100px; }
-        .success-card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.3); border-radius: 8px; 
-            padding: 60px 48px; max-width: 600px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); text-align: center; }
-        
-        .success-icon { width: 80px; height: 80px; margin: 0 auto 24px; border-radius: 50%; border: 3px solid var(--glow); 
-            display: flex; align-items: center; justify-content: center; font-size: 48px; color: var(--glow); 
-            box-shadow: 0 0 30px rgba(136, 254, 0, 0.3); animation: pulse 2s infinite; }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 30px rgba(136, 254, 0, 0.3); }
-            50% { box-shadow: 0 0 50px rgba(136, 254, 0, 0.6); }
-        }
-        
-        h1 { font-size: 36px; margin-bottom: 16px; color: var(--glow); }
-        .subtitle { color: #8892a0; font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
-        
-        .info-box { background: rgba(136, 254, 0, 0.05); border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 6px; 
-            padding: 24px; margin-bottom: 32px; text-align: left; }
-        .info-box h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--glow); margin-bottom: 16px; }
-        .info-box p { color: #8892a0; font-size: 14px; line-height: 1.8; margin-bottom: 12px; }
-        .info-box p:last-child { margin-bottom: 0; }
-        
-        .btn-group { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 14px 28px; border: 1px solid var(--glow); color: var(--glow); font-family: inherit; 
-            font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            cursor: pointer; transition: .3s; border-radius: 4px; display: inline-block; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        .btn.primary { background: var(--glow); color: #0a0812; }
-        .btn.primary:hover { box-shadow: 0 0 50px var(--glow); }
-        
-        footer { text-align: center; padding: 40px 5vw; color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('Payment Successful - Basement')}
+    <link rel="stylesheet" href="/css/payment.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1890,57 +1917,15 @@ app.get('/payment-success', requireAuth, async (req, res) => {
     </div>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 
 // Payment Cancel page
 app.get('/payment-cancel', requireAuth, (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Cancelled - LocalBiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
-        .cancel-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; padding-top: 100px; }
-        .cancel-card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; 
-            padding: 60px 48px; max-width: 600px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); text-align: center; }
-        
-        .cancel-icon { width: 80px; height: 80px; margin: 0 auto 24px; border-radius: 50%; border: 3px solid rgba(255, 159, 28, 0.6); 
-            display: flex; align-items: center; justify-content: center; font-size: 48px; color: rgba(255, 159, 28, 0.8); 
-            box-shadow: 0 0 30px rgba(255, 159, 28, 0.2); }
-        
-        h1 { font-size: 36px; margin-bottom: 16px; color: #e0e6f0; }
-        .subtitle { color: #8892a0; font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
-        
-        .info-box { background: rgba(136, 254, 0, 0.03); border: 1px solid rgba(136, 254, 0, 0.1); border-radius: 6px; 
-            padding: 24px; margin-bottom: 32px; text-align: left; }
-        .info-box h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--glow); margin-bottom: 16px; }
-        .info-box p { color: #8892a0; font-size: 14px; line-height: 1.8; margin-bottom: 12px; }
-        .info-box p:last-child { margin-bottom: 0; }
-        
-        .btn-group { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 14px 28px; border: 1px solid var(--glow); color: var(--glow); font-family: inherit; 
-            font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            cursor: pointer; transition: .3s; border-radius: 4px; display: inline-block; }
-        .btn:hover { background: var(--glow); color: #0a0812; box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        .btn.primary { background: var(--glow); color: #0a0812; }
-        .btn.primary:hover { box-shadow: 0 0 50px var(--glow); }
-        
-        footer { text-align: center; padding: 40px 5vw; color: #666; font-size: 12px; }
-    </style>
+${getHTMLHead('Payment Cancelled - Basement')}
+    <link rel="stylesheet" href="/css/payment.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -1969,8 +1954,7 @@ app.get('/payment-cancel', requireAuth, (req, res) => {
     </div>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 });
 
@@ -2075,7 +2059,7 @@ app.post('/create-checkout-session', requireAuth, paymentLimiter, csrfProtection
         },
       ],
       mode: 'payment',
-      success_url: `${req.protocol}://${req.get('host')}/payment-success?plan=${plan}`,
+      success_url: `${req.protocol}://${req.get('host')}/payment-success?plan=${plan}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.protocol}://${req.get('host')}/payment-cancel`,
       metadata: {
         plan: plan,
@@ -2088,6 +2072,194 @@ app.post('/create-checkout-session', requireAuth, paymentLimiter, csrfProtection
     res.status(500).send('Payment processing error');
   }
 });
+
+// Stripe webhook endpoint - MUST be before express.json() middleware
+// Webhooks need raw body for signature verification
+app.post('/webhook/stripe', express.raw({type: 'application/json'}), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    // Verify webhook signature
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  console.log('Received webhook event:', event.type);
+
+  try {
+    switch (event.type) {
+      case 'charge.refunded':
+        const charge = event.data.object;
+        console.log('Charge refunded:', charge.id);
+
+        // Find server by charge ID
+        const serverResult = await pool.query(
+          'SELECT * FROM servers WHERE stripe_charge_id = $1',
+          [charge.id]
+        );
+
+        if (serverResult.rows.length > 0) {
+          const server = serverResult.rows[0];
+          console.log(`Found server ${server.id} for refunded charge ${charge.id}`);
+
+          // Find and destroy the DigitalOcean droplet
+          try {
+            const dropletsResponse = await axios.get('https://api.digitalocean.com/v2/droplets?tag_name=basement-server', {
+              headers: {
+                'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+                'Content-Type': 'application/json'
+              }
+            });
+
+            const droplet = dropletsResponse.data.droplets.find(d => 
+              d.name.startsWith(`basement-${server.user_id}-`)
+            );
+
+            if (droplet) {
+              await axios.delete(`https://api.digitalocean.com/v2/droplets/${droplet.id}`, {
+                headers: {
+                  'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+                  'Content-Type': 'application/json'
+                }
+              });
+              console.log(`Destroyed droplet ${droplet.id} for refunded server ${server.id}`);
+            }
+          } catch (doError) {
+            console.error('DigitalOcean deletion error:', doError.response?.data || doError.message);
+          }
+
+          // Delete server from database
+          await pool.query('DELETE FROM servers WHERE id = $1', [server.id]);
+          console.log(`Deleted server ${server.id} from database due to refund`);
+        } else {
+          console.log(`No server found for charge ID: ${charge.id}`);
+        }
+        break;
+
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        console.log('Checkout session completed:', session.id);
+        // This is handled by the payment-success redirect already
+        break;
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    res.json({received: true});
+  } catch (error) {
+    console.error('Webhook processing error:', error);
+    res.status(500).json({error: 'Webhook processing failed'});
+  }
+});
+
+// Logout route
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Logout error:', err);
+    }
+    res.redirect('/?message=Logged out successfully');
+  });
+});
+
+// 404 error page - must be last route
+app.use((req, res) => {
+  res.status(404).send(`
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .container { text-align: center; max-width: 500px; }
+        h1 { font-size: 120px; color: var(--glow); text-shadow: 0 0 40px rgba(136, 254, 0, 0.5); margin-bottom: 20px; }
+        h2 { font-size: 24px; margin-bottom: 16px; }
+        p { color: #8892a0; line-height: 1.6; margin-bottom: 32px; }
+        a { display: inline-block; padding: 14px 32px; background: var(--glow); color: #0a0812; text-decoration: none; border-radius: 4px; font-weight: 600; transition: all 0.3s; }
+        a:hover { box-shadow: 0 0 30px rgba(136, 254, 0, 0.6); transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <h2>Page Not Found</h2>
+        <p>The page you're looking for doesn't exist or has been moved. Let's get you back on track.</p>
+        <a href="/">Go Home</a>
+    </div>
+</body>
+</html>
+  `);
+});
+
+// DigitalOcean sync - Check if droplets still exist
+async function syncDigitalOceanDroplets() {
+  try {
+    console.log('[Sync] Starting DigitalOcean droplet sync...');
+    
+    // Get all servers marked as running
+    const result = await pool.query(
+      "SELECT * FROM servers WHERE status = 'running'"
+    );
+    
+    if (result.rows.length === 0) {
+      console.log('[Sync] No running servers to sync');
+      return;
+    }
+    
+    // Get all droplets from DigitalOcean
+    const dropletsResponse = await axios.get('https://api.digitalocean.com/v2/droplets?tag_name=basement-server', {
+      headers: {
+        'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    const droplets = dropletsResponse.data.droplets;
+    const dropletNames = droplets.map(d => d.name);
+    
+    console.log(`[Sync] Found ${result.rows.length} servers in DB, ${droplets.length} droplets in DO`);
+    
+    // Check each server
+    for (const server of result.rows) {
+      const expectedName = `basement-${server.user_id}-`;
+      const dropletExists = dropletNames.some(name => name.startsWith(expectedName));
+      
+      if (!dropletExists) {
+        console.log(`[Sync] Droplet missing for server ${server.id} (user ${server.user_id})`);
+        
+        // Update database - mark as deleted
+        await pool.query(
+          "UPDATE servers SET status = 'deleted' WHERE id = $1",
+          [server.id]
+        );
+        
+        console.log(`[Sync] Updated server ${server.id} status to 'deleted'`);
+      }
+    }
+    
+    console.log('[Sync] DigitalOcean sync completed');
+  } catch (error) {
+    console.error('[Sync] Error syncing droplets:', error.message);
+  }
+}
+
+// Run sync every hour (3600000 ms)
+setInterval(syncDigitalOceanDroplets, 3600000);
+
+// Run sync on startup (after 30 seconds to let server initialize)
+setTimeout(syncDigitalOceanDroplets, 30000);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));

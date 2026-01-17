@@ -1,0 +1,98 @@
+/* Documentation page styles */
+
+.content {
+    padding: 140px 5vw 60px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.content h1 {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: var(--glow);
+}
+
+.subtitle {
+    color: #8892a0;
+    font-size: 18px;
+    margin-bottom: 60px;
+    line-height: 1.6;
+}
+
+.content h2 {
+    font-size: 28px;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    color: #e0e6f0;
+}
+
+.content h3 {
+    font-size: 20px;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--glow);
+}
+
+.content p {
+    color: #8892a0;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.content ul,
+.content ol {
+    color: #8892a0;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    margin-left: 24px;
+}
+
+.content li {
+    margin-bottom: 12px;
+}
+
+code {
+    background: rgba(136, 254, 0, 0.1);
+    color: var(--glow);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.info-box {
+    background: rgba(136, 254, 0, 0.05);
+    border: 1px solid rgba(136, 254, 0, 0.2);
+    border-radius: 6px;
+    padding: 24px;
+    margin: 32px 0;
+}
+
+.info-box h3 {
+    margin-top: 0;
+}
+
+.cta-box {
+    background: rgba(136, 254, 0, 0.05);
+    border: 1px solid rgba(136, 254, 0, 0.2);
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.cta-box h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: var(--glow);
+    margin-bottom: 12px;
+}
+
+.cta-box p {
+    margin-bottom: 24px;
+}
+
+.cta-box .btn {
+    margin: 0 8px;
+}
