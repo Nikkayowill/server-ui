@@ -2,7 +2,12 @@ const rateLimit = require('express-rate-limit');
 
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per window
+  // Apply limiter only to non-GET requests to avoid throttling normal browsing
+  // This prevents static asset and page loads from being rate limited
+  max: 300, // 300 non-GET requests per window
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.method === 'GET',
   message: 'Too many requests, please try again later.'
 });
 

@@ -44,6 +44,11 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+
+// Stripe webhook endpoint must be registered BEFORE express.json()
+// to preserve the raw request body for signature verification
+app.post('/webhook/stripe', express.raw({type: 'application/json'}), paymentController.stripeWebhook);
+
 app.use(express.json()); // Parse JSON request bodies
 
 // Session configuration
@@ -222,10 +227,6 @@ app.get('/payment-cancel', requireAuth, paymentController.paymentCancel);
 app.get('/pay', requireAuth, csrfProtection, paymentController.showCheckout);
 
 app.post('/create-checkout-session', requireAuth, paymentLimiter, csrfProtection, paymentController.createCheckoutSession);
-
-// Stripe webhook endpoint - MUST be before express.json() middleware
-// Webhooks need raw body for signature verification
-app.post('/webhook/stripe', express.raw({type: 'application/json'}), paymentController.stripeWebhook);
 
 // Logout route
 app.get('/logout', (req, res) => {
