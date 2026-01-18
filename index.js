@@ -22,7 +22,7 @@ const authController = require('./controllers/authController');
 const dashboardController = require('./controllers/dashboardController');
 const paymentController = require('./controllers/paymentController');
 const serverController = require('./controllers/serverController');
-const adminController = require('./controllers/adminController');
+const adminController = require('./controllers/adminController-clean');
 const domainController = require('./controllers/domainController');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
@@ -158,7 +158,7 @@ app.post('/login',
 app.get('/confirm-email/:token', authController.confirmEmail);
 
 // Resend confirmation route
-app.get('/resend-confirmation', authController.resendConfirmation);
+// app.get('/resend-confirmation', authController.resendConfirmation);
 
 // Logout route
 app.get('/logout', authController.handleLogout);
@@ -184,9 +184,9 @@ app.get('/dashboard', requireAuth, dashboardController.showDashboard);
 
 // Admin - dashboard
 app.get('/admin', requireAuth, requireAdmin, adminController.listUsers);
-app.get('/admin/audit-log', requireAuth, requireAdmin, adminController.viewAuditLog);
-app.post('/admin/promote-user', requireAuth, requireAdmin, adminController.promoteUser);
-app.post('/admin/demote-user', requireAuth, requireAdmin, adminController.demoteUser);
+// app.get('/admin/audit-log', requireAuth, requireAdmin, adminController.viewAuditLog);
+// app.post('/admin/promote-user', requireAuth, requireAdmin, adminController.promoteUser);
+// app.post('/admin/demote-user', requireAuth, requireAdmin, adminController.demoteUser);
 
 // Admin - domain management (API endpoints only - UI is in /admin/users)
 app.get('/admin/domains/list', requireAuth, requireAdmin, domainController.listDomains);
@@ -195,16 +195,16 @@ app.put('/admin/domains/:id', requireAuth, requireAdmin, domainController.update
 app.delete('/admin/domains/:id', requireAuth, requireAdmin, domainController.deleteDomain);
 
 // Admin: Server Management Routes
-app.post('/admin/servers', requireAuth, requireAdmin, adminController.addServer);
-app.put('/admin/servers/:id', requireAuth, requireAdmin, adminController.updateServer);
-app.delete('/admin/servers/:id', requireAuth, requireAdmin, adminController.deleteServer);
-app.post('/admin/servers/:id/assign-domain', requireAuth, requireAdmin, adminController.assignDomain);
-app.post('/admin/servers/:id/action', requireAuth, requireAdmin, adminController.executeServerAction);
+// app.post('/admin/servers', requireAuth, requireAdmin, adminController.addServer);
+// app.put('/admin/servers/:id', requireAuth, requireAdmin, adminController.updateServer);
+// app.delete('/admin/servers/:id', requireAuth, requireAdmin, adminController.deleteServer);
+// app.post('/admin/servers/:id/assign-domain', requireAuth, requireAdmin, adminController.assignDomain);
+// app.post('/admin/servers/:id/action', requireAuth, requireAdmin, adminController.executeServerAction);
 
 // Admin: Support Tickets Routes
-app.get('/admin/tickets/:id', requireAuth, requireAdmin, adminController.viewTicket);
-app.post('/admin/tickets/:id/reply', requireAuth, requireAdmin, adminController.submitTicketReply);
-app.put('/admin/tickets/:id/status', requireAuth, requireAdmin, adminController.updateTicketStatus);
+// app.get('/admin/tickets/:id', requireAuth, requireAdmin, adminController.viewTicket);
+// app.post('/admin/tickets/:id/reply', requireAuth, requireAdmin, adminController.submitTicketReply);
+// app.put('/admin/tickets/:id/status', requireAuth, requireAdmin, adminController.updateTicketStatus);
 
 // Pricing page
 app.get('/pricing', pagesController.showPricing);

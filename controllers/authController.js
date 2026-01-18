@@ -510,11 +510,8 @@ const handleVerifyCode = async (req, res) => {
 module.exports = {
   showRegister,
   handleRegister,
-  showVerifyCode,
-  handleVerifyCode,
   showLogin,
   handleLogin,
   confirmEmail,
-  handleLogout,
-  resendConfirmation
+  handleLogout
 };
