@@ -1,7 +1,9 @@
 const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
 // Build transport with Gmail OAuth2, SMTP, or Mailtrap fallback
 function getTransportConfig() {
+  const hasSendgrid = process.env.SENDGRID_API_KEY;
   const hasGmailOAuth = (
     process.env.GMAIL_CLIENT_ID &&
     process.env.GMAIL_CLIENT_SECRET &&
@@ -10,6 +12,10 @@ function getTransportConfig() {
   );
   const hasMailtrap = process.env.MAILTRAP_USER && process.env.MAILTRAP_PASS;
   const hasSmtp = process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS;
+
+  if (hasSendgrid) {
+    return { provider: 'sendgrid', options: {} };
+  }
 
   // Prefer Gmail OAuth2 when configured
   if (hasGmailOAuth) {
@@ -72,14 +78,20 @@ function getTransportConfig() {
 }
 
 const { provider, options } = getTransportConfig();
-const transporter = nodemailer.createTransport(options);
+const fromAddress = process.env.FROM_EMAIL || process.env.SMTP_FROM || process.env.GMAIL_EMAIL || 'noreply@basement.local';
+
+if (provider === 'sendgrid') {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
+
+const transporter = provider === 'sendgrid' ? null : nodemailer.createTransport(options);
 
 // Send confirmation email
 async function sendConfirmationEmail(email, token) {
   const confirmUrl = `${process.env.APP_URL || 'http://localhost:3000'}/confirm-email/${token}`;
   
   const mailOptions = {
-    from: process.env.SMTP_FROM || process.env.GMAIL_EMAIL || 'noreply@basement.local',
+    from: fromAddress,
     replyTo: process.env.SMTP_REPLY_TO || undefined,
     to: email,
     subject: 'Confirm Your Email - Basement',
@@ -100,6 +112,12 @@ async function sendConfirmationEmail(email, token) {
   };
 
   try {
+    if (provider === 'sendgrid') {
+      const [resp] = await sgMail.send(mailOptions);
+      console.log(`[EMAIL] (${provider}) Confirmation email sent:`, resp.headers['x-message-id'] || resp.statusCode);
+      return { success: true, messageId: resp.headers['x-message-id'] || resp.statusCode };
+    }
+
     const info = await transporter.sendMail(mailOptions);
     console.log(`[EMAIL] (${provider}) Confirmation email sent:`, info.messageId);
     return { success: true, messageId: info.messageId };
@@ -112,7 +130,7 @@ async function sendConfirmationEmail(email, token) {
 // Send generic email
 async function sendEmail(to, subject, html, text) {
   const mailOptions = {
-    from: process.env.SMTP_FROM || process.env.GMAIL_EMAIL || 'noreply@basement.local',
+    from: fromAddress,
     replyTo: process.env.SMTP_REPLY_TO || undefined,
     to,
     subject,
@@ -121,6 +139,12 @@ async function sendEmail(to, subject, html, text) {
   };
 
   try {
+    if (provider === 'sendgrid') {
+      const [resp] = await sgMail.send(mailOptions);
+      console.log(`[EMAIL] (${provider}) Email sent:`, resp.headers['x-message-id'] || resp.statusCode);
+      return { success: true, messageId: resp.headers['x-message-id'] || resp.statusCode };
+    }
+
     const info = await transporter.sendMail(mailOptions);
     console.log(`[EMAIL] (${provider}) Email sent:`, info.messageId);
     return { success: true, messageId: info.messageId };
@@ -133,6 +157,11 @@ async function sendEmail(to, subject, html, text) {
 // Test connection
 async function verifyConnection() {
   try {
+    if (provider === 'sendgrid') {
+      console.log('[EMAIL] (sendgrid) using API transport');
+      return true;
+    }
+
     await transporter.verify();
     console.log(`[EMAIL] (${provider}) SMTP connection verified`);
     return true;
