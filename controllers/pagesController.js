@@ -1242,7 +1242,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     ${getResponsiveNav(req)}
     
     <section class="hero">
-        <h1>Clouded Basement<br><span style="font-size: 0.6em; font-weight: 400; opacity: 0.85;">Hosting</span></h1>
+        <h1>Clouded Basement</h1>
         <p class="sub">Fast, simple cloud hosting without the corporate noise.<br>
         Spin up real servers, deploy your apps, and stay in control — or let us manage everything for you.</p>
         <p style="font-size: 14px; color: var(--glow); margin-bottom: 36px; font-weight: 500;">Founding Customer Offer — $10/month for life</p>
