@@ -157,6 +157,17 @@ app.post('/login',
 // Email confirmation route
 app.get('/confirm-email/:token', authController.confirmEmail);
 
+// Code verification routes
+app.get('/verify-code', csrfProtection, authController.showVerifyCode);
+app.post('/verify-code',
+  csrfProtection,
+  [
+    body('email').trim().isEmail().normalizeEmail(),
+    body('code').trim().isLength({ min: 6, max: 6 }).isNumeric()
+  ],
+  authController.handleVerifyCode
+);
+
 // Resend confirmation route
 app.get('/resend-confirmation', authController.resendConfirmation);
 

@@ -1,33 +1,33 @@
 const crypto = require('crypto');
 
-// Generate a secure random token
-function generateEmailToken() {
-  return crypto.randomBytes(32).toString('hex');
+// Generate a 6-digit confirmation code
+function generateConfirmationCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Get expiration time (24 hours from now)
-function getTokenExpiration() {
+// Get expiration time (15 minutes from now)
+function getCodeExpiration() {
   const expiresAt = new Date();
-  expiresAt.setHours(expiresAt.getHours() + 24);
+  expiresAt.setMinutes(expiresAt.getMinutes() + 15);
   return expiresAt;
 }
 
-// Create token object with expiration
-function createEmailToken() {
+// Create code object with expiration
+function createConfirmationCode() {
   return {
-    token: generateEmailToken(),
-    expiresAt: getTokenExpiration()
+    code: generateConfirmationCode(),
+    expiresAt: getCodeExpiration()
   };
 }
 
-// Check if token is still valid
-function isTokenValid(expiresAt) {
+// Check if code is still valid
+function isCodeValid(expiresAt) {
   return new Date() < new Date(expiresAt);
 }
 
 module.exports = {
-  generateEmailToken,
-  getTokenExpiration,
-  createEmailToken,
-  isTokenValid
+  generateConfirmationCode,
+  getCodeExpiration,
+  createConfirmationCode,
+  isCodeValid
 };

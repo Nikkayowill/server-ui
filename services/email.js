@@ -86,29 +86,24 @@ if (provider === 'sendgrid') {
 
 const transporter = provider === 'sendgrid' ? null : nodemailer.createTransport(options);
 
-// Send confirmation email
-async function sendConfirmationEmail(email, token) {
-  const confirmUrl = `${process.env.APP_URL || 'http://localhost:3000'}/confirm-email/${token}`;
-  
+// Send confirmation email with code
+async function sendConfirmationEmail(email, code) {
   const mailOptions = {
     from: fromAddress,
     replyTo: process.env.SMTP_REPLY_TO || undefined,
     to: email,
-    subject: 'Confirm Your Email - Basement',
+    subject: 'Your Confirmation Code - Basement',
     html: `
       <h2>Confirm Your Email</h2>
-      <p>Thank you for signing up! Please confirm your email address by clicking the link below.</p>
-      <p>
-        <a href="${confirmUrl}" style="background-color: #88FE00; color: #0a0812; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
-          Confirm Email
-        </a>
-      </p>
-      <p>Or copy and paste this link in your browser:</p>
-      <p><code>${confirmUrl}</code></p>
-      <p style="color: #666; font-size: 12px;">This link expires in 24 hours.</p>
+      <p>Thank you for signing up! Your confirmation code is:</p>
+      <div style="background: rgba(136, 254, 0, 0.15); padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+        <h1 style="color: #88FE00; letter-spacing: 5px; margin: 0; font-family: monospace;">${code}</h1>
+      </div>
+      <p>Enter this code on the confirmation page to activate your account.</p>
+      <p style="color: #666; font-size: 12px;">This code expires in 15 minutes.</p>
       <p style="color: #666; font-size: 12px;">If you didn't sign up for this account, you can ignore this email.</p>
     `,
-    text: `Confirm your email by visiting: ${confirmUrl}\n\nThis link expires in 24 hours.`
+    text: `Your confirmation code is: ${code}\n\nEnter this code to confirm your email. This code expires in 15 minutes.`
   };
 
   try {

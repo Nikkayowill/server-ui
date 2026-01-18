@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const pool = require('../db');
 const { validationResult } = require('express-validator');
 const { getHTMLHead, getFooter, getScripts, getResponsiveNav } = require('../helpers');
-const { createEmailToken, isTokenValid } = require('../utils/emailToken');
+const { createConfirmationCode, isCodeValid } = require('../utils/emailToken');
 const { sendConfirmationEmail } = require('../services/email');
 
 // GET /register - Display registration form with CSRF token
@@ -72,21 +72,21 @@ const handleRegister = async (req, res) => {
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
     
-    // Generate email confirmation token
-    const { token, expiresAt } = createEmailToken();
+    // Generate 6-digit confirmation code
+    const { code, expiresAt } = createConfirmationCode();
     
-    // Insert user with token
+    // Insert user with code
     await pool.query(
       'INSERT INTO users (email, password_hash, email_token, token_expires_at) VALUES ($1, $2, $3, $4)',
-      [email, passwordHash, token, expiresAt]
+      [email, passwordHash, code, expiresAt]
     );
 
-    // Send confirmation email
-    const emailResult = await sendConfirmationEmail(email, token);
+    // Send confirmation email with code
+    const emailResult = await sendConfirmationEmail(email, code);
     
     if (emailResult.success) {
-      req.session.flashMessage = `Confirmation email sent to ${email}. Check your inbox!`;
-      res.redirect('/login');
+      req.session.flashMessage = `Confirmation code sent to ${email}. Check your inbox!`;
+      res.redirect(`/verify-code?email=${encodeURIComponent(email)}`);
     } else {
       console.error('Failed to send confirmation email:', emailResult.error);
       res.status(500).send('Registration successful but email delivery failed. Please contact support.');
@@ -397,6 +397,54 @@ const resendConfirmation = async (req, res) => {
       return res.redirect('/login?error=Account not found');
     }
 
+// GET /verify-code - Display code verification form
+const showVerifyCode = (req, res) => {
+  const email = req.query.email || '';
+  res.send(`
+${getHTMLHead('Verify Code - Basement')}
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    
+    ${getResponsiveNav(req)}
+    
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>VERIFY CODE</h1>
+            <p style="color: #8892a0; text-align: center; margin-bottom: 30px;">Enter the 6-digit code sent to<br><strong>${email}</strong></p>
+            <form method="POST" action="/verify-code">
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+                <input type="hidden" name="email" value="${email}">
+                
+                <div class="form-group">
+                    <label>Confirmation Code</label>
+                    <input type="text" name="code" placeholder="000000" maxlength="6" inputmode="numeric" required style="font-size: 24px; letter-spacing: 10px; text-align: center;">
+                </div>
+                
+                <button type="submit" class="btn">Verify</button>
+            </form>
+            
+            <p class="link" style="margin-top: 20px;"><a href="/register">Back to Register</a></p>
+        </div>
+    </div>
+    
+    ${getFooter()}
+    ${getScripts('nav.js')}
+  `);
+};
+
+// POST /verify-code - Verify the code
+const handleVerifyCode = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+
+    // Find user by email
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.redirect(`/verify-code?email=${encodeURIComponent(email)}&error=Email not found`);
+    }
+
     const user = result.rows[0];
 
     // Check if already confirmed
@@ -404,33 +452,61 @@ const resendConfirmation = async (req, res) => {
       return res.redirect('/login?message=Your email is already confirmed. You can login now.');
     }
 
-    // Generate new token
-    const { token, expiresAt } = createEmailToken();
+    // Check if code matches and is valid
+    if (user.email_token !== code || !isCodeValid(user.token_expires_at)) {
+      return res.redirect(`/verify-code?email=${encodeURIComponent(email)}&error=Invalid or expired code`);
+    }
 
-    // Update user with new token
+    // Mark email as confirmed
     await pool.query(
-      'UPDATE users SET email_token = $1, token_expires_at = $2 WHERE email = $3',
-      [token, expiresAt, email]
+      'UPDATE users SET email_confirmed = true WHERE id = $1',
+      [user.id]
     );
 
-    // Send confirmation email
-    const emailResult = await sendConfirmationEmail(email, token);
+    req.session.flashMessage = 'Email confirmed! You can now login.';
+    res.redirect('/login');
+  } catch (error) {
+    console.error('Verify code error:', error);
+    res.status(500).send('Verification failed');
+  }
+};
+
+    const user = result.rows[0];
+
+    // Check if already confirmed
+    if (user.email_confirmed) {
+      return res.redirect('/login?message=Your email is already confirmed. You can login now.');
+    }
+
+    // Generate new code
+    const { code, expiresAt } = createConfirmationCode();
+
+    // Update user with new code
+    await pool.query(
+      'UPDATE users SET email_token = $1, token_expires_at = $2 WHERE email = $3',
+      [code, expiresAt, email]
+    );
+
+    // Send confirmation email with code
+    const emailResult = await sendConfirmationEmail(email, code);
 
     if (emailResult.success) {
-      return res.redirect('/login?message=Confirmation email resent. Check your inbox!');
+      return res.redirect(`/verify-code?email=${encodeURIComponent(email)}&message=Code resent. Check your inbox!`);
     } else {
       console.error('Failed to resend confirmation email:', emailResult.error);
-      return res.redirect('/login?error=Failed to send email. Please try again later.');
+      return res.redirect(`/verify-code?email=${encodeURIComponent(email)}&error=Failed to send code. Please try again later.`);
     }
   } catch (error) {
-    console.error('Resend confirmation error:', error);
-    return res.redirect('/login?error=Failed to resend confirmation email');
+    console.error('Resend code error:', error);
+    return res.redirect('/login?error=Failed to resend code');
   }
 };
 
 module.exports = {
   showRegister,
   handleRegister,
+  showVerifyCode,
+  handleVerifyCode,
   showLogin,
   handleLogin,
   confirmEmail,
