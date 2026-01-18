@@ -7,6 +7,7 @@ function getHTMLHead(title) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -26,6 +27,7 @@ function getDashboardHead(title) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -121,7 +123,9 @@ function getResponsiveNav(req) {
   return `
     <nav>
         <div class="nav-container">
-            <div class="logo">Basement</div>
+            <a href="/" class="logo">
+                <img src="/logo.svg" alt="Clouded Basement" style="height: 32px; width: auto;">
+            </a>
             <button class="hamburger" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
