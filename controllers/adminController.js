@@ -12,7 +12,7 @@ const listUsers = async (req, res) => {
       'SELECT id, domain, ssl_enabled, ssl_expires_at, created_at FROM domains ORDER BY created_at DESC'
     );
     const serversResult = await pool.query(
-      'SELECT s.id, s.plan, s.status, s.ip_address, s.domain, s.ssl_status, s.created_at, u.email as owner_email FROM servers s LEFT JOIN users u ON s.user_id = u.id ORDER BY s.created_at DESC'
+      'SELECT s.id, s.plan, s.status, s.ip_address, s.created_at, u.email as owner_email FROM servers s LEFT JOIN users u ON s.user_id = u.id ORDER BY s.created_at DESC'
     );
     const deploymentsResult = await pool.query(
       'SELECT d.id, d.git_url, d.status, d.output, d.deployed_at, s.id as server_id, s.plan, u.email as owner_email FROM deployments d LEFT JOIN servers s ON d.server_id = s.id LEFT JOIN users u ON d.user_id = u.id ORDER BY d.deployed_at DESC'
