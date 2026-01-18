@@ -987,6 +987,87 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         50% { box-shadow: 0 8px 35px rgba(45, 167, 223, 0.6); }
       }
       
+      /* Responsive: Tablet */
+      @media (max-width: 768px) {
+        .founder-section {
+          max-width: 90%;
+          padding: 36px 28px;
+          margin: 0 auto 80px;
+        }
+        
+        .founder-section h2 {
+          font-size: 26px;
+        }
+        
+        .founder-section .price {
+          font-size: 40px;
+        }
+        
+        .spots-counter {
+          font-size: 16px;
+          padding: 14px 24px;
+        }
+        
+        .spots-counter .number {
+          font-size: 28px;
+        }
+        
+        .founder-section .btn {
+          padding: 14px 36px;
+          font-size: 15px;
+        }
+      }
+      
+      /* Responsive: Mobile */
+      @media (max-width: 480px) {
+        .founder-section {
+          padding: 28px 20px;
+          margin: 0 auto 60px;
+        }
+        
+        .founder-section .badge {
+          font-size: 10px;
+          padding: 8px 16px;
+          letter-spacing: 1px;
+        }
+        
+        .founder-section h2 {
+          font-size: 22px;
+          margin-bottom: 12px;
+        }
+        
+        .founder-section .price {
+          font-size: 36px;
+          margin: 12px 0;
+        }
+        
+        .founder-section .price small {
+          font-size: 16px;
+        }
+        
+        .founder-section p {
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+        
+        .spots-counter {
+          flex-direction: column;
+          gap: 8px;
+          font-size: 14px;
+          padding: 16px 20px;
+        }
+        
+        .spots-counter .number {
+          font-size: 42px;
+        }
+        
+        .founder-section .btn {
+          width: 100%;
+          padding: 16px 24px;
+          font-size: 15px;
+        }
+      }
+      
       .section { max-width: 1100px; margin: 0 auto; padding: 80px 5vw; }
       .section-title { text-align: center; font-size: 36px; margin-bottom: 48px; color: #fff; }
       
