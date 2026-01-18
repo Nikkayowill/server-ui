@@ -769,9 +769,16 @@ exports.submitContact = (req, res) => {
   res.redirect('/');
 };
 
-exports.showHome = (req, res) => {
+exports.showHome = async (req, res) => {
   const flashMessage = req.session.flashMessage;
   delete req.session.flashMessage;
+  
+  // Count founder plan customers (plan = 'founder' and status = 'succeeded')
+  const founderCountResult = await pool.query(
+    "SELECT COUNT(DISTINCT user_id) as count FROM payments WHERE plan = 'founder' AND status = 'succeeded'"
+  );
+  const foundersTaken = parseInt(founderCountResult.rows[0].count) || 0;
+  const foundersRemaining = Math.max(0, 10 - foundersTaken);
   
   res.send(`
 ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
@@ -832,12 +839,152 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         }
       }
       
-      .founder-section { max-width: 600px; margin: 0 auto 100px; padding: 32px; background: rgba(136, 254, 0, 0.05);
-          border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 8px; text-align: center; }
-      .founder-section .badge { display: inline-block; padding: 8px 16px; background: var(--glow); color: #000;
-          font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; margin-bottom: 16px; }
-      .founder-section h2 { font-size: 28px; margin-bottom: 12px; color: #fff; }
-      .founder-section p { color: #8892a0; font-size: 14px; }
+      .founder-section {
+        max-width: 700px;
+        margin: 0 auto 100px;
+        padding: 48px 40px;
+        background: linear-gradient(135deg, rgba(45, 167, 223, 0.15) 0%, rgba(32, 177, 220, 0.08) 100%);
+        border: 2px solid rgba(45, 167, 223, 0.4);
+        border-radius: 12px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 60px rgba(45, 167, 223, 0.3), inset 0 0 60px rgba(45, 167, 223, 0.05);
+        animation: pulse-glow 3s ease-in-out infinite;
+      }
+      
+      @keyframes pulse-glow {
+        0%, 100% {
+          box-shadow: 0 0 60px rgba(45, 167, 223, 0.3), inset 0 0 60px rgba(45, 167, 223, 0.05);
+          border-color: rgba(45, 167, 223, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 80px rgba(45, 167, 223, 0.5), inset 0 0 80px rgba(45, 167, 223, 0.1);
+          border-color: rgba(45, 167, 223, 0.6);
+        }
+      }
+      
+      .founder-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(45, 167, 223, 0.1) 50%, transparent 70%);
+        animation: shimmer 3s linear infinite;
+        pointer-events: none;
+      }
+      
+      @keyframes shimmer {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+      }
+      
+      .founder-section .badge {
+        display: inline-block;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #2DA7DF 0%, #20B1DC 100%);
+        color: #000;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(45, 167, 223, 0.4);
+        animation: badge-pulse 2s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+      }
+      
+      @keyframes badge-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+      
+      .founder-section h2 {
+        font-size: 32px;
+        margin-bottom: 16px;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .founder-section .price {
+        font-size: 48px;
+        font-weight: 700;
+        color: #2DA7DF;
+        margin: 16px 0;
+        text-shadow: 0 0 20px rgba(45, 167, 223, 0.6);
+        position: relative;
+        z-index: 1;
+      }
+      
+      .founder-section .price small {
+        font-size: 20px;
+        color: #8892a0;
+      }
+      
+      .founder-section p {
+        color: #a0a8b8;
+        font-size: 15px;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .spots-counter {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 28px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(45, 167, 223, 0.3);
+        border-radius: 8px;
+        margin: 20px 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .spots-counter .number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2DA7DF;
+        text-shadow: 0 0 10px rgba(45, 167, 223, 0.8);
+        animation: number-pulse 1.5s ease-in-out infinite;
+      }
+      
+      @keyframes number-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.9; }
+      }
+      
+      .founder-section .btn {
+        margin-top: 24px;
+        padding: 16px 48px;
+        font-size: 16px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #2DA7DF 0%, #20B1DC 100%);
+        border: none;
+        box-shadow: 0 6px 25px rgba(45, 167, 223, 0.4);
+        position: relative;
+        z-index: 1;
+        animation: cta-pulse 2.5s ease-in-out infinite;
+      }
+      
+      .founder-section .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(45, 167, 223, 0.6);
+      }
+      
+      @keyframes cta-pulse {
+        0%, 100% { box-shadow: 0 6px 25px rgba(45, 167, 223, 0.4); }
+        50% { box-shadow: 0 8px 35px rgba(45, 167, 223, 0.6); }
+      }
       
       .section { max-width: 1100px; margin: 0 auto; padding: 80px 5vw; }
       .section-title { text-align: center; font-size: 36px; margin-bottom: 48px; color: #fff; }
@@ -900,9 +1047,15 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
     
     <div class="founder-section">
-        <div class="badge">Limited Offer</div>
-        <h2>Founding Customer Plan — $10/month for life</h2>
-        <p>Only 10 spots. Full access to every feature, forever.</p>
+        <div class="badge">⚡ LIMITED TIME OFFER ⚡</div>
+        <h2>Founding Customer Plan</h2>
+        <div class="price">$10<small>/month</small></div>
+        <p style="font-size: 17px; font-weight: 500; color: #fff;">Lock in this price for life. Full access to every feature, forever.</p>
+        <div class="spots-counter">
+            <span class="number">${foundersRemaining}</span>
+            <span>spots remaining out of 10</span>
+        </div>
+        <a href="/pricing" class="btn primary">Claim Your Spot →</a>
     </div>
     
     <section class="section">

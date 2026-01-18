@@ -139,11 +139,18 @@ ${getHTMLHead('Admin Dashboard')}
     
     <script>
       function switchTab(tabName) {
+        // Remove active class from all tabs and content
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         
-        event.target.classList.add('active');
-        document.getElementById(tabName + '-tab').classList.add('active');
+        // Add active class to clicked tab and corresponding content
+        const clickedTab = Array.from(document.querySelectorAll('.tab')).find(
+          tab => tab.textContent.toLowerCase().includes(tabName)
+        );
+        if (clickedTab) clickedTab.classList.add('active');
+        
+        const targetContent = document.getElementById(tabName + '-tab');
+        if (targetContent) targetContent.classList.add('active');
       }
     </script>
     ${getScripts('nav.js')}
