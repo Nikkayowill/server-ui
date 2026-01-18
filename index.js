@@ -29,6 +29,10 @@ const logger = require('./middleware/logger');
 
 const app = express();
 
+// Trust reverse proxy headers from Nginx so rate limiters and HTTPS redirects work correctly
+// See: https://expressjs.com/en/guide/behind-proxies.html
+app.set('trust proxy', 1);
+
 // Apply general rate limiter to all routes
 app.use(generalLimiter);
 
