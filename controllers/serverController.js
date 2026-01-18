@@ -256,7 +256,6 @@ exports.enableSSL = async (req, res) => {
   try {
     const domain = req.body.domain.toLowerCase().trim();
     const userId = req.session.userId;
-    const email = req.session.userEmail || 'admin@basement.com';
 
     // Validate domain
     const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/;
@@ -276,37 +275,62 @@ exports.enableSSL = async (req, res) => {
 
     const server = serverResult.rows[0];
 
-    // Execute certbot command via SSH
-    const certbotCommand = `certbot --nginx -d ${domain} --non-interactive --agree-tos --email ${email} --redirect`;
-    
-    console.log(`[SSL] Enabling SSL for ${domain} on server ${server.ip_address}`);
-    
-    try {
-      const output = await executeSSHCommand(
-        server.ip_address,
-        server.ssh_username,
-        server.ssh_password,
-        certbotCommand
-      );
-      
-      console.log(`[SSL] Success for ${domain}:`, output);
-      
-      // Update domain in database
-      await pool.query(
-        'UPDATE domains SET ssl_enabled = true WHERE domain = $1 AND user_id = $2',
-        [domain, userId]
-      );
-      
-      res.redirect('/dashboard?success=SSL enabled! Your site is now secure with HTTPS');
-    } catch (sshError) {
-      console.error('[SSL] SSH error:', sshError.message);
-      res.redirect('/dashboard?error=Failed to enable SSL. Make sure your domain points to your server IP');
-    }
+    // Update server domain and set SSL status to pending
+    await pool.query(
+      'UPDATE servers SET domain = $1, ssl_status = $2 WHERE id = $3',
+      [domain, 'pending', server.id]
+    );
+
+    // Send response immediately - process SSL in background
+    res.redirect('/dashboard?message=Domain assigned. SSL certificate generation started!');
+
+    // Background process - trigger SSL certificate generation
+    triggerSSLCertificateForCustomer(server.id, domain, server).catch(err => {
+      console.error('[SSL] Failed to trigger certificate for server', server.id, ':', err);
+      pool.query('UPDATE servers SET ssl_status = $1 WHERE id = $2', ['failed', server.id]).catch(e => console.error(e));
+    });
+
   } catch (error) {
     console.error('Enable SSL error:', error);
     res.redirect('/dashboard?error=Failed to enable SSL');
   }
 };
+
+// Background function to trigger SSL via SSH
+async function triggerSSLCertificateForCustomer(serverId, domain, server) {
+  try {
+    const { exec } = require('child_process');
+    const util = require('util');
+    const execPromise = util.promisify(exec);
+
+    // Generate Certbot command - runs on the server
+    const certbotCmd = `certbot certonly --standalone -d ${domain} --email admin@${domain} --non-interactive --agree-tos`;
+
+    // SSH command to run on server
+    const sshCmd = `sshpass -p '${server.ssh_password}' ssh -o StrictHostKeyChecking=no ${server.ssh_username}@${server.ip_address} "${certbotCmd}"`;
+
+    console.log(`[SSL] Running Certbot on server ${serverId} for domain ${domain}...`);
+    
+    const { stdout, stderr } = await execPromise(sshCmd, { timeout: 60000 });
+
+    if (stdout.includes('Congratulations') || stderr.includes('Congratulations')) {
+      // Certificate generated successfully
+      await pool.query(
+        'UPDATE servers SET ssl_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+        ['active', serverId]
+      );
+      console.log(`[SSL] Certificate activated for ${domain} on server ${serverId}`);
+    } else {
+      throw new Error('Certbot command did not complete successfully');
+    }
+  } catch (error) {
+    console.error(`[SSL] Error generating certificate for server ${serverId}:`, error.message);
+    await pool.query(
+      'UPDATE servers SET ssl_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+      ['failed', serverId]
+    );
+  }
+}
 
 module.exports = {
   serverAction: exports.serverAction,

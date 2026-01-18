@@ -14,18 +14,9 @@ exports.showCheckout = (req, res) => {
   const selectedPlan = planConfig[plan] || planConfig.basic;
   
   res.send(`
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Basement</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+${getHTMLHead('Checkout - Basement')}
+    <link rel="stylesheet" href="/css/nav.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #0a0812; color: #e0e6f0; font-family: 'JetBrains Mono', monospace; --glow: #88FE00; }
-        a { text-decoration: none; color: inherit; }
-        
         .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
             repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
             repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
@@ -41,7 +32,6 @@ exports.showCheckout = (req, res) => {
             font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
             cursor: pointer; transition: .3s; border-radius: 4px; }
         .btn:hover { box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
-        .btn:active { transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -63,6 +53,7 @@ exports.showCheckout = (req, res) => {
     </div>
     
     ${getFooter()}
+    ${getScripts('nav.js')}
     <script src="https://js.stripe.com/v3/"></script>
 </body>
 </html>
@@ -248,25 +239,82 @@ exports.stripeWebhook = async (req, res) => {
         const charge = event.data.object;
         console.log('Charge refunded:', charge.id);
 
-        // Find server with this charge ID and mark as deleted
-        const serverResult = await pool.query(
-          'SELECT * FROM servers WHERE stripe_charge_id = $1',
-          [charge.id]
-        );
-
-        if (serverResult.rows.length > 0) {
-          const server = serverResult.rows[0];
-          console.log(`Refund processed for server ${server.id}, marking as deleted`);
-          
+        try {
+          // Update payment status to refunded
           await pool.query(
-            'UPDATE servers SET status = $1 WHERE id = $2',
-            ['deleted', server.id]
+            'UPDATE payments SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE stripe_charge_id = $2',
+            ['refunded', charge.id]
           );
+
+          // Find server with this charge ID and mark as deleted
+          const serverResult = await pool.query(
+            'SELECT * FROM servers WHERE stripe_charge_id = $1',
+            [charge.id]
+          );
+
+          if (serverResult.rows.length > 0) {
+            const server = serverResult.rows[0];
+            console.log(`Refund processed for server ${server.id}, marking as deleted`);
+            
+            await pool.query(
+              'UPDATE servers SET status = $1 WHERE id = $2',
+              ['deleted', server.id]
+            );
+          }
+        } catch (error) {
+          console.error('Error processing charge.refunded:', error);
         }
         break;
 
       case 'payment_intent.succeeded':
-        console.log('PaymentIntent succeeded:', event.data.object.id);
+        const paymentIntent = event.data.object;
+        console.log('PaymentIntent succeeded:', paymentIntent.id);
+
+        try {
+          // Extract customer email and plan from metadata
+          const customerEmail = paymentIntent.billing_details?.email || paymentIntent.metadata?.email;
+          const plan = paymentIntent.metadata?.plan || 'unknown';
+          const amount = paymentIntent.amount / 100; // Convert cents to dollars
+
+          if (!customerEmail) {
+            console.log('No customer email found in payment intent');
+            break;
+          }
+
+          // Find user by email
+          const userResult = await pool.query(
+            'SELECT id FROM users WHERE email = $1',
+            [customerEmail]
+          );
+
+          if (userResult.rows.length === 0) {
+            console.log(`User not found for email: ${customerEmail}`);
+            break;
+          }
+
+          const userId = userResult.rows[0].id;
+
+          // Check if payment already recorded (avoid duplicates)
+          const existingPayment = await pool.query(
+            'SELECT id FROM payments WHERE stripe_payment_id = $1',
+            [paymentIntent.id]
+          );
+
+          if (existingPayment.rows.length > 0) {
+            console.log('Payment already recorded:', paymentIntent.id);
+            break;
+          }
+
+          // Record payment in database
+          await pool.query(
+            'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
+            [userId, paymentIntent.id, amount, plan, 'succeeded']
+          );
+
+          console.log(`Payment recorded: User ${userId}, $${amount}, Plan: ${plan}`);
+        } catch (error) {
+          console.error('Error processing payment_intent.succeeded:', error);
+        }
         break;
 
       default:

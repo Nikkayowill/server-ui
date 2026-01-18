@@ -14,13 +14,16 @@ const pool = require('./db');
 const bcrypt = require('bcrypt');
 const { getHTMLHead, getDashboardHead, getScripts, getFooter, getAuthLinks, getResponsiveNav } = require('./helpers');
 const { createRealServer: createRealServerService, syncDigitalOceanDroplets: syncDigitalOceanDropletsService } = require('./services/digitalocean');
-const { requireAuth } = require('./middleware/auth');
+const { requireAuth, requireAdmin } = require('./middleware/auth');
 const { generalLimiter, contactLimiter, paymentLimiter } = require('./middleware/rateLimiter');
 const pagesController = require('./controllers/pagesController');
+const gettingStartedController = require('./controllers/gettingStartedController');
 const authController = require('./controllers/authController');
 const dashboardController = require('./controllers/dashboardController');
 const paymentController = require('./controllers/paymentController');
 const serverController = require('./controllers/serverController');
+const adminController = require('./controllers/adminController');
+const domainController = require('./controllers/domainController');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
 
@@ -40,7 +43,8 @@ app.use(helmet({
 app.use(express.static('public'));
 
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: false })); // lets us read form bodies
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // Parse JSON request bodies
 
 // Session configuration
 app.use(session({
@@ -144,6 +148,9 @@ app.post('/login',
 // Email confirmation route
 app.get('/confirm-email/:token', authController.confirmEmail);
 
+// Resend confirmation route
+app.get('/resend-confirmation', authController.resendConfirmation);
+
 // Logout route
 app.get('/logout', authController.handleLogout);
 
@@ -166,6 +173,30 @@ app.post('/enable-ssl', requireAuth, serverController.enableSSL);
 // Dashboard route
 app.get('/dashboard', requireAuth, dashboardController.showDashboard);
 
+// Admin - dashboard
+app.get('/admin', requireAuth, requireAdmin, adminController.listUsers);
+app.get('/admin/audit-log', requireAuth, requireAdmin, adminController.viewAuditLog);
+app.post('/admin/promote-user', requireAuth, requireAdmin, adminController.promoteUser);
+app.post('/admin/demote-user', requireAuth, requireAdmin, adminController.demoteUser);
+
+// Admin - domain management (API endpoints only - UI is in /admin/users)
+app.get('/admin/domains/list', requireAuth, requireAdmin, domainController.listDomains);
+app.post('/admin/domains', requireAuth, requireAdmin, domainController.addDomain);
+app.put('/admin/domains/:id', requireAuth, requireAdmin, domainController.updateDomain);
+app.delete('/admin/domains/:id', requireAuth, requireAdmin, domainController.deleteDomain);
+
+// Admin: Server Management Routes
+app.post('/admin/servers', requireAuth, requireAdmin, adminController.addServer);
+app.put('/admin/servers/:id', requireAuth, requireAdmin, adminController.updateServer);
+app.delete('/admin/servers/:id', requireAuth, requireAdmin, adminController.deleteServer);
+app.post('/admin/servers/:id/assign-domain', requireAuth, requireAdmin, adminController.assignDomain);
+app.post('/admin/servers/:id/action', requireAuth, requireAdmin, adminController.executeServerAction);
+
+// Admin: Support Tickets Routes
+app.get('/admin/tickets/:id', requireAuth, requireAdmin, adminController.viewTicket);
+app.post('/admin/tickets/:id/reply', requireAuth, requireAdmin, adminController.submitTicketReply);
+app.put('/admin/tickets/:id/status', requireAuth, requireAdmin, adminController.updateTicketStatus);
+
 // Pricing page
 app.get('/pricing', pagesController.showPricing);
 
@@ -178,6 +209,9 @@ app.get('/faq', pagesController.showFaq);
 
 // Documentation page
 app.get('/docs', pagesController.showDocs);
+
+// Getting Started Guide
+app.get('/getting-started', gettingStartedController.showGettingStarted);
 
 // Payment Success page
 app.get('/payment-success', requireAuth, paymentController.paymentSuccess);

@@ -28,6 +28,28 @@
     margin-bottom: 20px;
 }
 
+.message {
+    background: rgba(136, 254, 0, 0.1);
+    border: 1px solid rgba(136, 254, 0, 0.3);
+    color: var(--glow);
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.error {
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
 .error-message {
     background: rgba(255, 68, 68, 0.1);
     border: 1px solid rgba(255, 68, 68, 0.3);

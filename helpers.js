@@ -62,6 +62,7 @@ function getFooter() {
                     <li style="margin-bottom: 8px;"><a href="/about" style="color: var(--text-secondary); font-size: 12px;">About</a></li>
                     <li style="margin-bottom: 8px;"><a href="/pricing" style="color: var(--text-secondary); font-size: 12px;">Pricing</a></li>
                     <li style="margin-bottom: 8px;"><a href="/docs" style="color: var(--text-secondary); font-size: 12px;">Documentation</a></li>
+                    <li style="margin-bottom: 8px;"><a href="/contact" style="color: var(--text-secondary); font-size: 12px;">Contact</a></li>
                     <li style="margin-bottom: 8px;"><a href="/faq" style="color: var(--text-secondary); font-size: 12px;">FAQ</a></li>
                 </ul>
             </div>
@@ -83,7 +84,15 @@ function getFooter() {
 // Auth Links
 function getAuthLinks(req) {
   if (req.session.userId) {
-    return '<li><a href="/dashboard">Dashboard</a></li><li><a href="/logout">Logout</a></li>';
+    const isSuperAdmin = req.session.userEmail === 'nikkayowillpbiz@gmail.com';
+    
+    if (isSuperAdmin) {
+      return '<li><a href="/admin">Admin</a></li><li><a href="/logout">Logout</a></li>';
+    } else if (req.session.isAdmin) {
+      return '<li><a href="/admin">Admin</a></li><li><a href="/dashboard">Dashboard</a></li><li><a href="/logout">Logout</a></li>';
+    } else {
+      return '<li><a href="/dashboard">Dashboard</a></li><li><a href="/logout">Logout</a></li>';
+    }
   } else {
     return '<li><a href="/login">Login</a></li>';
   }
@@ -91,6 +100,26 @@ function getAuthLinks(req) {
 
 // Responsive Nav
 function getResponsiveNav(req) {
+  const isSuperAdmin = req.session?.userEmail === 'nikkayowillpbiz@gmail.com';
+  
+  let navLinks = '';
+  if (isSuperAdmin) {
+    navLinks = `
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/admin">Admin</a></li>
+      ${req.session.userId ? '<li><a href="/logout">Logout</a></li>' : '<li><a href="/login">Login</a></li>'}
+    `;
+  } else {
+    navLinks = `
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/pricing">Pricing</a></li>
+      <li><a href="/contact">Contact</a></li>
+      ${getAuthLinks(req)}
+    `;
+  }
+
   return `
     <nav>
         <div class="nav-container">
@@ -101,12 +130,7 @@ function getResponsiveNav(req) {
                 <span></span>
             </button>
             <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/docs">Docs</a></li>
-                <li><a href="/pricing">Pricing</a></li>
-                <li><a href="/contact">Contact</a></li>
-                ${getAuthLinks(req)}
+                ${navLinks}
             </ul>
         </div>
     </nav>

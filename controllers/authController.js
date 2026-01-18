@@ -103,6 +103,9 @@ const showLogin = (req, res) => {
   delete req.session.flashMessage;
   const message = req.query.message || '';
   const error = req.query.error || '';
+  const userEmail = req.query.email || '';
+  const showResend = error.includes('confirm your email') && userEmail;
+  
   res.send(`
 ${getHTMLHead('Login - Basement')}
     <link rel="stylesheet" href="/css/auth.css">
@@ -191,6 +194,7 @@ ${getHTMLHead('Login - Basement')}
             <h1>LOGIN</h1>
             ${message ? `<div class="message">${message}</div>` : ''}
             ${error ? `<div class="error">${error}</div>` : ''}
+            ${showResend ? `<div class="message"><a href="/resend-confirmation?email=${encodeURIComponent(userEmail)}" style="color: var(--glow); text-decoration: underline;">Resend confirmation email</a></div>` : ''}
             <form method="POST" action="/login">
                 <input type="hidden" name="_csrf" value="${req.csrfToken()}">
                 
@@ -242,7 +246,7 @@ const handleLogin = async (req, res) => {
 
     // Check if email is confirmed
     if (!user.email_confirmed) {
-      return res.redirect('/login?error=Please confirm your email before logging in. Check your inbox.');
+      return res.redirect('/login?error=Please confirm your email before logging in.&email=' + encodeURIComponent(email));
     }
 
     // Set session
@@ -369,10 +373,59 @@ ${getHTMLHead('Email Confirmed - Basement')}
 // GET /logout - Destroy session and redirect to login
 const handleLogout = (req, res) => {
   req.session.flashMessage = 'Successfully logged out';
-  req.session.save((err) => {
-    if (err) console.error('Session save error:', err);
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destroy error:', err);
+      return res.redirect('/');
+    }
+    res.clearCookie('connect.sid');
     res.redirect('/login');
   });
+};
+
+// GET /resend-confirmation - Resend confirmation email
+const resendConfirmation = async (req, res) => {
+  try {
+    const email = req.query.email;
+    if (!email) {
+      return res.redirect('/login?error=Email is required');
+    }
+
+    // Find user
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.redirect('/login?error=Account not found');
+    }
+
+    const user = result.rows[0];
+
+    // Check if already confirmed
+    if (user.email_confirmed) {
+      return res.redirect('/login?message=Your email is already confirmed. You can login now.');
+    }
+
+    // Generate new token
+    const { token, expiresAt } = createEmailToken();
+
+    // Update user with new token
+    await pool.query(
+      'UPDATE users SET email_token = $1, token_expires_at = $2 WHERE email = $3',
+      [token, expiresAt, email]
+    );
+
+    // Send confirmation email
+    const emailResult = await sendConfirmationEmail(email, token);
+
+    if (emailResult.success) {
+      return res.redirect('/login?message=Confirmation email resent. Check your inbox!');
+    } else {
+      console.error('Failed to resend confirmation email:', emailResult.error);
+      return res.redirect('/login?error=Failed to send email. Please try again later.');
+    }
+  } catch (error) {
+    console.error('Resend confirmation error:', error);
+    return res.redirect('/login?error=Failed to resend confirmation email');
+  }
 };
 
 module.exports = {
@@ -381,5 +434,6 @@ module.exports = {
   showLogin,
   handleLogin,
   confirmEmail,
-  handleLogout
+  handleLogout,
+  resendConfirmation
 };

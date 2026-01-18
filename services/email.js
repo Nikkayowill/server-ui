@@ -1,22 +1,86 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter based on environment
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT === '465', // true for 465, false for other ports
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
+// Build transport with Gmail OAuth2, SMTP, or Mailtrap fallback
+function getTransportConfig() {
+  const hasGmailOAuth = (
+    process.env.GMAIL_CLIENT_ID &&
+    process.env.GMAIL_CLIENT_SECRET &&
+    process.env.GMAIL_REFRESH_TOKEN &&
+    process.env.GMAIL_EMAIL
+  );
+  const hasMailtrap = process.env.MAILTRAP_USER && process.env.MAILTRAP_PASS;
+  const hasSmtp = process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS;
+
+  // Prefer Gmail OAuth2 when configured
+  if (hasGmailOAuth) {
+    const port = Number(process.env.GMAIL_SMTP_PORT || 465);
+    return {
+      provider: 'gmail-oauth2',
+      options: {
+        host: 'smtp.gmail.com',
+        port,
+        secure: port === 465,
+        auth: {
+          type: 'OAuth2',
+          user: process.env.GMAIL_EMAIL,
+          clientId: process.env.GMAIL_CLIENT_ID,
+          clientSecret: process.env.GMAIL_CLIENT_SECRET,
+          refreshToken: process.env.GMAIL_REFRESH_TOKEN
+        }
+      }
+    };
   }
-});
+
+  if (hasMailtrap) {
+    const host = process.env.MAILTRAP_HOST || 'smtp.mailtrap.io';
+    const port = Number(process.env.MAILTRAP_PORT || 2525);
+    return {
+      provider: 'mailtrap',
+      options: {
+        host,
+        port,
+        secure: false,
+        auth: {
+          user: process.env.MAILTRAP_USER,
+          pass: process.env.MAILTRAP_PASS
+        }
+      }
+    };
+  }
+
+  if (hasSmtp) {
+    const port = Number(process.env.SMTP_PORT);
+    return {
+      provider: 'smtp',
+      options: {
+        host: process.env.SMTP_HOST,
+        port,
+        secure: port === 465,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
+      }
+    };
+  }
+
+  // No provider configured
+  return {
+    provider: 'none',
+    options: {}
+  };
+}
+
+const { provider, options } = getTransportConfig();
+const transporter = nodemailer.createTransport(options);
 
 // Send confirmation email
 async function sendConfirmationEmail(email, token) {
   const confirmUrl = `${process.env.APP_URL || 'http://localhost:3000'}/confirm-email/${token}`;
   
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'noreply@basement.local',
+    from: process.env.SMTP_FROM || process.env.GMAIL_EMAIL || 'noreply@basement.local',
+    replyTo: process.env.SMTP_REPLY_TO || undefined,
     to: email,
     subject: 'Confirm Your Email - Basement',
     html: `
@@ -37,10 +101,10 @@ async function sendConfirmationEmail(email, token) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('[EMAIL] Confirmation email sent:', info.messageId);
+    console.log(`[EMAIL] (${provider}) Confirmation email sent:`, info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('[EMAIL] Error sending confirmation email:', error.message);
+    console.error(`[EMAIL] (${provider}) Error sending confirmation email:`, error.message);
     return { success: false, error: error.message };
   }
 }
@@ -48,7 +112,8 @@ async function sendConfirmationEmail(email, token) {
 // Send generic email
 async function sendEmail(to, subject, html, text) {
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'noreply@basement.local',
+    from: process.env.SMTP_FROM || process.env.GMAIL_EMAIL || 'noreply@basement.local',
+    replyTo: process.env.SMTP_REPLY_TO || undefined,
     to,
     subject,
     html,
@@ -57,10 +122,10 @@ async function sendEmail(to, subject, html, text) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('[EMAIL] Email sent:', info.messageId);
+    console.log(`[EMAIL] (${provider}) Email sent:`, info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('[EMAIL] Error sending email:', error.message);
+    console.error(`[EMAIL] (${provider}) Error sending email:`, error.message);
     return { success: false, error: error.message };
   }
 }
@@ -69,10 +134,10 @@ async function sendEmail(to, subject, html, text) {
 async function verifyConnection() {
   try {
     await transporter.verify();
-    console.log('[EMAIL] SMTP connection verified');
+    console.log(`[EMAIL] (${provider}) SMTP connection verified`);
     return true;
   } catch (error) {
-    console.error('[EMAIL] SMTP connection failed:', error.message);
+    console.error(`[EMAIL] (${provider}) SMTP connection failed:`, error.message);
     return false;
   }
 }
