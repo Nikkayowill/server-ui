@@ -1,4 +1,5 @@
 const { getHTMLHead, getScripts, getFooter, getResponsiveNav } = require('../helpers');
+const pool = require('../db');
 
 exports.showAbout = (req, res) => {
   res.send(`
