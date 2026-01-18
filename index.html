@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocalBiz MVP</title>
+    <title>Clouded Basement Hosting - Fast, Simple Cloud Hosting</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,12 +23,44 @@
         nav li a { text-transform: uppercase; letter-spacing: 1.5px; color: #8892a0; font-size: 11px; transition: .3s; }
         nav a:hover { color: var(--glow); text-shadow: 0 0 8px var(--glow); }
         
-        .hero { padding: 180px 5vw 120px; text-align: center; position: relative; overflow: hidden; }
-        .hero h1 { font-size: clamp(36px, 8vw, 72px); font-weight: 700; line-height: 1.1; letter-spacing: -2px; margin-bottom: 20px;
-            background: linear-gradient(180deg, #fff 0%, #cfff90 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 20px rgba(136, 254, 0, 0.3); }
-        .hero .sub { font-size: 18px; color: #8892a0; max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
-        .cta-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+        .hero { padding: 180px 5vw 80px; text-align: center; position: relative; overflow: hidden; }
+        .hero h1 { font-size: clamp(32px, 6vw, 56px); font-weight: 700; line-height: 1.2; letter-spacing: -1px; margin-bottom: 24px;
+            color: #fff; }
+        .hero .sub { font-size: 20px; color: #a0a8b8; max-width: 680px; margin: 0 auto 16px; line-height: 1.6; }
+        .hero .offer { font-size: 14px; color: var(--glow); margin-bottom: 36px; font-weight: 500; }
+        .cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+        
+        .founder-section { max-width: 600px; margin: 0 auto 100px; padding: 32px; background: rgba(136, 254, 0, 0.05);
+            border: 1px solid rgba(136, 254, 0, 0.2); border-radius: 8px; text-align: center; }
+        .founder-section .badge { display: inline-block; padding: 8px 16px; background: var(--glow); color: #000;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; margin-bottom: 16px; }
+        .founder-section h2 { font-size: 28px; margin-bottom: 12px; color: #fff; }
+        .founder-section p { color: #8892a0; font-size: 14px; }
+        
+        .section { max-width: 1100px; margin: 0 auto; padding: 80px 5vw; }
+        .section-title { text-align: center; font-size: 36px; margin-bottom: 48px; color: #fff; }
+        
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 60px; }
+        .card { padding: 32px 24px; background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.1);
+            border-radius: 8px; transition: .3s; }
+        .card:hover { border-color: rgba(136, 254, 0, 0.3); transform: translateY(-4px); }
+        .card h3 { font-size: 18px; margin-bottom: 12px; color: var(--glow); }
+        .card p { color: #8892a0; font-size: 14px; line-height: 1.6; }
+        
+        .features { max-width: 600px; margin: 0 auto; }
+        .features ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .features li { padding: 16px; background: rgba(2, 8, 20, 0.4); border: 1px solid rgba(136, 254, 0, 0.08);
+            border-radius: 6px; color: #a0a8b8; font-size: 14px; display: flex; align-items: center; gap: 12px; }
+        .features li::before { content: "✓"; color: var(--glow); font-weight: 700; font-size: 16px; }
+        
+        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; text-align: center; }
+        .step { padding: 24px; }
+        .step-number { width: 48px; height: 48px; margin: 0 auto 16px; background: var(--glow); color: #000;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; }
+        .step h3 { font-size: 18px; margin-bottom: 8px; color: #fff; }
+        .step p { color: #8892a0; font-size: 14px; }
+        
+        .cta-final { text-align: center; padding: 60px 5vw; background: rgba(136, 254, 0, 0.03); border-top: 1px solid rgba(136, 254, 0, 0.1); }
         
         .btn { padding: 14px 32px; border: 1px solid var(--glow); background: transparent; color: var(--glow); font-family: inherit;
             font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; position: relative; overflow: hidden;
@@ -51,26 +83,96 @@
     
     <nav>
         <ul>
-            <li class="logo">LocalBiz</li>
+            <li class="logo">Clouded Basement</li>
             <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
             <li><a href="/pricing">Pricing</a></li>
             <li><a href="/contact">Contact</a></li>
-            <li><a href="/terms">Terms</a></li>
+            <li><a href="/login">Login</a></li>
         </ul>
     </nav>
     
     <section class="hero">
-        <h1>LocalBiz Server</h1>
-        <p class="sub">This is real HTML.</p>
+        <h1>Clouded Basement Hosting</h1>
+        <p class="sub">Fast, simple cloud hosting without the corporate noise.<br>
+        Spin up real servers, deploy your apps, and stay in control — or let us manage everything for you.</p>
+        <p class="offer">Founding Customer Offer — $10/month for life</p>
         <div class="cta-group">
-            <a href="/contact" class="btn primary">Get In Touch</a>
-            <a href="/pricing" class="btn">View Services</a>
+            <a href="/pricing" class="btn primary">View Pricing</a>
+            <a href="/docs" class="btn">Documentation</a>
         </div>
     </section>
     
+    <div class="founder-section">
+        <div class="badge">Limited Offer</div>
+        <h2>Founding Customer Plan — $10/month for life</h2>
+        <p>Only 10 spots. Full access to every feature, forever.</p>
+    </div>
+    
+    <section class="section">
+        <h2 class="section-title">Why Choose Clouded Basement</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>Personal Support</h3>
+                <p>You talk to the person who built the platform.</p>
+            </div>
+            <div class="card">
+                <h3>Fast, Clean Infrastructure</h3>
+                <p>No noisy neighbors. No overselling.</p>
+            </div>
+            <div class="card">
+                <h3>Transparent Pricing</h3>
+                <p>No hidden fees. No surprise renewals.</p>
+            </div>
+            <div class="card">
+                <h3>Indie-Built, Indie-Powered</h3>
+                <p>Hosting with personality, not corporate scripts.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section">
+        <h2 class="section-title">What You Get</h2>
+        <div class="features">
+            <ul>
+                <li>Full hosting environment</li>
+                <li>SSD storage</li>
+                <li>Secure isolation</li>
+                <li>Free setup</li>
+                <li>Modern dashboard</li>
+                <li>All future features included</li>
+            </ul>
+        </div>
+    </section>
+    
+    <section class="section">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Choose your plan</h3>
+                <p>Pick the hosting tier that fits your needs.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Get instant access</h3>
+                <p>Your server is provisioned and ready in minutes.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Deploy your site</h3>
+                <p>DIY or let us handle the setup — your choice.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-final">
+        <h2 style="font-size: 32px; margin-bottom: 16px; color: #fff;">Ready to get started?</h2>
+        <p style="color: #8892a0; margin-bottom: 32px;">Join the founding customers and lock in lifetime pricing.</p>
+        <a href="/pricing" class="btn primary">View Pricing</a>
+    </section>
+    
     <footer>
-        <p>LocalBiz © 2026</p>
+        <p>Clouded Basement © 2026</p>
     </footer>
 </body>
 </html>
