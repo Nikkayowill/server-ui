@@ -37,14 +37,14 @@
 
 .progress-bar {
     height: 8px;
-    background: rgba(136, 254, 0, 0.1);
+    background: rgba(45, 167, 223, 0.1);
     border-radius: 4px;
     overflow: hidden;
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--glow), #cfff90);
+    background: linear-gradient(90deg, var(--glow), #20B1DC);
     border-radius: 4px;
     transition: width 0.3s;
 }
@@ -52,7 +52,7 @@
 /* Deployment History */
 .deployment-item {
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(136, 254, 0, 0.1);
+    border: 1px solid rgba(45, 167, 223, 0.1);
     border-radius: 4px;
     padding: 16px;
     margin-bottom: 12px;
@@ -106,7 +106,7 @@
 /* Domain List */
 .domain-item {
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(136, 254, 0, 0.1);
+    border: 1px solid rgba(45, 167, 223, 0.1);
     border-radius: 4px;
     padding: 16px;
     margin-bottom: 12px;
@@ -153,7 +153,7 @@
 
 /* DNS Configuration Box */
 .dns-config {
-    background: rgba(136, 254, 0, 0.05);
+    background: rgba(45, 167, 223, 0.05);
     border: 1px solid var(--border-glow);
     border-radius: 6px;
     padding: 16px;
@@ -193,7 +193,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     padding-top: 24px;
-    border-top: 1px solid rgba(136, 254, 0, 0.1);
+    border-top: 1px solid rgba(45, 167, 223, 0.1);
 }
 
 /* Empty State */

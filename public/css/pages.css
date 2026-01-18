@@ -64,6 +64,6 @@ li {
     background: var(--bg-card);
     display: block;
     margin: 40px auto 0;
-    box-shadow: 0 0 30px rgba(136, 254, 0, 0.2);
+    box-shadow: 0 0 30px rgba(45, 167, 223, 0.2);
     object-fit: cover;
 }

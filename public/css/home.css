@@ -12,11 +12,11 @@
     line-height: 1.1;
     letter-spacing: -2px;
     margin-bottom: 20px;
-    background: linear-gradient(180deg, #fff 0%, #cfff90 100%);
+    background: linear-gradient(180deg, #fff 0%, #20B1DC 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 20px rgba(136, 254, 0, 0.3);
+    text-shadow: 0 0 20px rgba(45, 167, 223, 0.3);
 }
 
 .hero .sub {

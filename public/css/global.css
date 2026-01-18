@@ -1,12 +1,12 @@
 /* Global Variables and Base Styles */
 :root {
-    --glow: #88FE00;
+    --glow: #2DA7DF;
     --bg-dark: #0a0812;
     --bg-card: rgba(2, 8, 20, 0.6);
-    --border-glow: rgba(136, 254, 0, 0.2);
+    --border-glow: rgba(45, 167, 223, 0.2);
     --text-primary: #e0e6f0;
     --text-secondary: #8892a0;
-    --success: rgba(136, 254, 0, 0.2);
+    --success: rgba(45, 167, 223, 0.2);
     --error: rgba(255, 68, 68, 0.2);
     --warning: rgba(255, 184, 0, 0.2);
 }
@@ -48,8 +48,8 @@ ul li, ol li {
     opacity: 0.04;
     pointer-events: none;
     background: 
-        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px);
+        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(45, 167, 223, 0.03) 1px, rgba(45, 167, 223, 0.03) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(45, 167, 223, 0.03) 1px, rgba(45, 167, 223, 0.03) 2px);
 }
 
 /* Content Container */

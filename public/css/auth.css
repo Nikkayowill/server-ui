@@ -9,7 +9,7 @@
 
 .auth-card {
     background: var(--bg-card);
-    border: 1px solid rgba(136, 254, 0, 0.15);
+    border: 1px solid rgba(45, 167, 223, 0.15);
     border-radius: 8px;
     padding: 48px;
     max-width: 450px;
@@ -29,8 +29,8 @@
 }
 
 .message {
-    background: rgba(136, 254, 0, 0.1);
-    border: 1px solid rgba(136, 254, 0, 0.3);
+    background: rgba(45, 167, 223, 0.1);
+    border: 1px solid rgba(45, 167, 223, 0.3);
     color: var(--glow);
     padding: 12px;
     border-radius: 4px;

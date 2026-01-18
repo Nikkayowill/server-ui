@@ -32,7 +32,7 @@
 
 .plan {
     background: rgba(2, 8, 20, 0.6);
-    border: 1px solid rgba(136, 254, 0, 0.15);
+    border: 1px solid rgba(45, 167, 223, 0.15);
     border-radius: 8px;
     padding: 40px 32px;
     position: relative;
@@ -43,16 +43,16 @@
 
 .plan:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 50px rgba(136, 254, 0, 0.18);
+    box-shadow: 0 15px 50px rgba(45, 167, 223, 0.18);
 }
 
 .plan.featured {
     border-color: var(--glow);
-    box-shadow: 0 0 40px rgba(136, 254, 0, 0.2);
+    box-shadow: 0 0 40px rgba(45, 167, 223, 0.2);
 }
 
 .plan-header {
-    border-bottom: 1px solid rgba(136, 254, 0, 0.2);
+    border-bottom: 1px solid rgba(45, 167, 223, 0.2);
     padding-bottom: 24px;
     margin-bottom: 24px;
 }
@@ -115,7 +115,7 @@
     font-style: italic;
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid rgba(136, 254, 0, 0.1);
+    border-top: 1px solid rgba(45, 167, 223, 0.1);
 }
 
 .plan-features li.divider::before {

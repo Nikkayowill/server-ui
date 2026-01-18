@@ -11,7 +11,7 @@ nav {
     backdrop-filter: blur(16px) saturate(120%);
     padding: 12px 32px;
     border-radius: 8px;
-    box-shadow: 0 0 30px rgba(136, 254, 0, 0.12), inset 0 0 0 1px rgba(136, 254, 0, 0.1);
+    box-shadow: 0 0 30px rgba(45, 167, 223, 0.12), inset 0 0 0 1px rgba(45, 167, 223, 0.1);
 }
 
 .nav-container {
@@ -24,8 +24,8 @@ nav {
 .logo {
     font-size: 22px;
     font-weight: 700;
-    color: #cfff90;
-    text-shadow: 0 0 10px rgba(136, 254, 0, 0.5);
+    color: #20B1DC;
+    text-shadow: 0 0 10px rgba(45, 167, 223, 0.5);
     flex-shrink: 0;
 }
 
