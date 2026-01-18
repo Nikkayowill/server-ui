@@ -635,7 +635,7 @@ ${getHTMLHead('Admin Dashboard')}
                         <td>#${d.id}</td>
                         <td>${d.owner_email || 'Unknown'}</td>
                         <td>Server #${d.server_id} (${d.plan})</td>
-                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${d.git_url}">${d.git_url}</td>
+                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${d.git_url}</td>
                         <td>
                           <span class="status-badge ${
                             d.status === 'success' ? 'active' : 
