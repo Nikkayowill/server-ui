@@ -9,7 +9,7 @@ nav {
     z-index: 1000;
     background: rgba(2, 8, 20, 0.85);
     backdrop-filter: blur(16px) saturate(120%);
-    padding: 16px 32px;
+    padding: 12px 32px;
     border-radius: 8px;
     box-shadow: 0 0 30px rgba(136, 254, 0, 0.12), inset 0 0 0 1px rgba(136, 254, 0, 0.1);
 }

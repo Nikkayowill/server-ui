@@ -124,7 +124,7 @@ function getResponsiveNav(req) {
     <nav>
         <div class="nav-container">
             <a href="/" class="logo">
-                <img src="/logo.svg" alt="Clouded Basement" style="height: 100px; width: auto;">
+                <img src="/logo.svg" alt="Clouded Basement" style="height: 40px; width: auto; display: block;">
             </a>
             <button class="hamburger" aria-label="Toggle menu">
                 <span></span>
