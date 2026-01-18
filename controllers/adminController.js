@@ -257,12 +257,8 @@ ${getHTMLHead('Admin Dashboard')}
               <div class="stat-label">Total Domains</div>
             </div>
             <div class="stat-card">
-              <div class="stat-value">${activeDomains}</div>
-              <div class="stat-label">Active</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${hostingerDomains}</div>
-              <div class="stat-label">From Hostinger</div>
+              <div class="stat-value">${sslEnabledDomains}</div>
+              <div class="stat-label">SSL Enabled</div>
             </div>
           </div>
 
