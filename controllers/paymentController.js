@@ -15,22 +15,27 @@ exports.showCheckout = (req, res) => {
   
   res.send(`
 ${getHTMLHead('Checkout - Basement')}
+    <link rel="stylesheet" href="/css/global.css">
     <style>
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
-            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
-            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px); }
-        
         .checkout-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 5vw 60px; }
-        .checkout-card { background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; 
-            padding: 48px; max-width: 500px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        .checkout-card h1 { font-size: 32px; margin-bottom: 12px; color: var(--glow); text-align: center; }
+        .checkout-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 8px; 
+            padding: 48px; max-width: 500px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); }
+        .checkout-card h1 { font-size: 32px; margin-bottom: 12px; color: var(--glow); text-align: center; font-weight: 700; }
         .checkout-card .price { font-size: 48px; font-weight: 700; color: #fff; text-align: center; margin: 24px 0; }
-        .checkout-card .description { text-align: center; color: #8892a0; font-size: 14px; margin-bottom: 32px; }
+        .checkout-card .price span { font-size: 20px; color: var(--text-secondary); }
+        .checkout-card .description { text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; line-height: 1.6; }
         
-        .btn { width: 100%; padding: 16px 32px; border: 1px solid var(--glow); background: var(--glow); color: #0a0812; 
+        .btn { width: 100%; padding: 16px 32px; border: 1px solid var(--glow); background: var(--glow); color: var(--bg-dark); 
             font-family: inherit; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; 
-            cursor: pointer; transition: .3s; border-radius: 4px; }
+            cursor: pointer; transition: all .3s ease; border-radius: 4px; }
         .btn:hover { box-shadow: 0 0 40px var(--glow); transform: translateY(-2px); }
+        
+        @media (max-width: 768px) {
+            .checkout-container { padding: 100px 20px 40px; }
+            .checkout-card { padding: 32px 24px; }
+            .checkout-card h1 { font-size: 26px; }
+            .checkout-card .price { font-size: 40px; }
+        }
     </style>
 </head>
 <body>
@@ -297,6 +302,8 @@ exports.stripeWebhook = async (req, res) => {
 
           if (userResult.rows.length === 0) {
             console.log(`User not found for email: ${customerEmail}`);
+            await client.query('ROLLBACK');
+            client.release();
             break;
           }
 

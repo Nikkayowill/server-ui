@@ -162,7 +162,10 @@ echo "Setup complete!" > /root/setup.log
 // Poll droplet until IP is assigned
 async function pollDropletStatus(dropletId, serverId) {
   const maxAttempts = 30;
+  const maxDuration = 5 * 60 * 1000; // 5 minutes absolute timeout
+  const pollInterval = 10000; // 10 seconds
   let attempts = 0;
+  const startTime = Date.now();
 
   // Clear any existing poll for this server
   if (activePolls.has(serverId)) {
@@ -173,6 +176,20 @@ async function pollDropletStatus(dropletId, serverId) {
 
   const interval = setInterval(async () => {
     attempts++;
+    const elapsed = Date.now() - startTime;
+
+    // Safety check: absolute timeout
+    if (elapsed > maxDuration) {
+      console.error(`Server ${serverId} provisioning timeout (${elapsed}ms)`);
+      await pool.query(
+        'UPDATE servers SET status = $1 WHERE id = $2',
+        ['failed', serverId]
+      ).catch(err => console.error('Failed to update server status:', err));
+      clearInterval(interval);
+      activePolls.delete(serverId);
+      return;
+    }
+
     try {
       const response = await axios.get(`https://api.digitalocean.com/v2/droplets/${dropletId}`, {
         headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
@@ -188,28 +205,28 @@ async function pollDropletStatus(dropletId, serverId) {
         );
         console.log(`Server ${serverId} is now running at ${ip}`);
         clearInterval(interval);
-        activePolls.delete(serverId); // Clean up from tracking
+        activePolls.delete(serverId);
       } else if (attempts >= maxAttempts) {
         await pool.query(
           'UPDATE servers SET status = $1 WHERE id = $2',
           ['failed', serverId]
         );
-        console.error(`Server ${serverId} provisioning failed - timeout`);
+        console.error(`Server ${serverId} provisioning failed - max attempts reached`);
         clearInterval(interval);
-        activePolls.delete(serverId); // Clean up from tracking
+        activePolls.delete(serverId);
       }
     } catch (error) {
-      console.error('Polling error:', error.message);
+      console.error(`Polling error (attempt ${attempts}/${maxAttempts}):`, error.message);
       if (attempts >= maxAttempts) {
         await pool.query(
           'UPDATE servers SET status = $1 WHERE id = $2',
           ['failed', serverId]
-        );
+        ).catch(err => console.error('Failed to update server status:', err));
         clearInterval(interval);
-        activePolls.delete(serverId); // Clean up from tracking
+        activePolls.delete(serverId);
       }
     }
-  }, 10000); // Check every 10 seconds
+  }, pollInterval);
   
   // Store interval ID for cleanup
   activePolls.set(serverId, interval);
@@ -331,5 +348,15 @@ module.exports = {
       console.error('Destroy droplet error:', error.response?.data || error.message);
       throw error;
     }
+  },
+
+  // Cleanup function to clear all active polls (for graceful shutdown)
+  cleanupPolls: () => {
+    console.log(`Cleaning up ${activePolls.size} active polling intervals`);
+    for (const [serverId, interval] of activePolls.entries()) {
+      clearInterval(interval);
+      console.log(`Cleared poll for server ${serverId}`);
+    }
+    activePolls.clear();
   }
 };

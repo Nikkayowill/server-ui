@@ -66,10 +66,15 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
-  }
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days (reduced from 30)
+    httpOnly: true, // Prevents XSS access to session cookie
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    sameSite: 'strict', // CSRF protection - blocks cross-site requests
+    path: '/', // Cookie available across entire site
+    domain: process.env.NODE_ENV === 'production' ? 'cloudedbasement.ca' : undefined
+  },
+  name: 'sessionId', // Rename from default 'connect.sid' for obscurity
+  rolling: true // Reset expiry on each request (sliding session)
 }));
 
 // CSRF protection
@@ -355,6 +360,11 @@ process.on('SIGTERM', () => {
 
 process.on('SIGINT', () => {
   console.log('SIGINT received, shutting down gracefully...');
+  
+  // Cleanup polling intervals
+  const { cleanupPolls } = require('./services/digitalocean');
+  cleanupPolls();
+  
   server.close(() => {
     console.log('HTTP server closed');
     pool.end(() => {
