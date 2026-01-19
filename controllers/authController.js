@@ -37,6 +37,13 @@ ${getHTMLHead('Register - Basement')}
                     <input type="password" name="confirmPassword" minlength="8" required>
                 </div>
                 
+                <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px; margin-top: 20px;">
+                    <input type="checkbox" id="acceptTerms" name="acceptTerms" required style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: #22d3ee;">
+                    <label for="acceptTerms" style="margin: 0; font-size: 0.9em; line-height: 1.5; cursor: pointer;">
+                        I have read and agree to the <a href="/terms" target="_blank" style="color: #22d3ee; text-decoration: underline;">Terms of Service</a>
+                    </label>
+                </div>
+                
                 <button type="submit" class="btn">Register</button>
             </form>
             
@@ -61,7 +68,16 @@ const handleRegister = async (req, res) => {
   }
 
   try {
-    const { email, password } = req.body;
+    const { email, password, acceptTerms } = req.body;
+    
+    // Validate terms acceptance
+    if (acceptTerms !== 'on') {
+      return res.status(400).send(`
+        <h1 style="color: #22d3ee;">Terms Required</h1>
+        <p style="color: #e2e8f0;">You must accept the Terms of Service to register.</p>
+        <a href="/register" style="color: #22d3ee;">Go back</a>
+      `);
+    }
     
     // Check if user exists
     const userCheck = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -75,9 +91,9 @@ const handleRegister = async (req, res) => {
     // Generate 6-digit confirmation code
     const { code, expiresAt } = createConfirmationCode();
     
-    // Insert user with code
+    // Insert user with code and terms acceptance timestamp
     await pool.query(
-      'INSERT INTO users (email, password_hash, email_token, token_expires_at) VALUES ($1, $2, $3, $4)',
+      'INSERT INTO users (email, password_hash, email_token, token_expires_at, terms_accepted_at) VALUES ($1, $2, $3, $4, NOW())',
       [email, passwordHash, code, expiresAt]
     );
 
@@ -607,10 +623,13 @@ const resendCode = async (req, res) => {
 
 module.exports = {
   showRegister,
+  register: handleRegister,
   handleRegister,
   showLogin,
+  login: handleLogin,
   handleLogin,
   confirmEmail,
+  logout: handleLogout,
   handleLogout,
   showVerifyEmail,
   verifyEmailCode,
