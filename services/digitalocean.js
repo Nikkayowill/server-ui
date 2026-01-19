@@ -1,6 +1,9 @@
 const axios = require('axios');
 const pool = require('../db');
 
+// Track active polling intervals to prevent memory leaks
+const activePolls = new Map(); // serverId -> intervalId
+
 // Helper function to create real DigitalOcean server
 async function createRealServer(userId, plan, stripeChargeId = null) {
   const specs = {
@@ -159,6 +162,13 @@ async function pollDropletStatus(dropletId, serverId) {
   const maxAttempts = 30;
   let attempts = 0;
 
+  // Clear any existing poll for this server
+  if (activePolls.has(serverId)) {
+    clearInterval(activePolls.get(serverId));
+    activePolls.delete(serverId);
+    console.log(`Cleared existing poll for server ${serverId}`);
+  }
+
   const interval = setInterval(async () => {
     attempts++;
     try {
@@ -176,6 +186,7 @@ async function pollDropletStatus(dropletId, serverId) {
         );
         console.log(`Server ${serverId} is now running at ${ip}`);
         clearInterval(interval);
+        activePolls.delete(serverId); // Clean up from tracking
       } else if (attempts >= maxAttempts) {
         await pool.query(
           'UPDATE servers SET status = $1 WHERE id = $2',
@@ -183,6 +194,7 @@ async function pollDropletStatus(dropletId, serverId) {
         );
         console.error(`Server ${serverId} provisioning failed - timeout`);
         clearInterval(interval);
+        activePolls.delete(serverId); // Clean up from tracking
       }
     } catch (error) {
       console.error('Polling error:', error.message);
@@ -192,9 +204,14 @@ async function pollDropletStatus(dropletId, serverId) {
           ['failed', serverId]
         );
         clearInterval(interval);
+        activePolls.delete(serverId); // Clean up from tracking
       }
     }
   }, 10000); // Check every 10 seconds
+  
+  // Store interval ID for cleanup
+  activePolls.set(serverId, interval);
+  console.log(`Started polling for server ${serverId} (${activePolls.size} active polls)`);
 }
 
 // DigitalOcean sync - Check if droplets still exist
