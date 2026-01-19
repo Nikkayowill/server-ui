@@ -107,6 +107,33 @@ echo "Setup complete!" > /root/setup.log
   } catch (error) {
     console.error('DigitalOcean API error:', error.response?.data || error.message);
     
+    // Refund the customer if droplet creation failed
+    if (stripeChargeId) {
+      try {
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        console.log('Initiating refund for failed provisioning:', stripeChargeId);
+        
+        await stripe.refunds.create({
+          payment_intent: stripeChargeId,
+          reason: 'requested_by_customer' // Server provisioning failed
+        });
+        
+        // Update payment status to refunded
+        await pool.query(
+          'UPDATE payments SET status = $1 WHERE stripe_payment_id = $2',
+          ['refunded', stripeChargeId]
+        );
+        
+        console.log('Refund issued successfully for:', stripeChargeId);
+        
+        // Send notification email (optional - requires email service)
+        // await sendServerProvisioningFailedEmail(userId, error.message);
+      } catch (refundError) {
+        console.error('Failed to process refund:', refundError.message);
+        // Log to audit trail for manual processing
+      }
+    }
+    
     // Save failed server to database
     const result = await pool.query(
       `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id)
