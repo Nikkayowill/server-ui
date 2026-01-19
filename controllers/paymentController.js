@@ -107,48 +107,35 @@ exports.paymentSuccess = async (req, res) => {
     const plan = req.query.plan || 'founder';
     
     // Record payment immediately so onboarding wizard detects it
-    if (sessionId) {
-      try {
-        const session = await stripe.checkout.sessions.retrieve(sessionId, {
-          expand: ['payment_intent']
-        });
-        
-        // Check if payment already recorded
-        const existingPayment = await pool.query(
-          'SELECT * FROM payments WHERE stripe_payment_id = $1',
-          [session.payment_intent.id]
-        );
-        
-        // Record payment if not already in database
-        if (existingPayment.rows.length === 0) {
-          await pool.query(
-            'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
-            [req.session.userId, session.payment_intent.id, session.amount_total / 100, plan, 'succeeded']
-          );
-          console.log('Payment recorded:', session.payment_intent.id);
-        }
-        
-        // Automatically create server if user doesn't have one
-        const serverCheck = await pool.query(
-          'SELECT * FROM servers WHERE user_id = $1',
-          [req.session.userId]
-        );
-        
-        if (serverCheck.rows.length === 0) {
-          console.log('Creating server automatically for user:', req.session.userId);
-          await createRealServer(req.session.userId, plan, session.payment_intent.id);
-          console.log('Server creation initiated');
-        } else {
-          console.log('User already has server, skipping creation');
-        }
-        
-      } catch (stripeError) {
-        console.error('Error recording payment:', stripeError.message);
-      }
+    if (!sessionId) {
+      return res.redirect('/payment-cancel?error=Missing session ID');
     }
 
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['payment_intent']
+    });
+    
+    // Check if payment already recorded
+    const existingPayment = await pool.query(
+      'SELECT * FROM payments WHERE stripe_payment_id = $1',
+      [session.payment_intent.id]
+    );
+    
+    // Record payment if not already in database
+    if (existingPayment.rows.length === 0) {
+      await pool.query(
+        'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
+        [req.session.userId, session.payment_intent.id, session.amount_total / 100, plan, 'succeeded']
+      );
+      console.log('Payment recorded:', session.payment_intent.id);
+    }
+    
+    // Server creation now handled by webhook only to prevent race conditions
+    console.log('Payment recorded. Server provisioning will be handled by webhook.');
+
   } catch (error) {
-    console.error('Error creating server:', error);
+    console.error('Payment processing error:', error);
+    return res.redirect('/payment-cancel?error=Payment recording failed. Please contact support.');
   }
 
   res.send(`
@@ -317,6 +304,19 @@ exports.stripeWebhook = async (req, res) => {
           );
 
           console.log(`Payment recorded: User ${userId}, $${amount}, Plan: ${plan}`);
+          
+          // Create server if user doesn't have one (webhook is single source of truth)
+          const serverCheck = await pool.query(
+            'SELECT * FROM servers WHERE user_id = $1 AND status NOT IN (\'deleted\', \'failed\')',
+            [userId]
+          );
+          
+          if (serverCheck.rows.length === 0) {
+            console.log('Creating server for user from webhook:', userId);
+            await createRealServer(userId, plan, paymentIntent.id);
+          } else {
+            console.log('User already has active server, skipping creation');
+          }
         } catch (error) {
           console.error('Error processing payment_intent.succeeded:', error);
         }

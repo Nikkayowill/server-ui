@@ -121,6 +121,7 @@ ${getHTMLHead('Admin Dashboard')}
                   <td>${new Date(u.created_at).toLocaleDateString()}</td>
                   <td>
                     <form method="POST" action="/admin/delete-user/${u.id}" style="display: inline;" onsubmit="return confirm('Delete user ${u.email}? This will also delete all their servers, deployments, and payments.');">
+                      <input type="hidden" name="_csrf" value="${req.csrfToken()}">
                       <button type="submit" style="background: #ff4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">Delete</button>
                     </form>
                   </td>
@@ -158,9 +159,11 @@ ${getHTMLHead('Admin Dashboard')}
                   <td>${new Date(s.created_at).toLocaleDateString()}</td>
                   <td>
                     <form method="POST" action="/admin/destroy-droplet/${s.id}" style="display: inline; margin-right: 4px;" onsubmit="return confirm('DESTROY droplet for server #${s.id}? This will permanently delete the DigitalOcean droplet AND the database record. This cannot be undone!');">
+                      <input type="hidden" name="_csrf" value="${req.csrfToken()}">
                       <button type="submit" style="background: #cc0000; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">Destroy</button>
                     </form>
                     <form method="POST" action="/admin/delete-server/${s.id}" style="display: inline;" onsubmit="return confirm('Delete server record #${s.id}? This will remove it from the database but NOT destroy the actual droplet.');">
+                      <input type="hidden" name="_csrf" value="${req.csrfToken()}">
                       <button type="submit" style="background: #ff4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">Delete DB</button>
                     </form>
                   </td>

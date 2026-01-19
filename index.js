@@ -185,10 +185,10 @@ app.post('/enable-ssl', requireAuth, serverController.enableSSL);
 app.get('/dashboard', requireAuth, dashboardController.showDashboard);
 
 // Admin - dashboard
-app.get('/admin', requireAuth, requireAdmin, adminController.listUsers);
-app.post('/admin/delete-user/:id', requireAuth, requireAdmin, adminController.deleteUser);
-app.post('/admin/delete-server/:id', requireAuth, requireAdmin, adminController.deleteServer);
-app.post('/admin/destroy-droplet/:id', requireAuth, requireAdmin, adminController.destroyDroplet);
+app.get('/admin', requireAuth, requireAdmin, csrfProtection, adminController.listUsers);
+app.post('/admin/delete-user/:id', requireAuth, requireAdmin, csrfProtection, adminController.deleteUser);
+app.post('/admin/delete-server/:id', requireAuth, requireAdmin, csrfProtection, adminController.deleteServer);
+app.post('/admin/destroy-droplet/:id', requireAuth, requireAdmin, csrfProtection, adminController.destroyDroplet);
 
 // Admin - domain management (API endpoints only - UI is in /admin/users)
 app.get('/admin/domains/list', requireAuth, requireAdmin, domainController.listDomains);
@@ -339,4 +339,27 @@ setTimeout(syncDigitalOceanDropletsService, 30000);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
+
+// Graceful shutdown handler to cleanup polling intervals
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('HTTP server closed');
+    pool.end(() => {
+      console.log('Database pool closed');
+      process.exit(0);
+    });
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully...');
+  server.close(() => {
+    console.log('HTTP server closed');
+    pool.end(() => {
+      console.log('Database pool closed');
+      process.exit(0);
+    });
+  });
+});
