@@ -163,9 +163,6 @@ app.get('/verify-email', authController.showVerifyEmail);
 app.post('/verify-email', authController.verifyEmailCode);
 app.post('/resend-code', authController.resendCode);
 
-// Resend confirmation route
-// app.get('/resend-confirmation', authController.resendConfirmation);
-
 // Logout route
 app.get('/logout', authController.handleLogout);
 
@@ -181,7 +178,6 @@ app.post('/deploy', requireAuth, serverController.deploy);
 // Add domain route
 app.post('/add-domain', requireAuth, serverController.addDomain);
 
-
 // Enable SSL route
 app.post('/enable-ssl', requireAuth, serverController.enableSSL);
 
@@ -190,28 +186,12 @@ app.get('/dashboard', requireAuth, dashboardController.showDashboard);
 
 // Admin - dashboard
 app.get('/admin', requireAuth, requireAdmin, adminController.listUsers);
-// app.get('/admin/audit-log', requireAuth, requireAdmin, adminController.viewAuditLog);
-// app.post('/admin/promote-user', requireAuth, requireAdmin, adminController.promoteUser);
-// app.post('/admin/demote-user', requireAuth, requireAdmin, adminController.demoteUser);
-// app.delete('/admin/users/:id', requireAuth, requireAdmin, adminController.deleteUser);
 
 // Admin - domain management (API endpoints only - UI is in /admin/users)
 app.get('/admin/domains/list', requireAuth, requireAdmin, domainController.listDomains);
 app.post('/admin/domains', requireAuth, requireAdmin, domainController.addDomain);
 app.put('/admin/domains/:id', requireAuth, requireAdmin, domainController.updateDomain);
 app.delete('/admin/domains/:id', requireAuth, requireAdmin, domainController.deleteDomain);
-
-// Admin: Server Management Routes
-// app.post('/admin/servers', requireAuth, requireAdmin, adminController.addServer);
-// app.put('/admin/servers/:id', requireAuth, requireAdmin, adminController.updateServer);
-// app.delete('/admin/servers/:id', requireAuth, requireAdmin, adminController.deleteServer);
-// app.post('/admin/servers/:id/assign-domain', requireAuth, requireAdmin, adminController.assignDomain);
-// app.post('/admin/servers/:id/action', requireAuth, requireAdmin, adminController.executeServerAction);
-
-// Admin: Support Tickets Routes
-// app.get('/admin/tickets/:id', requireAuth, requireAdmin, adminController.viewTicket);
-// app.post('/admin/tickets/:id/reply', requireAuth, requireAdmin, adminController.submitTicketReply);
-// app.put('/admin/tickets/:id/status', requireAuth, requireAdmin, adminController.updateTicketStatus);
 
 // Pricing page
 app.get('/pricing', pagesController.showPricing);
