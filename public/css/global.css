@@ -13,6 +13,7 @@
 
 /* Global Body Styling */
 body {
+    background: var(--bg-dark);
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-primary);
     margin: 0;

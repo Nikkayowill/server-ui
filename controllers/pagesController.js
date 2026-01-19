@@ -5,7 +5,7 @@ exports.showAbout = (req, res) => {
   res.send(`
 ${getHTMLHead('About - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
@@ -51,7 +51,7 @@ exports.showTerms = (req, res) => {
   res.send(`
 ${getHTMLHead('Terms of Service - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
@@ -72,7 +72,7 @@ exports.showPricing = (req, res) => {
   res.send(`
 ${getHTMLHead('Pricing - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
@@ -168,7 +168,7 @@ exports.showPrivacy = (req, res) => {
   res.send(`
 ${getHTMLHead('Privacy Policy - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
@@ -344,7 +344,7 @@ exports.showFaq = (req, res) => {
   res.send(`
 ${getHTMLHead('FAQ - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
@@ -541,7 +541,7 @@ exports.showDocs = (req, res) => {
   res.send(`
 ${getHTMLHead('Documentation - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
@@ -797,7 +797,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       }
     </style>
 </head>
-<body class="bg-gray-900">
+<body>
     <div class="matrix-bg"></div>
     
     ${flashMessage ? `
