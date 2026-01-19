@@ -50,15 +50,286 @@ ${getHTMLHead('About - Basement')}
 exports.showTerms = (req, res) => {
   res.send(`
 ${getHTMLHead('Terms of Service - Basement')}
+<style>
+  .terms-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: #e2e8f0;
+    line-height: 1.8;
+  }
+  .terms-content h1 {
+    color: #22d3ee;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .terms-content .last-updated {
+    color: #94a3b8;
+    font-size: 0.9em;
+    margin-bottom: 40px;
+  }
+  .terms-content h2 {
+    color: #22d3ee;
+    font-size: 1.5em;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .terms-content h3 {
+    color: #67e8f9;
+    font-size: 1.2em;
+    margin-top: 25px;
+    margin-bottom: 10px;
+  }
+  .terms-content p {
+    margin-bottom: 15px;
+  }
+  .terms-content ul, .terms-content ol {
+    margin-left: 20px;
+    margin-bottom: 15px;
+  }
+  .terms-content li {
+    margin-bottom: 8px;
+  }
+  .terms-content strong {
+    color: #22d3ee;
+  }
+  .terms-content a {
+    color: #22d3ee;
+    text-decoration: underline;
+  }
+  .terms-content a:hover {
+    color: #67e8f9;
+  }
+</style>
 </head>
 <body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
     
-    <div class="content">
+    <div class="terms-content">
         <h1>Terms of Service</h1>
-        <p>Put the real legalese here later.</p>
+        <p class="last-updated">Last Updated: January 19, 2026</p>
+
+        <p>Welcome to <strong>Clouded Basement Hosting</strong> ("we," "us," "our," or "the Company"). These Terms of Service ("Terms") govern your access to and use of our cloud hosting services, including virtual private servers (VPS), domain management, and related services (collectively, the "Services"). By creating an account or using our Services, you agree to be bound by these Terms.</p>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing or using our Services, you represent that you:</p>
+        <ul>
+          <li>Are at least 18 years of age or the age of majority in your jurisdiction</li>
+          <li>Have the legal capacity to enter into a binding contract</li>
+          <li>Agree to comply with all applicable laws and regulations</li>
+          <li>Have read, understood, and accepted these Terms in their entirety</li>
+        </ul>
+        <p>If you do not agree to these Terms, you must not use our Services.</p>
+
+        <h2>2. Service Description</h2>
+        <p>Clouded Basement Hosting provides cloud infrastructure services including:</p>
+        <ul>
+          <li><strong>Virtual Private Servers (VPS):</strong> Linux-based server instances with root access</li>
+          <li><strong>Domain Management:</strong> Custom domain mapping and DNS configuration</li>
+          <li><strong>Deployment Tools:</strong> Automated provisioning and management interfaces</li>
+          <li><strong>Support Services:</strong> Technical assistance via ticketing system</li>
+        </ul>
+        <p>Services are provided on a subscription basis with monthly billing cycles. We reserve the right to modify, suspend, or discontinue any aspect of the Services at any time with or without notice.</p>
+
+        <h2>3. Account Registration and Security</h2>
+        <h3>3.1 Account Creation</h3>
+        <p>To use our Services, you must create an account by providing accurate, current, and complete information. You agree to:</p>
+        <ul>
+          <li>Provide a valid email address for account verification</li>
+          <li>Create a secure password (minimum 8 characters)</li>
+          <li>Keep your account information up to date</li>
+          <li>Accept these Terms of Service during registration</li>
+        </ul>
+
+        <h3>3.2 Account Security</h3>
+        <p>You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:</p>
+        <ul>
+          <li>Immediately notify us of any unauthorized use of your account</li>
+          <li>Not share your account credentials with any third party</li>
+          <li>Use strong, unique passwords and enable two-factor authentication when available</li>
+          <li>Log out of your account at the end of each session when using shared devices</li>
+        </ul>
+        <p>We are not liable for any loss or damage arising from your failure to protect your account credentials.</p>
+
+        <h2>4. Payment Terms</h2>
+        <h3>4.1 Pricing and Billing</h3>
+        <p>Our Services are offered on a subscription basis with the following terms:</p>
+        <ul>
+          <li><strong>Billing Cycle:</strong> Monthly recurring charges</li>
+          <li><strong>Payment Methods:</strong> Credit card, debit card, and other methods accepted through Stripe</li>
+          <li><strong>Currency:</strong> All prices are in Canadian Dollars (CAD) unless otherwise stated</li>
+          <li><strong>Automatic Renewal:</strong> Subscriptions automatically renew at the end of each billing period</li>
+          <li><strong>Price Changes:</strong> We reserve the right to modify pricing with 30 days' advance notice</li>
+        </ul>
+
+        <h3>4.2 Free Trial Period</h3>
+        <p>New customers are eligible for a <strong>7-day free trial</strong> with the following conditions:</p>
+        <ul>
+          <li>One free trial per customer</li>
+          <li>Valid payment method required at signup</li>
+          <li>Automatic conversion to paid subscription after trial period unless cancelled</li>
+          <li>Full access to standard features during trial</li>
+          <li>Cancel anytime during trial period to avoid charges</li>
+        </ul>
+
+        <h3>4.3 Payment Processing</h3>
+        <p>All payments are processed securely through Stripe, Inc. By providing payment information, you:</p>
+        <ul>
+          <li>Authorize us to charge your payment method for all fees incurred</li>
+          <li>Agree to Stripe's terms of service and privacy policy</li>
+          <li>Represent that you have the legal right to use the payment method provided</li>
+          <li>Understand that we do not store your complete payment card information</li>
+        </ul>
+
+        <h3>4.4 Taxes</h3>
+        <p>Prices do not include applicable taxes, duties, or fees. You are responsible for paying all taxes associated with your use of the Services, including but not limited to sales tax, GST/HST, and VAT as required by your jurisdiction.</p>
+
+        <h2>5. Refund Policy</h2>
+        <p>We offer a <strong>20-day money-back guarantee</strong> from the date your first paid subscription begins (after any free trial period):</p>
+        <ul>
+          <li><strong>Eligibility Window:</strong> Refund requests must be submitted within 20 days of your first payment</li>
+          <li><strong>Scope:</strong> Applies to first-time customers on their initial subscription only</li>
+          <li><strong>Process:</strong> Submit a refund request via support ticket or email</li>
+          <li><strong>Processing Time:</strong> Refunds typically processed within 5-10 business days</li>
+          <li><strong>Exclusions:</strong> Domain registration fees, third-party services, and renewal payments are non-refundable</li>
+        </ul>
+        <p>Refunds are issued to the original payment method. We reserve the right to deny refunds for accounts found in violation of these Terms or for abusive refund request patterns.</p>
+
+        <h2>6. Acceptable Use Policy</h2>
+        <p>You agree to use our Services only for lawful purposes and in compliance with these Terms. Prohibited activities include but are not limited to:</p>
+        <ul>
+          <li><strong>Illegal Activities:</strong> Hosting, distributing, or linking to illegal content or engaging in criminal activity</li>
+          <li><strong>Malicious Software:</strong> Distributing viruses, malware, ransomware, or other harmful code</li>
+          <li><strong>Spam and Abuse:</strong> Sending unsolicited bulk email, phishing attempts, or fraudulent communications</li>
+          <li><strong>Network Attacks:</strong> Port scanning, DDoS attacks, or attempts to compromise other systems</li>
+          <li><strong>Resource Abuse:</strong> Cryptocurrency mining, excessive bandwidth consumption, or activities that degrade service performance</li>
+          <li><strong>Intellectual Property Infringement:</strong> Hosting pirated software, copyrighted content without authorization, or counterfeit materials</li>
+          <li><strong>Adult Content:</strong> Hosting pornographic material, escort services, or sexually explicit content</li>
+          <li><strong>Harassment:</strong> Using Services to harass, threaten, or defame individuals or organizations</li>
+        </ul>
+        <p>Violation of this policy may result in immediate suspension or termination of your account without refund.</p>
+
+        <h2>7. Intellectual Property and Open Source</h2>
+        <h3>7.1 Our Intellectual Property</h3>
+        <p>The Clouded Basement Hosting service, including the website, dashboard, branding, logos, and proprietary software, are owned by the Company and protected by copyright, trademark, and other intellectual property laws.</p>
+
+        <h3>7.2 Open Source Code</h3>
+        <p>The underlying codebase for this platform is available as <strong>open-source software</strong> on GitHub. However:</p>
+        <ul>
+          <li>The code is subject to the license terms specified in the repository</li>
+          <li>You may review, fork, and modify the code in accordance with the license</li>
+          <li><strong>Commercial use, redistribution, or deployment of derivative works requires explicit permission from the Company</strong></li>
+          <li>The "Clouded Basement Hosting" brand, logo, and associated trademarks remain proprietary and may not be used without written consent</li>
+          <li>Copying or redeploying the service for commercial purposes without authorization is strictly prohibited and may result in legal action</li>
+        </ul>
+
+        <h3>7.3 User Content</h3>
+        <p>You retain ownership of all content, data, and applications you deploy on our Services. By using our Services, you grant us a limited license to host, store, and transmit your content solely for the purpose of providing the Services.</p>
+
+        <h2>8. Data Privacy and Security</h2>
+        <h3>8.1 Data Collection</h3>
+        <p>We collect and process personal information as described in our Privacy Policy, including:</p>
+        <ul>
+          <li>Account information (email address, password hash)</li>
+          <li>Payment information (processed securely through Stripe)</li>
+          <li>Server deployment details and usage logs</li>
+          <li>Support ticket communications</li>
+        </ul>
+
+        <h3>8.2 Data Security</h3>
+        <p>We implement industry-standard security measures to protect your data, including:</p>
+        <ul>
+          <li>HTTPS encryption for all web traffic</li>
+          <li>Secure session management with CSRF protection</li>
+          <li>Encrypted password storage using bcrypt</li>
+          <li>Regular security audits and updates</li>
+        </ul>
+
+        <h3>8.3 Data Retention</h3>
+        <p>We retain your account data for the duration of your active subscription and for a reasonable period thereafter as required by law or for legitimate business purposes. You may request data deletion by contacting support.</p>
+
+        <h2>9. Service Level and Uptime</h2>
+        <p>While we strive to provide reliable service, we do not guarantee uninterrupted availability. Our Services are provided on an "as-is" and "as-available" basis. We do not warrant that:</p>
+        <ul>
+          <li>Services will be available 100% of the time without interruption</li>
+          <li>Services will be error-free or meet your specific requirements</li>
+          <li>Data transmission will be secure or free from interception</li>
+          <li>Servers will be immune from attacks, hardware failures, or network issues</li>
+        </ul>
+        <p>Scheduled maintenance will be announced in advance when possible. We are not liable for downtime, data loss, or service interruptions.</p>
+
+        <h2>10. Limitation of Liability</h2>
+        <p>To the maximum extent permitted by law:</p>
+        <ul>
+          <li>We are not liable for any indirect, incidental, special, consequential, or punitive damages</li>
+          <li>Our total liability to you shall not exceed the amount you paid us in the 12 months preceding the claim</li>
+          <li>We are not responsible for losses resulting from unauthorized access to your account</li>
+          <li>We are not liable for third-party services, content, or links provided through our platform</li>
+          <li>We do not guarantee backup or recovery of your data—regular backups are your responsibility</li>
+        </ul>
+
+        <h2>11. Indemnification</h2>
+        <p>You agree to indemnify, defend, and hold harmless the Company, its officers, directors, employees, and agents from any claims, losses, damages, liabilities, and expenses (including legal fees) arising from:</p>
+        <ul>
+          <li>Your use of the Services</li>
+          <li>Your violation of these Terms</li>
+          <li>Your violation of any third-party rights, including intellectual property rights</li>
+          <li>Content or applications you deploy on our infrastructure</li>
+        </ul>
+
+        <h2>12. Termination</h2>
+        <h3>12.1 Termination by You</h3>
+        <p>You may cancel your subscription at any time through your account dashboard. Upon cancellation:</p>
+        <ul>
+          <li>You will continue to have access until the end of your current billing period</li>
+          <li>No further charges will be made after the current period ends</li>
+          <li>Your servers and data may be deleted after 30 days</li>
+        </ul>
+
+        <h3>12.2 Termination by Us</h3>
+        <p>We reserve the right to suspend or terminate your account immediately without notice if:</p>
+        <ul>
+          <li>You violate these Terms or our Acceptable Use Policy</li>
+          <li>Your account is used for fraudulent or illegal activities</li>
+          <li>Payment fails and remains outstanding after 7 days</li>
+          <li>You engage in abusive behavior toward our staff or other users</li>
+        </ul>
+        <p>Termination for cause does not entitle you to a refund. We may delete your data immediately upon termination for violations.</p>
+
+        <h2>13. Modifications to Terms</h2>
+        <p>We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting to our website. Continued use of the Services after changes constitutes acceptance of the modified Terms. Material changes will be communicated via email when possible.</p>
+
+        <h2>14. Governing Law and Jurisdiction</h2>
+        <p>These Terms are governed by the laws of the Province of Nova Scotia and the federal laws of Canada applicable therein, without regard to conflict of law principles. Any disputes arising from these Terms or your use of the Services shall be subject to the exclusive jurisdiction of the courts located in <strong>Halifax, Nova Scotia, Canada</strong>.</p>
+
+        <h2>15. Dispute Resolution</h2>
+        <p>In the event of a dispute, you agree to first attempt to resolve the matter informally by contacting our support team. If the dispute cannot be resolved within 30 days, either party may pursue legal remedies in accordance with Section 14.</p>
+
+        <h2>16. Severability</h2>
+        <p>If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid and enforceable.</p>
+
+        <h2>17. Entire Agreement</h2>
+        <p>These Terms, together with our Privacy Policy and any supplemental terms for specific Services, constitute the entire agreement between you and Clouded Basement Hosting regarding your use of the Services.</p>
+
+        <h2>18. Contact Information</h2>
+        <p>If you have questions about these Terms or need to contact us regarding your account, please reach out:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:support@cloudedbasement.com">support@cloudedbasement.com</a></li>
+          <li><strong>Support Tickets:</strong> Available through your account dashboard</li>
+          <li><strong>Company Name:</strong> Clouded Basement Hosting</li>
+          <li><strong>Location:</strong> Halifax, Nova Scotia, Canada</li>
+        </ul>
+
+        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #334155; color: #94a3b8; font-size: 0.9em;">
+          By creating an account or using our Services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+        </p>
+
         <a href="/" class="inline-block mt-8 px-6 py-3 text-cyan-400 border border-cyan-400/30 rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Back to home</a>
     </div>
     
@@ -175,9 +446,9 @@ ${getHTMLHead('Privacy Policy - Basement')}
     
     <div class="content">
         <h1>Privacy Policy</h1>
-        <p><strong>Last Updated:</strong> January 16, 2026</p>
+        <p><strong>Last Updated:</strong> January 19, 2026</p>
         
-        <p>LocalBiz ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.</p>
+        <p>Clouded Basement Hosting ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.</p>
         
         <h2>1. Information We Collect</h2>
         
@@ -288,7 +559,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
         
         <h2>8. Third-Party Links</h2>
         
-        <p>Our website may contain links to third-party websites or services that are not owned or controlled by LocalBiz. We are not responsible for the privacy practices of these third parties. We encourage you to review the privacy policies of every website you visit.</p>
+        <p>Our website may contain links to third-party websites or services that are not owned or controlled by Clouded Basement Hosting. We are not responsible for the privacy practices of these third parties. We encourage you to review the privacy policies of every website you visit.</p>
         
         <h2>9. Children's Privacy</h2>
         
@@ -330,7 +601,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
             <li><strong>Response Time:</strong> We aim to respond to all inquiries within 48 hours</li>
         </ul>
         
-        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(136, 254, 0, 0.1); font-size: 13px;">By using LocalBiz services, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.</p>
+        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(136, 254, 0, 0.1); font-size: 13px;">By using Clouded Basement Hosting services, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.</p>
         
         <a href="/" class="inline-block mt-8 px-6 py-3 text-cyan-400 border border-cyan-400/30 rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Back to home</a>
     </div>
@@ -358,11 +629,11 @@ ${getHTMLHead('FAQ - Basement')}
             
             <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
-                    <h3 class="text-lg font-medium text-white">What services does LocalBiz provide?</h3>
+                    <h3 class="text-lg font-medium text-white">What services does Clouded Basement Hosting provide?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
                 <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">LocalBiz offers comprehensive business solutions tailored to your needs. Our services include web development, digital marketing support, and ongoing technical assistance. Each plan is designed to help local businesses establish and grow their online presence.</p>
+                    <p class="text-gray-400">Clouded Basement Hosting offers cloud infrastructure services including virtual private servers (VPS), domain management, automated deployment tools, and technical support. Our platform is designed to make hosting accessible for developers and businesses of all sizes.</p>
                 </div>
             </div>
             
@@ -670,7 +941,7 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p>Email support included with all plans. Higher tiers provide faster response times and direct chat access for urgent issues.</p>
         
-        <div class="bg-gradient-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-400/30 rounded-xl p-8 text-center my-12">
+        <div class="bg-linear-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-400/30 rounded-xl p-8 text-center my-12">
             <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
             <p class="text-gray-300 mb-6">All plans include a 14-day money-back guarantee.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -689,7 +960,7 @@ exports.showContact = (req, res) => {
   res.send(`
 ${getHTMLHead('Contact - Basement')}
 </head>
-<body class="bg-gray-900">
+<body>
   ${getResponsiveNav(req)}
   
   <div class="max-w-2xl mx-auto px-4 py-32">
@@ -848,8 +1119,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Founder Plan Card (Flowbite Card with custom animation) -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-      <div class="relative overflow-hidden p-8 md:p-12 bg-gradient-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-500/40 rounded-xl text-center" style="box-shadow: 0 0 60px rgba(45, 167, 223, 0.3); animation: pulse-glow 3s ease-in-out infinite;">
-        <span class="inline-flex items-center justify-center px-3 py-1 mb-4 text-xs font-bold text-gray-900 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-full">⚡ LIMITED TIME OFFER ⚡</span>
+      <div class="relative overflow-hidden p-8 md:p-12 bg-linear-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-500/40 rounded-xl text-center" style="box-shadow: 0 0 60px rgba(45, 167, 223, 0.3); animation: pulse-glow 3s ease-in-out infinite;">
+        <span class="inline-flex items-center justify-center px-3 py-1 mb-4 text-xs font-bold text-gray-900 bg-linear-to-r from-cyan-400 to-cyan-500 rounded-full">⚡ LIMITED TIME OFFER ⚡</span>
         <h2 class="mb-2 text-3xl md:text-4xl font-extrabold text-white">Founding Customer Plan</h2>
         <div class="my-6">
           <span class="text-5xl md:text-6xl font-bold text-cyan-400">$10</span>
@@ -861,7 +1132,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           <span class="text-sm md:text-base text-gray-300">spots remaining out of 10</span>
         </div>
         <div class="mt-8">
-          <a href="/pricing" class="w-full sm:w-auto inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-lg hover:from-cyan-500 hover:to-cyan-600 focus:ring-4 focus:ring-cyan-300 transition-all">
+          <a href="/pricing" class="w-full sm:w-auto inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-linear-to-r from-cyan-400 to-cyan-500 rounded-lg hover:from-cyan-500 hover:to-cyan-600 focus:ring-4 focus:ring-cyan-300 transition-all">
             Claim Your Spot
             <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
