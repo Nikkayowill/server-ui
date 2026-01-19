@@ -11,6 +11,16 @@
     --warning: rgba(255, 184, 0, 0.2);
 }
 
+/* Global Body Styling */
+body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
 /* Matrix Background Effect */
 .matrix-bg {
     position: fixed;

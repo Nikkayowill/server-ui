@@ -21,7 +21,7 @@ ${getHTMLHead('Checkout - Basement')}
             padding: 48px; max-width: 500px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); }
         .checkout-card h1 { font-size: 32px; margin-bottom: 12px; color: var(--glow); text-align: center; font-weight: 700; }
         .checkout-card .price { font-size: 48px; font-weight: 700; color: #fff; text-align: center; margin: 24px 0; }
-        .checkout-card .price span { font-size: 20px; color: var(--text-secondary); }
+        .checkout-card .price span { font-size: 20px; color: #fff; }
         .checkout-card .description { text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; line-height: 1.6; }
         
         .btn { width: 100%; padding: 16px 32px; border: 1px solid var(--glow); background: var(--glow); color: var(--bg-dark); 
