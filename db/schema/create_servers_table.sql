@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS servers (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    plan VARCHAR(20) NOT NULL CHECK (plan IN ('basic', 'priority', 'premium')),
-    status VARCHAR(20) NOT NULL DEFAULT 'provisioning' CHECK (status IN ('provisioning', 'running', 'stopped', 'error')),
+    plan VARCHAR(20) NOT NULL CHECK (plan IN ('basic', 'priority', 'premium', 'founder')),
+    status VARCHAR(20) NOT NULL DEFAULT 'provisioning' CHECK (status IN ('provisioning', 'running', 'stopped', 'error', 'failed', 'deleted')),
     ip_address VARCHAR(45),
     ssh_username VARCHAR(50) DEFAULT 'ubuntu',
     ssh_password VARCHAR(100),
