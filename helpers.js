@@ -10,6 +10,7 @@ function getHTMLHead(title) {
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="/css/tailwind.css">
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </head>
@@ -122,19 +123,19 @@ function getResponsiveNav(req) {
   }
 
   return `
-    <nav class="fixed top-5 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-[1000] bg-gray-900/85 backdrop-blur-xl px-8 py-3 rounded-lg shadow-[0_0_30px_rgba(45,167,223,0.12)] border border-cyan-500/10">
-        <div class="flex justify-between items-center w-full">
-            <a href="/" class="text-xl font-bold text-cyan-400 flex-shrink-0">
-                <img src="/logo.svg" alt="Clouded Basement" class="h-10 w-auto block">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="/logo.svg" alt="Clouded Basement">
             </a>
-            <button class="hamburger hidden flex-col gap-1.5 bg-transparent border-0 cursor-pointer p-2 flex-shrink-0 z-[1001] ml-auto w-10 h-10 justify-center items-center" aria-label="Toggle menu">
-                <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
-                <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
-                <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
-            </button>
-            <ul class="nav-links flex gap-10 list-none m-0 p-0">
+            <ul class="nav-links">
                 ${navLinks}
             </ul>
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
   `;
