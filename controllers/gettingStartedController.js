@@ -19,15 +19,6 @@ exports.showGettingStarted = async (req, res) => {
     
     const hasServer = serverCheck.rows.length > 0;
     
-    // Check if user has pending server request
-    const ticketCheck = await pool.query(
-      'SELECT * FROM support_tickets WHERE user_id = $1 AND subject = $2 AND status IN ($3, $4) ORDER BY created_at DESC LIMIT 1',
-      [req.session.userId, 'Server Setup Request', 'open', 'in-progress']
-    );
-    
-    const hasPendingRequest = ticketCheck.rows.length > 0;
-    const requestDate = hasPendingRequest ? new Date(ticketCheck.rows[0].created_at) : null;
-    
     const userResult = await pool.query(
       'SELECT email FROM users WHERE id = $1',
       [req.session.userId]
@@ -285,11 +276,7 @@ ${getDashboardHead('Getting Started - Clouded Basement')}
           <span class="step-label ${!hasPaid ? 'active' : ''}">Payment</span>
         </div>
         <div class="wizard-step">
-          <div class="step-circle ${hasPaid && !hasServer ? 'active' : hasServer ? 'completed' : ''}">2</div>
-          <span class="step-label ${hasPaid && !hasServer ? 'active' : ''}">Request Server</span>
-        </div>
-        <div class="wizard-step">
-          <div class="step-circle ${hasServer ? 'active' : ''}">3</div>
+          <div class="step-circle ${hasServer ? 'active' : ''}">2</div>
           <span class="step-label ${hasServer ? 'active' : ''}">Deploy</span>
         </div>
       </div>
@@ -318,51 +305,19 @@ ${getDashboardHead('Getting Started - Clouded Basement')}
         </div>
       ` : !hasServer ? `
         <div class="onboarding-card">
-          <h2>Step 2: Request Your Server</h2>
-          <p>Great! Your ${plan} plan is confirmed. Now let's set up your server.</p>
+          <h2>Step 2: Server Provisioning</h2>
+          <p>Great! Your ${plan} plan is confirmed. Your server is being created automatically.</p>
+          
+          <div style="background: rgba(45, 167, 223, 0.1); border: 2px solid #2DA7DF; border-radius: 8px; padding: 32px; text-align: center; margin: 24px 0;">
+            <h3 style="color: #2DA7DF; margin-top: 0; font-size: 20px;">⏳ Server Provisioning in Progress</h3>
+            <p style="color: #e0e6f0; margin-bottom: 16px;">We're automatically setting up your server! You'll receive an email at <strong>${userEmail}</strong> when it's ready.</p>
+            <p style="color: #8892a0; font-size: 14px; margin: 0;">Estimated completion: 5-10 minutes</p>
+            <p style="color: #8892a0; font-size: 14px; margin-top: 8px;">Please check back shortly or wait for the email notification.</p>
+          </div>
           
           <div class="info-box">
-            <p><strong>Setup time:</strong> Your server will be ready within 1-2 hours. We'll email you at <strong>${userEmail}</strong> when it's live with login credentials.</p>
+            <p><strong>What's happening:</strong> Your DigitalOcean droplet is being created and configured with SSH access, Node.js, Python, Git, and Nginx.</p>
           </div>
-          
-          ${hasPendingRequest ? `
-            <div style="background: rgba(45, 167, 223, 0.1); border: 2px solid #2DA7DF; border-radius: 8px; padding: 32px; text-align: center; margin: 24px 0;">
-              <h3 style="color: #2DA7DF; margin-top: 0; font-size: 20px;">⏳ Server Request Received</h3>
-              <p style="color: #e0e6f0; margin-bottom: 16px;">We're setting up your server! You'll receive an email at <strong>${userEmail}</strong> when it's ready.</p>
-              <p style="color: #8892a0; font-size: 14px; margin: 0;">Requested: ${requestDate.toLocaleDateString()} at ${requestDate.toLocaleTimeString()}</p>
-              <p style="color: #8892a0; font-size: 14px; margin-top: 8px;">Estimated completion: 1-2 hours</p>
-            </div>
-          ` : `
-          <div class="server-request-form">
-            <form action="/request-server" method="POST">
-              <div class="form-group">
-                <label for="region">Preferred Region</label>
-                <select id="region" name="region" required>
-                  <option value="">Select a region...</option>
-                  <option value="nyc1">New York (NYC)</option>
-                  <option value="sfo3">San Francisco (SFO)</option>
-                  <option value="tor1">Toronto (TOR)</option>
-                  <option value="lon1">London (LON)</option>
-                  <option value="ams3">Amsterdam (AMS)</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="server_name">Server Name <span style="color: #8892a0; font-size: 12px;">(optional)</span></label>
-                <input type="text" id="server_name" name="server_name" placeholder="my-server" />
-                <p style="font-size: 12px; color: #8892a0; margin-top: 8px; margin-bottom: 0;">Give your server a memorable name (e.g., "my-website", "api-server")</p>
-              </div>
-              
-              <div class="form-group">
-                <label for="use_case">What will you use it for? <span style="color: #8892a0; font-size: 12px;">(optional)</span></label>
-                <input type="text" id="use_case" name="use_case" placeholder="Node.js API, WordPress site, Python app, etc." />
-                <p style="font-size: 12px; color: #8892a0; margin-top: 8px; margin-bottom: 0;">This helps us optimize your server setup</p>
-              </div>
-              
-              <button type="submit" class="btn primary">Request Server Setup</button>
-            </form>
-          </div>
-          `}
           
           <p style="text-align: center; margin-top: 24px; color: #8892a0; font-size: 14px;">
             Questions? Email <a href="mailto:support@cloudedbasement.ca" style="color: #2DA7DF; text-decoration: none;">support@cloudedbasement.ca</a>
