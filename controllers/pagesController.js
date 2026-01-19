@@ -880,22 +880,22 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <!-- Card 1 -->
           <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
-            <h3 class="mb-2 text-xl font-bold text-lime-400">Personal Support</h3>
+            <h3 class="mb-2 text-xl font-bold text-cyan-400">Personal Support</h3>
             <p class="text-gray-400">You talk to the person who built the platform.</p>
           </div>
           <!-- Card 2 -->
           <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
-            <h3 class="mb-2 text-xl font-bold text-lime-400">Fast, Clean Infrastructure</h3>
+            <h3 class="mb-2 text-xl font-bold text-cyan-400">Fast, Clean Infrastructure</h3>
             <p class="text-gray-400">No noisy neighbors. No overselling.</p>
           </div>
           <!-- Card 3 -->
           <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
-            <h3 class="mb-2 text-xl font-bold text-lime-400">Transparent Pricing</h3>
+            <h3 class="mb-2 text-xl font-bold text-cyan-400">Transparent Pricing</h3>
             <p class="text-gray-400">No hidden fees. No surprise renewals.</p>
           </div>
           <!-- Card 4 -->
           <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
-            <h3 class="mb-2 text-xl font-bold text-lime-400">Indie-Built, Indie-Powered</h3>
+            <h3 class="mb-2 text-xl font-bold text-cyan-400">Indie-Built, Indie-Powered</h3>
             <p class="text-gray-400">Hosting with personality, not corporate scripts.</p>
           </div>
         </div>
@@ -908,27 +908,27 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">What You Get</h2>
         <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
-            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-cyan-400 text-xl font-bold">✓</span>
             <span class="text-gray-300">Full hosting environment</span>
           </li>
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
-            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-cyan-400 text-xl font-bold">✓</span>
             <span class="text-gray-300">SSD storage</span>
           </li>
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
-            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-cyan-400 text-xl font-bold">✓</span>
             <span class="text-gray-300">Secure isolation</span>
           </li>
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
-            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-cyan-400 text-xl font-bold">✓</span>
             <span class="text-gray-300">Free setup</span>
           </li>
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
-            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-cyan-400 text-xl font-bold">✓</span>
             <span class="text-gray-300">Modern dashboard</span>
           </li>
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
-            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-cyan-400 text-xl font-bold">✓</span>
             <span class="text-gray-300">All future features included</span>
           </li>
         </ul>
@@ -942,19 +942,19 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <ol class="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <!-- Step 1 -->
           <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-lime-400 rounded-full text-gray-900 text-2xl font-bold">1</div>
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-cyan-400 rounded-full text-gray-900 text-2xl font-bold">1</div>
             <h3 class="mb-2 text-xl font-bold text-white">Choose your plan</h3>
             <p class="text-gray-400">Pick the hosting tier that fits your needs.</p>
           </li>
           <!-- Step 2 -->
           <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-lime-400 rounded-full text-gray-900 text-2xl font-bold">2</div>
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-cyan-400 rounded-full text-gray-900 text-2xl font-bold">2</div>
             <h3 class="mb-2 text-xl font-bold text-white">Get instant access</h3>
             <p class="text-gray-400">Your server is provisioned and ready in minutes.</p>
           </li>
           <!-- Step 3 -->
           <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-lime-400 rounded-full text-gray-900 text-2xl font-bold">3</div>
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-cyan-400 rounded-full text-gray-900 text-2xl font-bold">3</div>
             <h3 class="mb-2 text-xl font-bold text-white">Deploy your site</h3>
             <p class="text-gray-400">DIY or let us handle the setup — your choice.</p>
           </li>
@@ -967,7 +967,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <div class="max-w-screen-sm px-4 mx-auto text-center sm:px-6 lg:px-8">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
         <p class="mb-8 text-lg text-gray-400">Join the founding customers and lock in lifetime pricing.</p>
-        <a href="/pricing" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-lime-400 rounded-lg hover:bg-lime-500 focus:ring-4 focus:ring-lime-300 transition-all">
+        <a href="/pricing" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-cyan-400 rounded-lg hover:bg-cyan-500 focus:ring-4 focus:ring-cyan-300 transition-all">
           View Pricing
           <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
