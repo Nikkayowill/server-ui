@@ -13,6 +13,7 @@ function getHTMLHead(title) {
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/nav.css">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -35,6 +36,7 @@ function getDashboardHead(title) {
     <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </head>
 <body>
     <div class="matrix-bg"></div>
