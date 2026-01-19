@@ -54,7 +54,7 @@ ${getHTMLHead('Terms of Service - Basement')}
   .terms-content {
     max-width: 900px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 120px 20px 40px 20px;
     color: #e2e8f0;
     line-height: 1.8;
   }
@@ -334,6 +334,7 @@ ${getHTMLHead('Terms of Service - Basement')}
     </div>
     
     ${getFooter()}
+    ${getScripts('nav.js')}
 </body>
 </html>
   `);
@@ -627,47 +628,53 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">General</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What services does Clouded Basement Hosting provide?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">Clouded Basement Hosting offers cloud infrastructure services including virtual private servers (VPS), domain management, automated deployment tools, and technical support. Our platform is designed to make hosting accessible for developers and businesses of all sizes.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">Clouded Basement Hosting offers cloud infrastructure services including virtual private servers (VPS), domain management, automated deployment tools, and technical support. Our platform is designed to make hosting accessible for developers and businesses of all sizes.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">How do I get started?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400 mb-4">Getting started is simple:</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-400">
-                        <li>Create a free account on our platform</li>
-                        <li>Choose a service plan that fits your needs</li>
-                        <li>Complete the secure checkout process</li>
-                        <li>Access your dashboard immediately after payment</li>
-                    </ul>
-                    <p class="text-gray-400 mt-4">Our support team will reach out within 24 hours to guide you through onboarding.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400 mb-4">Getting started is simple:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
+                            <li>Create a free account on our platform</li>
+                            <li>Choose a service plan that fits your needs</li>
+                            <li>Complete the secure checkout process</li>
+                            <li>Access your dashboard immediately after payment</li>
+                        </ul>
+                        <p class="text-gray-400 mt-4">Our support team will reach out within 24 hours to guide you through onboarding.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Is my data secure?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400 mb-4">Absolutely. We take security seriously:</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-400">
-                        <li>All passwords are encrypted using industry-standard bcrypt hashing</li>
-                        <li>Payment processing is handled by Stripe, a PCI-DSS Level 1 certified provider</li>
-                        <li>We never store your credit card information</li>
-                        <li>Session data is secured with HTTP-only cookies</li>
-                    </ul>
-                    <p class="text-gray-400 mt-4">Read our <a href="/privacy" class="text-cyan-400 underline">Privacy Policy</a> for complete details.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400 mb-4">Absolutely. We take security seriously:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
+                            <li>All passwords are encrypted using industry-standard bcrypt hashing</li>
+                            <li>Payment processing is handled by Stripe, a PCI-DSS Level 1 certified provider</li>
+                            <li>We never store your credit card information</li>
+                            <li>Session data is secured with HTTP-only cookies</li>
+                        </ul>
+                        <p class="text-gray-400 mt-4">Read our <a href="/privacy" class="text-cyan-400 underline">Privacy Policy</a> for complete details.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -675,43 +682,51 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">Pricing & Billing</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What payment methods do you accept?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">We accept all major credit and debit cards through our secure payment processor, Stripe. This includes Visa, Mastercard, American Express, and Discover.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">We accept all major credit and debit cards through our secure payment processor, Stripe. This includes Visa, Mastercard, American Express, and Discover.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Can I change my plan later?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">Yes! You can upgrade or downgrade your plan at any time from your dashboard. Changes take effect immediately, and billing is prorated based on your current billing cycle.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">Yes! You can upgrade or downgrade your plan at any time from your dashboard. Changes take effect immediately, and billing is prorated based on your current billing cycle.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Do you offer refunds?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">We offer a 14-day money-back guarantee for all new subscriptions. If you're not satisfied within the first 14 days, contact our support team for a full refund. After 14 days, refunds are evaluated on a case-by-case basis.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">We offer a 14-day money-back guarantee for all new subscriptions. If you're not satisfied within the first 14 days, contact our support team for a full refund. After 14 days, refunds are evaluated on a case-by-case basis.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Is there a free trial?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">While we don't offer a traditional free trial, our Basic plan starts at just $20/month with no long-term commitment. You can cancel anytime, and our 14-day money-back guarantee gives you risk-free opportunity to try our services.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">While we don't offer a traditional free trial, our Basic plan starts at just $20/month with no long-term commitment. You can cancel anytime, and our 14-day money-back guarantee gives you risk-free opportunity to try our services.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -719,45 +734,51 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">Support</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">How fast is your support response time?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400 mb-4">Response times vary by plan:</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-400">
-                        <li><strong class="text-white">Basic:</strong> 24-48 hours via email support</li>
-                        <li><strong class="text-white">Priority:</strong> 12 hours with priority queue access</li>
-                        <li><strong class="text-white">Premium:</strong> Dedicated support with custom response times</li>
-                    </ul>
-                    <p class="text-gray-400 mt-4">Critical issues are prioritized across all plans.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400 mb-4">Response times vary by plan:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
+                            <li><strong class="text-white">Basic:</strong> 24-48 hours via email support</li>
+                            <li><strong class="text-white">Priority:</strong> 12 hours with priority queue access</li>
+                            <li><strong class="text-white">Premium:</strong> Dedicated support with custom response times</li>
+                        </ul>
+                        <p class="text-gray-400 mt-4">Critical issues are prioritized across all plans.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What support channels are available?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400 mb-4">We offer multiple support channels:</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-400">
-                        <li>Email support (all plans)</li>
-                        <li>Contact form on our website</li>
-                        <li>Direct chat access (Priority and Premium plans)</li>
-                        <li>Phone support (Premium plan only)</li>
-                    </ul>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400 mb-4">We offer multiple support channels:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
+                            <li>Email support (all plans)</li>
+                            <li>Contact form on our website</li>
+                            <li>Direct chat access (Priority and Premium plans)</li>
+                            <li>Phone support (Premium plan only)</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Do you provide training or onboarding?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">Yes! All new customers receive an onboarding guide and access to our documentation. Priority and Premium plans include personalized onboarding sessions with our team to ensure you get the most out of our services.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">Yes! All new customers receive an onboarding guide and access to our documentation. Priority and Premium plans include personalized onboarding sessions with our team to ensure you get the most out of our services.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -765,33 +786,39 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">Account Management</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">How do I cancel my subscription?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">You can cancel your subscription anytime from your dashboard. Navigate to Settings > Billing > Cancel Subscription. Your services will remain active until the end of your current billing period.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">You can cancel your subscription anytime from your dashboard. Navigate to Settings > Billing > Cancel Subscription. Your services will remain active until the end of your current billing period.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Can I change my email address?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">Yes, you can update your email address from your account settings. You'll need to verify your new email address before the change takes effect.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">Yes, you can update your email address from your account settings. You'll need to verify your new email address before the change takes effect.</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What happens if I forget my password?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
-                    <p class="text-gray-400">Click "Forgot Password" on the login page. We'll send a secure reset link to your registered email address. Follow the link to create a new password.</p>
+                <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                    <div class="px-6 pb-6">
+                        <p class="text-gray-400">Click "Forgot Password" on the login page. We'll send a secure reset link to your registered email address. Follow the link to create a new password.</p>
+                    </div>
                 </div>
             </div>
         </div>
