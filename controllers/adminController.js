@@ -20,7 +20,6 @@ const listUsers = async (req, res) => {
 
     res.send(`
 ${getHTMLHead('Admin Dashboard')}
-    <link rel="stylesheet" href="/css/dashboard.css">
     <style>
       .admin-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
       main.dashboard { flex: 1; padding: 120px 24px 60px 24px; max-width: 1400px; margin: 0 auto; width: 100%; }

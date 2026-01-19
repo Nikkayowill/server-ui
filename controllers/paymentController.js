@@ -153,7 +153,6 @@ exports.paymentSuccess = async (req, res) => {
 
   res.send(`
 ${getHTMLHead('Payment Successful - Basement')}
-    <link rel="stylesheet" href="/css/payment.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -189,7 +188,6 @@ ${getHTMLHead('Payment Successful - Basement')}
 exports.paymentCancel = (req, res) => {
   res.send(`
 ${getHTMLHead('Payment Cancelled - Basement')}
-    <link rel="stylesheet" href="/css/payment.css">
 </head>
 <body>
     <div class="matrix-bg"></div>

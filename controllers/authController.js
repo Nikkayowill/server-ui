@@ -10,7 +10,6 @@ const { sendConfirmationEmail } = require('../services/email');
 const showRegister = (req, res) => {
   res.send(`
 ${getHTMLHead('Register - Basement')}
-    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -110,7 +109,6 @@ const showLogin = (req, res) => {
   
   res.send(`
 ${getHTMLHead('Login - Basement')}
-    <link rel="stylesheet" href="/css/auth.css">
     <style>
       .flash-message {
         position: fixed;
@@ -278,7 +276,6 @@ const confirmEmail = async (req, res) => {
     if (userResult.rows.length === 0) {
       return res.status(400).send(`
 ${getHTMLHead('Invalid Token - Basement')}
-    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -303,7 +300,6 @@ ${getHTMLHead('Invalid Token - Basement')}
       return res.status(400).send(`
 ${getHTMLHead('Token Expired - Basement')}
     <link rel="stylesheet" href="/css/auth.css">
-</head>
 <body>
     <div class="matrix-bg"></div>
     ${getResponsiveNav(req)}
@@ -324,7 +320,6 @@ ${getHTMLHead('Token Expired - Basement')}
     if (user.email_confirmed) {
       return res.status(400).send(`
 ${getHTMLHead('Already Confirmed - Basement')}
-    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -350,7 +345,6 @@ ${getHTMLHead('Already Confirmed - Basement')}
 
     res.send(`
 ${getHTMLHead('Email Confirmed - Basement')}
-    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -406,7 +400,6 @@ const showVerifyCode = (req, res) => {
   res.send(`
 ${getHTMLHead('Verify Code - Basement')}
     <link rel="stylesheet" href="/css/auth.css">
-</head>
 <body>
     <div class="matrix-bg"></div>
     
