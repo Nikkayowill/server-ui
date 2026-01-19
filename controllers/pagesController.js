@@ -783,8 +783,8 @@ exports.showHome = async (req, res) => {
   
   res.send(`
 ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
-    <link rel="stylesheet" href="/css/home.css">
     <style>
+      /* Flash Message */
       .flash-message {
         position: fixed;
         top: 100px;
@@ -803,422 +803,33 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         max-width: 400px;
         text-align: center;
       }
-      .flash-message.fade-out {
-        animation: fadeOut 0.5s ease-out forwards;
-      }
+      .flash-message.fade-out { animation: fadeOut 0.5s ease-out forwards; }
       .flash-close {
-        position: absolute;
-        top: 6px;
-        right: 8px;
-        background: none;
-        border: none;
-        color: var(--glow);
-        font-size: 18px;
-        cursor: pointer;
-        padding: 2px 6px;
-        line-height: 1;
-        opacity: 0.5;
-        transition: opacity 0.2s;
+        position: absolute; top: 6px; right: 8px; background: none; border: none;
+        color: var(--glow); font-size: 18px; cursor: pointer; padding: 2px 6px;
+        line-height: 1; opacity: 0.5; transition: opacity 0.2s;
       }
-      .flash-close:hover {
-        opacity: 1;
-      }
+      .flash-close:hover { opacity: 1; }
       @keyframes slideDown {
-        from {
-          transform: translate(-50%, -100px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(-50%);
-          opacity: 1;
-        }
+        from { transform: translate(-50%, -100px); opacity: 0; }
+        to { transform: translateX(-50%); opacity: 1; }
       }
-      @keyframes fadeOut {
-        to {
-          opacity: 0;
-          transform: translate(-50%, -50px);
-        }
-      }
+      @keyframes fadeOut { to { opacity: 0; transform: translate(-50%, -50px); } }
       
-      .founder-section {
-        max-width: 700px;
-        margin: 0 auto 100px;
-        padding: 48px 40px;
-        background: linear-gradient(135deg, rgba(45, 167, 223, 0.15) 0%, rgba(32, 177, 220, 0.08) 100%);
-        border: 2px solid rgba(45, 167, 223, 0.4);
-        border-radius: 12px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 0 60px rgba(45, 167, 223, 0.3), inset 0 0 60px rgba(45, 167, 223, 0.05);
-        animation: pulse-glow 3s ease-in-out infinite;
-      }
-      
+      /* Founder Card Animation */
       @keyframes pulse-glow {
         0%, 100% {
-          box-shadow: 0 0 60px rgba(45, 167, 223, 0.3), inset 0 0 60px rgba(45, 167, 223, 0.05);
+          box-shadow: 0 0 60px rgba(45, 167, 223, 0.3);
           border-color: rgba(45, 167, 223, 0.4);
         }
         50% {
-          box-shadow: 0 0 80px rgba(45, 167, 223, 0.5), inset 0 0 80px rgba(45, 167, 223, 0.1);
+          box-shadow: 0 0 80px rgba(45, 167, 223, 0.5);
           border-color: rgba(45, 167, 223, 0.6);
         }
       }
-      
-      .founder-section::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent 30%, rgba(45, 167, 223, 0.1) 50%, transparent 70%);
-        animation: shimmer 3s linear infinite;
-        pointer-events: none;
-      }
-      
-      @keyframes shimmer {
-        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-      }
-      
-      .founder-section .badge {
-        display: inline-block;
-        padding: 10px 20px;
-        background: linear-gradient(135deg, #2DA7DF 0%, #20B1DC 100%);
-        color: #000;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        border-radius: 6px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(45, 167, 223, 0.4);
-        animation: badge-pulse 2s ease-in-out infinite;
-        position: relative;
-        z-index: 1;
-      }
-      
-      @keyframes badge-pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-      }
-      
-      .founder-section h2 {
-        font-size: 32px;
-        margin-bottom: 16px;
-        color: #fff;
-        position: relative;
-        z-index: 1;
-      }
-      
-      .founder-section .price {
-        font-size: 48px;
-        font-weight: 700;
-        color: #2DA7DF;
-        margin: 16px 0;
-        text-shadow: 0 0 20px rgba(45, 167, 223, 0.6);
-        position: relative;
-        z-index: 1;
-      }
-      
-      .founder-section .price small {
-        font-size: 20px;
-        color: #8892a0;
-      }
-      
-      .founder-section p {
-        color: #a0a8b8;
-        font-size: 15px;
-        margin-bottom: 24px;
-        position: relative;
-        z-index: 1;
-      }
-      
-      .spots-counter {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        padding: 16px 28px;
-        background: rgba(0, 0, 0, 0.4);
-        border: 1px solid rgba(45, 167, 223, 0.3);
-        border-radius: 8px;
-        margin: 20px 0;
-        font-size: 18px;
-        font-weight: 600;
-        color: #fff;
-        position: relative;
-        z-index: 1;
-      }
-      
-      .spots-counter .number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #2DA7DF;
-        text-shadow: 0 0 10px rgba(45, 167, 223, 0.8);
-        animation: number-pulse 1.5s ease-in-out infinite;
-      }
-      
-      @keyframes number-pulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.1); opacity: 0.9; }
-      }
-      
-      .founder-section .btn {
-        margin-top: 24px;
-        padding: 16px 48px;
-        font-size: 16px;
-        font-weight: 600;
-        background: linear-gradient(135deg, #2DA7DF 0%, #20B1DC 100%);
-        border: none;
-        box-shadow: 0 6px 25px rgba(45, 167, 223, 0.4);
-        position: relative;
-        z-index: 1;
-        animation: cta-pulse 2.5s ease-in-out infinite;
-      }
-      
-      .founder-section .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(45, 167, 223, 0.6);
-      }
-      
-      @keyframes cta-pulse {
-        0%, 100% { box-shadow: 0 6px 25px rgba(45, 167, 223, 0.4); }
-        50% { box-shadow: 0 8px 35px rgba(45, 167, 223, 0.6); }
-      }
-      
-      /* Responsive: Tablet */
-      @media (max-width: 768px) {
-        .founder-section {
-          max-width: 90%;
-          padding: 36px 28px;
-          margin: 0 auto 80px;
-        }
-        
-        .founder-section h2 {
-          font-size: 26px;
-        }
-        
-        .founder-section .price {
-          font-size: 40px;
-        }
-        
-        .spots-counter {
-          font-size: 16px;
-          padding: 14px 24px;
-        }
-        
-        .spots-counter .number {
-          font-size: 28px;
-        }
-        
-        .founder-section .btn {
-          padding: 14px 36px;
-          font-size: 15px;
-        }
-      }
-      
-      /* Responsive: Mobile */
-      @media (max-width: 480px) {
-        .founder-section {
-          padding: 28px 20px;
-          margin: 0 auto 60px;
-        }
-        
-        .founder-section .badge {
-          font-size: 10px;
-          padding: 8px 16px;
-          letter-spacing: 1px;
-        }
-        
-        .founder-section h2 {
-          font-size: 22px;
-          margin-bottom: 12px;
-        }
-        
-        .founder-section .price {
-          font-size: 36px;
-          margin: 12px 0;
-        }
-        
-        .founder-section .price small {
-          font-size: 16px;
-        }
-        
-        .founder-section p {
-          font-size: 14px;
-          margin-bottom: 20px;
-        }
-        
-        .spots-counter {
-          flex-direction: column;
-          gap: 8px;
-          font-size: 14px;
-          padding: 16px 20px;
-        }
-        
-        .spots-counter .number {
-          font-size: 42px;
-        }
-        
-        .founder-section .btn {
-          width: 100%;
-          padding: 16px 24px;
-          font-size: 15px;
-        }
-      }
-      
-      .section { max-width: 1100px; margin: 0 auto; padding: 80px 5vw; }
-      .section-title { text-align: center; font-size: 36px; margin-bottom: 48px; color: #fff; }
-      
-      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 60px; }
-      .card { padding: 32px 24px; background: rgba(2, 8, 20, 0.6); border: 1px solid rgba(45, 167, 223, 0.1);
-          border-radius: 8px; transition: .3s; }
-      .card:hover { border-color: rgba(45, 167, 223, 0.3); transform: translateY(-4px); }
-      .card h3 { font-size: 18px; margin-bottom: 12px; color: var(--glow); }
-      .card p { color: #8892a0; font-size: 14px; line-height: 1.6; }
-      
-      .features { max-width: 600px; margin: 0 auto; }
-      .features ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; list-style: none; }
-      .features li { padding: 16px; background: rgba(2, 8, 20, 0.4); border: 1px solid rgba(45, 167, 223, 0.08);
-          border-radius: 6px; color: #a0a8b8; font-size: 14px; display: flex; align-items: center; gap: 12px; }
-      .features li::before { content: "✓"; color: var(--glow); font-weight: 700; font-size: 16px; }
-      
-      .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; text-align: center; }
-      .step { padding: 24px; }
-      .step-number { width: 48px; height: 48px; margin: 0 auto 16px; background: var(--glow); color: #000;
-          border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; }
-      .step h3 { font-size: 18px; margin-bottom: 8px; color: #fff; }
-      .step p { color: #8892a0; font-size: 14px; }
-      
-      .cta-final { text-align: center; padding: 60px 5vw; background: rgba(45, 167, 223, 0.03); border-top: 1px solid rgba(45, 167, 223, 0.1); }
-      
-      /* Responsive: Tablet */
-      @media (max-width: 768px) {
-        .section {
-          padding: 60px 5vw;
-        }
-        
-        .section-title {
-          font-size: 28px;
-          margin-bottom: 36px;
-        }
-        
-        .cards {
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 20px;
-          margin-bottom: 48px;
-        }
-        
-        .card {
-          padding: 24px 20px;
-        }
-        
-        .features ul {
-          grid-template-columns: 1fr;
-        }
-        
-        .steps {
-          grid-template-columns: 1fr;
-          gap: 24px;
-        }
-        
-        .cta-final {
-          padding: 48px 5vw;
-        }
-      }
-      
-      /* Responsive: Mobile */
-      @media (max-width: 480px) {
-        .section {
-          padding: 40px 20px;
-          max-width: 100%;
-        }
-        
-        .section-title {
-          font-size: 22px;
-          margin-bottom: 28px;
-          line-height: 1.3;
-        }
-        
-        .cards {
-          grid-template-columns: 1fr;
-          gap: 14px;
-          margin-bottom: 36px;
-        }
-        
-        .card {
-          padding: 20px 16px;
-        }
-        
-        .card h3 {
-          font-size: 15px;
-          margin-bottom: 10px;
-        }
-        
-        .card p {
-          font-size: 12px;
-          line-height: 1.5;
-        }
-        
-        .features {
-          max-width: 100%;
-          padding: 0 10px;
-        }
-        
-        .features ul {
-          gap: 10px;
-        }
-        
-        .features li {
-          padding: 12px 14px;
-          font-size: 12px;
-        }
-        
-        .features li::before {
-          font-size: 14px;
-        }
-        
-        .step {
-          padding: 16px;
-        }
-        
-        .step-number {
-          width: 38px;
-          height: 38px;
-          font-size: 18px;
-          margin-bottom: 10px;
-        }
-        
-        .step h3 {
-          font-size: 15px;
-          margin-bottom: 6px;
-        }
-        
-        .step p {
-          font-size: 12px;
-          line-height: 1.5;
-        }
-        
-        .cta-final {
-          padding: 36px 20px;
-        }
-        
-        .cta-final h2 {
-          font-size: 20px;
-          margin-bottom: 12px;
-        }
-        
-        .cta-final p {
-          font-size: 13px;
-          max-width: 90%;
-          margin: 0 auto 20px;
-        }
-      }
-      
     </style>
 </head>
-<body>
+<body class="bg-gray-900">
     <div class="matrix-bg"></div>
     
     ${flashMessage ? `
@@ -1241,90 +852,158 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     
     ${getResponsiveNav(req)}
     
-    <section class="hero">
-        <h1>Clouded Basement</h1>
-        <p class="sub">Fast, simple cloud hosting without the corporate noise.</p>
-        <p class="sub" style="margin-top: -20px;">Spin up real servers, deploy your apps, stay in control.</p>
-        <p style="font-size: 14px; color: var(--glow); margin-bottom: 36px; font-weight: 500;">Founding Customer Offer — $10/month for life</p>
-        <div class="cta-group">
-            <a href="/pricing" class="btn primary">View Pricing</a>
-            <a href="/docs" class="btn">Documentation</a>
+    <!-- Hero Section with Flowbite -->
+    <section class="bg-gray-900">
+      <div class="py-8 px-4 mx-auto max-w-7xl text-center lg:py-16 lg:px-12">
+        <a href="/pricing" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-lime-400 rounded-full hover:bg-lime-500 transition-all">
+          <span class="text-xs bg-gray-900 rounded-full text-lime-400 px-4 py-1.5 mr-3">⚡ Founding Offer</span>
+          <span class="text-sm font-medium text-gray-900">$10/month for life — Only ${foundersRemaining} spots left</span>
+          <svg class="ml-2 w-5 h-5 text-gray-900" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+          </svg>
+        </a>
+        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">Clouded Basement</h1>
+        <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 xl:px-48">Fast, simple cloud hosting without the corporate noise. Spin up real servers, deploy your apps, stay in control.</p>
+        <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+          <a href="/pricing" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg bg-lime-400 hover:bg-lime-500 focus:ring-4 focus:ring-lime-300 transition-all">
+            View Pricing
+            <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </a>
+          <a href="/docs" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-800 hover:border-gray-600 focus:ring-4 focus:ring-gray-800 transition-all">
+            Documentation
+          </a>
         </div>
+      </div>
     </section>
-    
-    <div class="founder-section">
-        <div class="badge">⚡ LIMITED TIME OFFER ⚡</div>
-        <h2>Founding Customer Plan</h2>
-        <div class="price">$10<small>/month</small></div>
-        <p style="font-size: 17px; font-weight: 500; color: #fff;">Lock in this price for life. Full access to every feature, forever.</p>
-        <div class="spots-counter">
-            <span class="number">${foundersRemaining}</span>
-            <span>spots remaining out of 10</span>
+
+    <!-- Founder Plan Card (Flowbite Card with custom animation) -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+      <div class="relative overflow-hidden p-8 md:p-12 bg-linear-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-500/40 rounded-xl text-center" style="box-shadow: 0 0 60px rgba(45, 167, 223, 0.3); animation: pulse-glow 3s ease-in-out infinite;">
+        <span class="inline-flex items-center justify-center px-3 py-1 mb-4 text-xs font-bold text-gray-900 bg-linear-to-r from-cyan-400 to-cyan-500 rounded-full">⚡ LIMITED TIME OFFER ⚡</span>
+        <h2 class="mb-2 text-3xl md:text-4xl font-extrabold text-white">Founding Customer Plan</h2>
+        <div class="my-6">
+          <span class="text-5xl md:text-6xl font-bold text-cyan-400">$10</span>
+          <span class="text-xl text-gray-400">/month</span>
         </div>
-        <a href="/pricing" class="btn primary">Claim Your Spot →</a>
+        <p class="mb-6 text-base md:text-lg text-gray-300">Lock in this price for life. Full access to every feature, forever.</p>
+        <div class="inline-flex items-center gap-3 px-6 py-4 mb-6 bg-gray-900/50 border border-cyan-500/30 rounded-lg">
+          <span class="text-4xl md:text-5xl font-bold text-cyan-400">${foundersRemaining}</span>
+          <span class="text-sm md:text-base text-gray-300">spots remaining out of 10</span>
+        </div>
+        <div class="mt-8">
+          <a href="/pricing" class="w-full sm:w-auto inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-linear-to-r from-cyan-400 to-cyan-500 rounded-lg hover:from-cyan-500 hover:to-cyan-600 focus:ring-4 focus:ring-cyan-300 transition-all">
+            Claim Your Spot
+            <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
-    
-    <section class="section">
-        <h2 class="section-title">Why Choose Clouded Basement</h2>
-        <div class="cards">
-            <div class="card">
-                <h3>Personal Support</h3>
-                <p>You talk to the person who built the platform.</p>
-            </div>
-            <div class="card">
-                <h3>Fast, Clean Infrastructure</h3>
-                <p>No noisy neighbors. No overselling.</p>
-            </div>
-            <div class="card">
-                <h3>Transparent Pricing</h3>
-                <p>No hidden fees. No surprise renewals.</p>
-            </div>
-            <div class="card">
-                <h3>Indie-Built, Indie-Powered</h3>
-                <p>Hosting with personality, not corporate scripts.</p>
-            </div>
+
+    <!-- Why Choose Section with Flowbite Cards -->
+    <section class="bg-gray-900 py-12 md:py-20">
+      <div class="max-w-7xl px-4 mx-auto sm:px-6 lg:px-8">
+        <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement</h2>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <!-- Card 1 -->
+          <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
+            <h3 class="mb-2 text-xl font-bold text-lime-400">Personal Support</h3>
+            <p class="text-gray-400">You talk to the person who built the platform.</p>
+          </div>
+          <!-- Card 2 -->
+          <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
+            <h3 class="mb-2 text-xl font-bold text-lime-400">Fast, Clean Infrastructure</h3>
+            <p class="text-gray-400">No noisy neighbors. No overselling.</p>
+          </div>
+          <!-- Card 3 -->
+          <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
+            <h3 class="mb-2 text-xl font-bold text-lime-400">Transparent Pricing</h3>
+            <p class="text-gray-400">No hidden fees. No surprise renewals.</p>
+          </div>
+          <!-- Card 4 -->
+          <div class="p-6 bg-gray-800/50 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:-translate-y-1 transition-all">
+            <h3 class="mb-2 text-xl font-bold text-lime-400">Indie-Built, Indie-Powered</h3>
+            <p class="text-gray-400">Hosting with personality, not corporate scripts.</p>
+          </div>
         </div>
+      </div>
     </section>
-    
-    <section class="section">
-        <h2 class="section-title">What You Get</h2>
-        <div class="features">
-            <ul>
-                <li>Full hosting environment</li>
-                <li>SSD storage</li>
-                <li>Secure isolation</li>
-                <li>Free setup</li>
-                <li>Modern dashboard</li>
-                <li>All future features included</li>
-            </ul>
-        </div>
+
+    <!-- Features List -->
+    <section class="bg-gray-900 py-12 md:py-20">
+      <div class="max-w-3xl px-4 mx-auto sm:px-6 lg:px-8">
+        <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">What You Get</h2>
+        <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
+            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-gray-300">Full hosting environment</span>
+          </li>
+          <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
+            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-gray-300">SSD storage</span>
+          </li>
+          <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
+            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-gray-300">Secure isolation</span>
+          </li>
+          <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
+            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-gray-300">Free setup</span>
+          </li>
+          <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
+            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-gray-300">Modern dashboard</span>
+          </li>
+          <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
+            <span class="text-lime-400 text-xl font-bold">✓</span>
+            <span class="text-gray-300">All future features included</span>
+          </li>
+        </ul>
+      </div>
     </section>
-    
-    <section class="section">
-        <h2 class="section-title">How It Works</h2>
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <h3>Choose your plan</h3>
-                <p>Pick the hosting tier that fits your needs.</p>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <h3>Get instant access</h3>
-                <p>Your server is provisioned and ready in minutes.</p>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <h3>Deploy your site</h3>
-                <p>DIY or let us handle the setup — your choice.</p>
-            </div>
-        </div>
+
+    <!-- How It Works with Timeline -->
+    <section class="bg-gray-900 py-12 md:py-20">
+      <div class="max-w-7xl px-4 mx-auto sm:px-6 lg:px-8">
+        <h2 class="mb-16 text-3xl md:text-4xl font-extrabold text-center text-white">How It Works</h2>
+        <ol class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          <!-- Step 1 -->
+          <li class="relative text-center">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-lime-400 rounded-full text-gray-900 text-2xl font-bold">1</div>
+            <h3 class="mb-2 text-xl font-bold text-white">Choose your plan</h3>
+            <p class="text-gray-400">Pick the hosting tier that fits your needs.</p>
+          </li>
+          <!-- Step 2 -->
+          <li class="relative text-center">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-lime-400 rounded-full text-gray-900 text-2xl font-bold">2</div>
+            <h3 class="mb-2 text-xl font-bold text-white">Get instant access</h3>
+            <p class="text-gray-400">Your server is provisioned and ready in minutes.</p>
+          </li>
+          <!-- Step 3 -->
+          <li class="relative text-center">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-lime-400 rounded-full text-gray-900 text-2xl font-bold">3</div>
+            <h3 class="mb-2 text-xl font-bold text-white">Deploy your site</h3>
+            <p class="text-gray-400">DIY or let us handle the setup — your choice.</p>
+          </li>
+        </ol>
+      </div>
     </section>
-    
-    <section class="cta-final">
-        <h2 style="font-size: 32px; margin-bottom: 16px; color: #fff;">Ready to get started?</h2>
-        <p style="color: #8892a0; margin-bottom: 32px;">Join the founding customers and lock in lifetime pricing.</p>
-        <a href="/pricing" class="btn primary">View Pricing</a>
+
+    <!-- Final CTA Section -->
+    <section class="bg-cyan-900/10 border-t border-cyan-500/10 py-16">
+      <div class="max-w-screen-sm px-4 mx-auto text-center sm:px-6 lg:px-8">
+        <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
+        <p class="mb-8 text-lg text-gray-400">Join the founding customers and lock in lifetime pricing.</p>
+        <a href="/pricing" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-lime-400 rounded-lg hover:bg-lime-500 focus:ring-4 focus:ring-lime-300 transition-all">
+          View Pricing
+          <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+          </svg>
+        </a>
+      </div>
     </section>
     
     ${getFooter()}
