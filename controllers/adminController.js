@@ -30,12 +30,20 @@ ${getHTMLHead('Admin Dashboard')}
       .section { margin-bottom: 48px; }
       .section-title { font-size: 24px; color: var(--glow); margin: 0 0 16px 0; font-weight: 600; }
       
-      .table-card { background: rgba(2, 8, 20, 0.8); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; padding: 24px; }
+      .table-card { background: rgba(2, 8, 20, 0.8); border: 1px solid rgba(136, 254, 0, 0.15); border-radius: 8px; padding: 24px; overflow-x: auto; }
       
-      table { width: 100%; border-collapse: collapse; }
+      table { width: 100%; border-collapse: collapse; min-width: 600px; }
       th { text-align: left; padding: 12px; color: #8892a0; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid rgba(136, 254, 0, 0.15); }
       td { padding: 12px; color: #e0e6f0; border-bottom: 1px solid rgba(136, 254, 0, 0.05); }
       tr:last-child td { border-bottom: none; }
+      
+      @media (max-width: 768px) {
+        main.dashboard { padding: 80px 16px 40px 16px; }
+        .admin-title { font-size: 28px; }
+        .section-title { font-size: 20px; }
+        .table-card { padding: 16px; }
+        th, td { padding: 8px; font-size: 12px; }
+      }
     </style>
 </head>
 <body class="bg-gray-900">
