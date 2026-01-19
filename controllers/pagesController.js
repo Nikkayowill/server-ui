@@ -853,10 +853,10 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     ${getResponsiveNav(req)}
     
     <!-- Hero Section with Flowbite -->
-    <section class="bg-gray-900">
+    <section class="bg-gray-900 pt-32">
       <div class="py-8 px-4 mx-auto max-w-7xl text-center lg:py-16 lg:px-12">
-        <a href="/pricing" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-lime-400 rounded-full hover:bg-lime-500 transition-all">
-          <span class="text-xs bg-gray-900 rounded-full text-lime-400 px-4 py-1.5 mr-3">⚡ Founding Offer</span>
+        <a href="/pricing" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-900 bg-cyan-400 rounded-full hover:bg-cyan-500 transition-all">
+          <span class="text-xs bg-gray-900 rounded-full text-cyan-400 px-4 py-1.5 mr-3">⚡ Founding Offer</span>
           <span class="text-sm font-medium text-gray-900">$10/month for life — Only ${foundersRemaining} spots left</span>
           <svg class="ml-2 w-5 h-5 text-gray-900" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -865,7 +865,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">Clouded Basement</h1>
         <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 xl:px-48">Fast, simple cloud hosting without the corporate noise. Spin up real servers, deploy your apps, stay in control.</p>
         <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-          <a href="/pricing" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg bg-lime-400 hover:bg-lime-500 focus:ring-4 focus:ring-lime-300 transition-all">
+          <a href="/pricing" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg bg-cyan-400 hover:bg-cyan-500 focus:ring-4 focus:ring-cyan-300 transition-all">
             View Pricing
             <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
