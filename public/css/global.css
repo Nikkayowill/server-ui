@@ -198,6 +198,7 @@ code {
         border-radius: 0 !important;
         padding: 16px 20px !important;
         max-width: 100% !important;
+        z-index: 1001 !important;
     }
     
     .hamburger {
@@ -206,7 +207,6 @@ code {
     
     .nav-links {
         position: fixed !important;
-        display: flex !important;
         top: 0 !important;
         right: -100% !important;
         width: 280px !important;
@@ -218,10 +218,12 @@ code {
         transition: right 0.3s ease !important;
         box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5) !important;
         z-index: 1000 !important;
+        display: none !important;
     }
     
     .nav-links.active {
         right: 0 !important;
+        display: flex !important;
     }
     
     .nav-links li {

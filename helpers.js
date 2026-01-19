@@ -128,14 +128,14 @@ function getResponsiveNav(req) {
             <a href="/" class="text-xl font-bold text-cyan-400 flex-shrink-0">
                 <img src="/logo.svg" alt="Clouded Basement" class="h-10 w-auto block">
             </a>
+            <ul class="nav-links flex gap-10 list-none m-0 p-0">
+                ${navLinks}
+            </ul>
             <button class="hamburger hidden flex-col gap-1.5 bg-transparent border-0 cursor-pointer p-2 flex-shrink-0 z-[1001] ml-auto w-10 h-10 justify-center items-center" aria-label="Toggle menu">
                 <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
                 <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
                 <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
             </button>
-            <ul class="nav-links flex gap-10 list-none m-0 p-0">
-                ${navLinks}
-            </ul>
         </div>
     </nav>
   `;
