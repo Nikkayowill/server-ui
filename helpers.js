@@ -11,7 +11,6 @@ function getHTMLHead(title) {
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/components.css">
-    <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="/css/tailwind.css">
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </head>
@@ -33,7 +32,6 @@ function getDashboardHead(title) {
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/components.css">
-    <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="/css/tailwind.css">
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
@@ -89,16 +87,18 @@ function getFooter() {
 
 // Auth Links
 function getAuthLinks(req) {
+  const linkClass = 'uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]';
+  
   if (req.session.userId) {
     const isAdmin = req.session.userRole === 'admin';
     
     if (isAdmin) {
-      return '<li><a href="/admin">Admin</a></li><li><a href="/logout">Logout</a></li>';
+      return `<li><a href="/admin" class="${linkClass}">Admin</a></li><li><a href="/logout" class="${linkClass}">Logout</a></li>`;
     } else {
-      return '<li><a href="/dashboard">Dashboard</a></li><li><a href="/logout">Logout</a></li>';
+      return `<li><a href="/dashboard" class="${linkClass}">Dashboard</a></li><li><a href="/logout" class="${linkClass}">Logout</a></li>`;
     }
   } else {
-    return '<li><a href="/login">Login</a></li>';
+    return `<li><a href="/login" class="${linkClass}">Login</a></li>`;
   }
 }
 
@@ -109,33 +109,33 @@ function getResponsiveNav(req) {
   let navLinks = '';
   if (isAdmin) {
     navLinks = `
-      <li><a href="/admin">Admin</a></li>
-      <li><a href="/docs">Docs</a></li>
-      <li><a href="/logout">Logout</a></li>
+      <li><a href="/admin" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Admin</a></li>
+      <li><a href="/docs" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Docs</a></li>
+      <li><a href="/logout" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Logout</a></li>
     `;
   } else {
     navLinks = `
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/docs">Docs</a></li>
-      <li><a href="/pricing">Pricing</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Home</a></li>
+      <li><a href="/about" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">About</a></li>
+      <li><a href="/docs" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Docs</a></li>
+      <li><a href="/pricing" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Pricing</a></li>
+      <li><a href="/contact" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Contact</a></li>
       ${getAuthLinks(req)}
     `;
   }
 
   return `
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <img src="/logo.svg" alt="Clouded Basement" style="height: 40px; width: auto; display: block;">
+    <nav class="fixed top-5 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-[1000] bg-gray-900/85 backdrop-blur-xl px-8 py-3 rounded-lg shadow-[0_0_30px_rgba(45,167,223,0.12)] border border-cyan-500/10">
+        <div class="flex justify-between items-center w-full">
+            <a href="/" class="text-xl font-bold text-cyan-400 flex-shrink-0">
+                <img src="/logo.svg" alt="Clouded Basement" class="h-10 w-auto block">
             </a>
-            <button class="hamburger" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="hamburger hidden flex-col gap-1.5 bg-transparent border-0 cursor-pointer p-2 flex-shrink-0 z-[1001] ml-auto w-10 h-10 justify-center items-center" aria-label="Toggle menu">
+                <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
+                <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
+                <span class="w-6 h-0.5 bg-cyan-400 transition-all duration-300 block"></span>
             </button>
-            <ul class="nav-links">
+            <ul class="nav-links flex gap-10 list-none m-0 p-0">
                 ${navLinks}
             </ul>
         </div>

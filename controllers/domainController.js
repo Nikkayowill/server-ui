@@ -17,7 +17,6 @@ const showDomainManagement = async (req, res) => {
     res.send(`
 ${getHTMLHead('Domain Management - Admin')}
     <link rel="stylesheet" href="/css/dashboard.css">
-    <link rel="stylesheet" href="/css/nav.css">
     <style>
       * { --glow: #88FE00; --bg-dark: #0a0812; --bg-card: rgba(2, 8, 20, 0.8); --border-light: rgba(136, 254, 0, 0.15); }
       

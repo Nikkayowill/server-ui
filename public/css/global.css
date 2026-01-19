@@ -64,3 +64,57 @@
         box-shadow: 0 0 80px rgba(45, 167, 223, 0.5); 
     }
 }
+
+/* Mobile Nav Toggle (JavaScript-controlled .active state) */
+@media (max-width: 768px) {
+    nav {
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        border-radius: 0 !important;
+        padding: 16px 20px !important;
+        max-width: 100% !important;
+    }
+    
+    .hamburger {
+        display: flex !important;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        flex-direction: column;
+        background: rgba(2, 8, 20, 0.98);
+        padding: 80px 30px 30px;
+        gap: 24px;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    .nav-links li a {
+        font-size: 14px !important;
+        display: block;
+        padding: 12px 0;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(7px, 7px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+}

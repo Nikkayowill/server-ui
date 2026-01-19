@@ -853,7 +853,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     ${getResponsiveNav(req)}
     
     <!-- Hero Section with Flowbite -->
-    <section class="bg-gray-900 pt-20 md:pt-32 lg:pt-36">
+    <section class="bg-gray-900 pt-24 md:pt-32 lg:pt-36">
       <div class="py-8 px-4 mx-auto max-w-7xl text-center lg:py-16 lg:px-12">
         <a href="/pricing" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-900 bg-cyan-400 rounded-full hover:bg-cyan-500 transition-all">
           <span class="text-xs bg-gray-900 rounded-full text-cyan-400 px-4 py-1.5 mr-3">⚡ Founding Offer</span>

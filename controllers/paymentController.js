@@ -15,7 +15,6 @@ exports.showCheckout = (req, res) => {
   
   res.send(`
 ${getHTMLHead('Checkout - Basement')}
-    <link rel="stylesheet" href="/css/nav.css">
     <style>
         .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.04; pointer-events: none; background: 
             repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(136, 254, 0, 0.03) 1px, rgba(136, 254, 0, 0.03) 2px),
