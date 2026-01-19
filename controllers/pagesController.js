@@ -670,7 +670,7 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p>Email support included with all plans. Higher tiers provide faster response times and direct chat access for urgent issues.</p>
         
-        <div class="bg-gradient-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-400/30 rounded-xl p-8 text-center my-12">
+        <div class="bg-linear-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-400/30 rounded-xl p-8 text-center my-12">
             <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
             <p class="text-gray-300 mb-6">All plans include a 14-day money-back guarantee.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -848,8 +848,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Founder Plan Card (Flowbite Card with custom animation) -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-      <div class="relative overflow-hidden p-8 md:p-12 bg-gradient-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-500/40 rounded-xl text-center" style="box-shadow: 0 0 60px rgba(45, 167, 223, 0.3); animation: pulse-glow 3s ease-in-out infinite;">
-        <span class="inline-flex items-center justify-center px-3 py-1 mb-4 text-xs font-bold text-gray-900 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-full">⚡ LIMITED TIME OFFER ⚡</span>
+      <div class="relative overflow-hidden p-8 md:p-12 bg-linear-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-500/40 rounded-xl text-center" style="box-shadow: 0 0 60px rgba(45, 167, 223, 0.3); animation: pulse-glow 3s ease-in-out infinite;">
+        <span class="inline-flex items-center justify-center px-3 py-1 mb-4 text-xs font-bold text-gray-900 bg-linear-to-r from-cyan-400 to-cyan-500 rounded-full">⚡ LIMITED TIME OFFER ⚡</span>
         <h2 class="mb-2 text-3xl md:text-4xl font-extrabold text-white">Founding Customer Plan</h2>
         <div class="my-6">
           <span class="text-5xl md:text-6xl font-bold text-cyan-400">$10</span>
@@ -861,7 +861,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           <span class="text-sm md:text-base text-gray-300">spots remaining out of 10</span>
         </div>
         <div class="mt-8">
-          <a href="/pricing" class="w-full sm:w-auto inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-lg hover:from-cyan-500 hover:to-cyan-600 focus:ring-4 focus:ring-cyan-300 transition-all">
+          <a href="/pricing" class="w-full sm:w-auto inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-linear-to-r from-cyan-400 to-cyan-500 rounded-lg hover:from-cyan-500 hover:to-cyan-600 focus:ring-4 focus:ring-cyan-300 transition-all">
             Claim Your Spot
             <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
