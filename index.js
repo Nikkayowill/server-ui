@@ -193,7 +193,7 @@ app.get('/admin', requireAuth, requireAdmin, adminController.listUsers);
 // app.get('/admin/audit-log', requireAuth, requireAdmin, adminController.viewAuditLog);
 // app.post('/admin/promote-user', requireAuth, requireAdmin, adminController.promoteUser);
 // app.post('/admin/demote-user', requireAuth, requireAdmin, adminController.demoteUser);
-app.delete('/admin/users/:id', requireAuth, requireAdmin, adminController.deleteUser);
+// app.delete('/admin/users/:id', requireAuth, requireAdmin, adminController.deleteUser);
 
 // Admin - domain management (API endpoints only - UI is in /admin/users)
 app.get('/admin/domains/list', requireAuth, requireAdmin, domainController.listDomains);
