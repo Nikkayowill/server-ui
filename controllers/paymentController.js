@@ -166,11 +166,11 @@ ${getHTMLHead('Payment Successful - Basement')}
             <h1>Payment Successful!</h1>
             <p class="subtitle">Thank you for your purchase. Your payment has been processed successfully.</p>
             
-            <div class="info-box">
-                <h3>What's Next?</h3>
-                <p><strong>Confirmation Email:</strong> You'll receive a confirmation email at ${req.session.userEmail || 'your registered email'} with your receipt and order details.</p>
-                <p><strong>Access:</strong> Your services are now active. You can access them immediately from your dashboard.</p>
-                <p><strong>Support:</strong> If you have any questions, our support team is ready to help you get started.</p>
+            <div class="bg-cyan-900/10 border border-cyan-500/20 rounded-lg p-6 my-6">
+                <h3 class="text-cyan-400 text-xl font-bold mb-3">What's Next?</h3>
+                <p class="text-gray-400 mb-3"><strong class="text-white">Confirmation Email:</strong> You'll receive a confirmation email at ${req.session.userEmail || 'your registered email'} with your receipt and order details.</p>
+                <p class="text-gray-400 mb-3"><strong class="text-white">Access:</strong> Your services are now active. You can access them immediately from your dashboard.</p>
+                <p class="text-gray-400"><strong class="text-white">Support:</strong> If you have any questions, our support team is ready to help you get started.</p>
             </div>
             
             <div class="btn-group">
@@ -202,11 +202,11 @@ ${getHTMLHead('Payment Cancelled - Basement')}
             <h1>Payment Cancelled</h1>
             <p class="subtitle">Your payment was cancelled and no charges were made to your account.</p>
             
-            <div class="info-box">
-                <h3>What Happened?</h3>
-                <p>You cancelled the payment process before it was completed. This is perfectly fine - no charges were processed.</p>
-                <p><strong>Need Help?</strong> If you encountered any issues during checkout or have questions about our pricing plans, please don't hesitate to contact us.</p>
-                <p><strong>Ready to Try Again?</strong> You can return to the pricing page to select a plan that works for you.</p>
+            <div class="bg-cyan-900/10 border border-cyan-500/20 rounded-lg p-6 my-6">
+                <h3 class="text-cyan-400 text-xl font-bold mb-3">What Happened?</h3>
+                <p class="text-gray-400 mb-3">You cancelled the payment process before it was completed. This is perfectly fine - no charges were processed.</p>
+                <p class="text-gray-400 mb-3"><strong class="text-white">Need Help?</strong> If you encountered any issues during checkout or have questions about our pricing plans, please don't hesitate to contact us.</p>
+                <p class="text-gray-400"><strong class="text-white">Ready to Try Again?</strong> You can return to the pricing page to select a plan that works for you.</p>
             </div>
             
             <div class="btn-group">

@@ -4,7 +4,6 @@ const pool = require('../db');
 exports.showAbout = (req, res) => {
   res.send(`
 ${getHTMLHead('About - Basement')}
-    <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -40,7 +39,7 @@ ${getHTMLHead('About - Basement')}
         
         <p style="margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(136, 254, 0, 0.1);">This is my capstone project and portfolio piece. If you're evaluating my work or have questions about the technical implementation, <a href="/contact" style="color: var(--glow); text-decoration: underline;">reach out</a>.</p>
         
-        <a href="/" class="link-back">Back to home</a>
+        <a href="/" class="inline-block mt-8 px-6 py-3 text-cyan-400 border border-cyan-400/30 rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Back to home</a>
     </div>
     
     ${getFooter()}
@@ -51,7 +50,6 @@ ${getHTMLHead('About - Basement')}
 exports.showTerms = (req, res) => {
   res.send(`
 ${getHTMLHead('Terms of Service - Basement')}
-    <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -61,7 +59,7 @@ ${getHTMLHead('Terms of Service - Basement')}
     <div class="content">
         <h1>Terms of Service</h1>
         <p>Put the real legalese here later.</p>
-        <a href="/" class="link-back">Back to home</a>
+        <a href="/" class="inline-block mt-8 px-6 py-3 text-cyan-400 border border-cyan-400/30 rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Back to home</a>
     </div>
     
     ${getFooter()}
@@ -73,91 +71,91 @@ ${getHTMLHead('Terms of Service - Basement')}
 exports.showPricing = (req, res) => {
   res.send(`
 ${getHTMLHead('Pricing - Basement')}
-    <link rel="stylesheet" href="/css/pricing.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
     
-    <section class="page-header">
-        <h1>Simple Pricing</h1>
-        <p>Real servers. Real specs. No surprises. Your bill will never exceed your plan.</p>
+    <section class="pt-32 pb-16 px-4 text-center">
+        <h1 class="text-5xl font-bold text-white mb-4">Simple Pricing</h1>
+        <p class="text-gray-400 text-lg">Real servers. Real specs. No surprises. Your bill will never exceed your plan.</p>
     </section>
     
-    <section class="pricing-grid">
-        <div class="plan">
-            <div class="plan-header">
-                <div class="plan-name">Basic</div>
-                <div class="plan-price">$25<span style="font-size: 16px;">/mo</span></div>
-                <div class="plan-cycle">Perfect for side projects</div>
+    <section class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-gray-800/30 border border-cyan-500/10 rounded-lg p-8 hover:border-cyan-500/30 transition-all">
+            <div class="border-b border-gray-700 pb-6 mb-6">
+                <div class="text-xl font-bold text-white mb-2">Basic</div>
+                <div class="text-4xl font-extrabold text-cyan-400 mb-1">$25<span class="text-base font-normal text-gray-400">/mo</span></div>
+                <div class="text-sm text-gray-400">Perfect for side projects</div>
             </div>
-            <ul class="plan-features">
-                <li><strong>1 GB RAM</strong></li>
-                <li><strong>1 CPU core</strong></li>
-                <li><strong>25 GB SSD storage</strong></li>
-                <li><strong>1 TB bandwidth</strong></li>
-                <li>Full SSH/root access</li>
-                <li>Daily automated backups</li>
-                <li>Security updates included</li>
-                <li>Web dashboard</li>
-                <li>Email support (48hr response)</li>
-                <li>Open source tools</li>
+            <ul class="space-y-3 mb-8 text-sm">
+                <li class="text-gray-300"><strong class="text-white">1 GB RAM</strong></li>
+                <li class="text-gray-300"><strong class="text-white">1 CPU core</strong></li>
+                <li class="text-gray-300"><strong class="text-white">25 GB SSD storage</strong></li>
+                <li class="text-gray-300"><strong class="text-white">1 TB bandwidth</strong></li>
+                <li class="text-gray-400">Full SSH/root access</li>
+                <li class="text-gray-400">Daily automated backups</li>
+                <li class="text-gray-400">Security updates included</li>
+                <li class="text-gray-400">Web dashboard</li>
+                <li class="text-gray-400">Email support (48hr response)</li>
+                <li class="text-gray-400">Open source tools</li>
             </ul>
-            <a href="/pay?plan=basic"><button class="btn">Select Basic</button></a>
+            <a href="/pay?plan=basic" class="block w-full px-6 py-3 bg-transparent border border-cyan-400/30 text-cyan-400 text-center font-medium rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Select Basic</a>
         </div>
         
-        <div class="plan featured">
-            <div class="plan-header">
-                <div class="plan-name" style="color: var(--glow);">Priority</div>
-                <div class="plan-price">$60<span style="font-size: 16px;">/mo</span></div>
-                <div class="plan-cycle">Most popular • For production apps</div>
+        <div class="bg-gray-800/50 border-2 border-cyan-400/40 rounded-lg p-8 relative transform scale-105">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-cyan-400 text-gray-900 text-xs font-bold rounded-full uppercase">Most Popular</div>
+            <div class="border-b border-cyan-400/20 pb-6 mb-6">
+                <div class="text-xl font-bold text-cyan-400 mb-2">Priority</div>
+                <div class="text-4xl font-extrabold text-cyan-400 mb-1">$60<span class="text-base font-normal text-gray-400">/mo</span></div>
+                <div class="text-sm text-gray-400">Most popular • For production apps</div>
             </div>
-            <ul class="plan-features">
-                <li><strong>2 GB RAM</strong></li>
-                <li><strong>2 CPU cores</strong></li>
-                <li><strong>50 GB SSD storage</strong></li>
-                <li><strong>2 TB bandwidth</strong></li>
-                <li>Full SSH/root access</li>
-                <li>Daily automated backups</li>
-                <li>Security updates included</li>
-                <li>Web dashboard</li>
-                <li class="divider">Plus everything in Basic:</li>
-                <li class="highlight">Priority support (12hr response)</li>
-                <li class="highlight">SSL automation</li>
-                <li class="highlight">One-click staging environments</li>
-                <li class="highlight">Advanced monitoring</li>
-                <li class="highlight">Deploy logs & history</li>
+            <ul class="space-y-3 mb-8 text-sm">
+                <li class="text-gray-300"><strong class="text-white">2 GB RAM</strong></li>
+                <li class="text-gray-300"><strong class="text-white">2 CPU cores</strong></li>
+                <li class="text-gray-300"><strong class="text-white">50 GB SSD storage</strong></li>
+                <li class="text-gray-300"><strong class="text-white">2 TB bandwidth</strong></li>
+                <li class="text-gray-400">Full SSH/root access</li>
+                <li class="text-gray-400">Daily automated backups</li>
+                <li class="text-gray-400">Security updates included</li>
+                <li class="text-gray-400">Web dashboard</li>
+                <li class="text-cyan-300 pt-3 border-t border-gray-700">Plus everything in Basic:</li>
+                <li class="text-cyan-300">Priority support (12hr response)</li>
+                <li class="text-cyan-300">SSL automation</li>
+                <li class="text-cyan-300">One-click staging environments</li>
+                <li class="text-cyan-300">Advanced monitoring</li>
+                <li class="text-cyan-300">Deploy logs & history</li>
             </ul>
-            <a href="/pay?plan=priority"><button class="btn primary">Select Priority</button></a>
+            <a href="/pay?plan=priority" class="block w-full px-6 py-3 bg-cyan-400 text-gray-900 text-center font-bold rounded hover:bg-cyan-500 transition-all duration-300 uppercase tracking-wider text-sm">Select Priority</a>
         </div>
         
-        <div class="plan">
-            <div class="plan-header">
-                <div class="plan-name">Premium</div>
-                <div class="plan-price">$120<span style="font-size: 16px;">/mo</span></div>
-                <div class="plan-cycle">For serious projects</div>
+        <div class="bg-gray-800/30 border border-cyan-500/10 rounded-lg p-8 hover:border-cyan-500/30 transition-all">
+            <div class="border-b border-gray-700 pb-6 mb-6">
+                <div class="text-xl font-bold text-white mb-2">Premium</div>
+                <div class="text-4xl font-extrabold text-cyan-400 mb-1">$120<span class="text-base font-normal text-gray-400">/mo</span></div>
+                <div class="text-sm text-gray-400">For serious projects</div>
             </div>
-            <ul class="plan-features">
-                <li><strong>4 GB RAM</strong></li>
-                <li><strong>2 CPU cores</strong></li>
-                <li><strong>80 GB SSD storage</strong></li>
-                <li><strong>4 TB bandwidth</strong></li>
-                <li>Full SSH/root access</li>
-                <li>Daily automated backups</li>
-                <li>Security updates included</li>
-                <li>Web dashboard</li>
-                <li>Priority support (12hr response)</li>
-                <li>SSL automation</li>
-                <li>Staging environments</li>
-                <li class="divider">Plus everything in Priority:</li>
-                <li class="highlight">Direct chat support</li>
-                <li class="highlight">Custom deployment assistance</li>
-                <li class="highlight">Database optimization help</li>
-                <li class="highlight">Performance tuning</li>
-                <li class="highlight">Priority feature requests</li>
+            <ul class="space-y-3 mb-8 text-sm">
+                <li class="text-gray-300"><strong class="text-white">4 GB RAM</strong></li>
+                <li class="text-gray-300"><strong class="text-white">2 CPU cores</strong></li>
+                <li class="text-gray-300"><strong class="text-white">80 GB SSD storage</strong></li>
+                <li class="text-gray-300"><strong class="text-white">4 TB bandwidth</strong></li>
+                <li class="text-gray-400">Full SSH/root access</li>
+                <li class="text-gray-400">Daily automated backups</li>
+                <li class="text-gray-400">Security updates included</li>
+                <li class="text-gray-400">Web dashboard</li>
+                <li class="text-gray-400">Priority support (12hr response)</li>
+                <li class="text-gray-400">SSL automation</li>
+                <li class="text-gray-400">Staging environments</li>
+                <li class="text-cyan-300 pt-3 border-t border-gray-700">Plus everything in Priority:</li>
+                <li class="text-cyan-300">Direct chat support</li>
+                <li class="text-cyan-300">Custom deployment assistance</li>
+                <li class="text-cyan-300">Database optimization help</li>
+                <li class="text-cyan-300">Performance tuning</li>
+                <li class="text-cyan-300">Priority feature requests</li>
             </ul>
-            <a href="/pay?plan=premium"><button class="btn">Select Premium</button></a>
+            <a href="/pay?plan=premium" class="block w-full px-6 py-3 bg-transparent border border-cyan-400/30 text-cyan-400 text-center font-medium rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Select Premium</a>
         </div>
     </section>
     
@@ -169,7 +167,6 @@ ${getHTMLHead('Pricing - Basement')}
 exports.showPrivacy = (req, res) => {
   res.send(`
 ${getHTMLHead('Privacy Policy - Basement')}
-    <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -335,7 +332,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
         
         <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(136, 254, 0, 0.1); font-size: 13px;">By using LocalBiz services, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.</p>
         
-        <a href="/" class="link-back">Back to home</a>
+        <a href="/" class="inline-block mt-8 px-6 py-3 text-cyan-400 border border-cyan-400/30 rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Back to home</a>
     </div>
     
     ${getFooter()}
@@ -346,7 +343,6 @@ ${getHTMLHead('Privacy Policy - Basement')}
 exports.showFaq = (req, res) => {
   res.send(`
 ${getHTMLHead('FAQ - Basement')}
-    <link rel="stylesheet" href="/css/faq.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -354,211 +350,185 @@ ${getHTMLHead('FAQ - Basement')}
     ${getResponsiveNav(req)}
     
     <div class="content">
-        <h1>Frequently Asked Questions</h1>
-        <p class="subtitle">Find answers to common questions about our services</p>
+        <h1 class="text-5xl font-bold text-white text-center mb-4">Frequently Asked Questions</h1>
+        <p class="text-gray-400 text-center mb-16">Find answers to common questions about our services</p>
         
-        <div class="faq-section">
-            <h2 class="section-title">General</h2>
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-6">General</h2>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What services does LocalBiz provide?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">What services does LocalBiz provide?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>LocalBiz offers comprehensive business solutions tailored to your needs. Our services include web development, digital marketing support, and ongoing technical assistance. Each plan is designed to help local businesses establish and grow their online presence.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">LocalBiz offers comprehensive business solutions tailored to your needs. Our services include web development, digital marketing support, and ongoing technical assistance. Each plan is designed to help local businesses establish and grow their online presence.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>How do I get started?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">How do I get started?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Getting started is simple:</p>
-                        <ul>
-                            <li>Create a free account on our platform</li>
-                            <li>Choose a service plan that fits your needs</li>
-                            <li>Complete the secure checkout process</li>
-                            <li>Access your dashboard immediately after payment</li>
-                        </ul>
-                        <p>Our support team will reach out within 24 hours to guide you through onboarding.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400 mb-4">Getting started is simple:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-400">
+                        <li>Create a free account on our platform</li>
+                        <li>Choose a service plan that fits your needs</li>
+                        <li>Complete the secure checkout process</li>
+                        <li>Access your dashboard immediately after payment</li>
+                    </ul>
+                    <p class="text-gray-400 mt-4">Our support team will reach out within 24 hours to guide you through onboarding.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Is my data secure?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">Is my data secure?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Absolutely. We take security seriously:</p>
-                        <ul>
-                            <li>All passwords are encrypted using industry-standard bcrypt hashing</li>
-                            <li>Payment processing is handled by Stripe, a PCI-DSS Level 1 certified provider</li>
-                            <li>We never store your credit card information</li>
-                            <li>Session data is secured with HTTP-only cookies</li>
-                        </ul>
-                        <p>Read our <a href="/privacy">Privacy Policy</a> for complete details.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400 mb-4">Absolutely. We take security seriously:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-400">
+                        <li>All passwords are encrypted using industry-standard bcrypt hashing</li>
+                        <li>Payment processing is handled by Stripe, a PCI-DSS Level 1 certified provider</li>
+                        <li>We never store your credit card information</li>
+                        <li>Session data is secured with HTTP-only cookies</li>
+                    </ul>
+                    <p class="text-gray-400 mt-4">Read our <a href="/privacy" class="text-cyan-400 underline">Privacy Policy</a> for complete details.</p>
                 </div>
             </div>
         </div>
         
-        <div class="faq-section">
-            <h2 class="section-title">Pricing & Billing</h2>
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-6">Pricing & Billing</h2>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What payment methods do you accept?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">What payment methods do you accept?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>We accept all major credit and debit cards through our secure payment processor, Stripe. This includes Visa, Mastercard, American Express, and Discover.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">We accept all major credit and debit cards through our secure payment processor, Stripe. This includes Visa, Mastercard, American Express, and Discover.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Can I change my plan later?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">Can I change my plan later?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Yes! You can upgrade or downgrade your plan at any time from your dashboard. Changes take effect immediately, and billing is prorated based on your current billing cycle.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">Yes! You can upgrade or downgrade your plan at any time from your dashboard. Changes take effect immediately, and billing is prorated based on your current billing cycle.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Do you offer refunds?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">Do you offer refunds?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>We offer a 14-day money-back guarantee for all new subscriptions. If you're not satisfied within the first 14 days, contact our support team for a full refund. After 14 days, refunds are evaluated on a case-by-case basis.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">We offer a 14-day money-back guarantee for all new subscriptions. If you're not satisfied within the first 14 days, contact our support team for a full refund. After 14 days, refunds are evaluated on a case-by-case basis.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Is there a free trial?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">Is there a free trial?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>While we don't offer a traditional free trial, our Basic plan starts at just $20/month with no long-term commitment. You can cancel anytime, and our 14-day money-back guarantee gives you risk-free opportunity to try our services.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">While we don't offer a traditional free trial, our Basic plan starts at just $20/month with no long-term commitment. You can cancel anytime, and our 14-day money-back guarantee gives you risk-free opportunity to try our services.</p>
                 </div>
             </div>
         </div>
         
-        <div class="faq-section">
-            <h2 class="section-title">Support</h2>
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-6">Support</h2>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>How fast is your support response time?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">How fast is your support response time?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Response times vary by plan:</p>
-                        <ul>
-                            <li><strong>Basic:</strong> 24-48 hours via email support</li>
-                            <li><strong>Priority:</strong> 12 hours with priority queue access</li>
-                            <li><strong>Premium:</strong> Dedicated support with custom response times</li>
-                        </ul>
-                        <p>Critical issues are prioritized across all plans.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400 mb-4">Response times vary by plan:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-400">
+                        <li><strong class="text-white">Basic:</strong> 24-48 hours via email support</li>
+                        <li><strong class="text-white">Priority:</strong> 12 hours with priority queue access</li>
+                        <li><strong class="text-white">Premium:</strong> Dedicated support with custom response times</li>
+                    </ul>
+                    <p class="text-gray-400 mt-4">Critical issues are prioritized across all plans.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What support channels are available?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">What support channels are available?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>We offer multiple support channels:</p>
-                        <ul>
-                            <li>Email support (all plans)</li>
-                            <li>Contact form on our website</li>
-                            <li>Direct chat access (Priority and Premium plans)</li>
-                            <li>Phone support (Premium plan only)</li>
-                        </ul>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400 mb-4">We offer multiple support channels:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-400">
+                        <li>Email support (all plans)</li>
+                        <li>Contact form on our website</li>
+                        <li>Direct chat access (Priority and Premium plans)</li>
+                        <li>Phone support (Premium plan only)</li>
+                    </ul>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Do you provide training or onboarding?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">Do you provide training or onboarding?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Yes! All new customers receive an onboarding guide and access to our documentation. Priority and Premium plans include personalized onboarding sessions with our team to ensure you get the most out of our services.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">Yes! All new customers receive an onboarding guide and access to our documentation. Priority and Premium plans include personalized onboarding sessions with our team to ensure you get the most out of our services.</p>
                 </div>
             </div>
         </div>
         
-        <div class="faq-section">
-            <h2 class="section-title">Account Management</h2>
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-6">Account Management</h2>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>How do I cancel my subscription?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">How do I cancel my subscription?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>You can cancel your subscription anytime from your dashboard. Navigate to Settings > Billing > Cancel Subscription. Your services will remain active until the end of your current billing period.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">You can cancel your subscription anytime from your dashboard. Navigate to Settings > Billing > Cancel Subscription. Your services will remain active until the end of your current billing period.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Can I change my email address?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">Can I change my email address?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Yes, you can update your email address from your account settings. You'll need to verify your new email address before the change takes effect.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">Yes, you can update your email address from your account settings. You'll need to verify your new email address before the change takes effect.</p>
                 </div>
             </div>
             
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What happens if I forget my password?</h3>
-                    <span class="faq-toggle">+</span>
+            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+                <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
+                    <h3 class="text-lg font-medium text-white">What happens if I forget my password?</h3>
+                    <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        <p>Click "Forgot Password" on the login page. We'll send a secure reset link to your registered email address. Follow the link to create a new password.</p>
-                    </div>
+                <div class="hidden px-6 pb-6">
+                    <p class="text-gray-400">Click "Forgot Password" on the login page. We'll send a secure reset link to your registered email address. Follow the link to create a new password.</p>
                 </div>
             </div>
         </div>
         
-        <div class="cta-box">
-            <h2>Still Have Questions?</h2>
-            <p>Can't find the answer you're looking for? Our support team is here to help.</p>
-            <a href="/contact" class="btn">Contact Support</a>
+        <div class="bg-gray-800/30 border border-cyan-500/20 rounded-lg p-12 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Still Have Questions?</h2>
+            <p class="text-gray-400 mb-8">Can't find the answer you're looking for? Our support team is here to help.</p>
+            <a href="/contact" class="inline-block px-8 py-4 bg-cyan-400 text-gray-900 font-bold rounded hover:bg-cyan-500 transition-all duration-300 uppercase tracking-wider text-sm">Contact Support</a>
         </div>
     </div>
     
@@ -570,7 +540,6 @@ ${getHTMLHead('FAQ - Basement')}
 exports.showDocs = (req, res) => {
   res.send(`
 ${getHTMLHead('Documentation - Basement')}
-    <link rel="stylesheet" href="/css/docs.css">
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -621,14 +590,14 @@ ${getHTMLHead('Documentation - Basement')}
         <h3>Use Both</h3>
         <p>Most people use the dashboard for everyday tasks and SSH when they need it. You're not locked into one approach.</p>
         
-        <div class="info-box">
-            <h3>Managed Infrastructure</h3>
-            <p>While you have full control, we handle the foundational maintenance:</p>
-            <ul style="margin-bottom: 0;">
-                <li><strong>Security updates:</strong> Operating system patches applied automatically</li>
-                <li><strong>Daily backups:</strong> Server snapshots every 24 hours</li>
-                <li><strong>Uptime monitoring:</strong> We're alerted if your server goes down</li>
-                <li><strong>DDoS protection:</strong> Network-level protection included</li>
+        <div class="bg-cyan-900/10 border border-cyan-500/20 rounded-lg p-6 my-6">
+            <h3 class="text-cyan-400 text-xl font-bold mb-3">Managed Infrastructure</h3>
+            <p class="mb-3">While you have full control, we handle the foundational maintenance:</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-400">
+                <li><strong class="text-white">Security updates:</strong> Operating system patches applied automatically</li>
+                <li><strong class="text-white">Daily backups:</strong> Server snapshots every 24 hours</li>
+                <li><strong class="text-white">Uptime monitoring:</strong> We're alerted if your server goes down</li>
+                <li><strong class="text-white">DDoS protection:</strong> Network-level protection included</li>
             </ul>
         </div>
         
@@ -656,10 +625,10 @@ ${getHTMLHead('Documentation - Basement')}
             <li><strong>Monitoring:</strong> Open-source tooling</li>
         </ul>
         
-        <div class="info-box">
-            <h3>Open Source</h3>
-            <p>The dashboard and deployment tools are open source:</p>
-            <ul style="margin-bottom: 0;">
+        <div class="bg-cyan-900/10 border border-cyan-500/20 rounded-lg p-6 my-6">
+            <h3 class="text-cyan-400 text-xl font-bold mb-3">Open Source</h3>
+            <p class="mb-3">The dashboard and deployment tools are open source:</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-400">
                 <li>Review the code and understand how everything works</li>
                 <li>Contribute improvements or report issues</li>
                 <li>Fork it and modify for your needs</li>
@@ -701,11 +670,13 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p>Email support included with all plans. Higher tiers provide faster response times and direct chat access for urgent issues.</p>
         
-        <div class="cta-box">
-            <h2>Ready to Get Started?</h2>
-            <p>All plans include a 14-day money-back guarantee.</p>
-            <a href="/pricing" class="btn primary">View Pricing</a>
-            <a href="/contact" class="btn">Contact Us</a>
+        <div class="bg-gradient-to-br from-cyan-900/40 to-cyan-950/20 border-2 border-cyan-400/30 rounded-xl p-8 text-center my-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
+            <p class="text-gray-300 mb-6">All plans include a 14-day money-back guarantee.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/pricing" class="inline-block px-8 py-3 bg-cyan-400 text-gray-900 font-bold rounded hover:bg-cyan-500 transition-all duration-300 uppercase tracking-wider text-sm">View Pricing</a>
+                <a href="/contact" class="inline-block px-8 py-3 border-2 border-cyan-400/40 text-cyan-400 font-bold rounded hover:border-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 uppercase tracking-wider text-sm">Contact Us</a>
+            </div>
         </div>
     </div>
     
@@ -717,36 +688,35 @@ ${getHTMLHead('Documentation - Basement')}
 exports.showContact = (req, res) => {
   res.send(`
 ${getHTMLHead('Contact - Basement')}
-    <link rel="stylesheet" href="/css/contact.css">
 </head>
 <body>
   <div class="matrix-bg"></div>
   
   ${getResponsiveNav(req)}
   
-  <div class="contact-container">
-    <h1>Contact Us</h1>
-    <p class="subtitle">Get in touch with our team</p>
+  <div class="max-w-2xl mx-auto px-4 py-32">
+    <h1 class="text-4xl font-bold text-cyan-400 text-center mb-4">Contact Us</h1>
+    <p class="text-gray-400 text-center mb-12">Get in touch with our team</p>
     
-    <form method="POST" action="/contact">
+    <form method="POST" action="/contact" class="bg-gray-800/30 border border-cyan-500/10 rounded-lg p-8">
       <input type="hidden" name="_csrf" value="${req.csrfToken()}">
       
-      <label>
-        <span>Name</span>
-        <input type="text" name="name" required>
+      <label class="block mb-6">
+        <span class="block text-sm font-medium text-gray-300 mb-2">Name</span>
+        <input type="text" name="name" required class="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20">
       </label>
       
-      <label>
-        <span>Email</span>
-        <input type="email" name="email" required>
+      <label class="block mb-6">
+        <span class="block text-sm font-medium text-gray-300 mb-2">Email</span>
+        <input type="email" name="email" required class="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20">
       </label>
       
-      <label>
-        <span>Message</span>
-        <textarea name="message" required></textarea>
+      <label class="block mb-6">
+        <span class="block text-sm font-medium text-gray-300 mb-2">Message</span>
+        <textarea name="message" required rows="6" class="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 resize-vertical"></textarea>
       </label>
       
-      <button type="submit">Send Message</button>
+      <button type="submit" class="w-full px-6 py-3 bg-cyan-400 text-gray-900 font-medium rounded hover:bg-cyan-500 transition-all duration-300 uppercase tracking-wider text-sm">Send Message</button>
     </form>
   </div>
   

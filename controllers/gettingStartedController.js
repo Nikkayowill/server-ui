@@ -286,8 +286,8 @@ ${getDashboardHead('Getting Started - Clouded Basement')}
           <h2>Step 1: Choose Your Plan</h2>
           <p>You're almost there! To get started, you'll need to select a hosting plan.</p>
           
-          <div class="info-box">
-            <p><strong>Founder Plan:</strong> $10/month for life — Lock in this price forever. Only 10 spots available!</p>
+          <div class="bg-cyan-900/10 border border-cyan-500/20 rounded-lg p-6 my-6">
+            <p class="text-gray-400"><strong class="text-cyan-400">Founder Plan:</strong> $10/month for life — Lock in this price forever. Only 10 spots available!</p>
           </div>
           
           <ul class="checklist">
@@ -315,8 +315,8 @@ ${getDashboardHead('Getting Started - Clouded Basement')}
             <p style="color: #8892a0; font-size: 14px; margin-top: 8px;">Please check back shortly or wait for the email notification.</p>
           </div>
           
-          <div class="info-box">
-            <p><strong>What's happening:</strong> Your DigitalOcean droplet is being created and configured with SSH access, Node.js, Python, Git, and Nginx.</p>
+          <div class="bg-cyan-900/10 border border-cyan-500/20 rounded-lg p-6 my-6">
+            <p class="text-gray-400"><strong class="text-white">What's happening:</strong> Your DigitalOcean droplet is being created and configured with SSH access, Node.js, Python, Git, and Nginx.</p>
           </div>
           
           <p style="text-align: center; margin-top: 24px; color: #8892a0; font-size: 14px;">
