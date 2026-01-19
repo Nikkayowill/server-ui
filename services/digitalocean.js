@@ -96,11 +96,11 @@ echo "Setup complete!" > /root/setup.log
     
     // Save to database with conflict handling to prevent duplicate servers
     const result = await pool.query(
-      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id)
-       VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6)
+      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id)
+       VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6, $7)
        ON CONFLICT DO NOTHING
        RETURNING *`,
-      [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId]
+      [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId, String(droplet.id)]
     );
 
     // If no rows returned, another process already created the server
@@ -147,8 +147,8 @@ echo "Setup complete!" > /root/setup.log
     
     // Save failed server to database
     const result = await pool.query(
-      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id)
-       VALUES ($1, $2, 'failed', 'N/A', 'root', 'N/A', $3, $4)
+      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id)
+       VALUES ($1, $2, 'failed', 'N/A', 'root', 'N/A', $3, $4, NULL)
        RETURNING *`,
       [userId, plan, JSON.stringify(specs[plan] || specs.basic), stripeChargeId]
     );
@@ -278,29 +278,47 @@ module.exports = {
       }
       
       const server = serverResult.rows[0];
-      const ipAddress = server.ip_address;
+      const dropletId = server.droplet_id;
       
-      if (!ipAddress || ipAddress === 'pending' || ipAddress === 'N/A') {
-        // No droplet to destroy, just delete the record
-        await pool.query('DELETE FROM servers WHERE id = $1', [serverId]);
-        return { success: true, message: 'Server record deleted (no droplet found)' };
-      }
-      
-      // Find droplet by IP address
-      const response = await axios.get('https://api.digitalocean.com/v2/droplets', {
-        headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
-      });
-      
-      const droplet = response.data.droplets.find(d => 
-        d.networks?.v4?.some(net => net.ip_address === ipAddress)
-      );
-      
-      if (droplet) {
-        // Destroy the droplet
-        await axios.delete(`https://api.digitalocean.com/v2/droplets/${droplet.id}`, {
+      if (!dropletId) {
+        // No droplet ID stored, fall back to IP-based search (legacy servers)
+        const ipAddress = server.ip_address;
+        
+        if (!ipAddress || ipAddress === 'pending' || ipAddress === 'N/A') {
+          // No droplet to destroy, just delete the record
+          await pool.query('DELETE FROM servers WHERE id = $1', [serverId]);
+          return { success: true, message: 'Server record deleted (no droplet found)' };
+        }
+        
+        // Find droplet by IP address (legacy method)
+        const response = await axios.get('https://api.digitalocean.com/v2/droplets', {
           headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
         });
-        console.log(`Destroyed droplet ${droplet.id} for server ${serverId}`);
+        
+        const droplet = response.data.droplets.find(d => 
+          d.networks?.v4?.some(net => net.ip_address === ipAddress)
+        );
+        
+        if (droplet) {
+          await axios.delete(`https://api.digitalocean.com/v2/droplets/${droplet.id}`, {
+            headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
+          });
+          console.log(`Destroyed droplet ${droplet.id} (found by IP) for server ${serverId}`);
+        }
+      } else {
+        // Use stored droplet_id (preferred method)
+        try {
+          await axios.delete(`https://api.digitalocean.com/v2/droplets/${dropletId}`, {
+            headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
+          });
+          console.log(`Destroyed droplet ${dropletId} for server ${serverId}`);
+        } catch (apiError) {
+          if (apiError.response?.status === 404) {
+            console.log(`Droplet ${dropletId} already deleted from DigitalOcean`);
+          } else {
+            throw apiError;
+          }
+        }
       }
       
       // Delete server record from database

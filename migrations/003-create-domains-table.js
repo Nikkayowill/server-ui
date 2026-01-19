@@ -7,6 +7,7 @@ async function createDomainsTable() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS domains (
         id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         name VARCHAR(255) UNIQUE NOT NULL,
         status VARCHAR(50) DEFAULT 'active',
         provider VARCHAR(100) DEFAULT 'hostinger',
@@ -18,6 +19,7 @@ async function createDomainsTable() {
     `);
     
     // Create indexes
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_domains_user_id ON domains(user_id);`);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_domains_status ON domains(status);`);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_domains_provider ON domains(provider);`);
     
