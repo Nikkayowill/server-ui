@@ -18,20 +18,47 @@ ${getHTMLHead('Checkout - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-gray-900 min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-md w-full bg-gray-800 border border-brand rounded-lg p-8 text-center">
-        <h1 class="text-3xl font-bold text-white mb-4">${selectedPlan.name}</h1>
-        <div class="text-5xl font-bold text-brand mb-2">
-          $${selectedPlan.price}<span class="text-2xl">.00</span>
+      <div class="max-w-md w-full bg-gray-800 border border-brand rounded-lg p-8">
+        <div class="text-center mb-6">
+          <div class="inline-block px-4 py-2 bg-brand bg-opacity-20 border border-brand rounded-full mb-4">
+            <span class="text-brand text-xs font-bold uppercase">Monthly Subscription</span>
+          </div>
+          <h1 class="text-3xl font-bold text-white mb-2">${selectedPlan.name}</h1>
+          <p class="text-gray-400 text-sm">${selectedPlan.description}</p>
         </div>
-        <p class="text-gray-400 mb-8">${selectedPlan.description}</p>
         
-        <form action="/create-checkout-session" method="POST">
+        <div class="bg-black bg-opacity-30 rounded-lg p-6 mb-6">
+          <div class="text-center mb-4">
+            <div class="text-5xl font-bold text-brand">
+              $${selectedPlan.price}<span class="text-2xl text-gray-400">/month</span>
+            </div>
+          </div>
+          
+          <div class="border-t border-gray-700 pt-4 space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-brand text-lg">✓</span>
+              <p class="text-gray-300 text-sm">Charged $${selectedPlan.price} on the ${new Date().getDate()}th of each month</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-brand text-lg">✓</span>
+              <p class="text-gray-300 text-sm">Cancel anytime from your dashboard - no questions asked</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-brand text-lg">✓</span>
+              <p class="text-gray-300 text-sm">Instant activation after payment</p>
+            </div>
+          </div>
+        </div>
+        
+        <form action="/create-checkout-session" method="POST" class="mb-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">
           <input type="hidden" name="plan" value="${plan}">
-          <button type="submit" class="w-full py-4 bg-brand text-gray-900 font-bold text-lg rounded-lg hover:bg-cyan-500 transition-colors">
-            Pay with Stripe
+          <button type="submit" class="w-full py-4 bg-brand text-gray-900 font-bold text-lg rounded-lg hover:bg-cyan-500 transition-colors shadow-lg hover:shadow-brand/50">
+            Continue to Secure Checkout
           </button>
         </form>
+        
+        <p class="text-gray-500 text-xs text-center">Powered by Stripe • Secure SSL encryption</p>
       </div>
     </main>
     

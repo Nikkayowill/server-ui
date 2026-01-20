@@ -171,6 +171,26 @@ app.post('/resend-code', emailVerifyLimiter, authController.resendCode);
 // Logout route
 app.get('/logout', authController.handleLogout);
 
+// API endpoint for deployment status polling (AJAX)
+app.get('/api/deployment-status/:id', requireAuth, async (req, res) => {
+  try {
+    const deploymentId = parseInt(req.params.id);
+    const result = await pool.query(
+      'SELECT status, output, deployed_at FROM deployments WHERE id = $1 AND user_id = $2',
+      [deploymentId, req.session.userId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Deployment not found' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error fetching deployment status:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Server action route (restart/stop)
 app.post('/server-action', requireAuth, csrfProtection, serverController.serverAction);
 
@@ -190,6 +210,10 @@ app.post('/enable-ssl', requireAuth, csrfProtection, serverController.enableSSL)
 app.get('/dashboard', requireAuth, csrfProtection, dashboardController.showDashboard);
 app.post('/submit-ticket', requireAuth, dashboardController.submitSupportTicket);
 app.post('/change-password', requireAuth, dashboardController.changePassword);
+app.post('/dashboard/dismiss-next-steps', requireAuth, (req, res) => {
+  req.session.dismissedNextSteps = true;
+  res.json({ success: true });
+});
 
 // Admin - dashboard
 app.get('/admin', requireAuth, requireAdmin, csrfProtection, adminController.listUsers);

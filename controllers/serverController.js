@@ -162,8 +162,8 @@ exports.deploy = async (req, res) => {
     const userId = req.session.userId;
 
     // Validate Git URL format
-    if (!gitUrl || !gitUrl.includes('github.com') && !gitUrl.includes('gitlab.com') && !gitUrl.includes('bitbucket.org')) {
-      return res.redirect('/dashboard?error=Invalid Git URL');
+    if (!gitUrl || (!gitUrl.includes('github.com') && !gitUrl.includes('gitlab.com') && !gitUrl.includes('bitbucket.org'))) {
+      return res.redirect('/dashboard?error=Invalid Git URL. Must be from GitHub, GitLab, or Bitbucket.');
     }
 
     // Get user's server
@@ -178,23 +178,258 @@ exports.deploy = async (req, res) => {
 
     const server = serverResult.rows[0];
 
-    // Store deployment in database
+    if (!server.ip_address || !server.root_password) {
+      return res.redirect('/dashboard?error=Server not ready yet. Please wait for provisioning to complete.');
+    }
+
+    // Extract repo name from URL
+    const repoName = gitUrl.split('/').pop().replace('.git', '');
+    
+    // Store deployment in database with pending status
     const deployResult = await pool.query(
       'INSERT INTO deployments (server_id, user_id, git_url, status, output) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-      [server.id, userId, gitUrl, 'pending', 'Deployment queued - contact support to complete setup']
+      [server.id, userId, gitUrl, 'pending', 'Starting deployment...']
     );
 
-    console.log(`Deployment #${deployResult.rows[0].id} created for user ${userId}: ${gitUrl}`);
+    const deploymentId = deployResult.rows[0].id;
+    console.log(`[DEPLOY] Deployment #${deploymentId} started for user ${userId}: ${gitUrl}`);
+
+    // Perform deployment asynchronously (don't block response)
+    performDeployment(server, gitUrl, repoName, deploymentId).catch(err => {
+      console.error(`[DEPLOY] Deployment #${deploymentId} failed:`, err);
+    });
     
-    // Note: Automatic deployment not yet implemented
-    // Manual steps: SSH into server, git clone, npm install, pm2 start
-    
-    res.redirect('/dashboard?success=Deployment request recorded. Contact support for deployment assistance.');
+    res.redirect('/dashboard?success=Deployment started! Check deployment history below for progress.');
   } catch (error) {
     console.error('Deploy error:', error);
-    res.redirect('/dashboard?error=Deployment failed');
+    res.redirect('/dashboard?error=Deployment failed to start');
   }
 };
+
+// Async deployment function
+async function performDeployment(server, gitUrl, repoName, deploymentId) {
+  const conn = new Client();
+  let output = '';
+
+  try {
+    // Connect via SSH
+    await new Promise((resolve, reject) => {
+      conn.on('ready', resolve);
+      conn.on('error', reject);
+      conn.connect({
+        host: server.ip_address,
+        port: 22,
+        username: 'root',
+        password: server.root_password,
+        readyTimeout: 30000
+      });
+    });
+
+    output += '✓ Connected to server via SSH\n';
+    await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+    // Clone repository
+    output += `\n[1/5] Cloning repository...\n`;
+    await execSSH(conn, `cd /root && rm -rf ${repoName} && git clone ${gitUrl}`);
+    output += `✓ Repository cloned\n`;
+    await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+    // Detect project type
+    output += `\n[2/5] Detecting project type...\n`;
+    const hasPackageJson = await fileExists(conn, `/root/${repoName}/package.json`);
+    const hasRequirementsTxt = await fileExists(conn, `/root/${repoName}/requirements.txt`);
+    const hasIndexHtml = await fileExists(conn, `/root/${repoName}/index.html`);
+
+    if (hasPackageJson) {
+      // Node.js project
+      const packageJson = await execSSH(conn, `cat /root/${repoName}/package.json`);
+      const isReactOrVue = packageJson.includes('"react"') || packageJson.includes('"vue"') || packageJson.includes('"build"');
+      
+      if (isReactOrVue) {
+        output += `✓ Detected: Static site (React/Vue)\n`;
+        await deployStaticSite(conn, repoName, output, deploymentId);
+      } else {
+        output += `✓ Detected: Node.js backend\n`;
+        await deployNodeBackend(conn, repoName, output, deploymentId);
+      }
+    } else if (hasRequirementsTxt) {
+      output += `✓ Detected: Python application\n`;
+      await deployPythonApp(conn, repoName, output, deploymentId);
+    } else if (hasIndexHtml) {
+      output += `✓ Detected: Static HTML site\n`;
+      await deployStaticHTML(conn, repoName, output, deploymentId);
+    } else {
+      throw new Error('Unable to detect project type. Ensure package.json, requirements.txt, or index.html exists.');
+    }
+
+    output += `\n✅ Deployment completed successfully!\n`;
+    await updateDeploymentOutput(deploymentId, output, 'success');
+    
+  } catch (error) {
+    output += `\n❌ Deployment failed: ${error.message}\n`;
+    await updateDeploymentOutput(deploymentId, output, 'failed');
+  } finally {
+    conn.end();
+  }
+}
+
+// Deploy static site (React/Vue/Vite)
+async function deployStaticSite(conn, repoName, output, deploymentId) {
+  output += `\n[3/5] Installing dependencies...\n`;
+  await execSSH(conn, `cd /root/${repoName} && npm install`);
+  output += `✓ Dependencies installed\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[4/5] Building project...\n`;
+  const buildOutput = await execSSH(conn, `cd /root/${repoName} && npm run build`);
+  output += `✓ Build completed\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[5/5] Deploying to web server...\n`;
+  // Detect build directory (dist, build, out)
+  const hasDist = await fileExists(conn, `/root/${repoName}/dist`);
+  const hasBuild = await fileExists(conn, `/root/${repoName}/build`);
+  const hasOut = await fileExists(conn, `/root/${repoName}/out`);
+  
+  const buildDir = hasDist ? 'dist' : hasBuild ? 'build' : hasOut ? 'out' : null;
+  if (!buildDir) throw new Error('Build directory not found. Expected dist/, build/, or out/');
+
+  await execSSH(conn, `rm -rf /var/www/html/* && cp -r /root/${repoName}/${buildDir}/* /var/www/html/`);
+  output += `✓ Site deployed to Nginx\n`;
+  output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+}
+
+// Deploy static HTML (no build step)
+async function deployStaticHTML(conn, repoName, output, deploymentId) {
+  output += `\n[3/5] Skipping dependencies (static HTML)\n`;
+  output += `[4/5] Skipping build (static HTML)\n`;
+  output += `\n[5/5] Deploying to web server...\n`;
+  await execSSH(conn, `rm -rf /var/www/html/* && cp -r /root/${repoName}/* /var/www/html/`);
+  output += `✓ Site deployed to Nginx\n`;
+  output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+}
+
+// Deploy Node.js backend
+async function deployNodeBackend(conn, repoName, output, deploymentId) {
+  output += `\n[3/5] Installing dependencies...\n`;
+  await execSSH(conn, `cd /root/${repoName} && npm install`);
+  output += `✓ Dependencies installed\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[4/5] Creating systemd service...\n`;
+  const serviceName = `${repoName}.service`;
+  const serviceContent = `[Unit]
+Description=${repoName} Node.js App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/${repoName}
+ExecStart=/usr/bin/node index.js
+Restart=on-failure
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target`;
+
+  await execSSH(conn, `echo '${serviceContent}' > /etc/systemd/system/${serviceName}`);
+  output += `✓ Service created\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[5/5] Starting application...\n`;
+  await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
+  output += `✓ Application started\n`;
+  output += `\n🚀 Your backend is running!\n`;
+  output += `Note: Configure Nginx reverse proxy for public access.\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+}
+
+// Deploy Python app
+async function deployPythonApp(conn, repoName, output, deploymentId) {
+  output += `\n[3/5] Installing dependencies...\n`;
+  await execSSH(conn, `cd /root/${repoName} && pip3 install -r requirements.txt`);
+  output += `✓ Dependencies installed\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[4/5] Creating systemd service...\n`;
+  const serviceName = `${repoName}.service`;
+  const serviceContent = `[Unit]
+Description=${repoName} Python App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/${repoName}
+ExecStart=/usr/bin/python3 app.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target`;
+
+  await execSSH(conn, `echo '${serviceContent}' > /etc/systemd/system/${serviceName}`);
+  output += `✓ Service created\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[5/5] Starting application...\n`;
+  await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
+  output += `✓ Application started\n`;
+  output += `\n🐍 Your Python app is running!\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+}
+
+// Helper: Execute SSH command
+function execSSH(conn, command) {
+  return new Promise((resolve, reject) => {
+    conn.exec(command, (err, stream) => {
+      if (err) return reject(err);
+      
+      let output = '';
+      let errorOutput = '';
+      
+      stream.on('close', (code) => {
+        if (code === 0) {
+          resolve(output);
+        } else {
+          reject(new Error(`Command failed (exit ${code}): ${errorOutput || output}`));
+        }
+      });
+      
+      stream.on('data', (data) => {
+        output += data.toString();
+      });
+      
+      stream.stderr.on('data', (data) => {
+        errorOutput += data.toString();
+      });
+    });
+  });
+}
+
+// Helper: Check if file exists
+async function fileExists(conn, path) {
+  try {
+    await execSSH(conn, `test -f ${path} || test -d ${path}`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Helper: Update deployment output in database
+async function updateDeploymentOutput(deploymentId, output, status) {
+  try {
+    await pool.query(
+      'UPDATE deployments SET output = $1, status = $2, deployed_at = CASE WHEN $2 = \'success\' THEN NOW() ELSE deployed_at END WHERE id = $3',
+      [output, status, deploymentId]
+    );
+  } catch (err) {
+    console.error('[DEPLOY] Failed to update deployment output:', err);
+  }
+}
 
 // Helper function to execute SSH command
 function executeSSHCommand(host, username, password, command) {

@@ -240,6 +240,42 @@ const buildDashboardTemplate = (data) => {
         });
     </script>
     ` : ''}
+    
+    ${data.hasServer && !req.session.dismissedNextSteps ? `
+    <!-- Next Steps Banner -->
+    <div id="nextStepsBanner" class="bg-gradient-to-r from-brand to-cyan-600 rounded-lg p-6 mb-8 border-2 border-brand shadow-lg">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">🎉</span>
+                    <h3 class="text-2xl font-bold text-gray-900">Server Online - Ready to Deploy!</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
+                        <div class="text-gray-900 font-bold mb-2 flex items-center gap-2">
+                            <span class="text-xl">1️⃣</span> Deploy with Git
+                        </div>
+                        <p class="text-gray-800 text-sm">Scroll down to Deployment section → paste your repo URL → automatic setup</p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
+                        <div class="text-gray-900 font-bold mb-2 flex items-center gap-2">
+                            <span class="text-xl">2️⃣</span> Connect via SSH
+                        </div>
+                        <p class="text-gray-800 text-sm">See SSH Access section below for credentials and connection command</p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
+                        <div class="text-gray-900 font-bold mb-2 flex items-center gap-2">
+                            <span class="text-xl">3️⃣</span> Add Domain + SSL
+                        </div>
+                        <p class="text-gray-800 text-sm">Custom Domains section → point DNS → one-click free SSL certificate</p>
+                    </div>
+                </div>
+                <p class="text-gray-900 text-sm font-medium">💡 First time? Git deployment is the easiest way to get started!</p>
+            </div>
+            <button onclick="dismissNextSteps()" class="ml-4 text-gray-900 hover:text-gray-700 text-3xl font-bold leading-none px-2">×</button>
+        </div>
+    </div>
+    ` : ''}
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -467,15 +503,37 @@ const buildDashboardTemplate = (data) => {
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Repository</th>
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Timestamp</th>
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Status</th>
+                            <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${data.deployments.slice(0, 5).map((dep, i) => `
-                        <tr class="border-b border-gray-700">
+                        <tr class="border-b border-gray-700" data-deployment-id="${dep.id}" data-deployment-status="${dep.status}">
                             <td class="px-6 py-4 font-mono text-xs text-white">#DEP-${1000 + i}</td>
                             <td class="px-6 py-4 text-xs text-gray-400">${dep.git_url.split('/').pop() || 'repo'}</td>
                             <td class="px-6 py-4 text-xs text-gray-400 font-mono">${new Date(dep.deployed_at).toLocaleDateString()} ${new Date(dep.deployed_at).toLocaleTimeString()}</td>
-                            <td class="px-6 py-4"><span class="px-2 py-1 text-xs font-bold uppercase rounded ${dep.status === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}">${dep.status}</span></td>
+                            <td class="px-6 py-4">
+                                <span class="deployment-status-badge px-2 py-1 text-xs font-bold uppercase rounded ${
+                                    dep.status === 'success' ? 'bg-green-900 text-green-300' : 
+                                    dep.status === 'failed' ? 'bg-red-900 text-red-300' : 
+                                    dep.status === 'deploying' ? 'bg-yellow-900 text-yellow-300' :
+                                    'bg-blue-900 text-blue-300'
+                                }">${dep.status}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button onclick="toggleDeploymentLog(${dep.id})" class="text-brand hover:text-cyan-400 text-xs font-bold uppercase">
+                                    View Logs
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="deployment-log-${dep.id}" class="hidden border-b border-gray-700">
+                            <td colspan="5" class="px-6 py-4 bg-black bg-opacity-30">
+                                <div class="mb-2 flex justify-between items-center">
+                                    <span class="text-xs font-bold uppercase text-gray-500">Deployment Output</span>
+                                    <button onclick="toggleDeploymentLog(${dep.id})" class="text-gray-500 hover:text-white text-xs">✕ Close</button>
+                                </div>
+                                <pre class="deployment-output bg-gray-900 p-4 rounded border border-gray-700 text-xs text-green-400 font-mono overflow-x-auto max-h-96 overflow-y-auto">${dep.output || 'Waiting for deployment to start...'}</pre>
+                            </td>
                         </tr>
                         `).join('')}
                     </tbody>
