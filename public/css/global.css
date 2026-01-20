@@ -3,12 +3,17 @@
     --glow: #2DA7DF;
     --bg-dark: #0a0812;
     --bg-card: rgba(2, 8, 20, 0.6);
+    --card-bg: rgba(16, 12, 28, 0.7);
     --border-glow: rgba(45, 167, 223, 0.2);
+    --border-cyan: rgba(45, 167, 223, 0.2);
     --text-primary: #e0e6f0;
     --text-secondary: #8892a0;
     --success: rgba(45, 167, 223, 0.2);
     --error: rgba(255, 68, 68, 0.2);
     --warning: rgba(255, 184, 0, 0.2);
+    --success-solid: #22c55e;
+    --warning-solid: #facc15;
+    --error-solid: #f87171;
 }
 
 /* Global Body Styling */
@@ -527,4 +532,257 @@ code {
     color: #ff4444;
     box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
     animation: pulse 2s infinite;
+}
+
+/* ========== DASHBOARD TECH-VIEW REDESIGN ========== */
+
+/* Dashboard Layout Wrapper */
+.dash-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border-cyan);
+    padding-bottom: 1.5rem;
+}
+
+.dash-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--glow);
+    letter-spacing: -1px;
+}
+
+.dash-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+}
+
+/* Glassmorphism Cards */
+.dash-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-cyan);
+    border-radius: 4px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dash-card:hover {
+    border-color: rgba(45, 167, 223, 0.5);
+    box-shadow: 0 0 30px -10px rgba(45, 167, 223, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Metrics & Stats */
+.stat-group {
+    grid-column: span 3;
+}
+
+.stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -1px;
+}
+
+/* Resource Rings (SVG) */
+.ring-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.ring-svg {
+    transform: rotate(-90deg);
+}
+
+.ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 6;
+}
+
+.ring-progress {
+    fill: none;
+    stroke: var(--glow);
+    stroke-width: 6;
+    stroke-linecap: square;
+    stroke-dasharray: 283;
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+.ring-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ring-percent {
+    font-size: 16px;
+    color: var(--glow);
+    font-weight: 800;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-active {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--success-solid);
+}
+
+.status-stopped {
+    background: rgba(107, 114, 128, 0.2);
+    color: #9ca3af;
+}
+
+.status-provisioning {
+    background: rgba(250, 204, 21, 0.2);
+    color: var(--warning-solid);
+}
+
+.status-failed {
+    background: rgba(248, 113, 113, 0.2);
+    color: var(--error-solid);
+}
+
+/* Dashboard Forms */
+.dash-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.dash-form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--glow);
+    margin-bottom: 0.5rem;
+}
+
+.dash-form-input,
+.dash-form-select,
+.dash-form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-cyan);
+    border-radius: 3px;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.dash-form-input:focus,
+.dash-form-select:focus,
+.dash-form-textarea:focus {
+    outline: none;
+    border-color: var(--glow);
+    box-shadow: 0 0 12px rgba(45, 167, 223, 0.1);
+}
+
+.dash-form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Dashboard Buttons */
+.dash-btn {
+    padding: 0.75rem 1.5rem;
+    background: rgba(45, 167, 223, 0.9);
+    color: #000;
+    border: none;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dash-btn:hover {
+    background: var(--glow);
+    box-shadow: 0 0 20px rgba(45, 167, 223, 0.3);
+    transform: translateY(-1px);
+}
+
+.dash-btn-secondary {
+    background: rgba(100, 100, 100, 0.3);
+    color: var(--text-primary);
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+.dash-btn-secondary:hover {
+    background: rgba(100, 100, 100, 0.5);
+}
+
+.dash-btn-danger {
+    background: rgba(248, 113, 113, 0.2);
+    color: var(--error-solid);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.dash-btn-danger:hover {
+    background: rgba(248, 113, 113, 0.3);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .stat-group {
+        grid-column: span 6;
+    }
+
+    .dash-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dash-card {
+        grid-column: span 12 !important;
+    }
+
+    .dash-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dash-wrapper {
+        padding: 1rem;
+    }
 }
