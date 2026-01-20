@@ -28,8 +28,8 @@ function getDashboardHead(title) {
     <title>${title}</title>
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </head>
 <body>
     <div class="matrix-bg"></div>
@@ -40,6 +40,7 @@ function getDashboardHead(title) {
 function getScripts(...scripts) {
   const scriptTags = scripts.map(script => `<script src="/js/${script}"></script>`).join('\n    ');
   return `
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     ${scriptTags}
 </body>
 </html>
