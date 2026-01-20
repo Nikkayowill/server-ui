@@ -120,6 +120,10 @@ exports.paymentSuccess = async (req, res) => {
     return res.redirect('/payment-cancel?error=Payment recording failed. Please contact support.');
   }
 
+  // Redirect to onboarding wizard instead of showing static success page
+  res.redirect('/getting-started?payment=success');
+  return;
+
   res.send(`
 ${getHTMLHead('Payment Successful - Basement')}
     ${getResponsiveNav(req)}

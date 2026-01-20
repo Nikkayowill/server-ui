@@ -21,7 +21,15 @@ exports.showDashboard = async (req, res) => {
             'SELECT * FROM servers WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1',
             [userId]
         );
-        const server = serverResult.rows[0] || {};
+        const server = serverResult.rows[0] || null;
+        const hasServer = !!server;
+
+        // Get payment details to determine plan
+        const paymentResult = hasPaid ? await pool.query(
+            'SELECT plan FROM payments WHERE user_id = $1 AND status = $2 ORDER BY created_at DESC LIMIT 1',
+            [userId, 'succeeded']
+        ) : { rows: [] };
+        const paidPlan = paymentResult.rows[0]?.plan || 'basic';
 
         // Get deployments
         const deploymentsResult = await pool.query(
@@ -48,22 +56,23 @@ exports.showDashboard = async (req, res) => {
             flashError,
             emailConfirmed,
             bandwidthUsed: '',
-            serverCount: 1,
-            totalRam: server.ram || '4GB',
+            serverCount: hasServer ? 1 : 0,
+            totalRam: server?.ram || '4GB',
             cpuLoad: 45,
             ramUsage: 30,
             diskUsage: 10,
-            serverStatus: server.status || 'unknown',
-            serverName: server.hostname || 'basement-core',
-            plan: (server.plan || 'basic').toString(),
-            ipAddress: server.ip_address || '',
+            serverStatus: server?.status || 'unknown',
+            serverName: server?.hostname || 'basement-core',
+            plan: (server?.plan || paidPlan || 'basic').toString(),
+            ipAddress: server?.ip_address || '',
             csrfToken,
             deployments: deploymentsResult.rows || [],
             domains: domainsResult.rows || [],
             tickets: ticketsResult.rows || [],
             userEmail: req.session.userEmail,
             userRole: req.session.userRole,
-            hasPaid
+            hasPaid,
+            hasServer
         });
 
         res.send(`
@@ -137,7 +146,7 @@ const changePassword = async (req, res) => {
     }
 
     // Verify current password
-    const bcrypt = require('bcryptjs');
+    const bcrypt = require('bcrypt');
     const passwordMatch = await bcrypt.compare(currentPassword, userResult.rows[0].password_hash);
     if (!passwordMatch) {
       return res.status(401).json({ success: false, error: 'Current password is incorrect' });
@@ -278,6 +287,63 @@ const buildDashboardTemplate = (data) => {
 
     <!-- Main Content Grid -->
     <div class="space-y-6">
+        ${!data.hasServer && data.hasPaid ? `
+        <!-- Provisioning State -->
+        <div class="bg-brand bg-opacity-10 border-2 border-brand rounded-lg p-8 text-center">
+            <div class="text-6xl mb-6">⏳</div>
+            <h2 class="text-3xl font-bold text-white mb-4">Server Provisioning in Progress</h2>
+            <p class="text-xl text-gray-400 mb-6">Your ${data.plan} plan server is being created automatically. This typically takes 2-5 minutes.</p>
+            
+            <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6 text-left max-w-2xl mx-auto">
+                <p class="text-gray-400 mb-3"><strong class="text-white">What's happening:</strong> We're creating your DigitalOcean droplet with Ubuntu 22.04, Nginx, Node.js, Python, and Git pre-installed.</p>
+                <p class="text-gray-400 mb-3"><strong class="text-white">Estimated time:</strong> 2-5 minutes</p>
+                <p class="text-gray-400"><strong class="text-white">Next steps:</strong> Once ready, you'll see your server IP, SSH credentials, and full control panel below. We'll also email you at <strong>${data.userEmail}</strong></p>
+            </div>
+            
+            <button onclick="location.reload()" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Refresh Status</button>
+            <p class="text-gray-500 text-sm mt-4">This page will auto-refresh in <span id="refreshTimer">30</span> seconds</p>
+        </div>
+        
+        <script>
+            let countdown = 30;
+            const timer = setInterval(() => {
+                countdown--;
+                const elem = document.getElementById('refreshTimer');
+                if (elem) elem.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    location.reload();
+                }
+            }, 1000);
+        </script>
+        ` : !data.hasServer && !data.hasPaid ? `
+        <!-- No Server, No Payment State -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center">
+            <div class="text-6xl mb-6">🚀</div>
+            <h2 class="text-3xl font-bold text-white mb-4">Welcome to Basement!</h2>
+            <p class="text-xl text-gray-400 mb-6">You don't have a server yet. Get started by choosing a hosting plan.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-4xl mx-auto text-left">
+                <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                    <h3 class="text-brand text-lg font-bold mb-2">Basic</h3>
+                    <p class="text-3xl font-bold text-white mb-2">$25<span class="text-sm text-gray-400">/mo</span></p>
+                    <p class="text-gray-400 text-sm">1GB RAM, 1 CPU, 25GB SSD</p>
+                </div>
+                <div class="bg-gray-900 border border-brand rounded-lg p-6">
+                    <h3 class="text-brand text-lg font-bold mb-2">Priority</h3>
+                    <p class="text-3xl font-bold text-white mb-2">$60<span class="text-sm text-gray-400">/mo</span></p>
+                    <p class="text-gray-400 text-sm">2GB RAM, 2 CPUs, 50GB SSD</p>
+                </div>
+                <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                    <h3 class="text-brand text-lg font-bold mb-2">Premium</h3>
+                    <p class="text-3xl font-bold text-white mb-2">$120<span class="text-sm text-gray-400">/mo</span></p>
+                    <p class="text-gray-400 text-sm">4GB RAM, 2 CPUs, 80GB SSD</p>
+                </div>
+            </div>
+            
+            <a href="/pricing" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors inline-block">View All Plans</a>
+        </div>
+        ` : `
         <!-- Primary Server Card -->
         <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-brand rounded-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
@@ -385,7 +451,9 @@ const buildDashboardTemplate = (data) => {
                 </div>
             </div>
         </div>
+        `}
 
+        ${data.hasServer ? `
         <!-- Deployments Card -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
@@ -493,6 +561,7 @@ const buildDashboardTemplate = (data) => {
                 <a href="/logout" class="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Logout</a>
             </div>
         </div>
+        ` : ''}
     </div>
 </main>
 

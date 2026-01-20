@@ -69,23 +69,64 @@ ${getDashboardHead('Getting Started - Clouded Basement')}
           </div>
         ` : !hasServer ? `
           <div class="bg-gray-800 border border-gray-700 rounded-lg p-8">
-            <h2 class="text-2xl font-bold text-white mb-4">Step 2: Server Provisioning</h2>
-            <p class="text-gray-400 mb-6">Great! Your ${plan} plan is confirmed. Your server is being created automatically.</p>
+            <h2 class="text-2xl font-bold text-white mb-4">Step 2: Server Setup in Progress</h2>
+            <p class="text-xl text-gray-400 mb-6">✅ <strong class="text-green-400">Payment confirmed!</strong> Your ${plan} plan is active.</p>
             
             <div class="bg-brand bg-opacity-10 border-2 border-brand rounded-lg p-8 text-center mb-6">
-              <h3 class="text-brand text-xl font-bold mb-4">⏳ Server Provisioning in Progress</h3>
-              <p class="text-gray-300 mb-4">We're automatically setting up your server! You'll receive an email at <strong>${userEmail}</strong> when it's ready.</p>
-              <p class="text-gray-400 text-sm mb-2">Estimated completion: 5-10 minutes</p>
-              <p class="text-gray-400 text-sm">Please check back shortly or wait for the email notification.</p>
+              <div class="text-6xl mb-4">⏳</div>
+              <h3 class="text-brand text-2xl font-bold mb-4">Creating Your Server Now</h3>
+              <p class="text-white text-lg mb-4">We're automatically provisioning your cloud server with DigitalOcean. This typically takes <strong>2-5 minutes</strong>.</p>
+              <p class="text-gray-400 text-sm">You'll receive an email at <strong class="text-white">${userEmail}</strong> when it's ready.</p>
             </div>
             
             <div class="bg-gray-700 border border-gray-600 rounded-lg p-6 mb-6">
-              <p class="text-gray-400"><strong class="text-white">What's happening:</strong> Your DigitalOcean droplet is being created and configured with SSH access, Node.js, Python, Git, and Nginx.</p>
+              <h4 class="text-white font-bold mb-3">What's Being Installed:</h4>
+              <ul class="space-y-2 text-gray-400">
+                <li class="flex items-start gap-2"><span class="text-brand">✓</span> <strong>Ubuntu 22.04 LTS</strong> - Secure Linux operating system</li>
+                <li class="flex items-start gap-2"><span class="text-brand">✓</span> <strong>Nginx Web Server</strong> - Pre-configured and ready to serve your sites</li>
+                <li class="flex items-start gap-2"><span class="text-brand">✓</span> <strong>Node.js & Python</strong> - Latest stable versions installed</li>
+                <li class="flex items-start gap-2"><span class="text-brand">✓</span> <strong>Git</strong> - For deploying your code</li>
+                <li class="flex items-start gap-2"><span class="text-brand">✓</span> <strong>SSL/TLS Ready</strong> - Certbot installed for free HTTPS certificates</li>
+              </ul>
             </div>
             
-            <p class="text-center text-gray-400 text-sm">
-              Questions? Email <a href="mailto:support@cloudedbasement.ca" class="text-brand hover:text-cyan-400">support@cloudedbasement.ca</a>
+            <div class="bg-gray-700 border border-gray-600 rounded-lg p-6 mb-6">
+              <h4 class="text-white font-bold mb-3">What Happens Next:</h4>
+              <ol class="space-y-2 text-gray-400 list-decimal list-inside">
+                <li>Server finishes setup (2-5 minutes)</li>
+                <li>You'll get an email with your IP address and SSH login details</li>
+                <li>Come back to your dashboard to see server info and controls</li>
+                <li>You can immediately connect via SSH and deploy your apps</li>
+              </ol>
+            </div>
+            
+            <div class="bg-blue-900 bg-opacity-20 border border-blue-700 rounded-lg p-6 mb-6">
+              <h4 class="text-blue-400 font-bold mb-2">💡 You Don't Need to Wait Here</h4>
+              <p class="text-gray-400">Feel free to close this page! We'll email you at <strong class="text-white">${userEmail}</strong> when your server is ready (usually 2-5 minutes). You can also bookmark your <a href="/dashboard" class="text-brand hover:text-cyan-400 underline">dashboard</a> and check back anytime.</p>
+            </div>
+            
+            <div class="flex gap-4 justify-center">
+              <a href="/dashboard" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Go to Dashboard</a>
+              <button onclick="location.reload()" class="px-8 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Refresh Status</button>
+              <a href="/docs" class="px-8 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Read Docs</a>
+            </div>
+            
+            <p class="text-center text-gray-500 text-sm mt-6">
+              Auto-refreshing in <span id="countdown">60</span> seconds | Questions? <a href="mailto:support@cloudedbasement.ca" class="text-brand hover:text-cyan-400">support@cloudedbasement.ca</a>
             </p>
+            
+            <script>
+              let seconds = 60;
+              const countdownEl = document.getElementById('countdown');
+              const interval = setInterval(() => {
+                seconds--;
+                if (countdownEl) countdownEl.textContent = seconds;
+                if (seconds <= 0) {
+                  clearInterval(interval);
+                  location.reload();
+                }
+              }, 1000);
+            </script>
           </div>
         ` : `
           <div class="bg-gray-800 border border-green-700 rounded-lg p-8">

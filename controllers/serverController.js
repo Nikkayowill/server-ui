@@ -36,23 +36,50 @@ exports.serverAction = async (req, res) => {
       return res.redirect('/dashboard?error=No server found');
     }
 
-    // Update server status based on action
+    const server = serverResult.rows[0];
+
+    // Map actions to DigitalOcean API endpoints
+    let doAction;
     let newStatus;
     let successMessage;
     
     if (action === 'start') {
+      doAction = 'power_on';
       newStatus = 'running';
       successMessage = 'Server started successfully';
     } else if (action === 'restart') {
+      doAction = 'reboot';
       newStatus = 'running';
       successMessage = 'Server restarted successfully';
     } else if (action === 'stop') {
+      doAction = 'power_off';
       newStatus = 'stopped';
       successMessage = 'Server stopped successfully';
     } else {
       return res.redirect('/dashboard?error=Invalid action');
     }
 
+    // Call DigitalOcean API if droplet_id exists
+    if (server.droplet_id) {
+      try {
+        await axios.post(
+          `https://api.digitalocean.com/v2/droplets/${server.droplet_id}/actions`,
+          { type: doAction },
+          {
+            headers: {
+              'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        console.log(`DigitalOcean action ${doAction} sent to droplet ${server.droplet_id}`);
+      } catch (doError) {
+        console.error('DigitalOcean action error:', doError.response?.data || doError.message);
+        return res.redirect('/dashboard?error=Failed to execute action on server');
+      }
+    }
+
+    // Update database status
     await pool.query(
       'UPDATE servers SET status = $1 WHERE user_id = $2',
       [newStatus, userId]
@@ -141,7 +168,7 @@ exports.deploy = async (req, res) => {
 
     // Get user's server
     const serverResult = await pool.query(
-      'SELECT id FROM servers WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1',
+      'SELECT * FROM servers WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1',
       [userId]
     );
 
@@ -149,21 +176,20 @@ exports.deploy = async (req, res) => {
       return res.redirect('/dashboard?error=No server found');
     }
 
-    const serverId = serverResult.rows[0].id;
+    const server = serverResult.rows[0];
 
     // Store deployment in database
-    await pool.query(
-      'INSERT INTO deployments (server_id, user_id, git_url, status, output) VALUES ($1, $2, $3, $4, $5)',
-      [serverId, userId, gitUrl, 'pending', 'Deployment queued...']
+    const deployResult = await pool.query(
+      'INSERT INTO deployments (server_id, user_id, git_url, status, output) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+      [server.id, userId, gitUrl, 'pending', 'Deployment queued - contact support to complete setup']
     );
 
-    // In real implementation, this would:
-    // 1. SSH into the droplet
-    // 2. Clone the repo
-    // 3. Install dependencies
-    // 4. Start the app
+    console.log(`Deployment #${deployResult.rows[0].id} created for user ${userId}: ${gitUrl}`);
     
-    res.redirect('/dashboard?success=Deployment initiated! Check deployment history below.');
+    // Note: Automatic deployment not yet implemented
+    // Manual steps: SSH into server, git clone, npm install, pm2 start
+    
+    res.redirect('/dashboard?success=Deployment request recorded. Contact support for deployment assistance.');
   } catch (error) {
     console.error('Deploy error:', error);
     res.redirect('/dashboard?error=Deployment failed');

@@ -188,6 +188,8 @@ app.post('/enable-ssl', requireAuth, csrfProtection, serverController.enableSSL)
 
 // Dashboard route
 app.get('/dashboard', requireAuth, csrfProtection, dashboardController.showDashboard);
+app.post('/submit-ticket', requireAuth, dashboardController.submitSupportTicket);
+app.post('/change-password', requireAuth, dashboardController.changePassword);
 
 // Admin - dashboard
 app.get('/admin', requireAuth, requireAdmin, csrfProtection, adminController.listUsers);
