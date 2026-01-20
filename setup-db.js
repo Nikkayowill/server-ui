@@ -8,6 +8,10 @@ async function createUsersTable() {
       email VARCHAR(255) UNIQUE NOT NULL,
       password_hash VARCHAR(255) NOT NULL,
       role VARCHAR(50) DEFAULT 'user',
+      email_confirmed BOOLEAN DEFAULT FALSE,
+      email_token VARCHAR(255),
+      token_expires_at TIMESTAMP,
+      terms_accepted_at TIMESTAMP,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;

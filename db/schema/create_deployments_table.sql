@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS deployments (
     git_url VARCHAR(500) NOT NULL,
     status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'deploying', 'success', 'failed')),
     output TEXT,
-    deployed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    deployed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_deployments_server_id ON deployments(server_id);

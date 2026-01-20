@@ -174,7 +174,7 @@ const buildDashboardTemplate = (data) => {
 
   return `
 <!-- Main Content -->
-<div style="flex: 1; padding: 2rem 3rem 3rem 3rem;">
+<div style="flex: 1; padding: 5rem 3rem 3rem 3rem;">
     <!-- Header -->
     <header style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem;">
         <div>

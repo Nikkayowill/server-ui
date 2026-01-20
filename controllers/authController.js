@@ -550,6 +550,7 @@ const verifyEmailCode = async (req, res) => {
     // Check if already confirmed
     if (user.email_confirmed) {
       req.session.userId = user.id;
+      req.session.emailConfirmed = true;
       return res.redirect('/dashboard');
     }
 
@@ -571,6 +572,7 @@ const verifyEmailCode = async (req, res) => {
 
     // Set session
     req.session.userId = user.id;
+    req.session.emailConfirmed = true;
     delete req.session.unverifiedEmail;
 
     // Redirect to dashboard
