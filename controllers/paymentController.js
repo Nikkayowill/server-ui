@@ -150,35 +150,6 @@ exports.paymentSuccess = async (req, res) => {
 
   // Redirect to onboarding wizard instead of showing static success page
   res.redirect('/getting-started?payment=success');
-  return;
-
-  res.send(`
-${getHTMLHead('Payment Successful - Basement')}
-    ${getResponsiveNav(req)}
-    
-    <main class="bg-gray-900 min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-2xl w-full bg-gray-800 border border-green-700 rounded-lg p-8 text-center">
-        <div class="text-6xl text-green-400 mb-6">✓</div>
-        <h1 class="text-3xl font-bold text-white mb-4">Payment Successful!</h1>
-        <p class="text-xl text-gray-400 mb-8">Thank you for your purchase. Your payment has been processed successfully.</p>
-        
-        <div class="bg-gray-700 border border-gray-600 rounded-lg p-6 text-left mb-8">
-          <h3 class="text-brand text-xl font-bold mb-3">What's Next?</h3>
-          <p class="text-gray-400 mb-3"><strong class="text-white">Confirmation Email:</strong> You'll receive a confirmation email at ${req.session.userEmail || 'your registered email'} with your receipt and order details.</p>
-          <p class="text-gray-400 mb-3"><strong class="text-white">Access:</strong> Your services are now active. You can access them immediately from your dashboard.</p>
-          <p class="text-gray-400"><strong class="text-white">Support:</strong> If you have any questions, our support team is ready to help you get started.</p>
-        </div>
-        
-        <div class="flex gap-4 justify-center">
-          <a href="/dashboard" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Go to Dashboard</a>
-          <a href="/" class="px-8 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Back to Home</a>
-        </div>
-      </div>
-    </main>
-    
-    ${getFooter()}
-    ${getScripts('nav.js')}
-  `);
 };
 
 // GET /payment-cancel
@@ -200,7 +171,7 @@ ${getHTMLHead('Payment Cancelled - Basement')}
           <p class="text-gray-400"><strong class="text-white">Ready to Try Again?</strong> You can return to the pricing page to select a plan that works for you.</p>
         </div>
         
-        <div class="flex gap-4 justify-center"
+        <div class="flex gap-4 justify-center">
           <a href="/pricing" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">View Pricing</a>
           <a href="/contact" class="px-8 py-3 border-2 border-brand text-brand font-bold rounded-lg hover:bg-brand hover:bg-opacity-10 transition-colors">Contact Support</a>
           <a href="/" class="px-8 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Back to Home</a>
