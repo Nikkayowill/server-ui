@@ -1,6 +1,7 @@
 const axios = require('axios');
 const crypto = require('crypto');
 const pool = require('../db');
+const { sendServerReadyEmail } = require('./email');
 
 // Track active polling intervals to prevent memory leaks
 const activePolls = new Map(); // serverId -> intervalId
@@ -204,6 +205,21 @@ async function pollDropletStatus(dropletId, serverId) {
           [ip, 'running', serverId]
         );
         console.log(`Server ${serverId} is now running at ${ip}`);
+        
+        // Send welcome email when server is ready
+        try {
+          const serverResult = await pool.query('SELECT user_id, ssh_password FROM servers WHERE id = $1', [serverId]);
+          const userResult = await pool.query('SELECT email FROM users WHERE id = $1', [serverResult.rows[0]?.user_id]);
+          
+          if (userResult.rows[0]?.email && serverResult.rows[0]?.ssh_password) {
+            await sendServerReadyEmail(userResult.rows[0].email, ip, serverResult.rows[0].ssh_password);
+            console.log(`Welcome email sent to ${userResult.rows[0].email}`);
+          }
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError.message);
+          // Don't fail provisioning if email fails
+        }
+        
         clearInterval(interval);
         activePolls.delete(serverId);
       } else if (attempts >= maxAttempts) {

@@ -65,6 +65,7 @@ exports.showDashboard = async (req, res) => {
             serverName: server?.hostname || 'basement-core',
             plan: (server?.plan || paidPlan || 'basic').toString(),
             ipAddress: server?.ip_address || '',
+            serverIp: server?.ip_address || '',
             csrfToken,
             deployments: deploymentsResult.rows || [],
             domains: domainsResult.rows || [],
@@ -72,7 +73,8 @@ exports.showDashboard = async (req, res) => {
             userEmail: req.session.userEmail,
             userRole: req.session.userRole,
             hasPaid,
-            hasServer
+            hasServer,
+            dismissedNextSteps: req.session.dismissedNextSteps || false
         });
 
         res.send(`
@@ -241,7 +243,7 @@ const buildDashboardTemplate = (data) => {
     </script>
     ` : ''}
     
-    ${data.hasServer && !req.session.dismissedNextSteps ? `
+    ${data.hasServer && !data.dismissedNextSteps ? `
     <!-- Next Steps Banner -->
     <div id="nextStepsBanner" class="bg-gradient-to-r from-brand to-cyan-600 rounded-lg p-6 mb-8 border-2 border-brand shadow-lg">
         <div class="flex items-start justify-between">
@@ -519,6 +521,13 @@ const buildDashboardTemplate = (data) => {
                                     dep.status === 'deploying' ? 'bg-yellow-900 text-yellow-300' :
                                     'bg-blue-900 text-blue-300'
                                 }">${dep.status}</span>
+                                ${dep.status === 'success' && data.serverIp ? `
+                                <div class="mt-2">
+                                    <a href="http://${data.serverIp}/" target="_blank" class="text-brand hover:text-cyan-400 text-xs font-bold flex items-center gap-1">
+                                        🌐 View Live Site →
+                                    </a>
+                                </div>
+                                ` : ''}
                             </td>
                             <td class="px-6 py-4">
                                 <button onclick="toggleDeploymentLog(${dep.id})" class="text-brand hover:text-cyan-400 text-xs font-bold uppercase">

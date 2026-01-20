@@ -21,7 +21,7 @@ ${getHTMLHead('Checkout - Basement')}
       <div class="max-w-md w-full bg-gray-800 border border-brand rounded-lg p-8">
         <div class="text-center mb-6">
           <div class="inline-block px-4 py-2 bg-brand bg-opacity-20 border border-brand rounded-full mb-4">
-            <span class="text-brand text-xs font-bold uppercase">Monthly Subscription</span>
+            <span class="text-brand text-xs font-bold uppercase">Monthly Billing</span>
           </div>
           <h1 class="text-3xl font-bold text-white mb-2">${selectedPlan.name}</h1>
           <p class="text-gray-400 text-sm">${selectedPlan.description}</p>
@@ -32,20 +32,21 @@ ${getHTMLHead('Checkout - Basement')}
             <div class="text-5xl font-bold text-brand">
               $${selectedPlan.price}<span class="text-2xl text-gray-400">/month</span>
             </div>
+            <p class="text-gray-400 text-xs mt-2">Pay monthly, cancel anytime</p>
           </div>
           
           <div class="border-t border-gray-700 pt-4 space-y-3">
             <div class="flex items-start gap-3">
               <span class="text-brand text-lg">✓</span>
-              <p class="text-gray-300 text-sm">Charged $${selectedPlan.price} on the ${new Date().getDate()}th of each month</p>
+              <p class="text-gray-300 text-sm">Billed monthly starting today</p>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-brand text-lg">✓</span>
-              <p class="text-gray-300 text-sm">Cancel anytime from your dashboard - no questions asked</p>
+              <p class="text-gray-300 text-sm">Cancel anytime - no contracts or commitments</p>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-brand text-lg">✓</span>
-              <p class="text-gray-300 text-sm">Instant activation after payment</p>
+              <p class="text-gray-300 text-sm">Instant server activation after payment</p>
             </div>
           </div>
         </div>
