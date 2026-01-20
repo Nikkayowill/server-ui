@@ -41,11 +41,18 @@ body {
         repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(45, 167, 223, 0.03) 1px, rgba(45, 167, 223, 0.03) 2px);
 }
 
+/* Global Container - Consistent site-wide spacing */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 140px 48px 80px;
+}
+
 /* Content Container (for non-Tailwind pages) */
 .content {
-    padding: 140px 5vw 60px;
     max-width: 900px;
     margin: 0 auto;
+    padding: 140px 48px 80px;
 }
 
 .content h1 {
@@ -109,8 +116,9 @@ code {
 
 /* Responsive Content Styles */
 @media (max-width: 768px) {
+    .page-container,
     .content {
-        padding: 120px 20px 50px !important;
+        padding: 120px 32px 60px !important;
     }
 
     .content h1 {
@@ -134,8 +142,9 @@ code {
 }
 
 @media (max-width: 480px) {
+    .page-container,
     .content {
-        padding: 100px 20px 40px !important;
+        padding: 100px 24px 50px !important;
         max-width: 100% !important;
     }
 

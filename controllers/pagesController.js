@@ -54,9 +54,10 @@ ${getHTMLHead('Terms of Service - Basement')}
   .terms-content {
     max-width: 900px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 140px 48px 80px;
     color: #e2e8f0;
     line-height: 1.8;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content h1 {
     color: #22d3ee;
@@ -64,11 +65,13 @@ ${getHTMLHead('Terms of Service - Basement')}
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 2px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content .last-updated {
     color: #94a3b8;
     font-size: 0.9em;
     margin-bottom: 40px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content h2 {
     color: #22d3ee;
@@ -77,15 +80,18 @@ ${getHTMLHead('Terms of Service - Basement')}
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content h3 {
     color: #67e8f9;
     font-size: 1.2em;
     margin-top: 25px;
     margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content p {
     margin-bottom: 15px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content ul, .terms-content ol {
     margin-left: 20px;
@@ -93,6 +99,7 @@ ${getHTMLHead('Terms of Service - Basement')}
   }
   .terms-content li {
     margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .terms-content strong {
     color: #22d3ee;
@@ -614,13 +621,23 @@ ${getHTMLHead('Privacy Policy - Basement')}
 exports.showFaq = (req, res) => {
   res.send(`
 ${getHTMLHead('FAQ - Basement')}
+<style>
+  .page-container h1,
+  .page-container h2,
+  .page-container h3,
+  .page-container p,
+  .page-container li,
+  .page-container ul {
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
 </head>
 <body>
     <div class="matrix-bg"></div>
     
     ${getResponsiveNav(req)}
     
-    <div class="content">
+    <div class="page-container">
         <h1 class="text-5xl font-bold text-white text-center mb-4">Frequently Asked Questions</h1>
         <p class="text-gray-400 text-center mb-16">Find answers to common questions about our services</p>
         
@@ -958,12 +975,16 @@ ${getHTMLHead('Documentation - Basement')}
 
 exports.showContact = (req, res) => {
   res.send(`
-${getHTMLHead('Contact - Basement')}
+${getHTMLHead('Contact - Basement')}\n<style>
+  .page-container * {
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
 </head>
 <body>
   ${getResponsiveNav(req)}
   
-  <div class="max-w-2xl mx-auto px-4 py-32">
+  <div class="page-container" style="max-width: 800px;">
     <h1 class="text-4xl font-bold text-cyan-400 text-center mb-4">Contact Us</h1>
     <p class="text-gray-400 text-center mb-12">Get in touch with our team</p>
     
