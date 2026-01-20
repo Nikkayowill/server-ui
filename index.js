@@ -218,6 +218,7 @@ app.post('/dashboard/dismiss-next-steps', requireAuth, (req, res) => {
 // Admin - dashboard
 app.get('/admin', requireAuth, requireAdmin, csrfProtection, adminController.listUsers);
 app.post('/admin/delete-user/:id', requireAuth, requireAdmin, csrfProtection, adminController.deleteUser);
+app.post('/admin/cancel-provisioning/:id', requireAuth, requireAdmin, csrfProtection, adminController.cancelProvisioning);
 app.post('/admin/delete-server/:id', requireAuth, requireAdmin, csrfProtection, adminController.deleteServer);
 app.post('/admin/destroy-droplet/:id', requireAuth, requireAdmin, csrfProtection, adminController.destroyDroplet);
 

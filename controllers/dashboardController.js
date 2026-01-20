@@ -330,30 +330,17 @@ const buildDashboardTemplate = (data) => {
         <div class="bg-brand bg-opacity-10 border-2 border-brand rounded-lg p-8 text-center">
             <div class="text-6xl mb-6">⏳</div>
             <h2 class="text-3xl font-bold text-white mb-4">Server Provisioning in Progress</h2>
-            <p class="text-xl text-gray-400 mb-6">Your ${data.plan} plan server is being created automatically. This typically takes 2-5 minutes.</p>
+            <p class="text-xl text-white mb-6">Your <span class="text-brand font-bold">${data.plan}</span> plan server is being created. This typically takes 2-5 minutes.</p>
             
             <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6 text-left max-w-2xl mx-auto">
-                <p class="text-gray-400 mb-3"><strong class="text-white">What's happening:</strong> We're creating your DigitalOcean droplet with Ubuntu 22.04, Nginx, Node.js, Python, and Git pre-installed.</p>
-                <p class="text-gray-400 mb-3"><strong class="text-white">Estimated time:</strong> 2-5 minutes</p>
-                <p class="text-gray-400"><strong class="text-white">Next steps:</strong> Once ready, you'll see your server IP, SSH credentials, and full control panel below. We'll also email you at <strong>${data.userEmail}</strong></p>
+                <p class="text-gray-300 mb-3"><strong class="text-brand">What's happening:</strong> Creating your DigitalOcean droplet with Ubuntu 22.04, Nginx, Node.js, Python, and Git pre-installed.</p>
+                <p class="text-gray-300 mb-3"><strong class="text-brand">Estimated time:</strong> 2-5 minutes</p>
+                <p class="text-gray-300"><strong class="text-brand">Next steps:</strong> You'll receive an email at <strong class="text-white">${data.userEmail}</strong> with your server details and SSH credentials when ready.</p>
             </div>
             
-            <button onclick="location.reload()" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Refresh Status</button>
-            <p class="text-gray-500 text-sm mt-4">This page will auto-refresh in <span id="refreshTimer">30</span> seconds</p>
+            <button onclick="location.reload()" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Check Status</button>
+            <p class="text-gray-400 text-sm mt-4">Refresh this page to check if your server is ready</p>
         </div>
-        
-        <script>
-            let countdown = 30;
-            const timer = setInterval(() => {
-                countdown--;
-                const elem = document.getElementById('refreshTimer');
-                if (elem) elem.textContent = countdown;
-                if (countdown <= 0) {
-                    clearInterval(timer);
-                    location.reload();
-                }
-            }, 1000);
-        </script>
         ` : !data.hasServer && !data.hasPaid ? `
         <!-- No Server, No Payment State -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center">

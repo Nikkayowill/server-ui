@@ -33,13 +33,7 @@ async function dismissNextSteps() {
     }
 }
 
-// Auto-refresh dashboard if server is provisioning
-const serverStatus = document.querySelector('.status');
-if (serverStatus && (serverStatus.textContent.includes('provisioning') || serverStatus.textContent.includes('pending'))) {
-    setTimeout(() => {
-        window.location.reload();
-    }, 15000); // Refresh every 15 seconds
-}
+// Note: Auto-refresh removed - users check email and manually refresh
 
 // Auto-fade alerts after 5 seconds
 setTimeout(() => {

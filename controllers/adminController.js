@@ -151,6 +151,14 @@ ${getHTMLHead('Admin Dashboard')}
                   <td class="px-6 py-4 text-sm text-gray-400">${new Date(s.created_at).toLocaleDateString()}</td>
                   <td class="px-6 py-4 text-sm">
                     <div class="flex flex-col sm:flex-row gap-2">
+                      ${s.status === 'provisioning' ? `
+                      <form method="POST" action="/admin/cancel-provisioning/${s.id}" class="inline" onsubmit="return confirm('Cancel provisioning for server #${s.id}? This will mark it as failed.');">
+                        <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+                        <button type="submit" class="px-3 py-1.5 bg-orange-600 text-white font-bold text-xs rounded hover:bg-orange-700 transition-colors whitespace-nowrap">
+                          Cancel
+                        </button>
+                      </form>
+                      ` : ''}
                       <form method="POST" action="/admin/destroy-droplet/${s.id}" class="inline" onsubmit="return confirm('DESTROY droplet for server #${s.id}? This will permanently delete the DigitalOcean droplet AND the database record. This cannot be undone!');">
                         <input type="hidden" name="_csrf" value="${req.csrfToken()}">
                         <button type="submit" class="px-3 py-1.5 bg-red-800 text-white font-bold text-xs rounded hover:bg-red-900 transition-colors whitespace-nowrap">
@@ -285,6 +293,25 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// POST /admin/cancel-provisioning/:id - Cancel provisioning and mark as failed
+const cancelProvisioning = async (req, res) => {
+  try {
+    const serverId = req.params.id;
+    
+    // Update server status to failed
+    await pool.query(
+      'UPDATE servers SET status = $1 WHERE id = $2',
+      ['failed', serverId]
+    );
+    
+    console.log(`Admin cancelled provisioning for server ${serverId}`);
+    res.redirect('/admin?success=Provisioning cancelled successfully');
+  } catch (error) {
+    console.error('Cancel provisioning error:', error);
+    res.redirect('/admin?error=Failed to cancel provisioning');
+  }
+};
+
 // POST /admin/delete-server/:id - Delete a server record
 const deleteServer = async (req, res) => {
   try {
@@ -315,4 +342,4 @@ const destroyDroplet = async (req, res) => {
   }
 };
 
-module.exports = { listUsers, deleteUser, deleteServer, destroyDroplet };
+module.exports = { listUsers, deleteUser, deleteServer, destroyDroplet, cancelProvisioning };
