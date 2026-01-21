@@ -7,7 +7,7 @@ ${getHTMLHead('About - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-gray-900 min-h-screen pt-24 pb-16">
-      <div class="max-w-4xl mx-auto px-4">
+      <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-8">ABOUT BASEMENT</h1>
         
         <p class="text-gray-400 text-lg mb-8">I'm Kayo, an IT Web Programming student at NSCC in Halifax, graduating May 2026. Before switching to tech, I worked as a tradesman—different tools, same problem-solving mindset.</p>
@@ -51,7 +51,7 @@ ${getHTMLHead('Terms of Service - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-gray-900 min-h-screen pt-24 pb-16">
-      <div class="max-w-4xl mx-auto px-4">
+      <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Terms of Service</h1>
         <p class="text-gray-500 text-sm mb-8">Last Updated: January 19, 2026</p>
 
@@ -380,7 +380,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-gray-900 min-h-screen pt-24 pb-16">
-      <div class="max-w-4xl mx-auto px-4">
+      <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Privacy Policy</h1>
         <p class="text-gray-500 text-sm mb-8"><strong>Last Updated:</strong> January 19, 2026</p>
         
@@ -554,7 +554,7 @@ ${getHTMLHead('FAQ - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-gray-900 min-h-screen pt-24 pb-16">
-      <div class="max-w-4xl mx-auto px-4">
+      <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white text-center mb-4">Frequently Asked Questions</h1>
         <p class="text-gray-400 text-center mb-16">Find answers to common questions about our services</p>
         
@@ -749,7 +749,7 @@ ${getHTMLHead('Documentation - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-gray-900 min-h-screen pt-24 pb-16">
-      <div class="max-w-4xl mx-auto px-4">
+      <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Documentation</h1>
         <p class="text-xl text-gray-400 mb-12">Complete guide to Basement hosting—what you get, how to use it, and technical details.</p>
         
@@ -895,7 +895,7 @@ ${getHTMLHead('Contact - Basement')}
   ${getResponsiveNav(req)}
   
   <main class="bg-gray-900 min-h-screen pt-24 pb-16">
-    <div class="max-w-2xl mx-auto px-4">
+    <div class="max-w-2xl mx-auto px-8 md:px-12 lg:px-16">
       <h1 class="text-4xl md:text-5xl font-extrabold text-white text-center mb-4">Contact Us</h1>
       <p class="text-gray-400 text-center mb-12">Get in touch with our team</p>
       
@@ -965,7 +965,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     
     <!-- Hero Section -->
     <section class="bg-gray-900 pt-32 pb-16">
-      <div class="max-w-screen-xl px-4 mx-auto text-center lg:px-12">
+      <div class="max-w-screen-xl px-8 md:px-12 lg:px-16 mx-auto text-center lg:px-12">
         <a href="/pricing" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-900 bg-brand rounded-full hover:bg-cyan-500 transition-all">
           <span class="text-xs bg-gray-900 rounded-full text-brand px-4 py-1.5 mr-3">⚡ Founding Offer</span>
           <span class="text-sm font-medium">$10/month for life — Only ${foundersRemaining} spots left</span>
@@ -990,7 +990,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Founder Plan Card -->
-    <section class="py-12 px-4 bg-gray-900">
+    <section class="py-12 px-8 md:px-12 lg:px-16 bg-gray-900">
       <div class="max-w-3xl mx-auto p-8 md:p-12 bg-gradient-to-br from-cyan-900/40 to-gray-900 border-2 border-brand rounded-xl text-center glow-brand">
         <span class="inline-block px-3 py-1 mb-4 text-xs font-bold text-gray-900 bg-brand rounded-full">⚡ LIMITED TIME OFFER ⚡</span>
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Founding Customer Plan</h2>
@@ -1044,7 +1044,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Features List -->
     <section class="bg-gray-900 py-12 md:py-20">
-      <div class="max-w-3xl px-4 mx-auto sm:px-6 lg:px-8">
+      <div class="max-w-3xl px-8 md:px-12 lg:px-16 mx-auto sm:px-6 lg:px-8">
         <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">What You Get</h2>
         <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <li class="flex items-center gap-3 p-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg">
@@ -1104,7 +1104,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Final CTA Section -->
     <section class="bg-cyan-900/10 border-t border-cyan-500/10 py-16">
-      <div class="max-w-screen-sm px-4 mx-auto text-center sm:px-6 lg:px-8">
+      <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center sm:px-6 lg:px-8">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
         <p class="mb-8 text-lg text-gray-400">Join the founding customers and lock in lifetime pricing.</p>
         <a href="/pricing" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-cyan-400 rounded-lg hover:bg-cyan-500 focus:ring-4 focus:ring-cyan-300 transition-all">

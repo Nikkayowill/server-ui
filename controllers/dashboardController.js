@@ -172,6 +172,7 @@ const buildDashboardTemplate = (data) => {
 <!-- Main Content -->
 <main class="flex-1 px-4 md:px-8 lg:px-12 pt-24 pb-12">
     <!-- Header -->
+    <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
     <header class="flex flex-col gap-6 mb-12">
         <div>
             <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand text-opacity-70 mb-2">
@@ -179,7 +180,7 @@ const buildDashboardTemplate = (data) => {
                 Live Connection Established
             </div>
             <h2 class="text-3xl font-bold text-white uppercase tracking-tight">
-                Control Panel <span class="text-brand font-normal">v2</span>
+                Dashboard
             </h2>
         </div>
         <div class="flex items-center gap-4">
@@ -366,6 +367,27 @@ const buildDashboardTemplate = (data) => {
         </div>
         `}
 
+        <!-- Deploy from GitHub -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Deploy from GitHub</h4>
+            ${data.hasServer ? `
+            <form action="/deploy" method="POST" class="mb-4">
+                <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+                    <input type="text" name="git_url" placeholder="https://github.com/username/repo.git" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
+                    <button type="submit" class="px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors whitespace-nowrap">Deploy Now</button>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Paste your public or private GitHub repository URL to deploy automatically.</p>
+            </form>
+            ` : `
+            <div class="bg-red-900 bg-opacity-20 border-2 border-red-600 rounded-lg p-4">
+                <p class="text-red-400 text-sm font-medium mb-3">⚠️ No active server detected</p>
+                <p class="text-red-300 text-xs mb-4">You must purchase a hosting plan before deploying applications from GitHub.</p>
+                <a href="/pricing" class="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors text-sm">View Plans →</a>
+            </div>
+            `}
+        </div>
+
         <!-- Deployments Card -->
         ${data.hasServer && data.deployments.length > 0 ? `
         <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
@@ -502,6 +524,7 @@ const buildDashboardTemplate = (data) => {
                 <a href="/logout" class="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Logout</a>
             </div>
         </div>
+    </div>
     </div>
 </main>
 
