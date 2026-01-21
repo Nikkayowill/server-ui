@@ -560,7 +560,7 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
           <h2 class="text-2xl font-bold text-brand mb-6">General</h2>
           
-          <div class="mb-4 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-700 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white">What services does Clouded Basement Hosting provide?</h3>
               <span class="text-2xl text-brand transform transition-transform duration-300">+</span>
@@ -572,7 +572,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">How do I get started?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -590,7 +590,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Is my data secure?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -612,7 +612,7 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">Pricing & Billing</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What payment methods do you accept?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -623,7 +623,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Can I change my plan later?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -634,7 +634,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Do you offer refunds?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -645,7 +645,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Is there a free trial?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -660,7 +660,7 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">Support</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">How fast is your support response time?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -677,7 +677,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What support channels are available?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -694,7 +694,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Do you provide training or onboarding?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -709,7 +709,7 @@ ${getHTMLHead('FAQ - Basement')}
         <div class="mb-16">
             <h2 class="text-2xl font-bold text-cyan-400 mb-6">Account Management</h2>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">How do I cancel my subscription?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -720,7 +720,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">Can I change my email address?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
@@ -731,7 +731,7 @@ ${getHTMLHead('FAQ - Basement')}
                 </div>
             </div>
             
-            <div class="mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+            <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
                 <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
                     <h3 class="text-lg font-medium text-white">What happens if I forget my password?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
