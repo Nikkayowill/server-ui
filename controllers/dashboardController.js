@@ -263,21 +263,6 @@ const buildDashboardTemplate = (data) => {
     </div>
     ` : ''}
 
-    <!-- Provisioning Banner (Compact) -->
-    ${!data.hasServer && data.hasPaid ? `
-    <div class="bg-brand bg-opacity-10 border-l-4 border-brand rounded-lg p-4 mb-6 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <div>
-                <h3 class="text-lg font-bold text-white">Server Provisioning in Progress</h3>
-                <p class="text-sm text-gray-300">Your <span class="text-brand font-bold">${data.plan}</span> server is being created (2-5 min). You'll receive an email at <strong class="text-white">${data.userEmail}</strong> when ready.</p>
-            </div>
-        </div>
-        <button onclick="location.reload()" class="px-4 py-2 bg-brand text-gray-900 font-bold text-sm rounded-lg hover:bg-cyan-500 transition-colors whitespace-nowrap">
-            Check Status
-        </button>
-    </div>
-    ` : ''}
-
     <!-- No Server Prompt -->
     ${!data.hasServer && !data.hasPaid ? `
     <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center mb-6">
@@ -307,7 +292,7 @@ const buildDashboardTemplate = (data) => {
     ` : ''}
 
     <!-- Main Content Grid -->
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 space-y-6">
         ${data.hasServer ? `
         <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-brand rounded-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
@@ -377,7 +362,7 @@ const buildDashboardTemplate = (data) => {
         <!-- Server Placeholder (Provisioning or No Server) -->
         <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-gray-600 rounded-lg p-8 text-center">
             <h3 class="text-xl font-bold text-gray-400 mb-2">Server Details</h3>
-            <p class="text-sm text-gray-500">${data.hasPaid ? 'Your server is being provisioned...' : 'Purchase a plan to see your server details here'}</p>
+            <p class="text-sm text-gray-500">${data.hasPaid ? 'Waiting for server setup (contact support if delayed)' : 'Purchase a plan to see your server details here'}</p>
         </div>
         `}
 

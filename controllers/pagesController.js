@@ -291,7 +291,7 @@ ${getHTMLHead('Pricing - Basement')}
         <p class="text-gray-400 text-lg">Real servers. Real specs. No surprises. Your bill will never exceed your plan.</p>
       </section>
       
-      <section class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 hover:border-brand transition-all">
           <div class="border-b border-gray-700 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Basic</div>
@@ -1014,7 +1014,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Why Choose Section -->
     <section class="py-12 md:py-20 bg-gray-900">
-      <div class="max-w-7xl px-4 mx-auto">
+      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement</h2>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div class="p-6 bg-gray-800 border border-gray-700 rounded-lg hover:border-brand hover:-translate-y-1 transition-all">
@@ -1077,7 +1077,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- How It Works with Timeline -->
     <section class="bg-gray-900 py-12 md:py-20">
-      <div class="max-w-7xl px-4 mx-auto sm:px-6 lg:px-8">
+      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-16 text-3xl md:text-4xl font-extrabold text-center text-white">How It Works</h2>
         <ol class="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <!-- Step 1 -->

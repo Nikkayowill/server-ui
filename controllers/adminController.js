@@ -26,7 +26,7 @@ ${getHTMLHead('Admin Dashboard')}
     ${getResponsiveNav(req)}
 
     <main class="bg-gray-900 min-h-screen pt-24 pb-16 px-4 md:px-8">
-      <div class="max-w-7xl mx-auto">
+      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-3xl md:text-4xl font-bold text-brand text-center mb-12">Admin Dashboard</h1>
 
       <!-- Pending Server Requests (Priority) -->
