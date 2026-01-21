@@ -196,7 +196,7 @@ const buildDashboardTemplate = (data) => {
 
     ${!data.emailConfirmed ? `
     <div class="bg-yellow-900 bg-opacity-10 border-2 border-yellow-600 px-6 py-4 rounded-lg text-center max-w-6xl mx-auto mb-6">
-        <p class="text-yellow-600 text-sm mb-3">⚠️ <strong>Email not confirmed</strong> - Verify to unlock purchases.</p>
+        <p class="text-yellow-600 text-sm mb-3"><strong>Email not confirmed</strong> - Verify to unlock purchases.</p>
         <button id="resendEmailBtn" class="px-6 py-2 bg-yellow-600 text-black font-bold rounded-lg hover:bg-yellow-500 transition-colors">Resend Code</button>
         <div id="resendStatus" class="mt-2 text-sm"></div>
     </div>
@@ -211,17 +211,17 @@ const buildDashboardTemplate = (data) => {
                 const data = await res.json();
                 if (data.success) {
                     status.className = 'mt-2 text-sm text-green-400';
-                    status.textContent = '✓ ' + data.message;
+                    status.textContent = data.message;
                     btn.textContent = 'Code Sent!';
                     setTimeout(() => { btn.textContent = 'Resend Code'; btn.disabled = false; }, 3000);
                 } else {
                     status.className = 'mt-2 text-sm text-red-400';
-                    status.textContent = '✗ ' + data.error;
+                    status.textContent = data.error;
                     btn.disabled = false;
                 }
             } catch (err) {
                 status.className = 'mt-2 text-sm text-red-400';
-                status.textContent = '✗ Failed to send';
+                status.textContent = 'Failed to send';
                 btn.disabled = false;
             }
         });
@@ -234,7 +234,6 @@ const buildDashboardTemplate = (data) => {
         <div class="flex items-start justify-between">
             <div class="flex-1">
                 <div class="flex items-center gap-3 mb-4">
-                    <span class="text-3xl">🎉</span>
                     <h3 class="text-2xl font-bold text-gray-900">Server Online - Ready to Deploy!</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -257,7 +256,7 @@ const buildDashboardTemplate = (data) => {
                         <p class="text-gray-800 text-sm">Custom Domains section → point DNS → one-click free SSL certificate</p>
                     </div>
                 </div>
-                <p class="text-gray-900 text-sm font-medium">💡 First time? Git deployment is the easiest way to get started!</p>
+                <p class="text-gray-900 text-sm font-medium">First time? Git deployment is the easiest way to get started!</p>
             </div>
             <button onclick="dismissNextSteps()" class="ml-4 text-gray-900 hover:text-gray-700 text-3xl font-bold leading-none px-2">×</button>
         </div>
@@ -268,7 +267,6 @@ const buildDashboardTemplate = (data) => {
     ${!data.hasServer && data.hasPaid ? `
     <div class="bg-brand bg-opacity-10 border-l-4 border-brand rounded-lg p-4 mb-6 flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <div class="text-3xl">⏳</div>
             <div>
                 <h3 class="text-lg font-bold text-white">Server Provisioning in Progress</h3>
                 <p class="text-sm text-gray-300">Your <span class="text-brand font-bold">${data.plan}</span> server is being created (2-5 min). You'll receive an email at <strong class="text-white">${data.userEmail}</strong> when ready.</p>
@@ -283,7 +281,6 @@ const buildDashboardTemplate = (data) => {
     <!-- No Server Prompt -->
     ${!data.hasServer && !data.hasPaid ? `
     <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center mb-6">
-            <div class="text-6xl mb-6">🚀</div>
             <h2 class="text-3xl font-bold text-white mb-4">Welcome to Basement!</h2>
             <p class="text-xl text-gray-400 mb-6">You don't have a server yet. Get started by choosing a hosting plan.</p>
             
@@ -310,7 +307,7 @@ const buildDashboardTemplate = (data) => {
     ` : ''}
 
     <!-- Main Content Grid -->
-    <div class="space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         ${data.hasServer ? `
         <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-brand rounded-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
@@ -323,7 +320,7 @@ const buildDashboardTemplate = (data) => {
                     </div>
                     <div class="flex gap-2">
                         <button class="p-2 border border-white border-opacity-5 bg-transparent hover:bg-white hover:bg-opacity-5 text-brand rounded">⟳</button>
-                        <button class="p-2 border border-white border-opacity-5 bg-transparent hover:bg-white hover:bg-opacity-5 text-gray-500 rounded">⚙</button>
+                        <button class="p-2 border border-white border-opacity-5 bg-transparent hover:bg-white hover:bg-opacity-5 text-gray-500 rounded">Settings</button>
                     </div>
                 </div>
             </div>
@@ -379,17 +376,16 @@ const buildDashboardTemplate = (data) => {
         ` : `
         <!-- Server Placeholder (Provisioning or No Server) -->
         <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-gray-600 rounded-lg p-8 text-center">
-            <div class="text-4xl mb-4 opacity-50">🖥️</div>
             <h3 class="text-xl font-bold text-gray-400 mb-2">Server Details</h3>
             <p class="text-sm text-gray-500">${data.hasPaid ? 'Your server is being provisioned...' : 'Purchase a plan to see your server details here'}</p>
         </div>
         `}
 
-        ${data.hasServer ? `
         <!-- Deployments Card -->
+        ${data.hasServer && data.deployments.length > 0 ? `
         <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
-                <h4 class="text-sm font-bold uppercase tracking-wide text-white">📦 Deployment Pipeline</h4>
+                <h4 class="text-sm font-bold uppercase tracking-wide text-white">Deployment Pipeline</h4>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
@@ -431,7 +427,7 @@ const buildDashboardTemplate = (data) => {
                             <td colspan="5" class="px-6 py-4 bg-black bg-opacity-30">
                                 <div class="mb-2 flex justify-between items-center">
                                     <span class="text-xs font-bold uppercase text-gray-500">Deployment Output</span>
-                                    <button onclick="toggleDeploymentLog(${dep.id})" class="text-gray-500 hover:text-white text-xs">✕ Close</button>
+                                    <button onclick="toggleDeploymentLog(${dep.id})" class="text-gray-500 hover:text-white text-xs">Close</button>
                                 </div>
                                 <pre class="deployment-output bg-gray-900 p-4 rounded border border-gray-700 text-xs text-green-400 font-mono overflow-x-auto max-h-96 overflow-y-auto">${dep.output || 'Waiting for deployment to start...'}</pre>
                             </td>
@@ -442,10 +438,11 @@ const buildDashboardTemplate = (data) => {
             </div>
             ${!data.deployments.length ? '<p class="px-6 py-6 text-gray-500 text-xs italic">No deployments yet. Deploy your first app to see history here.</p>' : ''}
         </div>
+        ` : ''}
 
         <!-- Custom Domains -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">🌐 Custom Domains</h4>
+            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Custom Domains</h4>
             <form action="/add-domain" method="POST" class="mb-6">
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
@@ -459,7 +456,7 @@ const buildDashboardTemplate = (data) => {
                     <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
                         <p class="text-sm text-white font-medium mb-1.5">${dom.domain}</p>
                         <p class="text-xs text-gray-500 mb-2">Added ${new Date(dom.created_at).toLocaleDateString()}</p>
-                        ${dom.ssl_enabled ? '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">🔒 SSL</span>' : '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">⚠️ No SSL</span>'}
+                        ${dom.ssl_enabled ? '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">SSL Active</span>' : '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">No SSL</span>'}
                     </div>
                     `).join('')}
                 </div>
@@ -469,7 +466,7 @@ const buildDashboardTemplate = (data) => {
         <!-- Support Tickets -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
             <div class="flex justify-between items-center mb-6">
-                <h4 class="text-sm font-bold uppercase tracking-wide text-white">🎫 Support Tickets</h4>
+                <h4 class="text-sm font-bold uppercase tracking-wide text-white">Support Tickets</h4>
                 <button onclick="openSubmitTicketModal()" class="px-4 py-2 bg-brand bg-opacity-90 text-black font-bold text-xs rounded-lg hover:bg-brand transition-colors">+ New</button>
             </div>
             ${data.tickets.length > 0 ? `
@@ -494,7 +491,7 @@ const buildDashboardTemplate = (data) => {
 
         <!-- Account Settings -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">⚙️ Account Settings</h4>
+            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Account Settings</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <p class="text-xs text-gray-500 uppercase font-bold mb-2">Email</p>
@@ -520,7 +517,6 @@ const buildDashboardTemplate = (data) => {
                 <a href="/logout" class="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Logout</a>
             </div>
         </div>
-        ` : ''}
     </div>
 </main>
 
