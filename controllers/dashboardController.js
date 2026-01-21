@@ -55,12 +55,6 @@ exports.showDashboard = async (req, res) => {
             flashSuccess,
             flashError,
             emailConfirmed,
-            bandwidthUsed: '',
-            serverCount: hasServer ? 1 : 0,
-            totalRam: server?.ram || '4GB',
-            cpuLoad: 45,
-            ramUsage: 30,
-            diskUsage: 10,
             serverStatus: server?.status || 'unknown',
             serverName: server?.hostname || 'basement-core',
             plan: (server?.plan || paidPlan || 'basic').toString(),
@@ -174,15 +168,6 @@ module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, ch
  * Advanced glassmorphic dashboard with resource monitoring
  */
 const buildDashboardTemplate = (data) => {
-  const cpuPercent = data.cpuLoad || 45;
-  const ramPercent = data.ramUsage || 30;
-  const diskPercent = data.diskUsage || 10;
-  
-  // Calculate SVG stroke offset for circular monitors (220px circumference)
-  const cpuOffset = 220 - (220 * cpuPercent / 100);
-  const ramOffset = 220 - (220 * ramPercent / 100);
-  const diskOffset = 220 - (220 * diskPercent / 100);
-
   return `
 <!-- Main Content -->
 <main class="flex-1 px-4 md:px-8 lg:px-12 pt-24 pb-12">
@@ -279,71 +264,25 @@ const buildDashboardTemplate = (data) => {
     </div>
     ` : ''}
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 bg-gradient-to-br from-brand from-opacity-5 to-transparent">
-            <p class="text-xs text-gray-500 uppercase font-bold mb-3">Global Traffic</p>
-            <div class="flex items-end justify-between mb-4">
-                <h3 class="text-2xl font-bold text-white">${data.bandwidthUsed || '0'}/s</h3>
-                <div class="text-xs text-green-500 font-bold">+12%</div>
-            </div>
-            <div class="w-full h-1 bg-white bg-opacity-5 rounded-full overflow-hidden">
-                <div class="h-full bg-brand w-2/3 shadow-glow-brand"></div>
+    <!-- Provisioning Banner (Compact) -->
+    ${!data.hasServer && data.hasPaid ? `
+    <div class="bg-brand bg-opacity-10 border-l-4 border-brand rounded-lg p-4 mb-6 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="text-3xl">⏳</div>
+            <div>
+                <h3 class="text-lg font-bold text-white">Server Provisioning in Progress</h3>
+                <p class="text-sm text-gray-300">Your <span class="text-brand font-bold">${data.plan}</span> server is being created (2-5 min). You'll receive an email at <strong class="text-white">${data.userEmail}</strong> when ready.</p>
             </div>
         </div>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <p class="text-xs text-gray-500 uppercase font-bold mb-3">Active Instances</p>
-            <div class="flex items-end justify-between mb-4">
-                <h3 class="text-2xl font-bold text-white">${data.serverCount || 0}</h3>
-                <div class="text-xs text-brand font-bold">Stable</div>
-            </div>
-            <div class="w-full h-1 bg-white bg-opacity-5 rounded-full overflow-hidden">
-                <div class="h-full bg-green-500 w-11/12"></div>
-            </div>
-        </div>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <p class="text-xs text-gray-500 uppercase font-bold mb-3">Memory Pool</p>
-            <div class="flex items-end justify-between mb-4">
-                <h3 class="text-2xl font-bold text-white">${data.totalRam || '0'}</h3>
-                <div class="text-xs text-gray-500 font-bold">${ramPercent}% Used</div>
-            </div>
-            <div class="w-full h-1 bg-white bg-opacity-5 rounded-full overflow-hidden">
-                <div class="h-full bg-yellow-500" style="width: ${ramPercent}%"></div>
-            </div>
-        </div>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <p class="text-xs text-gray-500 uppercase font-bold mb-3">System Load</p>
-            <div class="flex items-end justify-between mb-4">
-                <h3 class="text-2xl font-bold text-white">1.04</h3>
-                <div class="text-xs text-gray-500 font-bold">Optimal</div>
-            </div>
-            <div class="w-full h-1 bg-white bg-opacity-5 rounded-full overflow-hidden">
-                <div class="h-full bg-brand w-1/3"></div>
-            </div>
-        </div>
+        <button onclick="location.reload()" class="px-4 py-2 bg-brand text-gray-900 font-bold text-sm rounded-lg hover:bg-cyan-500 transition-colors whitespace-nowrap">
+            Check Status
+        </button>
     </div>
+    ` : ''}
 
-    <!-- Main Content Grid -->
-    <div class="space-y-6">
-        ${!data.hasServer && data.hasPaid ? `
-        <!-- Provisioning State -->
-        <div class="bg-brand bg-opacity-10 border-2 border-brand rounded-lg p-8 text-center">
-            <div class="text-6xl mb-6">⏳</div>
-            <h2 class="text-3xl font-bold text-white mb-4">Server Provisioning in Progress</h2>
-            <p class="text-xl text-white mb-6">Your <span class="text-brand font-bold">${data.plan}</span> plan server is being created. This typically takes 2-5 minutes.</p>
-            
-            <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6 text-left max-w-2xl mx-auto">
-                <p class="text-gray-300 mb-3"><strong class="text-brand">What's happening:</strong> Creating your DigitalOcean droplet with Ubuntu 22.04, Nginx, Node.js, Python, and Git pre-installed.</p>
-                <p class="text-gray-300 mb-3"><strong class="text-brand">Estimated time:</strong> 2-5 minutes</p>
-                <p class="text-gray-300"><strong class="text-brand">Next steps:</strong> You'll receive an email at <strong class="text-white">${data.userEmail}</strong> with your server details and SSH credentials when ready.</p>
-            </div>
-            
-            <button onclick="location.reload()" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Check Status</button>
-            <p class="text-gray-400 text-sm mt-4">Refresh this page to check if your server is ready</p>
-        </div>
-        ` : !data.hasServer && !data.hasPaid ? `
-        <!-- No Server, No Payment State -->
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center">
+    <!-- No Server Prompt -->
+    ${!data.hasServer && !data.hasPaid ? `
+    <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center mb-6">
             <div class="text-6xl mb-6">🚀</div>
             <h2 class="text-3xl font-bold text-white mb-4">Welcome to Basement!</h2>
             <p class="text-xl text-gray-400 mb-6">You don't have a server yet. Get started by choosing a hosting plan.</p>
@@ -431,51 +370,17 @@ const buildDashboardTemplate = (data) => {
                             </form>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex flex-col items-center justify-center p-4 border border-white border-opacity-5 bg-black bg-opacity-20 rounded">
-                            <div class="relative w-20 h-20 mb-2">
-                                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#2DA7DF" stroke-width="4" stroke-linecap="round" class="transition-all duration-1000" style="stroke-dasharray: 220; stroke-dashoffset: ${cpuOffset}; filter: drop-shadow(0 0 5px #2DA7DF);"></circle>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">${cpuPercent}%</div>
-                            </div>
-                            <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">CPU Load</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center p-4 border border-white border-opacity-5 bg-black bg-opacity-20 rounded">
-                            <div class="relative w-20 h-20 mb-2">
-                                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round" class="transition-all duration-1000" style="stroke-dasharray: 220; stroke-dashoffset: ${ramOffset}; filter: drop-shadow(0 0 5px #a855f7);"></circle>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">${ramPercent}%</div>
-                            </div>
-                            <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">RAM Usage</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center p-4 border border-white border-opacity-5 bg-black bg-opacity-20 rounded">
-                            <div class="relative w-20 h-20 mb-2">
-                                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" class="transition-all duration-1000" style="stroke-dasharray: 220; stroke-dashoffset: ${diskOffset}; filter: drop-shadow(0 0 5px #f59e0b);"></circle>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">${diskPercent}%</div>
-                            </div>
-                            <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">Disk IO</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center p-4 border border-white border-opacity-5 bg-black bg-opacity-20 rounded">
-                            <div class="relative w-20 h-20 mb-2">
-                                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" style="stroke-dasharray: 220; stroke-dashoffset: calc(220 - 220 * 92 / 100); filter: drop-shadow(0 0 5px #22c55e);"></circle>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">92%</div>
-                            </div>
-                            <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">Net Sync</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
+        ` : `
+        <!-- Server Placeholder (Provisioning or No Server) -->
+        <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-gray-600 rounded-lg p-8 text-center">
+            <div class="text-4xl mb-4 opacity-50">🖥️</div>
+            <h3 class="text-xl font-bold text-gray-400 mb-2">Server Details</h3>
+            <p class="text-sm text-gray-500">${data.hasPaid ? 'Your server is being provisioned...' : 'Purchase a plan to see your server details here'}</p>
+        </div>
+        `}
         `}
 
         ${data.hasServer ? `
@@ -510,9 +415,7 @@ const buildDashboardTemplate = (data) => {
                                 }">${dep.status}</span>
                                 ${dep.status === 'success' && data.serverIp ? `
                                 <div class="mt-2">
-                                    <a href="http://${data.serverIp}/" target="_blank" class="text-brand hover:text-cyan-400 text-xs font-bold flex items-center gap-1">
-                                        🌐 View Live Site →
-                                    </a>
+        </a>
                                 </div>
                                 ` : ''}
                             </td>
@@ -571,7 +474,7 @@ const buildDashboardTemplate = (data) => {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                     ${data.tickets.slice(0, 4).map(ticket => `
                     <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
-                        <div class="flex justify-between items-start mb-2">
+                        <div class="flex `<p class="px-6 py-6 text-gray-500 text-xs italic">${data.hasServer ? 'No deployments yet. Deploy your first app to see history here.' : 'Waiting for server to be provisioned...'}</p>`
                             <p class="text-xs text-gray-400">Ticket #${ticket.id}</p>
                             <span class="px-2 py-1 text-xs font-bold uppercase rounded ${ticket.status === 'resolved' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300'}">
                                 ${ticket.status}
@@ -594,7 +497,7 @@ const buildDashboardTemplate = (data) => {
                 <div>
                     <p class="text-xs text-gray-500 uppercase font-bold mb-2">Email</p>
                     <p class="px-3 py-2 bg-black bg-opacity-30 rounded border border-gray-700 text-white text-xs">${data.userEmail}</p>
-                </div>
+                `<p class="text-gray-500 text-xs italic">${data.hasServer ? 'No domains configured yet.' : 'Waiting for server to be provisioned...'}</p>`
                 <div>
                     <p class="text-xs text-gray-500 uppercase font-bold mb-2">Role</p>
                     <p class="px-3 py-2 bg-black bg-opacity-30 rounded border border-gray-700 text-white text-xs">${data.userRole === 'admin' ? 'Administrator' : 'User'}</p>
@@ -651,8 +554,7 @@ const buildDashboardTemplate = (data) => {
 <script>
 function openSubmitTicketModal() { document.getElementById('submitTicketModal').classList.remove('hidden'); document.getElementById('submitTicketModal').classList.add('flex'); }
 function closeSubmitTicketModal() { document.getElementById('submitTicketModal').classList.remove('flex'); document.getElementById('submitTicketModal').classList.add('hidden'); }
-document.getElementById('submitTicketModal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'submitTicketModal') closeSubmitTicketModal();
+docuif (e.target.id === 'submitTicketModal') closeSubmitTicketModal();
 });
 
 async function submitTicket(e) {
