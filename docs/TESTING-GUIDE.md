@@ -1,103 +1,162 @@
-# Testing Guide - Basement Server Management
+# Testing Guide
 
-Complete guide for testing all features of the application.
+How to test everything before going live.
 
 ---
 
-## Prerequisites
+## Setup
 
-### Required Accounts & Credentials
-- [x] PostgreSQL database running (`webserver_db`)
-- [x] Stripe account with live API key
-- [x] DigitalOcean account with API token
-- [x] Stripe CLI installed and authenticated
+### What You Need
+- PostgreSQL running locally
+- Stripe account (use test mode)
+- DigitalOcean API token
+- Stripe CLI for webhook testing
 
-### Environment Setup
-Ensure your `.env` file has all required values:
+### Environment File
+Create `.env` with:
 ```env
-STRIPE_SECRET_KEY=sk_live_...
+STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 DIGITALOCEAN_TOKEN=dop_v1_...
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=webserver_db
-DB_USER=postgres
-DB_PASSWORD=admin
-SESSION_SECRET=dev_secret_change_in_production
+DB_NAME=basement_db
+DB_USER=basement_user
+DB_PASSWORD=your_password
+SESSION_SECRET=any_random_string
+NODE_ENV=development
 ```
 
 ---
 
-## Starting the Application
+## Start Everything
 
-### 1. Start PostgreSQL
-Ensure PostgreSQL service is running.
-
-### 2. Start Stripe Webhook Listener (for local testing)
-```powershell
-# In Downloads folder where stripe.exe is located
-.\stripe.exe listen --forward-to localhost:3000/webhook/stripe
-```
-Keep this terminal open.
-
-### 3. Start the Server
 ```bash
-# In project folder
+# Terminal 1: Database (should already be running)
+
+# Terminal 2: Stripe webhooks
+cd Downloads  # wherever stripe.exe is
+.\stripe.exe listen --forward-to localhost:3000/webhook/stripe
+
+# Terminal 3: App
+cd server-ui
 node index.js
 ```
-Server should start on `http://localhost:3000`
+
+Visit http://localhost:3000
 
 ---
 
-## Feature Testing
+## Test Flow
 
-### 1. Authentication System
+### 1. Register Account
+1. Go to `/register`
+2. Use `test@example.com` and any password (8+ chars)
+3. Should redirect to login
 
-#### Test User Registration
-1. Navigate to `http://localhost:3000/register`
-2. Fill in the form:
-   - Email: `test@example.com`
-   - Password: `Test123!`
-3. Click "Sign Up"
-4. **Expected:** Redirect to login with success message
+### 2. Login
+1. Go to `/login`
+2. Enter the email/password you just created
+3. Should redirect to `/dashboard`
 
-#### Test User Login
-1. Navigate to `http://localhost:3000/login`
-2. Enter credentials from registration
-3. Click "Sign In"
-4. **Expected:** Redirect to dashboard with session active
+### 3. Dashboard (No Server Yet)
+- Should show welcome message
+- "View Plans" button visible
+- Feature preview cards present
+- No server details (you haven't paid yet)
 
-#### Test Protected Routes
-1. Without logging in, try accessing:
-   - `http://localhost:3000/dashboard`
-   - `http://localhost:3000/pricing`
-2. **Expected:** Redirect to login page
+### 4. Payment Flow (TEST MODE)
+1. Click "View Plans" → goes to `/pricing`
+2. Pick any plan (Basic $25, Priority $60, Premium $120)
+3. Click "Get Started"
+4. Stripe checkout opens
+5. Use test card: `4242 4242 4242 4242`
+6. Any future expiry, any CVC
+7. Complete payment
 
-#### Test Logout
-1. While logged in, click "Logout" in navigation
-2. **Expected:** Redirect to home page, session destroyed
-3. Try accessing `/dashboard` again
-4. **Expected:** Redirect to login
+### 5. Automatic Provisioning (Watch This!)
+1. Payment succeeds → redirects to dashboard
+2. Dashboard shows "provisioning" status
+3. Wait 2-5 minutes
+4. Status changes to "running"
+5. IP address appears
+6. SSH credentials displayed
+
+**Behind the scenes:**
+- Webhook fires instantly
+- DigitalOcean creates droplet
+- Ubuntu + Nginx installs
+- IP polling starts
+- Email sent when ready
+
+### 6. Test Git Deployment
+1. In dashboard, find "Deploy from Git" section
+2. Paste a Git URL (React/Vue/Node/Python repo)
+3. Click "Deploy"
+4. Watch deployment logs in real-time
+5. Check deployment history table
+
+### 7. Test Custom Domain
+1. In dashboard, scroll to "Custom Domains"
+2. Enter a domain you own: `example.com`
+3. Click "Add Domain"
+4. Platform shows DNS instructions
+5. Point DNS to your server IP (do this in your registrar)
+6. Wait 5-10 min for propagation
+7. Click "Enable SSL"
+8. Certificate generated automatically via SSH
+
+### 8. Test Server Controls
+- Click "Restart Server" → status stays "running"
+- Click "Stop Server" → status becomes "stopped"
+- Click "Start Server" → status back to "running"
+
+### 9. Test Delete
+- In Danger Zone, click "Delete Server"
+- Confirm browser prompt
+- Server + droplet destroyed
+- Redirects to pricing page
+
+### 10. Test Refund (Stripe CLI)
+1. Create a server (pay again)
+2. Go to Stripe dashboard
+3. Find the payment
+4. Click "Refund"
+5. Confirm
+6. Check Stripe CLI output (webhook received)
+7. Check dashboard → server should be gone
 
 ---
 
-### 2. Dashboard (No Server State)
+## Common Issues
 
-#### Test Empty Dashboard
-1. Login with a user that has no server
-2. Navigate to `/dashboard`
-3. **Expected:**
-   - Welcome message displayed
-   - "View Plans" button visible
-   - Feature preview cards shown (Monitor, Deploy, Domains, SSH)
-   - No server details displayed
+**Server stuck on "provisioning":**
+- Wait full 5 minutes
+- Check DigitalOcean dashboard for droplet
+- Check server logs: `pm2 logs basement`
+
+**Webhook not working:**
+- Is Stripe CLI running?
+- Check terminal for webhook secret
+- Match it to `.env` file
+
+**Payment fails:**
+- Using test mode keys?
+- Test card `4242 4242 4242 4242`?
+- Check Stripe dashboard logs
 
 ---
 
-### 3. Payment & Server Provisioning
+## Production Testing
 
-#### Test Plan Selection
-1. Login and navigate to `/pricing`
+Before launch:
+- [ ] Test full payment flow (real card, refund after)
+- [ ] Test on mobile (iPhone + Android)
+- [ ] Test email delivery (welcome email)
+- [ ] Test all browsers (Chrome, Firefox, Safari)
+- [ ] Load test (10+ concurrent users)
+
+---
 2. Review three plans:
    - Basic ($25/mo)
    - Priority ($60/mo)

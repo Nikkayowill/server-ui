@@ -1,153 +1,124 @@
-# Production Deployment Guide
+# Deploying to Production
 
-## Prerequisites
-- [ ] DigitalOcean droplet running Ubuntu 20.04+
-- [ ] Node.js 18+ installed
-- [ ] PostgreSQL 12+ installed
-- [ ] PM2 installed globally: `sudo npm install -g pm2`
-- [ ] Domain pointed to server IP (optional but recommended)
+## What You Need
 
-## Step-by-Step Deployment
+- Ubuntu 20.04+ server (DigitalOcean droplet recommended)
+- Node.js 18+
+- PostgreSQL 12+
+- PM2 process manager
+- Domain name (optional but recommended for SSL)
 
-### 1. Server Preparation
+## Quick Setup
+
+### 1. Prep the Server
 
 ```bash
-# SSH into your production server
 ssh root@your_server_ip
 
-# Update system packages
+# Update packages
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js (if not installed)
+# Install Node.js
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# Install PostgreSQL (if not installed)
+# Install PostgreSQL
 sudo apt install postgresql postgresql-contrib -y
 
-# Install PM2 globally
+# Install PM2
 sudo npm install -g pm2
 ```
 
-### 2. Database Setup
+### 2. Setup Database
 
 ```bash
-# Switch to postgres user
 sudo -u postgres psql
 
-# Create database and user
-CREATE DATABASE webserver_db;
-CREATE USER basement_app WITH ENCRYPTED PASSWORD 'KExFqHy/QmvpiSW1d9Z9gkMcZaK4GFUvvJdOUbKZvO0=';
-GRANT ALL PRIVILEGES ON DATABASE webserver_db TO basement_app;
+CREATE DATABASE basement_db;
+CREATE USER basement_user WITH ENCRYPTED PASSWORD 'your_password_here';
+GRANT ALL PRIVILEGES ON DATABASE basement_db TO basement_user;
 \q
 
-# Run database migrations
+# Create tables
 cd ~/server-ui
 node setup-db.js
 ```
 
-### 3. Application Setup
+### 3. Upload Code
 
 ```bash
-# Clone or upload your code
 cd ~
 git clone https://github.com/yourusername/server-ui.git
-# OR use scp/rsync to upload files
-
 cd server-ui
-
-# Install dependencies
 npm install --production
-
-# Create logs directory
 mkdir -p logs
 ```
 
-### 4. Environment Configuration
+### 4. Set Environment Variables
 
-**DO NOT create a .env file on production!** Set environment variables system-wide or through PM2.
+**Important:** Don't create a `.env` file in production. Use system-wide variables:
 
-**Option A: Set system environment variables (recommended)**
 ```bash
-# Edit /etc/environment
 sudo nano /etc/environment
+```
 
-# Add these lines (replace with your actual values):
+Add these (use your actual values):
+```
 NODE_ENV="production"
 PORT="3000"
-SESSION_SECRET="1cf84fb120158df6531c0a5ff49ef2f77ec22e9ae0149dc77a9e8e9570b2a09e51fdd7190df3089e43e0018e75366dcbfea401d0690caa33e18016f2577d426b"
-STRIPE_SECRET_KEY="sk_live_YOUR_NEW_ROTATED_KEY"
-STRIPE_WEBHOOK_SECRET="whsec_YOUR_NEW_WEBHOOK_SECRET"
-DIGITALOCEAN_TOKEN="dop_v1_YOUR_NEW_ROTATED_TOKEN"
+SESSION_SECRET="generate_a_long_random_string"
+STRIPE_SECRET_KEY="sk_live_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+DIGITALOCEAN_TOKEN="dop_v1_..."
 DB_HOST="localhost"
 DB_PORT="5432"
-DB_NAME="webserver_db"
-DB_USER="basement_app"
-DB_PASSWORD="KExFqHy/QmvpiSW1d9Z9gkMcZaK4GFUvvJdOUbKZvO0="
+DB_NAME="basement_db"
+DB_USER="basement_user"
+DB_PASSWORD="your_password_here"
+```
 
-# Reload environment
+Reload:
+```bash
 source /etc/environment
 ```
 
-**Option B: Use PM2 ecosystem file (alternative)**
-The ecosystem.config.js is already configured. Just set env vars in your shell before starting PM2.
-
-### 5. Firewall Configuration
+### 5. Configure Firewall
 
 ```bash
-# Install UFW if not installed
 sudo apt install ufw -y
 
-# Allow SSH (important - don't lock yourself out!)
+# Don't lock yourself out!
 sudo ufw allow 22/tcp
 
-# Allow HTTP and HTTPS
+# Web traffic
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 
-# Allow your application port (if not using reverse proxy)
+# App port (if not using reverse proxy)
 sudo ufw allow 3000/tcp
 
-# Enable firewall
 sudo ufw enable
-sudo ufw status
 ```
 
-### 6. SSL Certificate (Recommended)
+### 6. Get SSL Certificate
 
 ```bash
-# Install Certbot
 sudo apt install certbot -y
-
-# Get SSL certificate (if using domain)
 sudo certbot certonly --standalone -d yourdomain.com -d www.yourdomain.com
 
-# Certificates will be in:
-# /etc/letsencrypt/live/yourdomain.com/fullchain.pem
-# /etc/letsencrypt/live/yourdomain.com/privkey.pem
-
-# Set up auto-renewal
+# Auto-renewal check
 sudo certbot renew --dry-run
 ```
 
-### 7. Start Application with PM2
+### 7. Start with PM2
 
 ```bash
 cd ~/server-ui
-
-# Start with PM2
-pm2 start ecosystem.config.js --env production
-
-# View logs
+pm2 start index.js --name basement
 pm2 logs basement
-
-# Check status
-pm2 status
-
-# Save PM2 configuration
 pm2 save
-
-# Enable PM2 startup on system reboot
+pm2 startup  # Follow the printed command
+```
 pm2 startup
 # Follow the instructions printed (run the sudo command)
 ```

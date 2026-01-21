@@ -587,7 +587,7 @@ ${getHTMLHead('FAQ - Basement')}
           
           <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
-              <h3 class="text-lg font-medium text-white">Can I deploy my code?</h3>
+              <h3 class="text-lg font-medium text-white">How do I deploy my code?</h3>
               <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
@@ -623,7 +623,7 @@ ${getHTMLHead('FAQ - Basement')}
           
           <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
-              <h3 class="text-lg font-medium text-white">Can I cancel anytime?</h3>
+              <h3 class="text-lg font-medium text-white mb-2">Can I cancel anytime?</h3>
               <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">

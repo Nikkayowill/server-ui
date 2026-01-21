@@ -1,120 +1,187 @@
-# Clouded Basement - Project Status
-**Last Updated:** January 18, 2026
+# Clouded Basement - Cloud Hosting Platform
+**Last Updated:** January 21, 2026
 
 ---
 
 ## 🎯 WHAT THIS IS
 
-Simple cloud hosting platform. Customers pay $10/month (lifetime founder price) for a managed server.
+**Fully automated cloud hosting platform** with one-touch VPS provisioning, Git deployment, and SSL automation.
 
-**Current Status:** Live in production at cloudedbasement.ca, design complete, payment system ready.
-
----
-
-## ⚠️ CRITICAL: BEFORE MARKETING
-
-### 1. Payment → Server Flow (NOT AUTOMATED YET!)
-**When customer pays $10, you must manually:**
-- Create DigitalOcean droplet
-- Email them SSH credentials
-- Update their dashboard
-
-**Action:** Decide if you want to automate this or keep manual for first 10 customers.
-
-### 2. Email Sending (CHECK THIS!)
-Test that emails work: welcome email, server credentials, support responses.
-
-### 3. Legal Pages (REQUIRED!)
-- [ ] Privacy Policy (copy template online)
-- [ ] Terms of Service (copy template online)  
-- [ ] Add links in footer
-
-### 4. Support Email
-Set up: support@cloudedbasement.ca (forward to your personal email)
+**Live:** cloudedbasement.ca  
+**Status:** Production-ready with full automation
 
 ---
 
-## 🧪 TESTING BEFORE LAUNCH
+## 💰 PRICING
 
-1. **Register test account** → confirm email works
-2. **Complete test payment** (Stripe test mode: card 4242 4242 4242 4242)
-3. **Check what happens** → document the flow
-4. **Test on mobile** → ensure everything displays correctly
-5. **Ask friend to test** → watch them use it
+### Three Plans:
+- **Basic:** $25/month - 1GB RAM, 1 CPU, 25GB storage
+- **Priority:** $60/month - 2GB RAM, 2 CPUs, 50GB storage  
+- **Premium:** $120/month - 4GB RAM, 2 CPUs, 80GB storage
+
+### Founder Launch Promo:
+- **$10/month lifetime** for first customers (limited availability)
+- Locked-in price forever
+- Full platform access
 
 ---
 
-## 💰 CUSTOMER ONBOARDING (CURRENT)
+## ✅ WHAT'S WORKING (FULLY AUTOMATED)
 
-### What Happens When Someone Pays $10:
+### 🚀 Server Provisioning
+- ✅ Stripe payment webhook triggers automatic droplet creation
+- ✅ Ubuntu 22.04 + Nginx + Certbot pre-installed
+- ✅ Secure SSH password auto-generated
+- ✅ IP polling with 5-minute timeout
+- ✅ Welcome email sent when ready
+- ✅ Auto-refund if provisioning fails
+- ✅ One server per customer (database constraint)
+
+### 📦 Git Deployment
+- ✅ Auto-detects project type (React/Vue/Node/Python/Static)
+- ✅ Clones repo via SSH
+- ✅ Installs dependencies (npm/pip)
+- ✅ Builds production assets
+- ✅ Deploys to Nginx
+- ✅ Real-time deployment logs
+- ✅ Deployment history tracking
+
+### 🌐 Custom Domains + SSL
+- ✅ Add unlimited domains from dashboard
+- ✅ DNS configuration instructions displayed
+- ✅ One-click SSL via Let's Encrypt
+- ✅ Automated certbot execution via SSH
+- ✅ SSL status tracking (pending/active/failed)
+- ✅ Auto-renewal configured
+
+### 🎛️ Server Management
+- ✅ Start/Stop/Restart via DigitalOcean API
+- ✅ Delete server + destroy droplet
+- ✅ Real-time status (provisioning/running/stopped/failed)
+- ✅ SSH credentials displayed
+- ✅ Server specs tracking
+
+### 🎫 Support System
+- ✅ Submit tickets from dashboard
+- ✅ Priority levels (low/medium/high/critical)
+- ✅ Ticket history
+- ✅ Status tracking
+
+### 🔐 Account Features
+- ✅ Email confirmation required
+- ✅ Change password (with verification)
+- ✅ Role-based access (user/admin)
+- ✅ Session management
+- ✅ CSRF protection on all forms
+
+### 💳 Payment + Billing
+- ✅ Stripe Checkout integration
+- ✅ Webhook handling (payments + refunds)
+- ✅ Payment history tracking
+- ✅ Automatic refunds on failures
+
+### 🔧 Admin Controls
+- ✅ View all users, servers, payments
+- ✅ Manually destroy droplets
+- ✅ Delete user records
+- ✅ Audit logging
+
+### ⚙️ Background Jobs
+- ✅ DigitalOcean sync (hourly) - marks deleted droplets
+- ✅ IP polling system with cleanup
+- ✅ Email notifications
+- ✅ Graceful shutdown handling
+
+---
+
+## 🧪 TESTING CHECKLIST
+
+### Before Production Deploy:
+- [ ] Test full payment flow (Stripe test mode)
+- [ ] Verify server auto-provisioning (2-5 min)
+- [ ] Test Git deployment (React/Node/Python)
+- [ ] Test custom domain + SSL
+- [ ] Verify email sending works
+- [ ] Test server controls (start/stop/restart)
+- [ ] Test delete server flow
+- [ ] Mobile responsive check
+- [ ] Cross-browser testing
+- [ ] Load testing (concurrent users)
+
+---
+
+## 📊 CUSTOMER JOURNEY (AUTOMATED)
+
+### Payment → Server Flow:
 ```
 1. Customer completes Stripe checkout ✅
-2. Webhook fires, payment recorded in database ✅
-3. Customer redirected to dashboard ✅
-4. Dashboard shows... what? ⚠️ YOU NEED TO UPDATE THIS
-5. Welcome email sent? ❌ NOT CONFIGURED YET
-6. Server created? ❌ MANUAL PROCESS
+2. Webhook fires instantly ✅
+3. Payment recorded in database ✅
+4. DigitalOcean droplet creation triggered ✅
+5. Ubuntu + Nginx + Certbot installed ✅
+6. IP polling starts (10-sec intervals, 5-min max) ✅
+7. Server status: "provisioning" → "running" ✅
+8. Welcome email sent with SSH credentials ✅
+9. Customer can deploy immediately ✅
 ```
 
-### Recommended Manual Flow (For First 10 Customers):
+### If Provisioning Fails:
 ```
-1. You get email: "New payment from [Name]"
-2. You create DigitalOcean droplet (5 minutes)
-3. You email customer: "Your server is ready! IP: X.X.X.X, Password: XXXX"
-4. Customer SSHs in and uses their server
-5. You provide support via email
+1. Status set to "failed" ✅
+2. Automatic Stripe refund issued ✅
+3. Payment status updated to "refunded" ✅
+4. Customer notified (manual for now) ⚠️
 ```
-
-**This works fine for 10 people. Automate later.**
 
 ---
 
-## 📊 WHAT YOU'RE SELLING
+## 🛠️ TECH STACK
 
-**Founder Plan: $10/month forever**
-- 1 cloud server (1GB RAM, 25GB storage)
-- Ubuntu 22.04 with Node.js, Python, Git pre-installed
-- Full SSH root access
-- Custom domain + SSL support
-- Direct support from you
-
-**Customer can:**
-- Host unlimited websites/apps (within server resources)
-- Deploy with Git
-- Install any software they want
-- Run databases (PostgreSQL, MySQL, etc.)
-
----
-
-## 🔧 QUICK FIXES NEEDED
-
-### High Priority:
-1. Update dashboard to show "pending" state after payment
-2. Write 2 email templates: welcome + server ready
-3. Create privacy policy page
-4. Set up support email forwarding
-5. Test full payment flow 3 times
-
-### Can Wait:
-- Automated server provisioning
-- Usage metrics dashboard
-- One-click deployments
-- Billing history page
+- **Backend:** Express.js 5.2.1, Node.js
+- **Database:** PostgreSQL (connection pooling, session storage)
+- **Payments:** Stripe (webhooks + Checkout)
+- **Infrastructure:** DigitalOcean API
+- **Frontend:** Server-rendered HTML + Tailwind CSS 3.x + Flowbite 2.5.2
+- **Process Manager:** PM2 on Ubuntu
+- **Security:** Helmet, CSRF, rate limiting, bcrypt, parameterized queries
 
 ---
 
 ## 📁 PROJECT STRUCTURE
 
 ```
-/controllers - Page rendering logic
-/public/css - Stylesheets (cyan color scheme)
-/db/schema - SQL table definitions
-/docs - User-facing documentation
-/middleware - Auth, rate limiting, error handling
-/services - DigitalOcean API, email
-helpers.js - Reusable HTML components (nav, footer)
-index.js - Main server file, all routes
+/controllers - Route handlers (auth, pages, dashboard, admin, payment, server)
+/middleware - auth, rateLimiter, errorHandler, logger
+/services - digitalocean, email, auditLog
+/routes - Express routers
+/public/css - Tailwind + brand utilities (global.css: 155 lines)
+/db/schema - PostgreSQL tables
+/docs - Documentation (this folder)
+helpers.js - HTML generators (head, nav, footer, scripts)
+index.js - Main Express app
 ```
+
+---
+
+## ⚠️ KNOWN GAPS
+
+### High Priority:
+- [ ] Email sending needs end-to-end testing
+- [ ] Privacy policy + TOS legal review
+- [ ] Password reset flow (not implemented)
+- [ ] Mobile device testing (real hardware)
+- [ ] Production monitoring/alerts
+
+### Medium Priority:
+- [ ] Billing history page
+- [ ] Usage metrics dashboard
+- [ ] Plan upgrade/downgrade (currently one server per customer)
+- [ ] Backup/restore functionality
+
+### Low Priority:
+- [ ] Custom server specs
+- [ ] Multiple servers per user
+- [ ] Team collaboration features
 
 ---
 
@@ -130,45 +197,37 @@ git push origin main
 ssh deploy@68.183.203.226
 cd ~/server-ui
 git pull origin main
-sudo systemctl restart cloudedbasement
+sudo systemctl restart cloudedbasement.service
 ```
 
 **Service:** cloudedbasement.service (systemd)  
-**Logs:** `sudo journalctl -u cloudedbasement -n 50 --no-pager`
+**Logs:** `pm2 logs cloudedbasement` or `journalctl -u cloudedbasement.service -f`
 
 ---
 
-## ✅ WHAT'S WORKING
+## 📖 DOCUMENTATION
 
-- Authentication (register, login, email confirmation)
-- Payment processing (Stripe live mode)
-- Responsive design (desktop, tablet, mobile)
-- Admin dashboard (user management)
-- User dashboard (server tabs exist)
-- Security (CSRF, rate limiting, helmet)
-- Database (PostgreSQL with sessions)
-
----
-
-## ❌ WHAT'S MISSING
-
-- Server provisioning automation
-- Post-payment onboarding flow
-- Email sending configuration
-- Privacy policy + TOS pages
-- Support ticket system (table exists, no UI)
-- Password reset flow
-- Billing history display
-- Server metrics/monitoring
+- **README.md** - Project status, customer onboarding flow
+- **docs/README.md** - Complete implementation details
+- **docs/DEV-CHEATSHEET.md** - Git workflow
+- **docs/DEPLOYMENT.md** - Production deployment
+- **docs/SECURITY.md** - Security measures
+- **docs/TESTING-GUIDE.md** - How to test
+- **docs/REFACTORING.md** - MVC refactor details
+- **HANDOFF-PROMPT.md** - Complete handoff for new AI agents
 
 ---
 
-## 📧 EMAIL TEMPLATES YOU NEED
+## 🔗 IMPORTANT LINKS
 
-### Welcome Email (After Payment)
-```
-Subject: Welcome to Clouded Basement! 🎉
+- **Production:** https://cloudedbasement.ca
+- **GitHub:** https://github.com/Nikkayowill/server-ui
+- **Server:** deploy@68.183.203.226
+- **Stripe Dashboard:** stripe.com/dashboard
 
+---
+
+**Questions? Check docs/ folder or just start testing. The best way to find issues is to use your own product.**
 Hey [Name],
 
 Your $10/month lifetime founder plan is active!

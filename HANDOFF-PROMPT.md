@@ -1,12 +1,12 @@
 # 🤖 AI Agent Handoff Prompt - Clouded Basement
-**Date:** January 20, 2026  
-**Status:** Production-ready after major UI refactor
+**Date:** January 21, 2026  
+**Status:** Production-ready with full automation
 
 ---
 
 ## 📋 QUICK CONTEXT
 
-You're working on **Clouded Basement** (cloudedbasement.ca) - a simple cloud hosting platform where customers pay $10/month for a managed VPS server. The site is **live in production** with recent major UI cleanup completed.
+You're working on **Clouded Basement** (cloudedbasement.ca) - a **fully automated cloud hosting platform** with one-touch VPS provisioning, Git deployment, and SSL automation. The site is **live in production**.
 
 **Your role:** Help maintain, debug, test, and deploy this production application.
 
@@ -14,42 +14,33 @@ You're working on **Clouded Basement** (cloudedbasement.ca) - a simple cloud hos
 
 ## 🎯 CURRENT PROJECT STATE
 
-### ✅ Recently Completed (January 20, 2026)
-1. **Major UI Refactor** - Migrated entire codebase from custom CSS to Tailwind CSS + Flowbite
+### ✅ Recently Completed (January 21, 2026)
+1. **FAQ Rewrite** - Reduced from 13 to 6 focused questions with accurate feature descriptions
+2. **Documentation Update** - README.md reflects actual automated features
+3. **Major UI Refactor** (Jan 20) - Migrated entire codebase from custom CSS to Tailwind CSS + Flowbite
    - Cleaned **17 pages** (landing, auth, dashboard, admin, payment flows)
    - Removed **all inline styles** and legacy CSS classes
    - Created minimal `global.css` (155 lines: brand utilities + navigation)
    - Fixed responsive navigation with mobile hamburger menu
-   - Result: Clean, professional, consistent design across all pages
 
 2. **Codebase Structure** - MVC architecture with proper separation:
-   - Controllers: `authController`, `pagesController`, `dashboardController`, `adminController`, `paymentController`
+   - Controllers: `authController`, `pagesController`, `dashboardController`, `adminController`, `paymentController`, `serverController`
    - Middleware: `auth.js`, `rateLimiter.js`, `errorHandler.js`, `logger.js`
    - Services: `digitalocean.js`, `email.js`, `auditLog.js`
    - Routes: `/auth`, `/dashboard`, `/pages`, `/payments`, `/servers`
 
 ### ⚠️ Known Issues & Gaps
-1. **Payment → Server Automation NOT COMPLETE**
-   - When customer pays $10, admin must manually create DigitalOcean droplet
-   - Automation started but needs completion/testing
-   
-2. **Email Sending** - Multiple providers configured but needs verification:
+1. **Email Sending** - Multiple providers configured but needs end-to-end testing:
    - Gmail OAuth2 (preferred)
    - SendGrid API
    - Mailtrap (dev)
    - Generic SMTP
    
-3. **Admin Controls** - Need more testing:
-   - `/admin` dashboard exists
-   - Can view users, servers, payments
-   - Can destroy droplets and delete records
-   - Needs end-to-end testing
+2. **Legal Pages** - Privacy/Terms exist but need legal review
 
-4. **Legal Pages** - Privacy/Terms exist but may need review for legal compliance
+3. **Password Reset** - Not yet implemented
 
-5. **Tailwind CSS Linter Warnings** (non-critical):
-   - `hidden` + `flex` conflict in modal (line 500 dashboardController.js)
-   - `@tailwind` directives flagged by CSS linter (expected, ignore)
+4. **Mobile Testing** - Needs real device testing (iPhone/Android)
 
 ---
 

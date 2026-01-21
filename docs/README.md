@@ -1,103 +1,53 @@
-# LocalBiz Server - Complete Implementation Documentation
+# Clouded Basement - Technical Documentation
 
-## Project Overview
-A production-ready Express.js web server for a local business MVP featuring payment processing, contact forms, and comprehensive security hardening.
+## What This Platform Does
 
-## Technology Stack
+Automated cloud hosting that provisions VPS servers in minutes. When a customer pays, the platform automatically creates a DigitalOcean droplet, installs Ubuntu + Nginx + SSL tools, and emails login credentials. Customers can then deploy code via Git, add custom domains, and enable HTTPS with one click.
 
-### Core Framework
-- **Express.js 5.2.1** - Web application framework
-- **Node.js** - JavaScript runtime
-- **CommonJS** - Module system
+## Stack
 
-### Payment Processing
-- **Stripe** - Payment gateway integration
-- **Stripe Checkout** - Hosted payment page
-- Test & Live mode support
+- **Backend:** Express.js 5.2.1 on Node.js
+- **Database:** PostgreSQL with session storage
+- **Payments:** Stripe webhooks trigger server creation
+- **Infrastructure:** DigitalOcean API for VPS management
+- **Frontend:** Server-rendered HTML with Tailwind CSS + Flowbite
+- **Process Manager:** PM2 on Ubuntu production server
+- **Security:** Helmet headers, CSRF tokens, rate limiting, bcrypt passwords
 
-### Security Packages
-- **helmet** - HTTP security headers
-- **express-rate-limit** - Request throttling/rate limiting
-- **express-validator** - Input validation and sanitization
-- **csurf** - CSRF token protection
-- **cookie-parser** - Cookie handling for CSRF
-- **dotenv** - Environment variable management
+## How It Works
 
-## Implemented Features
+### Customer Journey
+1. Register account → email confirmation required
+2. Choose plan ($25/$60/$120) → Stripe checkout
+3. Payment succeeds → webhook fires
+4. Platform creates DigitalOcean droplet automatically
+5. Ubuntu 22.04 + Nginx installed via cloud-init script
+6. IP polling (10-sec intervals, 5-min max)
+7. Welcome email sent with SSH credentials
+8. Customer logs into dashboard → can deploy immediately
 
-### 1. Static Website Pages
-**Location:** Root directory HTML files
+### If Server Creation Fails
+- Automatic Stripe refund issued
+- User notified
+- Failure logged in admin panel
 
-**Pages:**
-- `index.html` - Homepage with basic navigation
-- `about.html` - About page
-- `contact.html` - Original contact page (now superseded by dynamic version)
-- `terms.html` - Terms & conditions page
+### Git Deployment
+- Customer pastes Git URL in dashboard
+- Platform SSHs into their server
+- Detects project type (React/Vue/Node/Python/static HTML)
+- Runs `npm install` or `pip install`
+- Builds production assets
+- Copies to `/var/www/html`
+- Nginx serves it
 
-**Routing Pattern:**
-```javascript
-app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
-app.get('/about', (req, res) => res.sendFile(__dirname + '/about.html'));
-app.get('/terms', (req, res) => res.sendFile(__dirname + '/terms.html'));
-```
+### Custom Domains
+- Customer adds domain in dashboard
+- Platform shows DNS instructions (A records)
+- Customer clicks "Enable SSL"
+- Platform SSHs into server, runs `certbot --nginx -d domain.com`
+- SSL certificate installed, HTTPS live
 
-**CSS Styling:**
-- Single stylesheet: `/public/styles.css`
-- Served via `express.static('public')`
-
-### 2. Contact Form System
-**Route:** `GET /contact` and `POST /contact`
-
-**Features:**
-- **Dynamic form generation** with CSRF token injection
-- **Input validation:**
-  - Name: Required, max 100 characters, trimmed
-  - Email: Valid email format, normalized (lowercase)
-  - Message: Required, max 1000 characters, trimmed
-- **Rate limiting:** 5 submissions per hour per IP
-- **CSRF protection:** Prevents cross-site forgery attacks
-- **Error handling:** Displays validation errors with "Go back" link
-- **Success behavior:** Logs submission to console, redirects to home
-
-**Current limitations:**
-- No database storage
-- No email notifications
-- Data only logged to console
-
-### 3. Stripe Payment Integration
-**Routes:** `GET /pay` and `POST /create-checkout-session`
-
-**Payment Flow:**
-1. User visits `/pay` → sees checkout button
-2. Clicks "Pay with Stripe" → submits form with CSRF token
-3. Server creates Stripe Checkout Session
-4. User redirected to Stripe-hosted payment page
-5. After payment → redirected back with success/cancel status
-
-**Configuration:**
-- **Product:** "LocalBiz Service"
-- **Price:** $20.00 USD (hardcoded)
-- **Payment method:** Card only
-- **Mode:** One-time payment (not subscription)
-- **Success URL:** `/?success=true`
-- **Cancel URL:** `/?canceled=true`
-
-**Security:**
-- Rate limited: 10 payment attempts per 15 minutes
-- CSRF protected
-- API key stored in `.env` file
-- Error handling prevents sensitive data exposure
-
-**API Key Setup:**
-- Test key: `sk_test_...`
-- Live key: `sk_live_...` (currently configured)
-- Stored in `STRIPE_SECRET_KEY` environment variable
-
-### 4. Security Implementation
-
-#### Rate Limiting
-**Global limiter:**
-- 100 requests per 15 minutes per IP
+## Architecture
 - Applied to all routes
 
 **Contact form limiter:**
