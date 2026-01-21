@@ -77,30 +77,30 @@ ${getHTMLHead('Terms of Service - Basement')}
         </ul>
         <p class="text-gray-400 mb-6">Services are provided on a subscription basis with monthly billing cycles. We reserve the right to modify, suspend, or discontinue any aspect of the Services at any time with or without notice.</p>
 
-        <h2>3. Account Registration and Security</h2>
-        <h3>3.1 Account Creation</h3>
-        <p>To use our Services, you must create an account by providing accurate, current, and complete information. You agree to:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">3. Account Registration and Security</h2>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">3.1 Account Creation</h3>
+        <p class="text-gray-400 mb-4">To use our Services, you must create an account by providing accurate, current, and complete information. You agree to:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>Provide a valid email address for account verification</li>
           <li>Create a secure password (minimum 8 characters)</li>
           <li>Keep your account information up to date</li>
           <li>Accept these Terms of Service during registration</li>
         </ul>
 
-        <h3>3.2 Account Security</h3>
-        <p>You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:</p>
-        <ul>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">3.2 Account Security</h3>
+        <p class="text-gray-400 mb-4">You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>Immediately notify us of any unauthorized use of your account</li>
           <li>Not share your account credentials with any third party</li>
           <li>Use strong, unique passwords and enable two-factor authentication when available</li>
           <li>Log out of your account at the end of each session when using shared devices</li>
         </ul>
-        <p>We are not liable for any loss or damage arising from your failure to protect your account credentials.</p>
+        <p class="text-gray-400 mb-6">We are not liable for any loss or damage arising from your failure to protect your account credentials.</p>
 
-        <h2>4. Payment Terms</h2>
-        <h3>4.1 Pricing and Billing</h3>
-        <p>Our Services are offered on a subscription basis with the following terms:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">4. Payment Terms</h2>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.1 Pricing and Billing</h3>
+        <p class="text-gray-400 mb-4">Our Services are offered on a subscription basis with the following terms:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li><strong>Billing Cycle:</strong> Monthly recurring charges</li>
           <li><strong>Payment Methods:</strong> Credit card, debit card, and other methods accepted through Stripe</li>
           <li><strong>Currency:</strong> All prices are in Canadian Dollars (CAD) unless otherwise stated</li>
@@ -108,9 +108,9 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li><strong>Price Changes:</strong> We reserve the right to modify pricing with 30 days' advance notice</li>
         </ul>
 
-        <h3>4.2 Free Trial Period</h3>
-        <p>New customers are eligible for a <strong>7-day free trial</strong> with the following conditions:</p>
-        <ul>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.2 Free Trial Period</h3>
+        <p class="text-gray-400 mb-4">New customers are eligible for a <strong>7-day free trial</strong> with the following conditions:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>One free trial per customer</li>
           <li>Valid payment method required at signup</li>
           <li>Automatic conversion to paid subscription after trial period unless cancelled</li>
@@ -118,32 +118,32 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li>Cancel anytime during trial period to avoid charges</li>
         </ul>
 
-        <h3>4.3 Payment Processing</h3>
-        <p>All payments are processed securely through Stripe, Inc. By providing payment information, you:</p>
-        <ul>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.3 Payment Processing</h3>
+        <p class="text-gray-400 mb-4">All payments are processed securely through Stripe, Inc. By providing payment information, you:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>Authorize us to charge your payment method for all fees incurred</li>
           <li>Agree to Stripe's terms of service and privacy policy</li>
           <li>Represent that you have the legal right to use the payment method provided</li>
           <li>Understand that we do not store your complete payment card information</li>
         </ul>
 
-        <h3>4.4 Taxes</h3>
-        <p>Prices do not include applicable taxes, duties, or fees. You are responsible for paying all taxes associated with your use of the Services, including but not limited to sales tax, GST/HST, and VAT as required by your jurisdiction.</p>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.4 Taxes</h3>
+        <p class="text-gray-400 mb-4">Prices do not include applicable taxes, duties, or fees. You are responsible for paying all taxes associated with your use of the Services, including but not limited to sales tax, GST/HST, and VAT as required by your jurisdiction.</p>
 
-        <h2>5. Refund Policy</h2>
-        <p>We offer a <strong>20-day money-back guarantee</strong> from the date your first paid subscription begins (after any free trial period):</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">5. Refund Policy</h2>
+        <p class="text-gray-400 mb-4">We offer a <strong>20-day money-back guarantee</strong> from the date your first paid subscription begins (after any free trial period):</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li><strong>Eligibility Window:</strong> Refund requests must be submitted within 20 days of your first payment</li>
           <li><strong>Scope:</strong> Applies to first-time customers on their initial subscription only</li>
           <li><strong>Process:</strong> Submit a refund request via support ticket or email</li>
           <li><strong>Processing Time:</strong> Refunds typically processed within 5-10 business days</li>
           <li><strong>Exclusions:</strong> Domain registration fees, third-party services, and renewal payments are non-refundable</li>
         </ul>
-        <p>Refunds are issued to the original payment method. We reserve the right to deny refunds for accounts found in violation of these Terms or for abusive refund request patterns.</p>
+        <p class="text-gray-400 mb-4">Refunds are issued to the original payment method. We reserve the right to deny refunds for accounts found in violation of these Terms or for abusive refund request patterns.</p>
 
-        <h2>6. Acceptable Use Policy</h2>
-        <p>You agree to use our Services only for lawful purposes and in compliance with these Terms. Prohibited activities include but are not limited to:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">6. Acceptable Use Policy</h2>
+        <p class="text-gray-400 mb-4">You agree to use our Services only for lawful purposes and in compliance with these Terms. Prohibited activities include but are not limited to:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li><strong>Illegal Activities:</strong> Hosting, distributing, or linking to illegal content or engaging in criminal activity</li>
           <li><strong>Malicious Software:</strong> Distributing viruses, malware, ransomware, or other harmful code</li>
           <li><strong>Spam and Abuse:</strong> Sending unsolicited bulk email, phishing attempts, or fraudulent communications</li>
@@ -153,15 +153,15 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li><strong>Adult Content:</strong> Hosting pornographic material, escort services, or sexually explicit content</li>
           <li><strong>Harassment:</strong> Using Services to harass, threaten, or defame individuals or organizations</li>
         </ul>
-        <p>Violation of this policy may result in immediate suspension or termination of your account without refund.</p>
+        <p class="text-gray-400 mb-4">Violation of this policy may result in immediate suspension or termination of your account without refund.</p>
 
-        <h2>7. Intellectual Property and Open Source</h2>
-        <h3>7.1 Our Intellectual Property</h3>
-        <p>The Clouded Basement Hosting service, including the website, dashboard, branding, logos, and proprietary software, are owned by the Company and protected by copyright, trademark, and other intellectual property laws.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">7. Intellectual Property and Open Source</h2>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">7.1 Our Intellectual Property</h3>
+        <p class="text-gray-400 mb-4">The Clouded Basement Hosting service, including the website, dashboard, branding, logos, and proprietary software, are owned by the Company and protected by copyright, trademark, and other intellectual property laws.</p>
 
-        <h3>7.2 Open Source Code</h3>
-        <p>The underlying codebase for this platform is available as <strong>open-source software</strong> on GitHub. However:</p>
-        <ul>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">7.2 Open Source Code</h3>
+        <p class="text-gray-400 mb-4">The underlying codebase for this platform is available as <strong>open-source software</strong> on GitHub. However:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>The code is subject to the license terms specified in the repository</li>
           <li>You may review, fork, and modify the code in accordance with the license</li>
           <li><strong>Commercial use, redistribution, or deployment of derivative works requires explicit permission from the Company</strong></li>
@@ -169,44 +169,44 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li>Copying or redeploying the service for commercial purposes without authorization is strictly prohibited and may result in legal action</li>
         </ul>
 
-        <h3>7.3 User Content</h3>
-        <p>You retain ownership of all content, data, and applications you deploy on our Services. By using our Services, you grant us a limited license to host, store, and transmit your content solely for the purpose of providing the Services.</p>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">7.3 User Content</h3>
+        <p class="text-gray-400 mb-4">You retain ownership of all content, data, and applications you deploy on our Services. By using our Services, you grant us a limited license to host, store, and transmit your content solely for the purpose of providing the Services.</p>
 
-        <h2>8. Data Privacy and Security</h2>
-        <h3>8.1 Data Collection</h3>
-        <p>We collect and process personal information as described in our Privacy Policy, including:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">8. Data Privacy and Security</h2>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">8.1 Data Collection</h3>
+        <p class="text-gray-400 mb-4">We collect and process personal information as described in our Privacy Policy, including:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>Account information (email address, password hash)</li>
           <li>Payment information (processed securely through Stripe)</li>
           <li>Server deployment details and usage logs</li>
           <li>Support ticket communications</li>
         </ul>
 
-        <h3>8.2 Data Security</h3>
-        <p>We implement industry-standard security measures to protect your data, including:</p>
-        <ul>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">8.2 Data Security</h3>
+        <p class="text-gray-400 mb-4">We implement industry-standard security measures to protect your data, including:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>HTTPS encryption for all web traffic</li>
           <li>Secure session management with CSRF protection</li>
           <li>Encrypted password storage using bcrypt</li>
           <li>Regular security audits and updates</li>
         </ul>
 
-        <h3>8.3 Data Retention</h3>
-        <p>We retain your account data for the duration of your active subscription and for a reasonable period thereafter as required by law or for legitimate business purposes. You may request data deletion by contacting support.</p>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">8.3 Data Retention</h3>
+        <p class="text-gray-400 mb-4">We retain your account data for the duration of your active subscription and for a reasonable period thereafter as required by law or for legitimate business purposes. You may request data deletion by contacting support.</p>
 
-        <h2>9. Service Level and Uptime</h2>
-        <p>While we strive to provide reliable service, we do not guarantee uninterrupted availability. Our Services are provided on an "as-is" and "as-available" basis. We do not warrant that:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">9. Service Level and Uptime</h2>
+        <p class="text-gray-400 mb-4">While we strive to provide reliable service, we do not guarantee uninterrupted availability. Our Services are provided on an "as-is" and "as-available" basis. We do not warrant that:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>Services will be available 100% of the time without interruption</li>
           <li>Services will be error-free or meet your specific requirements</li>
           <li>Data transmission will be secure or free from interception</li>
           <li>Servers will be immune from attacks, hardware failures, or network issues</li>
         </ul>
-        <p>Scheduled maintenance will be announced in advance when possible. We are not liable for downtime, data loss, or service interruptions.</p>
+        <p class="text-gray-400 mb-4">Scheduled maintenance will be announced in advance when possible. We are not liable for downtime, data loss, or service interruptions.</p>
 
-        <h2>10. Limitation of Liability</h2>
-        <p>To the maximum extent permitted by law:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">10. Limitation of Liability</h2>
+        <p class="text-gray-400 mb-4">To the maximum extent permitted by law:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>We are not liable for any indirect, incidental, special, consequential, or punitive damages</li>
           <li>Our total liability to you shall not exceed the amount you paid us in the 12 months preceding the claim</li>
           <li>We are not responsible for losses resulting from unauthorized access to your account</li>
@@ -214,48 +214,48 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li>We do not guarantee backup or recovery of your data—regular backups are your responsibility</li>
         </ul>
 
-        <h2>11. Indemnification</h2>
-        <p>You agree to indemnify, defend, and hold harmless the Company, its officers, directors, employees, and agents from any claims, losses, damages, liabilities, and expenses (including legal fees) arising from:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">11. Indemnification</h2>
+        <p class="text-gray-400 mb-4">You agree to indemnify, defend, and hold harmless the Company, its officers, directors, employees, and agents from any claims, losses, damages, liabilities, and expenses (including legal fees) arising from:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>Your use of the Services</li>
           <li>Your violation of these Terms</li>
           <li>Your violation of any third-party rights, including intellectual property rights</li>
           <li>Content or applications you deploy on our infrastructure</li>
         </ul>
 
-        <h2>12. Termination</h2>
-        <h3>12.1 Termination by You</h3>
-        <p>You may cancel your subscription at any time through your account dashboard. Upon cancellation:</p>
-        <ul>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">12. Termination</h2>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">12.1 Termination by You</h3>
+        <p class="text-gray-400 mb-4">You may cancel your subscription at any time through your account dashboard. Upon cancellation:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>You will continue to have access until the end of your current billing period</li>
           <li>No further charges will be made after the current period ends</li>
           <li>Your servers and data may be deleted after 30 days</li>
         </ul>
 
-        <h3>12.2 Termination by Us</h3>
-        <p>We reserve the right to suspend or terminate your account immediately without notice if:</p>
-        <ul>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">12.2 Termination by Us</h3>
+        <p class="text-gray-400 mb-4">We reserve the right to suspend or terminate your account immediately without notice if:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
           <li>You violate these Terms or our Acceptable Use Policy</li>
           <li>Your account is used for fraudulent or illegal activities</li>
           <li>Payment fails and remains outstanding after 7 days</li>
           <li>You engage in abusive behavior toward our staff or other users</li>
         </ul>
-        <p>Termination for cause does not entitle you to a refund. We may delete your data immediately upon termination for violations.</p>
+        <p class="text-gray-400 mb-4">Termination for cause does not entitle you to a refund. We may delete your data immediately upon termination for violations.</p>
 
-        <h2>13. Modifications to Terms</h2>
-        <p>We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting to our website. Continued use of the Services after changes constitutes acceptance of the modified Terms. Material changes will be communicated via email when possible.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">13. Modifications to Terms</h2>
+        <p class="text-gray-400 mb-4">We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting to our website. Continued use of the Services after changes constitutes acceptance of the modified Terms. Material changes will be communicated via email when possible.</p>
 
-        <h2>14. Governing Law and Jurisdiction</h2>
-        <p>These Terms are governed by the laws of the Province of Nova Scotia and the federal laws of Canada applicable therein, without regard to conflict of law principles. Any disputes arising from these Terms or your use of the Services shall be subject to the exclusive jurisdiction of the courts located in <strong>Halifax, Nova Scotia, Canada</strong>.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">14. Governing Law and Jurisdiction</h2>
+        <p class="text-gray-400 mb-4">These Terms are governed by the laws of the Province of Nova Scotia and the federal laws of Canada applicable therein, without regard to conflict of law principles. Any disputes arising from these Terms or your use of the Services shall be subject to the exclusive jurisdiction of the courts located in <strong>Halifax, Nova Scotia, Canada</strong>.</p>
 
-        <h2>15. Dispute Resolution</h2>
-        <p>In the event of a dispute, you agree to first attempt to resolve the matter informally by contacting our support team. If the dispute cannot be resolved within 30 days, either party may pursue legal remedies in accordance with Section 14.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">15. Dispute Resolution</h2>
+        <p class="text-gray-400 mb-4">In the event of a dispute, you agree to first attempt to resolve the matter informally by contacting our support team. If the dispute cannot be resolved within 30 days, either party may pursue legal remedies in accordance with Section 14.</p>
 
-        <h2>16. Severability</h2>
-        <p>If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid and enforceable.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">16. Severability</h2>
+        <p class="text-gray-400 mb-4">If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid and enforceable.</p>
 
-        <h2>17. Entire Agreement</h2>
-        <p>These Terms, together with our Privacy Policy and any supplemental terms for specific Services, constitute the entire agreement between you and Clouded Basement Hosting regarding your use of the Services.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">17. Entire Agreement</h2>
+        <p class="text-gray-400 mb-4">These Terms, together with our Privacy Policy and any supplemental terms for specific Services, constitute the entire agreement between you and Clouded Basement Hosting regarding your use of the Services.</p>
 
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">18. Contact Information</h2>
         <p class="text-gray-400 mb-4">If you have questions about these Terms or need to contact us regarding your account, please reach out:</p>
@@ -275,8 +275,7 @@ ${getHTMLHead('Terms of Service - Basement')}
     </main>
     
     ${getFooter()}
-</body>
-</html>
+    ${getScripts('nav.js')}
   `);
 };
 
@@ -434,10 +433,10 @@ ${getHTMLHead('Privacy Policy - Basement')}
         <p class="text-gray-400 mb-4"><strong class="text-white">3.4 Protection of Rights</strong></p>
         <p class="text-gray-400 mb-6">We may disclose information when we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a legal request.</p>
         
-        <h2>4. Data Security</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">4. Data Security</h2>
         
-        <p>We implement industry-standard security measures to protect your personal information:</p>
-        <ul>
+        <p class="text-gray-400 mb-4">We implement industry-standard security measures to protect your personal information:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
             <li><strong>Encryption:</strong> All passwords are hashed using bcrypt with a salt factor of 10, making them irreversible and secure against brute-force attacks</li>
             <li><strong>Secure Transmission:</strong> We use HTTPS/TLS encryption to protect data transmitted between your browser and our servers (when configured in production)</li>
             <li><strong>Session Security:</strong> Session cookies are marked as HTTP-only to prevent client-side script access and are configured with secure flags in production environments</li>
@@ -446,92 +445,92 @@ ${getHTMLHead('Privacy Policy - Basement')}
             <li><strong>Access Controls:</strong> Administrative access to user data is restricted to authorized personnel only</li>
         </ul>
         
-        <p>However, no method of transmission over the Internet or electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.</p>
+        <p class="text-gray-400 mb-4">However, no method of transmission over the Internet or electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.</p>
         
-        <h2>5. Your Rights and Choices</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">5. Your Rights and Choices</h2>
         
-        <p>Depending on your location and applicable law, you may have the following rights:</p>
+        <p class="text-gray-400 mb-4">Depending on your location and applicable law, you may have the following rights:</p>
         
         <p><strong>5.1 Access and Portability</strong></p>
-        <p>You have the right to request access to the personal information we hold about you and to receive that information in a portable format.</p>
+        <p class="text-gray-400 mb-4">You have the right to request access to the personal information we hold about you and to receive that information in a portable format.</p>
         
         <p><strong>5.2 Correction</strong></p>
-        <p>You have the right to request correction of inaccurate or incomplete personal information.</p>
+        <p class="text-gray-400 mb-4">You have the right to request correction of inaccurate or incomplete personal information.</p>
         
         <p><strong>5.3 Deletion</strong></p>
-        <p>You have the right to request deletion of your personal information, subject to certain legal exceptions (e.g., completion of transactions, legal compliance, fraud prevention).</p>
+        <p class="text-gray-400 mb-4">You have the right to request deletion of your personal information, subject to certain legal exceptions (e.g., completion of transactions, legal compliance, fraud prevention).</p>
         
         <p><strong>5.4 Objection and Restriction</strong></p>
-        <p>You have the right to object to or request restriction of certain processing of your personal information.</p>
+        <p class="text-gray-400 mb-4">You have the right to object to or request restriction of certain processing of your personal information.</p>
         
         <p><strong>5.5 Withdrawal of Consent</strong></p>
-        <p>Where processing is based on consent, you have the right to withdraw that consent at any time.</p>
+        <p class="text-gray-400 mb-4">Where processing is based on consent, you have the right to withdraw that consent at any time.</p>
         
         <p><strong>5.6 Marketing Communications</strong></p>
-        <p>You may opt out of receiving promotional communications from us by following the unsubscribe instructions in those messages.</p>
+        <p class="text-gray-400 mb-4">You may opt out of receiving promotional communications from us by following the unsubscribe instructions in those messages.</p>
         
-        <p>To exercise any of these rights, please contact us through our <a href="/contact" style="color: var(--glow);">contact form</a>. We will respond to your request within 30 days.</p>
+        <p class="text-gray-400 mb-4">To exercise any of these rights, please contact us through our <a href="/contact" style="color: var(--glow);">contact form</a>. We will respond to your request within 30 days.</p>
         
-        <h2>6. Data Retention</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">6. Data Retention</h2>
         
-        <p>We retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law. Account information is retained until you request deletion. Transaction records may be retained for accounting and legal compliance purposes for up to 7 years.</p>
+        <p class="text-gray-400 mb-4">We retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law. Account information is retained until you request deletion. Transaction records may be retained for accounting and legal compliance purposes for up to 7 years.</p>
         
-        <h2>7. Cookies and Tracking Technologies</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">7. Cookies and Tracking Technologies</h2>
         
-        <p>We use cookies and similar tracking technologies to enhance your experience on our website:</p>
+        <p class="text-gray-400 mb-4">We use cookies and similar tracking technologies to enhance your experience on our website:</p>
         
         <p><strong>7.1 Essential Cookies</strong></p>
-        <p>We use session cookies that are essential for the operation of our website. These cookies:</p>
-        <ul>
+        <p class="text-gray-400 mb-4">We use session cookies that are essential for the operation of our website. These cookies:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
             <li>Maintain your login state across pages</li>
             <li>Provide CSRF protection for form submissions</li>
             <li>Enable secure authentication</li>
         </ul>
         
-        <p>These cookies are strictly necessary for the website to function and cannot be disabled without affecting core functionality.</p>
+        <p class="text-gray-400 mb-4">These cookies are strictly necessary for the website to function and cannot be disabled without affecting core functionality.</p>
         
         <p><strong>7.2 Cookie Management</strong></p>
-        <p>You can configure your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.</p>
+        <p class="text-gray-400 mb-4">You can configure your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.</p>
         
-        <h2>8. Third-Party Links</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">8. Third-Party Links</h2>
         
-        <p>Our website may contain links to third-party websites or services that are not owned or controlled by Clouded Basement Hosting. We are not responsible for the privacy practices of these third parties. We encourage you to review the privacy policies of every website you visit.</p>
+        <p class="text-gray-400 mb-4">Our website may contain links to third-party websites or services that are not owned or controlled by Clouded Basement Hosting. We are not responsible for the privacy practices of these third parties. We encourage you to review the privacy policies of every website you visit.</p>
         
-        <h2>9. Children's Privacy</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">9. Children's Privacy</h2>
         
-        <p>Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from children under 18. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately, and we will take steps to delete such information.</p>
+        <p class="text-gray-400 mb-4">Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from children under 18. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately, and we will take steps to delete such information.</p>
         
-        <h2>10. International Data Transfers</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">10. International Data Transfers</h2>
         
-        <p>Your information may be transferred to and processed in countries other than your country of residence. These countries may have data protection laws that differ from those of your country. By using our services, you consent to the transfer of your information to these countries.</p>
+        <p class="text-gray-400 mb-4">Your information may be transferred to and processed in countries other than your country of residence. These countries may have data protection laws that differ from those of your country. By using our services, you consent to the transfer of your information to these countries.</p>
         
-        <h2>11. Changes to This Privacy Policy</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">11. Changes to This Privacy Policy</h2>
         
-        <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by:</p>
-        <ul>
+        <p class="text-gray-400 mb-4">We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by:</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
             <li>Posting the updated policy on this page with a new "Last Updated" date</li>
             <li>Sending an email notification to the address associated with your account (for material changes)</li>
         </ul>
         
-        <p>Your continued use of our services after any changes indicates your acceptance of the updated policy.</p>
+        <p class="text-gray-400 mb-4">Your continued use of our services after any changes indicates your acceptance of the updated policy.</p>
         
-        <h2>12. California Privacy Rights</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">12. California Privacy Rights</h2>
         
-        <p>If you are a California resident, you have specific rights under the California Consumer Privacy Act (CCPA):</p>
-        <ul>
+        <p class="text-gray-400 mb-4">If you are a California resident, you have specific rights under the California Consumer Privacy Act (CCPA):</p>
+        <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
             <li>Right to know what personal information is collected, used, shared, or sold</li>
             <li>Right to delete personal information held by businesses</li>
             <li>Right to opt-out of sale of personal information (note: we do not sell personal information)</li>
             <li>Right to non-discrimination for exercising your CCPA rights</li>
         </ul>
         
-        <h2>13. European Privacy Rights</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">13. European Privacy Rights</h2>
         
-        <p>If you are located in the European Economic Area (EEA), you have rights under the General Data Protection Regulation (GDPR), including the right to lodge a complaint with a supervisory authority if you believe our processing of your personal information violates applicable law.</p>
+        <p class="text-gray-400 mb-4">If you are located in the European Economic Area (EEA), you have rights under the General Data Protection Regulation (GDPR), including the right to lodge a complaint with a supervisory authority if you believe our processing of your personal information violates applicable law.</p>
         
-        <h2>14. Contact Information</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">14. Contact Information</h2>
         
-        <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
+        <p class="text-gray-400 mb-4">If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
             <li><strong class="text-white">Email:</strong> Via our <a href="/contact" class="text-brand hover:text-cyan-400 underline">contact form</a></li>
             <li><strong class="text-white">Response Time:</strong> We aim to respond to all inquiries within 48 hours</li>
@@ -566,8 +565,10 @@ ${getHTMLHead('FAQ - Basement')}
               <h3 class="text-lg font-medium text-white">What services does Clouded Basement Hosting provide?</h3>
               <span class="text-2xl text-brand transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">Clouded Basement Hosting offers cloud infrastructure services including virtual private servers (VPS), domain management, automated deployment tools, and technical support. Our platform is designed to make hosting accessible for developers and businesses of all sizes.</p>
+                  </div>
                 </div>
             </div>
             
@@ -576,7 +577,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">How do I get started?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400 mb-4">Getting started is simple:</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-400">
                         <li>Create a free account on our platform</li>
@@ -593,7 +595,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">Is my data secure?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400 mb-4">Absolutely. We take security seriously:</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-400">
                         <li>All passwords are encrypted using industry-standard bcrypt hashing</li>
@@ -614,7 +617,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">What payment methods do you accept?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">We accept all major credit and debit cards through our secure payment processor, Stripe. This includes Visa, Mastercard, American Express, and Discover.</p>
                 </div>
             </div>
@@ -624,7 +628,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">Can I change my plan later?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">Yes! You can upgrade or downgrade your plan at any time from your dashboard. Changes take effect immediately, and billing is prorated based on your current billing cycle.</p>
                 </div>
             </div>
@@ -634,7 +639,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">Do you offer refunds?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">We offer a 14-day money-back guarantee for all new subscriptions. If you're not satisfied within the first 14 days, contact our support team for a full refund. After 14 days, refunds are evaluated on a case-by-case basis.</p>
                 </div>
             </div>
@@ -644,7 +650,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">Is there a free trial?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">While we don't offer a traditional free trial, our Basic plan starts at just $20/month with no long-term commitment. You can cancel anytime, and our 14-day money-back guarantee gives you risk-free opportunity to try our services.</p>
                 </div>
             </div>
@@ -658,7 +665,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">How fast is your support response time?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400 mb-4">Response times vary by plan:</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-400">
                         <li><strong class="text-white">Basic:</strong> 24-48 hours via email support</li>
@@ -674,7 +682,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">What support channels are available?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400 mb-4">We offer multiple support channels:</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-400">
                         <li>Email support (all plans)</li>
@@ -690,7 +699,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">Do you provide training or onboarding?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">Yes! All new customers receive an onboarding guide and access to our documentation. Priority and Premium plans include personalized onboarding sessions with our team to ensure you get the most out of our services.</p>
                 </div>
             </div>
@@ -704,7 +714,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">How do I cancel my subscription?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">You can cancel your subscription anytime from your dashboard. Navigate to Settings > Billing > Cancel Subscription. Your services will remain active until the end of your current billing period.</p>
                 </div>
             </div>
@@ -714,7 +725,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">Can I change my email address?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">Yes, you can update your email address from your account settings. You'll need to verify your new email address before the change takes effect.</p>
                 </div>
             </div>
@@ -724,7 +736,8 @@ ${getHTMLHead('FAQ - Basement')}
                     <h3 class="text-lg font-medium text-white">What happens if I forget my password?</h3>
                     <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
                 </div>
-                <div class="hidden px-6 pb-6">
+                <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
+                  <div class="px-6 pb-6">
                     <p class="text-gray-400">Click "Forgot Password" on the login page. We'll send a secure reset link to your registered email address. Follow the link to create a new password.</p>
                 </div>
             </div>
