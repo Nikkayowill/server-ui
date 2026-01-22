@@ -276,34 +276,6 @@ const buildDashboardTemplate = (data) => {
     </div>
     ` : ''}
 
-    <!-- No Server Prompt -->
-    ${!data.hasServer && !data.hasPaid ? `
-    <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center mb-6">
-            <h2 class="text-3xl font-bold text-white mb-4">Welcome to Basement!</h2>
-            <p class="text-xl text-gray-400 mb-6">You don't have a server yet. Get started by choosing a hosting plan.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-4xl mx-auto text-left">
-                <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
-                    <h3 class="text-brand text-lg font-bold mb-2">Basic</h3>
-                    <p class="text-3xl font-bold text-white mb-2">$25<span class="text-sm text-gray-400">/mo</span></p>
-                    <p class="text-gray-400 text-sm">1GB RAM, 1 CPU, 25GB SSD</p>
-                </div>
-                <div class="bg-gray-900 border border-brand rounded-lg p-6">
-                    <h3 class="text-brand text-lg font-bold mb-2">Priority</h3>
-                    <p class="text-3xl font-bold text-white mb-2">$60<span class="text-sm text-gray-400">/mo</span></p>
-                    <p class="text-gray-400 text-sm">2GB RAM, 2 CPUs, 50GB SSD</p>
-                </div>
-                <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
-                    <h3 class="text-brand text-lg font-bold mb-2">Premium</h3>
-                    <p class="text-3xl font-bold text-white mb-2">$120<span class="text-sm text-gray-400">/mo</span></p>
-                    <p class="text-gray-400 text-sm">4GB RAM, 2 CPUs, 80GB SSD</p>
-                </div>
-            </div>
-            
-            <a href="/pricing" class="px-8 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors inline-block">View All Plans</a>
-        </div>
-    ` : ''}
-
     <!-- Main Content Grid -->
     <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 space-y-6">
         ${data.hasServer ? `
