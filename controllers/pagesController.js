@@ -286,8 +286,8 @@ ${getHTMLHead('Pricing - Basement')}
     
     <main class="bg-gray-900 min-h-screen pt-24 pb-16">
       <section class="py-12 px-4 text-center">
-        <div class="inline-block px-6 py-2 bg-brand bg-opacity-20 border border-brand rounded-full text-brand font-bold text-sm mb-6 uppercase tracking-wider">
-          🔥 Founder Pricing - Limited Spots
+        <div class="inline-block px-6 py-2 bg-brand bg-opacity-20 border border-brand rounded-full text-white font-bold text-sm mb-6 uppercase tracking-wider">
+            Founder Pricing - Limited Spots
         </div>
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Lock In Lifetime Pricing</h1>
         <p class="text-gray-400 text-lg mb-2">Real servers. Real specs. No surprises. Your bill will never exceed your plan.</p>
@@ -303,7 +303,7 @@ ${getHTMLHead('Pricing - Basement')}
               <div class="text-xl text-gray-500 line-through">$25</div>
             </div>
             <div class="text-sm text-gray-400">Perfect for side projects</div>
-            <div class="mt-2 px-3 py-1 bg-brand bg-opacity-20 border border-brand rounded text-brand text-xs font-bold inline-block">60% OFF - LIFETIME</div>
+            <div class="mt-2 px-3 py-1 bg-brand bg-opacity-20 border border-brand rounded text-white text-xs font-bold inline-block">60% OFF - LIFETIME</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">1 GB RAM</strong></li>
@@ -329,7 +329,7 @@ ${getHTMLHead('Pricing - Basement')}
               <div class="text-xl text-gray-500 line-through">$60</div>
             </div>
             <div class="text-sm text-gray-400">Most popular • For production apps</div>
-            <div class="mt-2 px-3 py-1 bg-brand text-gray-900 rounded text-xs font-bold inline-block">50% OFF - LIFETIME</div>
+            <div class="mt-2 px-3 py-1 bg-brand text-white rounded text-xs font-bold inline-block">50% OFF - LIFETIME</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">2 GB RAM</strong></li>
@@ -347,7 +347,7 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-brand">Advanced monitoring</li>
             <li class="text-brand">Deploy logs & history</li>
           </ul>
-          <a href="/pay?plan=priority" class="block w-full px-6 py-3 bg-brand text-gray-900 text-center font-bold rounded-lg hover:bg-cyan-500 transition-all uppercase tracking-wider text-sm">Select Priority</a>
+          <a href="/pay?plan=priority" class="block w-full px-6 py-3 bg-brand text-white text-center font-bold rounded-lg hover:bg-cyan-500 transition-all uppercase tracking-wider text-sm">Select Priority</a>
         </div>
         
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 hover:border-brand transition-all">
@@ -358,7 +358,7 @@ ${getHTMLHead('Pricing - Basement')}
               <div class="text-xl text-gray-500 line-through">$120</div>
             </div>
             <div class="text-sm text-gray-400">For serious projects</div>
-            <div class="mt-2 px-3 py-1 bg-brand bg-opacity-20 border border-brand rounded text-brand text-xs font-bold inline-block">50% OFF - LIFETIME</div>
+            <div class="mt-2 px-3 py-1 bg-brand bg-opacity-20 border border-brand rounded text-white text-xs font-bold inline-block">50% OFF - LIFETIME</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">4 GB RAM</strong></li>
