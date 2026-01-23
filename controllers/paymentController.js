@@ -149,8 +149,8 @@ exports.paymentSuccess = async (req, res) => {
     return res.redirect('/payment-cancel?error=Payment recording failed. Please contact support.');
   }
 
-  // Redirect to onboarding wizard instead of showing static success page
-  res.redirect('/getting-started?payment=success');
+  // Redirect to dashboard - provisioning status will be visible there
+  res.redirect('/dashboard?success=Payment successful! Your server is being provisioned (2-5 minutes). You\'ll receive an email when ready.');
 };
 
 // GET /payment-cancel

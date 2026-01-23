@@ -280,7 +280,7 @@ app.post('/request-server', requireAuth, async (req, res) => {
     );
     
     if (existingTicket.rows.length > 0) {
-      return res.redirect('/getting-started?error=request_already_pending');
+      return res.redirect('/dashboard?error=Server request already pending');
     }
     
     // Store server request (you'll process this manually)
@@ -304,7 +304,7 @@ app.post('/request-server', requireAuth, async (req, res) => {
       console.error('Failed to send server request email:', err);
     });
     
-    res.redirect('/getting-started?success=request_submitted');
+    res.redirect('/dashboard?success=Server request submitted successfully');
   } catch (err) {
     console.error('Server request error:', err);
     res.status(500).send('Server error');
