@@ -105,6 +105,7 @@ function getResponsiveNav(req) {
     navLinks = `
       <li><a href="/admin" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Admin</a></li>
       <li><a href="/docs" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Docs</a></li>
+      ${req.session.userEmail ? `<li class="text-brand text-xs font-mono">${req.session.userEmail}</li>` : ''}
       <li><a href="/logout" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Logout</a></li>
     `;
   } else {
@@ -114,6 +115,7 @@ function getResponsiveNav(req) {
       <li><a href="/docs" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Docs</a></li>
       <li><a href="/pricing" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Pricing</a></li>
       <li><a href="/contact" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(45,167,223,0.8)]">Contact</a></li>
+      ${req.session.userId && req.session.userEmail ? `<li class="text-brand text-xs font-mono">${req.session.userEmail}</li>` : ''}
       ${getAuthLinks(req)}
     `;
   }

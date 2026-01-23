@@ -73,7 +73,12 @@ ${getDashboardHead('Getting Started - Clouded Basement')}
             <p class="text-xl text-gray-400 mb-6">✅ <strong class="text-green-400">Payment confirmed!</strong> Your ${plan} plan is active.</p>
             
             <div class="bg-brand bg-opacity-10 border-2 border-brand rounded-lg p-8 text-center mb-6">
-              <div class="text-6xl mb-4">⏳</div>
+              <div class="flex justify-center mb-4">
+                <svg class="animate-spin h-16 w-16 text-brand" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <circle class="opacity-75" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="32" stroke-dashoffset="16"></circle>
+                </svg>
+              </div>
               <h3 class="text-brand text-2xl font-bold mb-4">Creating Your Server Now</h3>
               <p class="text-white text-lg mb-4">We're automatically provisioning your cloud server with DigitalOcean. This typically takes <strong>2-5 minutes</strong>.</p>
               <p class="text-gray-400 text-sm">You'll receive an email at <strong class="text-white">${userEmail}</strong> when it's ready.</p>

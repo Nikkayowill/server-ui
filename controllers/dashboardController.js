@@ -283,7 +283,7 @@ const buildDashboardTemplate = (data) => {
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-2 h-2 rounded-full ${data.serverStatus === 'active' ? 'bg-green-500' : 'bg-gray-500'} shadow-lg"></div>
+                        ${data.serverStatus === 'running' ? '<svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>' : data.serverStatus === 'provisioning' ? '<svg class="animate-spin h-5 w-5 text-brand" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><circle class="opacity-75" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="32" stroke-dashoffset="16"></circle></svg>' : '<div class="w-2 h-2 rounded-full bg-gray-500 shadow-lg"></div>'}
                         <h4 class="text-sm font-bold uppercase tracking-wide text-white">
                             Instance Core: <span class="text-brand">${data.serverName}</span>
                         </h4>
@@ -312,7 +312,7 @@ const buildDashboardTemplate = (data) => {
                             </div>
                             <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
                                 <span class="text-xs text-gray-500 uppercase font-bold">Status</span>
-                                <span class="text-sm font-mono ${data.serverStatus === 'active' ? 'text-green-500' : 'text-red-400'}">${data.serverStatus.toUpperCase()}</span>
+                                <span class="text-sm font-mono ${data.serverStatus === 'running' ? 'text-green-500' : 'text-red-400'}">${data.serverStatus.toUpperCase()}</span>
                             </div>
                         </div>
                         <div class="flex gap-3">
@@ -483,7 +483,7 @@ const buildDashboardTemplate = (data) => {
                     </button>
                 </form>
             </div>
-            <p class="text-xs text-gray-500">One-click setup installs and configures the database. SSH to /root/.database_config for credentials.</p>
+            <p class="text-xs text-gray-500">One-click setup installs and configures the database. Takes 2-3 minutes. SSH to /root/.database_config for credentials.</p>
             ` : `
             <div class="bg-red-900 bg-opacity-20 border-2 border-red-600 rounded-lg p-4">
                 <p class="text-red-400 text-sm font-medium">⚠️ No active server detected</p>
@@ -500,16 +500,28 @@ const buildDashboardTemplate = (data) => {
                 <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
                         <p class="text-xs text-gray-400 uppercase font-bold">PostgreSQL</p>
-                        ${data.postgresInstalled ? '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">Installed</span>' : '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">Not Installed</span>'}
+                        ${data.postgresInstalled ? 
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Installed</span>' : 
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">Not Installed</span>'}
                     </div>
-                    <p class="text-xs text-gray-500">After install, SSH and run <span class="text-white">cat /root/.database_config</span> to view credentials.</p>
+                    <p class="text-xs text-gray-500 mb-3">After install, SSH and run <span class="text-white">cat /root/.database_config</span> to view credentials.</p>
+                    <div class="bg-black bg-opacity-50 rounded p-2 border border-gray-700">
+                        <p class="text-xs text-gray-400 mb-1">Quick SSH:</p>
+                        <code class="text-xs text-brand">ssh ${data.sshUsername}@${data.ipAddress}</code>
+                    </div>
                 </div>
                 <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
                         <p class="text-xs text-gray-400 uppercase font-bold">MongoDB</p>
-                        ${data.mongodbInstalled ? '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">Installed</span>' : '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">Not Installed</span>'}
+                        ${data.mongodbInstalled ? 
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Installed</span>' : 
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">Not Installed</span>'}
                     </div>
-                    <p class="text-xs text-gray-500">After install, SSH and run <span class="text-white">cat /root/.database_config</span> to view connection string.</p>
+                    <p class="text-xs text-gray-500 mb-3">After install, SSH and run <span class="text-white">cat /root/.database_config</span> to view connection string.</p>
+                    <div class="bg-black bg-opacity-50 rounded p-2 border border-gray-700">
+                        <p class="text-xs text-gray-400 mb-1">Quick SSH:</p>
+                        <code class="text-xs text-brand">ssh ${data.sshUsername}@${data.ipAddress}</code>
+                    </div>
                 </div>
             </div>
             ` : '<p class="text-gray-500 text-xs italic">Provision a server to enable databases.</p>'}
