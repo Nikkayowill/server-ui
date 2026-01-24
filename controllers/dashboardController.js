@@ -310,51 +310,47 @@ const buildDashboardTemplate = (data) => {
                 </div>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div>
-                        <div class="space-y-4 mb-6">
-                            <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                                <span class="text-xs text-gray-500 uppercase font-bold">IPv4 Interface</span>
-                                <span class="text-sm font-mono text-brand">${data.ipAddress}</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                                <span class="text-xs text-gray-500 uppercase font-bold">Host Name</span>
-                                <span class="text-sm font-mono text-white">${data.serverName}</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                                <span class="text-xs text-gray-500 uppercase font-bold">Plan</span>
-                                <span class="text-sm font-mono text-white">${data.plan.toUpperCase()}</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                                <span class="text-xs text-gray-500 uppercase font-bold">Status</span>
-                                <span class="text-sm font-mono ${data.serverStatus === 'running' ? 'text-green-500' : data.serverStatus === 'provisioning' ? 'text-brand animate-pulse' : 'text-red-400'}">${data.serverStatus.toUpperCase()}</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-3">
-                            ${data.serverStatus === 'stopped' ? `
-                                <form action="/server-action" method="POST" class="flex-1">
-                                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                                    <input type="hidden" name="action" value="start">
-                                    <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Start Core</button>
-                                </form>
-                            ` : `
-                                <form action="/server-action" method="POST" class="flex-1">
-                                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                                    <input type="hidden" name="action" value="restart">
-                                    <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Restart</button>
-                                </form>
-                                <form action="/server-action" method="POST" class="flex-1">
-                                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                                    <input type="hidden" name="action" value="stop">
-                                    <button type="submit" class="w-full px-4 py-2 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Stop</button>
-                                </form>
-                            `}
-                            <form action="/delete-server" method="POST" class="flex-1" onsubmit="return confirm('Permanently destroy this server?');">
-                                <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                                <button type="submit" class="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Terminate</button>
-                            </form>
-                        </div>
+                <div class="space-y-4 mb-6">
+                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
+                        <span class="text-xs text-gray-500 uppercase font-bold">IPv4 Interface</span>
+                        <span class="text-sm font-mono text-brand">${data.ipAddress}</span>
                     </div>
+                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
+                        <span class="text-xs text-gray-500 uppercase font-bold">Host Name</span>
+                        <span class="text-sm font-mono text-white">${data.serverName}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
+                        <span class="text-xs text-gray-500 uppercase font-bold">Plan</span>
+                        <span class="text-sm font-mono text-white">${data.plan.toUpperCase()}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
+                        <span class="text-xs text-gray-500 uppercase font-bold">Status</span>
+                        <span class="text-sm font-mono ${data.serverStatus === 'running' ? 'text-green-500' : data.serverStatus === 'provisioning' ? 'text-brand animate-pulse' : 'text-red-400'}">${data.serverStatus.toUpperCase()}</span>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    ${data.serverStatus === 'stopped' ? `
+                        <form action="/server-action" method="POST" class="flex-1">
+                            <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                            <input type="hidden" name="action" value="start">
+                            <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Start Core</button>
+                        </form>
+                    ` : `
+                        <form action="/server-action" method="POST" class="flex-1">
+                            <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                            <input type="hidden" name="action" value="restart">
+                            <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Restart</button>
+                        </form>
+                        <form action="/server-action" method="POST" class="flex-1">
+                            <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                            <input type="hidden" name="action" value="stop">
+                            <button type="submit" class="w-full px-4 py-2 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Stop</button>
+                        </form>
+                    `}
+                    <form action="/delete-server" method="POST" class="flex-1" onsubmit="return confirm('Permanently destroy this server?');">
+                        <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                        <button type="submit" class="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Terminate</button>
+                    </form>
                 </div>
             </div>
         </div>
