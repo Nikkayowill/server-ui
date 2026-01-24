@@ -48,6 +48,7 @@ npm run dev   # if using nodemon
 3. **Styling**: Tailwind CSS utilities only, no inline styles. Custom classes in `global.css` (brand colors, navigation)
 4. **Forms**: Always include CSRF token: `<input type="hidden" name="_csrf" value="${req.csrfToken()}">`
 5. **Authentication**: Use `requireAuth` middleware, session stored in PostgreSQL
+6. **NEVER EXPOSE SECRETS**: Do NOT put API keys, passwords, or tokens in markdown files, code comments, or documentation. Use placeholders like `sk_test_...` or `your_key_here`. Only `.env` file contains real credentials.
 6. **Database**: Always use parameterized queries: `pool.query('SELECT * FROM users WHERE id = $1', [userId])`
 7. **Error Handling**: Try/catch in async controllers, redirect with error messages via query params or flash messages
 

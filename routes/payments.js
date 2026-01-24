@@ -10,6 +10,9 @@ const csrfProtection = csrf({ cookie: true });
 // Checkout page
 router.get('/pay', requireAuth, csrfProtection, paymentController.showCheckout);
 
+// Create Payment Intent (for custom form)
+router.post('/create-payment-intent', requireAuth, paymentLimiter, paymentController.createPaymentIntent);
+
 // Create Stripe checkout session
 router.post('/create-checkout-session', requireAuth, paymentLimiter, csrfProtection, paymentController.createCheckoutSession);
 

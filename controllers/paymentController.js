@@ -56,11 +56,19 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
           </div>
         </div>
         
-        <form action="/create-checkout-session" method="POST" class="mb-4">
-          <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+        <form id="payment-form" class="mb-4">
           <input type="hidden" name="plan" value="${plan}">
-          <button type="submit" class="w-full py-4 bg-brand text-gray-900 font-bold text-lg rounded-lg hover:bg-cyan-500 transition-colors shadow-lg hover:shadow-brand/50">
-            Continue to Secure Checkout
+          
+          <!-- Card Input -->
+          <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-semibold mb-2">Card Details</label>
+            <div id="card-element" class="bg-gray-900 border border-gray-600 rounded-lg p-4"></div>
+            <div id="card-errors" class="text-red-400 text-sm mt-2"></div>
+          </div>
+          
+          <button type="submit" id="submit-button" class="w-full py-4 bg-brand text-gray-900 font-bold text-lg rounded-lg hover:bg-cyan-500 transition-colors shadow-lg hover:shadow-brand/50 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="button-text">Complete Payment</span>
+            <span id="spinner" class="hidden">Processing...</span>
           </button>
         </form>
         
@@ -71,7 +79,125 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
     ${getFooter()}
     ${getScripts('nav.js')}
     <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      // Initialize Stripe with publishable key
+      const stripe = Stripe('${process.env.STRIPE_PUBLISHABLE_KEY}');
+      const elements = stripe.elements();
+      
+      // Create and mount card element
+      const cardElement = elements.create('card', {
+        style: {
+          base: {
+            color: '#e0e6f0',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '16px',
+            '::placeholder': {
+              color: '#8892a0'
+            }
+          },
+          invalid: {
+            color: '#ef4444'
+          }
+        }
+      });
+      cardElement.mount('#card-element');
+      
+      // Handle real-time validation errors
+      cardElement.on('change', (event) => {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+          displayError.textContent = event.error.message;
+        } else {
+          displayError.textContent = '';
+        }
+      });
+      
+      // Handle form submission
+      const form = document.getElementById('payment-form');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const spinner = document.getElementById('spinner');
+        
+        // Disable button and show loading
+        submitButton.disabled = true;
+        buttonText.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        
+        try {
+          // Create payment intent on backend
+          const plan = form.querySelector('input[name="plan"]').value;
+          const response = await fetch('/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan })
+          });
+          
+          const { clientSecret, error } = await response.json();
+          
+          if (error) {
+            throw new Error(error);
+          }
+          
+          // Confirm payment with card
+          const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+              card: cardElement
+            }
+          });
+          
+          if (stripeError) {
+            document.getElementById('card-errors').textContent = stripeError.message;
+            submitButton.disabled = false;
+            buttonText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+          } else if (paymentIntent.status === 'succeeded') {
+            window.location.href = '/payment-success?plan=' + plan + '&payment_intent=' + paymentIntent.id;
+          }
+        } catch (err) {
+          document.getElementById('card-errors').textContent = err.message;
+          submitButton.disabled = false;
+          buttonText.classList.remove('hidden');
+          spinner.classList.add('hidden');
+        }
+      });
+      
+      console.log('Stripe card element mounted');
+    </script>
 `);
+};
+
+// POST /create-payment-intent
+exports.createPaymentIntent = async (req, res) => {
+  try {
+    const plan = req.body.plan || 'basic';
+    
+    // TEST PRICING - 50 CENTS (Stripe minimum)
+    const planPrices = {
+      basic: { amount: 50, name: 'Basic Plan — TEST' },
+      priority: { amount: 50, name: 'Priority Plan — TEST' },
+      premium: { amount: 50, name: 'Premium Plan — TEST' }
+    };
+    const selectedPlan = planPrices[plan] || planPrices.basic;
+    
+    // Create Payment Intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: selectedPlan.amount,
+      currency: 'usd',
+      description: `${selectedPlan.name} - Monthly subscription`,
+      metadata: {
+        plan: plan,
+        user_id: req.session.userId
+      }
+    });
+    
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    console.error('Payment Intent error:', error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // POST /create-checkout-session
