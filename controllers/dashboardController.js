@@ -203,43 +203,58 @@ const buildDashboardTemplate = (data) => {
         </div>
     </header>
 
+    ${!data.emailConfirmed ? `
+    <!-- Email Verification Top Bar -->
+    <div class="bg-gradient-to-r from-yellow-600 to-orange-500 border-b border-yellow-700 shadow-lg">
+      <div class="max-w-6xl mx-auto px-8 py-3">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            <p class="text-white text-sm font-medium">
+              <span class="font-bold">Verify your email</span> · Code sent to ${req.session.userEmail || 'your email'}
+            </p>
+          </div>
+          <form id="verifyForm" action="/verify-email" method="POST" class="flex items-center gap-2">
+            <input type="text" name="code" maxlength="6" pattern="[0-9]{6}" required
+              placeholder="000000"
+              class="w-32 px-3 py-1.5 bg-white bg-opacity-20 backdrop-blur border border-white border-opacity-30 rounded text-white font-mono text-center text-sm tracking-wider placeholder-white placeholder-opacity-50 focus:bg-opacity-30 focus:border-white focus:outline-none">
+            <button type="submit" class="px-4 py-1.5 bg-white text-orange-600 font-bold text-sm rounded hover:bg-opacity-90 transition-colors whitespace-nowrap">
+              Verify
+            </button>
+            <button type="button" id="resendCodeBtn" class="text-white hover:text-yellow-100 text-xs underline whitespace-nowrap">
+              Resend
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById('resendCodeBtn')?.addEventListener('click', async function() {
+        this.textContent = 'Sending...';
+        this.disabled = true;
+        try {
+          const res = await fetch('/resend-code', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          const data = await res.json();
+          if (data.success) {
+            this.textContent = '✓ Sent!';
+            setTimeout(() => { this.textContent = 'Resend'; this.disabled = false; }, 3000);
+          } else {
+            this.textContent = 'Failed';
+            this.disabled = false;
+          }
+        } catch (err) {
+          this.textContent = 'Error';
+          this.disabled = false;
+        }
+      });
+    </script>
+    ` : ''}
+
     <!-- Alerts -->
     ${data.flashSuccess ? `<div class="bg-green-900 border border-green-700 text-green-300 px-6 py-4 rounded-lg mb-6 flex items-center justify-between">${data.flashSuccess}<button onclick="this.parentElement.style.display='none'" class="ml-4 text-green-300 hover:text-green-100 font-bold text-xl">&times;</button></div>` : ''}
     ${data.flashError ? `<div class="bg-red-900 border border-red-700 text-red-300 px-6 py-4 rounded-lg mb-6 flex items-center justify-between">${data.flashError}<button onclick="this.parentElement.style.display='none'" class="ml-4 text-red-300 hover:text-red-100 font-bold text-xl">&times;</button></div>` : ''}
-
-    ${!data.emailConfirmed ? `
-    <div class="bg-yellow-900 bg-opacity-10 border-2 border-yellow-600 px-6 py-4 rounded-lg text-center max-w-6xl mx-auto mb-6">
-        <p class="text-yellow-600 text-sm mb-3"><strong>Email not confirmed</strong> - Verify to unlock purchases.</p>
-        <button id="resendEmailBtn" class="px-6 py-2 bg-yellow-600 text-black font-bold rounded-lg hover:bg-yellow-500 transition-colors">Resend Code</button>
-        <div id="resendStatus" class="mt-2 text-sm"></div>
-    </div>
-    <script>
-        document.getElementById('resendEmailBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('resendEmailBtn');
-            const status = document.getElementById('resendStatus');
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-            try {
-                const res = await fetch('/resend-code', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-                const data = await res.json();
-                if (data.success) {
-                    status.className = 'mt-2 text-sm text-green-400';
-                    status.textContent = data.message;
-                    btn.textContent = 'Code Sent!';
-                    setTimeout(() => { btn.textContent = 'Resend Code'; btn.disabled = false; }, 3000);
-                } else {
-                    status.className = 'mt-2 text-sm text-red-400';
-                    status.textContent = data.error;
-                    btn.disabled = false;
-                }
-            } catch (err) {
-                status.className = 'mt-2 text-sm text-red-400';
-                status.textContent = 'Failed to send';
-                btn.disabled = false;
-            }
-        });
-    </script>
-    ` : ''}
     
     ${data.hasServer && !data.dismissedNextSteps ? `
     <!-- Next Steps Banner -->

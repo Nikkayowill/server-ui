@@ -9,10 +9,10 @@ function generateConfirmationCode() {
   return code.toString();
 }
 
-// Get expiration time (15 minutes from now)
+// Get expiration time (4 minutes from now)
 function getCodeExpiration() {
   const expiresAt = new Date();
-  expiresAt.setMinutes(expiresAt.getMinutes() + 15);
+  expiresAt.setMinutes(expiresAt.getMinutes() + 4);
   return expiresAt;
 }
 

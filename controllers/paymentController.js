@@ -5,6 +5,11 @@ const { getHTMLHead, getScripts, getFooter, getResponsiveNav } = require('../hel
 
 // GET /pay
 exports.showCheckout = (req, res) => {
+  // Require email confirmation before payment
+  if (!req.session.emailConfirmed) {
+    return res.redirect('/dashboard?error=Please confirm your email before purchasing');
+  }
+  
   const plan = req.query.plan || 'basic';
   const planConfig = {
     basic: { name: 'Basic Plan — TEST', price: 0.50, was: 25, description: '1GB RAM, 1 CPU, 25GB SSD · TESTING ONLY' },
