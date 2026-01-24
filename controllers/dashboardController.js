@@ -279,7 +279,7 @@ const buildDashboardTemplate = (data) => {
     <!-- Main Content Grid -->
     <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 space-y-6">
         ${data.hasServer ? `
-        <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-brand rounded-lg overflow-hidden">
+        <div class="bg-gray-800 border border-gray-700 border-l-4 border-l-brand rounded-lg overflow-hidden" data-server-status="${data.serverStatus}">
             <div class="px-6 py-4 border-b border-gray-700 bg-white bg-opacity-5">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">

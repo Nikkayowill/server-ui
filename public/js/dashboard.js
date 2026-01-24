@@ -33,7 +33,19 @@ async function dismissNextSteps() {
     }
 }
 
-// Note: Auto-refresh removed - users check email and manually refresh
+// Auto-refresh dashboard every 2 minutes if server is provisioning
+const serverStatusElement = document.querySelector('[data-server-status]');
+if (serverStatusElement) {
+    const serverStatus = serverStatusElement.dataset.serverStatus;
+    
+    if (serverStatus === 'provisioning') {
+        console.log('Server is provisioning, will auto-refresh in 2 minutes...');
+        setTimeout(() => {
+            console.log('Auto-refreshing dashboard to check server status...');
+            window.location.reload();
+        }, 120000); // 2 minutes
+    }
+}
 
 // Auto-fade alerts after 5 seconds
 setTimeout(() => {
