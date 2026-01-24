@@ -259,34 +259,34 @@ const buildDashboardTemplate = (data) => {
     ${data.hasServer && !data.dismissedNextSteps ? `
     <!-- Next Steps Banner -->
     <div id="nextStepsBanner" class="bg-gradient-to-r from-brand to-cyan-600 rounded-lg p-6 mb-8 border-2 border-brand shadow-lg">
-        <div class="flex items-start justify-between">
+        <div class="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div class="flex-1">
                 <div class="flex items-center gap-3 mb-4">
-                    <h3 class="text-2xl font-bold text-gray-900">Server Online - Ready to Deploy!</h3>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white">Server Online - Ready to Deploy!</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
-                        <div class="text-gray-900 font-bold mb-2 flex items-center gap-2">
+                        <div class="text-white font-bold mb-2 flex items-center gap-2">
                             <span class="text-xl">1️⃣</span> Deploy with Git
                         </div>
-                        <p class="text-gray-800 text-sm">Scroll down to Deployment section → paste your repo URL → automatic setup</p>
+                        <p class="text-white text-opacity-90 text-sm">Scroll down to Deployment section → paste your repo URL → automatic setup</p>
                     </div>
                     <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
-                        <div class="text-gray-900 font-bold mb-2 flex items-center gap-2">
+                        <div class="text-white font-bold mb-2 flex items-center gap-2">
                             <span class="text-xl">2️⃣</span> Connect via SSH
                         </div>
-                        <p class="text-gray-800 text-sm">See SSH Access section below for credentials and connection command</p>
+                        <p class="text-white text-opacity-90 text-sm">See SSH Access section below for credentials and connection command</p>
                     </div>
                     <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
-                        <div class="text-gray-900 font-bold mb-2 flex items-center gap-2">
+                        <div class="text-white font-bold mb-2 flex items-center gap-2">
                             <span class="text-xl">3️⃣</span> Add Domain + SSL
                         </div>
-                        <p class="text-gray-800 text-sm">Custom Domains section → point DNS → one-click free SSL certificate</p>
+                        <p class="text-white text-opacity-90 text-sm">Custom Domains section → point DNS → one-click free SSL certificate</p>
                     </div>
                 </div>
-                <p class="text-gray-900 text-sm font-medium">First time? Git deployment is the easiest way to get started!</p>
+                <p class="text-white text-sm font-medium">First time? Git deployment is the easiest way to get started!</p>
             </div>
-            <button onclick="dismissNextSteps()" class="ml-4 text-gray-900 hover:text-gray-700 text-3xl font-bold leading-none px-2">×</button>
+            <button onclick="dismissNextSteps()" class="text-white hover:text-gray-200 text-3xl font-bold leading-none px-2 shrink-0">×</button>
         </div>
     </div>
     ` : ''}
