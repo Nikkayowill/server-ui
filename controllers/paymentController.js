@@ -213,7 +213,7 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
             throw new Error(data.error);
           }
           
-          // Confirm payment with card
+          // Confirm payment with card (handles 3D Secure automatically)
           const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
             payment_method: {
               card: cardNumberElement,
@@ -224,12 +224,28 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
           });
           
           if (stripeError) {
-            document.getElementById('card-errors').textContent = stripeError.message;
+            // Handle specific decline codes like Checkout does
+            let errorMessage = stripeError.message;
+            if (stripeError.decline_code === 'insufficient_funds') {
+              errorMessage = 'Your card has insufficient funds.';
+            } else if (stripeError.decline_code === 'card_velocity_exceeded') {
+              errorMessage = 'Your card was declined for making repeated attempts too frequently.';
+            }
+            document.getElementById('card-errors').textContent = errorMessage;
             submitButton.disabled = false;
             buttonText.classList.remove('hidden');
             spinner.classList.add('hidden');
           } else if (paymentIntent.status === 'succeeded') {
-            window.location.href = '/payment-success?plan=' + plan + '&payment_intent=' + paymentIntent.id;
+            window.location.href = '/payment-success?plan=' + plan + '&payment_intent_id=' + paymentIntent.id;
+          } else if (paymentIntent.status === 'processing') {
+            // Payment is processing asynchronously (some payment methods)
+            window.location.href = '/payment-success?plan=' + plan + '&payment_intent_id=' + paymentIntent.id;
+          } else {
+            // Handle unexpected payment states (requires_action shouldn't happen - confirmCardPayment handles it)
+            document.getElementById('card-errors').textContent = 'Payment status: ' + paymentIntent.status + '. Please contact support.';
+            submitButton.disabled = false;
+            buttonText.classList.remove('hidden');
+            spinner.classList.add('hidden');
           }
         } catch (err) {
           document.getElementById('card-errors').textContent = err.message;
@@ -249,6 +265,11 @@ exports.createPaymentIntent = async (req, res) => {
   try {
     const plan = req.body.plan || 'basic';
     
+    // Verify user is authenticated (double-check after middleware)
+    if (!req.session.userId) {
+      return res.status(401).json({ error: 'Session expired. Please log in again.' });
+    }
+    
     // TEST PRICING - 50 CENTS (Stripe minimum)
     const planPrices = {
       basic: { amount: 50, name: 'Basic Plan — TEST' },
@@ -264,7 +285,7 @@ exports.createPaymentIntent = async (req, res) => {
       description: `${selectedPlan.name} - Monthly subscription`,
       metadata: {
         plan: plan,
-        user_id: req.session.userId
+        user_id: String(req.session.userId)
       }
     });
     
@@ -320,31 +341,35 @@ exports.createCheckoutSession = async (req, res) => {
 // GET /payment-success
 exports.paymentSuccess = async (req, res) => {
   try {
-    const sessionId = req.query.session_id;
+    const paymentIntentId = req.query.payment_intent_id;
     const plan = req.query.plan || 'founder';
     
     // Record payment immediately so onboarding wizard detects it
-    if (!sessionId) {
-      return res.redirect('/payment-cancel?error=Missing session ID');
+    if (!paymentIntentId) {
+      return res.redirect('/payment-cancel?error=Missing payment intent ID');
     }
 
-    const session = await getStripe().checkout.sessions.retrieve(sessionId, {
-      expand: ['payment_intent']
-    });
+    const paymentIntent = await getStripe().paymentIntents.retrieve(paymentIntentId);
     
-    // Check if payment already recorded
-    const existingPayment = await pool.query(
-      'SELECT * FROM payments WHERE stripe_payment_id = $1',
-      [session.payment_intent.id]
-    );
-    
-    // Record payment if not already in database
-    if (existingPayment.rows.length === 0) {
-      await pool.query(
-        'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
-        [req.session.userId, session.payment_intent.id, session.amount_total / 100, plan, 'succeeded']
+    // If session expired, skip recording (webhook will handle it)
+    // User still gets redirected to dashboard if they log back in
+    if (req.session.userId) {
+      // Check if payment already recorded
+      const existingPayment = await pool.query(
+        'SELECT * FROM payments WHERE stripe_payment_id = $1',
+        [paymentIntent.id]
       );
-      console.log('Payment recorded:', session.payment_intent.id);
+      
+      // Record payment if not already in database
+      if (existingPayment.rows.length === 0) {
+        await pool.query(
+          'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
+          [req.session.userId, paymentIntent.id, paymentIntent.amount / 100, plan, 'succeeded']
+        );
+        console.log('Payment recorded:', paymentIntent.id);
+      }
+    } else {
+      console.log('Session expired at payment-success, webhook will handle payment recording');
     }
     
     // Server creation now handled by webhook only to prevent race conditions
@@ -533,32 +558,39 @@ exports.stripeWebhook = async (req, res) => {
         try {
           await client.query('BEGIN');
 
-          // Extract customer email and plan from metadata
-          const customerEmail = paymentIntent.billing_details?.email || paymentIntent.metadata?.email;
-          const plan = paymentIntent.metadata?.plan || 'unknown';
+          // Extract user_id and plan from metadata (set during createPaymentIntent)
+          const userIdStr = paymentIntent.metadata?.user_id;
+          const plan = paymentIntent.metadata?.plan || 'basic';
           const amount = paymentIntent.amount / 100; // Convert cents to dollars
 
-          if (!customerEmail) {
-            console.log('No customer email found in payment intent');
+          if (!userIdStr) {
+            console.log('No user_id found in payment intent metadata');
             await client.query('ROLLBACK');
             client.release();
             break;
           }
 
-          // Find user by email
+          // Convert user_id from string to integer (Stripe metadata is always strings)
+          const userId = parseInt(userIdStr, 10);
+          if (isNaN(userId)) {
+            console.log(`Invalid user_id in metadata: ${userIdStr}`);
+            await client.query('ROLLBACK');
+            client.release();
+            break;
+          }
+
+          // Verify user exists
           const userResult = await client.query(
-            'SELECT id FROM users WHERE email = $1',
-            [customerEmail]
+            'SELECT id FROM users WHERE id = $1',
+            [userId]
           );
 
           if (userResult.rows.length === 0) {
-            console.log(`User not found for email: ${customerEmail}`);
+            console.log(`User not found for ID: ${userId}`);
             await client.query('ROLLBACK');
             client.release();
             break;
           }
-
-          const userId = userResult.rows[0].id;
 
           // Check if payment already recorded (avoid duplicates)
           const existingPayment = await client.query(

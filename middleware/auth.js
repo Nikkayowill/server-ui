@@ -9,8 +9,11 @@ function requireAuth(req, res, next) {
   if (req.session.userId) {
     next();
   } else {
-    // Check if it's an API request (JSON expected)
-    if (req.headers['content-type'] === 'application/json' || req.xhr || req.path.startsWith('/api')) {
+    // Check if it's an API request (client expects JSON response)
+    const acceptsJson = req.headers['accept']?.includes('application/json');
+    const isApiPath = req.path.startsWith('/api') || req.path === '/create-payment-intent';
+    
+    if (acceptsJson || isApiPath || req.xhr) {
       return res.status(401).json({ error: 'Session expired. Please log in again.' });
     }
     res.redirect('/login?message=Please login to proceed with payment');
