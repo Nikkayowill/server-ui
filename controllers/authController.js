@@ -53,6 +53,12 @@ ${getHTMLHead('Register - Basement')}
         <p class="text-center text-gray-400 mt-6">
           Already have an account? <a href="/login" class="text-brand hover:text-cyan-400 font-medium">Login</a>
         </p>
+        
+        <div class="mt-6 pt-6 border-t border-gray-700 text-center">
+          <p class="text-xs text-gray-500">
+            By registering, you agree to our <a href="/terms" class="text-brand hover:text-cyan-400 underline">Terms of Service</a> and <a href="/privacy" class="text-brand hover:text-cyan-400 underline">Privacy Policy</a>
+          </p>
+        </div>
       </div>
     </main>
     
@@ -196,6 +202,14 @@ ${getHTMLHead('Login - Basement')}
         <p class="text-center text-gray-400 mt-6">
           Don't have an account? <a href="/register" class="text-brand hover:text-cyan-400 font-medium">Register</a>
         </p>
+        
+        <div class="mt-6 pt-6 border-t border-gray-700 text-center">
+          <p class="text-xs text-gray-500">
+            <a href="/terms" class="text-brand hover:text-cyan-400 underline">Terms</a> · 
+            <a href="/privacy" class="text-brand hover:text-cyan-400 underline">Privacy</a> · 
+            <a href="/contact" class="text-brand hover:text-cyan-400 underline">Support</a>
+          </p>
+        </div>
       </div>
     </main>
     

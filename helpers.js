@@ -39,6 +39,7 @@ function getScripts(...scripts) {
   const scriptTags = scripts.map(script => `<script src="/js/${script}"></script>`).join('\n    ');
   return `
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="/js/cookie-consent.js"></script>
     ${scriptTags}
 </body>
 </html>
