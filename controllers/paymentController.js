@@ -209,6 +209,7 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
           const response = await fetch('/create-payment-intent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify({ plan })
           });
           
