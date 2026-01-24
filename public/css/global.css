@@ -8,12 +8,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PS5 Design System - Brand Colors */
+/* PS5 Design System - Brand Colors & Motion */
 :root {
     --brand-blue: #0066FF;
     --brand-dark: #000000;
     --text-primary: #FFFFFF;
     --text-secondary: #B3B3B3;
+    
+    /* Sony timing - buttery smooth */
+    --transition-fast: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    --hover-lift: translateY(-4px);
+    --hover-scale: scale(1.02);
 }
 
 /* True black background with subtle blue spotlight */
@@ -39,6 +45,11 @@ body {
 /* Blue glow effect (PS5 style) */
 .glow-brand {
     box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+}
+
+/* Consistent button timing across site */
+button, a, input, textarea, select {
+    transition: all var(--transition-fast);
 }
 
 /* Container max-width override */
