@@ -195,6 +195,12 @@ exports.stripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  // Debug logging
+  console.log('[WEBHOOK DEBUG] Headers:', Object.keys(req.headers));
+  console.log('[WEBHOOK DEBUG] Has stripe-signature:', !!sig);
+  console.log('[WEBHOOK DEBUG] Body type:', typeof req.body);
+  console.log('[WEBHOOK DEBUG] Body is Buffer:', Buffer.isBuffer(req.body));
+
   let event;
 
   try {
@@ -202,6 +208,8 @@ exports.stripeWebhook = async (req, res) => {
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
+    console.error('[WEBHOOK DEBUG] Signature:', sig ? 'present' : 'MISSING');
+    console.error('[WEBHOOK DEBUG] Secret configured:', !!webhookSecret);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
