@@ -1,4 +1,8 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+let stripe;
+const getStripe = () => {
+  if (!stripe) stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  return stripe;
+};
 const pool = require('../db');
 const { createRealServer } = require('../services/digitalocean');
 const { getHTMLHead, getScripts, getFooter, getResponsiveNav } = require('../helpers');
@@ -254,7 +258,7 @@ exports.createPaymentIntent = async (req, res) => {
     const selectedPlan = planPrices[plan] || planPrices.basic;
     
     // Create Payment Intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await getStripe().paymentIntents.create({
       amount: selectedPlan.amount,
       currency: 'usd',
       description: `${selectedPlan.name} - Monthly subscription`,
@@ -282,8 +286,8 @@ exports.createCheckoutSession = async (req, res) => {
       premium: { amount: 50, name: 'Premium Plan — TEST' }
     };
     const selectedPlan = planPrices[plan] || planPrices.basic;
-    
-    const session = await stripe.checkout.sessions.create({
+
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
@@ -324,7 +328,7 @@ exports.paymentSuccess = async (req, res) => {
       return res.redirect('/payment-cancel?error=Missing session ID');
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    const session = await getStripe().checkout.sessions.retrieve(sessionId, {
       expand: ['payment_intent']
     });
     
@@ -402,7 +406,7 @@ exports.stripeWebhook = async (req, res) => {
 
   try {
     // Verify webhook signature
-    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     console.error('[WEBHOOK DEBUG] Signature:', sig ? 'present' : 'MISSING');
@@ -613,6 +617,7 @@ exports.stripeWebhook = async (req, res) => {
 
 module.exports = {
   showCheckout: exports.showCheckout,
+  createPaymentIntent: exports.createPaymentIntent,
   createCheckoutSession: exports.createCheckoutSession,
   paymentSuccess: exports.paymentSuccess,
   paymentCancel: exports.paymentCancel,
