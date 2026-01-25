@@ -1013,11 +1013,11 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Final CTA Section -->
-    <section class="bg-cyan-900/10 border-t border-cyan-500/10 py-16">
+    <section class="bg-black border-t border-blue-500/30 py-16">
       <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center sm:px-6 lg:px-8">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
         <p class="mb-8 text-lg text-gray-400">Join the founding customers and lock in lifetime pricing.</p>
-        <a href="/register" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-gray-900 bg-cyan-400 rounded-lg hover:bg-cyan-500 focus:ring-4 focus:ring-cyan-300 transition-all">
+        <a href="/register" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
           Sign up
           <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
