@@ -49,32 +49,32 @@ function getScripts(...scripts) {
 // Footer
 function getFooter() {
   return `
-    <footer style="background: rgba(2, 8, 20, 0.8); border-top: 1px solid rgba(136, 254, 0, 0.1); padding: 40px 5vw; margin-top: 80px;">
-        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
+    <footer class="bg-black border-t border-blue-500/30 py-12 mt-20">
+        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-                <h3 style="color: var(--glow); font-size: 16px; margin-bottom: 16px;">Basement</h3>
-                <p style="color: var(--text-secondary); font-size: 12px; line-height: 1.8;">Cloud hosting without the headache. Fast, simple, powerful.</p>
+                <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
             </div>
             <div>
-                <h4 style="color: var(--glow); font-size: 14px; margin-bottom: 12px;">Quick Links</h4>
-                <ul style="list-style: none;">
-                    <li style="margin-bottom: 8px;"><a href="/about" style="color: var(--text-secondary); font-size: 12px;">About</a></li>
-                    <li style="margin-bottom: 8px;"><a href="/pricing" style="color: var(--text-secondary); font-size: 12px;">Pricing</a></li>
-                    <li style="margin-bottom: 8px;"><a href="/docs" style="color: var(--text-secondary); font-size: 12px;">Documentation</a></li>
-                    <li style="margin-bottom: 8px;"><a href="/contact" style="color: var(--text-secondary); font-size: 12px;">Contact</a></li>
-                    <li style="margin-bottom: 8px;"><a href="/faq" style="color: var(--text-secondary); font-size: 12px;">FAQ</a></li>
+                <h4 class="text-blue-400 text-sm font-bold mb-3">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="/about" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">About</a></li>
+                    <li><a href="/pricing" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Pricing</a></li>
+                    <li><a href="/docs" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Documentation</a></li>
+                    <li><a href="/contact" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Contact</a></li>
+                    <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="color: var(--glow); font-size: 14px; margin-bottom: 12px;">Legal</h4>
-                <ul style="list-style: none;">
-                    <li style="margin-bottom: 8px;"><a href="/terms" style="color: var(--text-secondary); font-size: 12px;">Terms of Service</a></li>
-                    <li style="margin-bottom: 8px;"><a href="/privacy" style="color: var(--text-secondary); font-size: 12px;">Privacy Policy</a></li>
+                <h4 class="text-blue-400 text-sm font-bold mb-3">Legal</h4>
+                <ul class="space-y-2">
+                    <li><a href="/terms" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Privacy Policy</a></li>
                 </ul>
             </div>
         </div>
-        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(136, 254, 0, 0.1);">
-            <p style="color: #666; font-size: 11px;">&copy; ${new Date().getFullYear()} Basement. All rights reserved.</p>
+        <div class="text-center mt-10 pt-6 border-t border-blue-500/30 max-w-6xl mx-auto px-8">
+            <p class="text-gray-500 text-xs">&copy; ${new Date().getFullYear()} Basement. All rights reserved.</p>
         </div>
     </footer>
 `;
