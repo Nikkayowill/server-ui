@@ -12,51 +12,51 @@ const showRegister = (req, res) => {
 ${getHTMLHead('Register - Basement')}
     ${getResponsiveNav(req)}
     
-    <main class="bg-gray-900 min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-md w-full bg-gray-800 border border-gray-700 rounded-lg p-8">
-        <h1 class="text-3xl font-bold text-white text-center mb-8">CREATE ACCOUNT</h1>
+    <main class="bg-black min-h-screen flex items-center justify-center py-12 px-4">
+      <div class="max-w-md w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-6 shadow-[0_8px_32px_rgba(255,255,255,0.1)]">
+        <h1 class="text-2xl font-bold text-white text-center mb-6">CREATE ACCOUNT</h1>
         
-        <form method="POST" action="/register" class="space-y-6">
+        <form method="POST" action="/register" class="space-y-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">
           
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
             <input type="email" name="email" required 
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
+              class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-white/30 focus:bg-white/10 focus:outline-none transition-all">
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
             <input type="password" name="password" minlength="8" required 
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
+              class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-white/30 focus:bg-white/10 focus:outline-none transition-all">
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">Confirm Password</label>
             <input type="password" name="confirmPassword" minlength="8" required 
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
+              class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-white/30 focus:bg-white/10 focus:outline-none transition-all">
           </div>
           
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-2.5">
             <input type="checkbox" id="acceptTerms" name="acceptTerms" required 
-              class="mt-1 w-4 h-4 cursor-pointer accent-brand">
+              class="mt-0.5 w-4 h-4 cursor-pointer accent-white">
             <label for="acceptTerms" class="text-sm text-gray-400 cursor-pointer">
-              I have read and agree to the <a href="/terms" target="_blank" class="text-brand hover:text-cyan-400 underline">Terms of Service</a>
+              I agree to the <a href="/terms" target="_blank" class="text-white/80 hover:text-white underline">Terms of Service</a>
             </label>
           </div>
           
-          <button type="submit" class="w-full py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">
+          <button type="submit" class="w-full py-2.5 bg-white/90 text-black font-bold rounded-lg hover:bg-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.3)] transition-all">
             Register
           </button>
         </form>
         
-        <p class="text-center text-gray-400 mt-6">
-          Already have an account? <a href="/login" class="text-brand hover:text-cyan-400 font-medium">Login</a>
+        <p class="text-center text-gray-400 mt-5 text-sm">
+          Already have an account? <a href="/login" class="text-white/80 hover:text-white font-medium">Login</a>
         </p>
         
-        <div class="mt-6 pt-6 border-t border-gray-700 text-center">
+        <div class="mt-5 pt-5 border-t border-white/10 text-center">
           <p class="text-xs text-gray-500">
-            By registering, you agree to our <a href="/terms" class="text-brand hover:text-cyan-400 underline">Terms of Service</a> and <a href="/privacy" class="text-brand hover:text-cyan-400 underline">Privacy Policy</a>
+            By registering, you agree to our <a href="/terms" class="text-white/70 hover:text-white underline">Terms</a> and <a href="/privacy" class="text-white/70 hover:text-white underline">Privacy Policy</a>
           </p>
         </div>
       </div>
@@ -171,43 +171,43 @@ ${getHTMLHead('Login - Basement')}
     
     ${getResponsiveNav(req)}
     
-    <main class="bg-gray-900 min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-md w-full bg-gray-800 border border-gray-700 rounded-lg p-8">
-        <h1 class="text-3xl font-bold text-white text-center mb-8">LOGIN</h1>
+    <main class="bg-black min-h-screen flex items-center justify-center py-12 px-4">
+      <div class="max-w-md w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-6 shadow-[0_8px_32px_rgba(255,255,255,0.1)]">
+        <h1 class="text-2xl font-bold text-white text-center mb-6">LOGIN</h1>
         
-        ${message ? `<div class="bg-green-900 border border-green-700 text-green-300 px-4 py-3 rounded-lg mb-6">${message}</div>` : ''}
-        ${error ? `<div class="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-6">${error}</div>` : ''}
-        ${showResend ? `<div class="bg-blue-900 border border-blue-700 text-blue-300 px-4 py-3 rounded-lg mb-6"><a href="/resend-confirmation?email=${encodeURIComponent(userEmail)}" class="text-brand hover:text-cyan-400 underline">Resend confirmation email</a></div>` : ''}
+        ${message ? `<div class="bg-green-500/10 border border-green-500/20 text-green-300 px-4 py-2.5 rounded-lg mb-5 text-sm">${message}</div>` : ''}
+        ${error ? `<div class="bg-red-500/10 border border-red-500/20 text-red-300 px-4 py-2.5 rounded-lg mb-5 text-sm">${error}</div>` : ''}
+        ${showResend ? `<div class="bg-white/10 border border-white/20 text-gray-300 px-4 py-2.5 rounded-lg mb-5 text-sm"><a href="/resend-confirmation?email=${encodeURIComponent(userEmail)}" class="text-white/80 hover:text-white underline">Resend confirmation email</a></div>` : ''}
         
-        <form method="POST" action="/login" class="space-y-6">
+        <form method="POST" action="/login" class="space-y-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">
           
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
             <input type="email" name="email" required 
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
+              class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-white/30 focus:bg-white/10 focus:outline-none transition-all">
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
             <input type="password" name="password" required 
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
+              class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:border-white/30 focus:bg-white/10 focus:outline-none transition-all">
           </div>
           
-          <button type="submit" class="w-full py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">
+          <button type="submit" class="w-full py-2.5 bg-white/90 text-black font-bold rounded-lg hover:bg-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.3)] transition-all">
             Login
           </button>
         </form>
         
-        <p class="text-center text-gray-400 mt-6">
-          Don't have an account? <a href="/register" class="text-brand hover:text-cyan-400 font-medium">Register</a>
+        <p class="text-center text-gray-400 mt-5 text-sm">
+          Don't have an account? <a href="/register" class="text-white/80 hover:text-white font-medium">Register</a>
         </p>
         
-        <div class="mt-6 pt-6 border-t border-gray-700 text-center">
+        <div class="mt-5 pt-5 border-t border-white/10 text-center">
           <p class="text-xs text-gray-500">
-            <a href="/terms" class="text-brand hover:text-cyan-400 underline">Terms</a> · 
-            <a href="/privacy" class="text-brand hover:text-cyan-400 underline">Privacy</a> · 
-            <a href="/contact" class="text-brand hover:text-cyan-400 underline">Support</a>
+            <a href="/terms" class="text-white/70 hover:text-white underline">Terms</a> · 
+            <a href="/privacy" class="text-white/70 hover:text-white underline">Privacy</a> · 
+            <a href="/contact" class="text-white/70 hover:text-white underline">Support</a>
           </p>
         </div>
       </div>
