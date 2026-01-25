@@ -146,7 +146,7 @@ button, a, input, textarea, select {
 }
 
 .nav-logo img {
-    height: 65px;
+    height: 120px;
     width: auto;
     transition: transform 0.3s ease;
 }
@@ -412,14 +412,6 @@ input:focus, textarea:focus, select:focus {
 /* Liquid Animation Keyframe */
 @keyframes liquid-flow {
     0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-/* Apply liquid effect to primary buttons */
-.btn-primary, button[type="submit"] {
-    background-size: 200% 200%;
-    animation: liquid-flow 3s ease infinite;
-}
     50% { background-position: 100% 50%; }
 }
 
