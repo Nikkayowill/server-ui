@@ -13,7 +13,7 @@ ${getHTMLHead('Register - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-black min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded p-6 shadow-[0_0_80px_rgba(0,102,255,0.4),0_0_120px_rgba(0,102,255,0.2),inset_0_0_40px_rgba(0,102,255,0.05)]">
+      <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded p-6 shadow-[0_0_60px_rgba(0,102,255,0.15),0_0_100px_rgba(0,102,255,0.08),inset_0_0_30px_rgba(0,102,255,0.02)]">
         <h1 class="text-2xl font-bold text-white text-center mb-6">CREATE ACCOUNT</h1>
         
         <form method="POST" action="/register" class="space-y-4">
@@ -172,7 +172,7 @@ ${getHTMLHead('Login - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-black min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded p-6 shadow-[0_0_80px_rgba(0,102,255,0.4),0_0_120px_rgba(0,102,255,0.2),inset_0_0_40px_rgba(0,102,255,0.05)]">
+      <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded p-6 shadow-[0_0_60px_rgba(0,102,255,0.15),0_0_100px_rgba(0,102,255,0.08),inset_0_0_30px_rgba(0,102,255,0.02)]">
         <h1 class="text-2xl font-bold text-white text-center mb-6">LOGIN</h1>
         
         ${message ? `<div class="bg-green-500/10 border border-green-500/30 text-green-300 px-4 py-2.5 rounded mb-5 text-sm">${message}</div>` : ''}
