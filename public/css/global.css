@@ -33,10 +33,15 @@
 
 /* Gaming Typography */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Supercharge3D', 'Rajdhani', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+}
+
+/* Hero heading - Supercharge3D font */
+.hero-heading {
+    font-family: 'Supercharge3D', 'Rajdhani', sans-serif;
 }
 
 /* Glossy Gradient Text for Headings */
