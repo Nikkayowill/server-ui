@@ -94,7 +94,7 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
           
           <div id="card-errors" class="text-red-400 text-sm mb-4"></div>
           
-          <button type="submit" id="submit-button" class="w-full py-4 bg-brand text-gray-900 font-bold text-lg rounded-lg hover:bg-cyan-500 transition-colors shadow-lg hover:shadow-brand/50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button type="submit" id="submit-button" class="w-full py-4 bg-blue-600 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed">
             <span id="button-text">Complete Payment</span>
             <span id="spinner" class="hidden">Processing...</span>
           </button>

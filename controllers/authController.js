@@ -516,7 +516,7 @@ ${getHTMLHead('Verify Email - Basement')}
               placeholder="000000" autocomplete="off">
           </div>
           
-          <button type="submit" class="w-full py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">
+          <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold">
             Verify Email
           </button>
         </form>

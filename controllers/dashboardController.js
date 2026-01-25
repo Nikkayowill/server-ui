@@ -333,13 +333,13 @@ const buildDashboardTemplate = (data) => {
                         <form action="/server-action" method="POST" class="flex-1">
                             <input type="hidden" name="_csrf" value="${data.csrfToken}">
                             <input type="hidden" name="action" value="start">
-                            <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Start Core</button>
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold">Start Core</button>
                         </form>
                     ` : `
                         <form action="/server-action" method="POST" class="flex-1">
                             <input type="hidden" name="_csrf" value="${data.csrfToken}">
                             <input type="hidden" name="action" value="restart">
-                            <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Restart</button>
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold">Restart</button>
                         </form>
                         <form action="/server-action" method="POST" class="flex-1">
                             <input type="hidden" name="_csrf" value="${data.csrfToken}">
@@ -402,7 +402,7 @@ const buildDashboardTemplate = (data) => {
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
                     <input type="text" name="git_url" placeholder="https://github.com/username/repo.git" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <button type="submit" class="px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors whitespace-nowrap">Deploy Now</button>
+                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold whitespace-nowrap">Deploy Now</button>
                 </div>
                 <p class="text-xs text-gray-500 mt-2">Paste your public or private GitHub repository URL to deploy automatically.</p>
             </form>
@@ -482,14 +482,14 @@ const buildDashboardTemplate = (data) => {
                 <form action="/setup-database" method="POST" class="flex gap-3">
                     <input type="hidden" name="_csrf" value="${data.csrfToken}">
                     <input type="hidden" name="database_type" value="postgres">
-                    <button type="submit" class="flex-1 px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors text-sm">
+                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-bold text-sm">
                         📦 Add PostgreSQL
                     </button>
                 </form>
                 <form action="/setup-database" method="POST" class="flex gap-3">
                     <input type="hidden" name="_csrf" value="${data.csrfToken}">
                     <input type="hidden" name="database_type" value="mongodb">
-                    <button type="submit" class="flex-1 px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors text-sm">
+                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-bold text-sm">
                         🍃 Add MongoDB
                     </button>
                 </form>
@@ -545,7 +545,7 @@ const buildDashboardTemplate = (data) => {
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
                     <input type="text" name="domain" placeholder="example.com" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <button type="submit" class="px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Add Domain</button>
+                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold">Add Domain</button>
                 </div>
             </form>
             ${data.domains.length > 0 ? `
@@ -607,7 +607,7 @@ const buildDashboardTemplate = (data) => {
                     <input type="password" id="currentPassword" placeholder="Current" required class="px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
                     <input type="password" id="newPassword" placeholder="New Password" required class="px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
                     <input type="password" id="confirmPassword" placeholder="Confirm" required class="px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <button type="submit" class="px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Update</button>
+                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold">Update</button>
                 </form>
             </div>
 
@@ -641,8 +641,8 @@ const buildDashboardTemplate = (data) => {
                 <textarea id="ticketDescription" placeholder="Details about your issue" required class="w-full px-4 py-3 bg-black bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none h-32"></textarea>
             </div>
             <div class="flex gap-3">
-                <button type="submit" class="flex-1 px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Submit</button>
-                <button type="button" class="flex-1 px-6 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors" onclick="closeSubmitTicketModal()">Cancel</button>
+                <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-bold">Submit</button>
+                <button type="button" class="flex-1 px-6 py-3 bg-gray-700 text-white font-bold" onclick="closeSubmitTicketModal()">Cancel</button>
             </div>
         </form>
     </div>
