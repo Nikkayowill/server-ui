@@ -904,16 +904,16 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Founder Plan Card -->
     <section class="py-8 px-8 md:px-12 lg:px-16 bg-black">
-      <div class="max-w-2xl mx-auto p-6 bg-black border border-blue-500/30 rounded-lg text-center shadow-[0_0_30px_rgba(0,102,255,0.2)]">
-        <span class="inline-block px-3 py-1 mb-3 text-xs font-bold text-black bg-blue-500 rounded-full uppercase tracking-wider">Early Adopter</span>
+      <div class="max-w-2xl mx-auto p-6 bg-gray-900 border border-blue-400/30 rounded-lg text-center shadow-[0_0_30px_rgba(135,206,250,0.2)]">
+        <span class="inline-block px-3 py-1 mb-3 text-xs font-bold text-black bg-gradient-to-r from-blue-300 to-blue-400 rounded-full uppercase tracking-wider">Early Adopter</span>
         <h2 class="mb-2 text-2xl font-bold text-white">Lock In Lifetime Pricing</h2>
         <div class="my-4">
-          <span class="text-4xl font-bold text-blue-500">$10-$60</span>
-          <span class="text-sm text-gray-400">/month forever</span>
+          <span class="text-4xl font-bold text-blue-300">$10-$60</span>
+          <span class="text-sm text-gray-300">/month forever</span>
         </div>
-        <p class="mb-4 text-sm text-gray-400">Choose your plan. Lock in 50-60% off for life.</p>
-        <div class="flex items-center justify-center gap-2 px-6 py-3 mb-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-          <span class="text-2xl font-bold text-blue-400">${adoptersRemaining}</span>
+        <p class="mb-4 text-sm text-gray-300">Choose your plan. Lock in 50-60% off for life.</p>
+        <div class="flex items-center justify-center gap-2 px-6 py-3 mb-4 bg-blue-400/10 border border-blue-400/30 rounded-lg">
+          <span class="text-2xl font-bold text-blue-300">${adoptersRemaining}</span>
           <span class="text-sm text-gray-400">spots left</span>
         </div>
         <a href="/pricing" class="flex justify-center items-center py-3 px-6 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
@@ -930,21 +930,21 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement</h2>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="p-6 bg-black border border-gray-700 rounded-lg hover:border-blue-500 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,102,255,0.3)] transition-all duration-300">
-            <h3 class="mb-2 text-xl font-bold text-blue-400">Personal Support</h3>
-            <p class="text-gray-400">You talk to the person who built the platform.</p>
+          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
+            <h3 class="mb-2 text-xl font-bold text-white">Personal Support</h3>
+            <p class="text-gray-300">You talk to the person who built the platform.</p>
           </div>
-          <div class="p-6 bg-black border border-gray-700 rounded-lg hover:border-blue-500 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,102,255,0.3)] transition-all duration-300">
-            <h3 class="mb-2 text-xl font-bold text-blue-400">Fast, Clean Infrastructure</h3>
-            <p class="text-gray-400">No noisy neighbors. No overselling.</p>
+          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
+            <h3 class="mb-2 text-xl font-bold text-white">Fast, Clean Infrastructure</h3>
+            <p class="text-gray-300">No noisy neighbors. No overselling.</p>
           </div>
-          <div class="p-6 bg-black border border-gray-700 rounded-lg hover:border-blue-500 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,102,255,0.3)] transition-all duration-300">
-            <h3 class="mb-2 text-xl font-bold text-blue-400">Transparent Pricing</h3>
-            <p class="text-gray-400">No hidden fees. No surprise renewals.</p>
+          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
+            <h3 class="mb-2 text-xl font-bold text-white">Transparent Pricing</h3>
+            <p class="text-gray-300">No hidden fees. No surprise renewals.</p>
           </div>
-          <div class="p-6 bg-black border border-gray-700 rounded-lg hover:border-blue-500 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,102,255,0.3)] transition-all duration-300">
-            <h3 class="mb-2 text-xl font-bold text-blue-400">Indie-Built, Indie-Powered</h3>
-            <p class="text-gray-400">Hosting with personality, not corporate scripts.</p>
+          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
+            <h3 class="mb-2 text-xl font-bold text-white">Indie-Built, Indie-Powered</h3>
+            <p class="text-gray-300">Hosting with personality, not corporate scripts.</p>
           </div>
         </div>
       </div>
@@ -960,29 +960,29 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <div class="max-w-3xl px-8 md:px-12 lg:px-16 mx-auto sm:px-6 lg:px-8">
         <h2 class="mb-12 text-3xl md:text-4xl font-extrabold text-center text-white">What You Get</h2>
         <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <li class="flex items-center gap-3 p-4 bg-black border border-blue-500/30 rounded-lg hover:border-blue-500 hover:shadow-[0_0_15px_rgba(0,102,255,0.2)] transition-all duration-300">
-            <span class="text-blue-400 text-xl font-bold">✓</span>
-            <span class="text-gray-300">Full hosting environment</span>
+          <li class="flex items-center gap-3 p-4 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(135,206,250,0.25)] transition-all duration-300">
+            <span class="text-blue-300 text-xl font-bold">✓</span>
+            <span class="text-gray-200">Full hosting environment</span>
           </li>
-          <li class="flex items-center gap-3 p-4 bg-black border border-blue-500/30 rounded-lg hover:border-blue-500 hover:shadow-[0_0_15px_rgba(0,102,255,0.2)] transition-all duration-300">
-            <span class="text-blue-400 text-xl font-bold">✓</span>
-            <span class="text-gray-300">SSD storage</span>
+          <li class="flex items-center gap-3 p-4 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(135,206,250,0.25)] transition-all duration-300">
+            <span class="text-blue-300 text-xl font-bold">✓</span>
+            <span class="text-gray-200">SSD storage</span>
           </li>
-          <li class="flex items-center gap-3 p-4 bg-black border border-blue-500/30 rounded-lg hover:border-blue-500 hover:shadow-[0_0_15px_rgba(0,102,255,0.2)] transition-all duration-300">
-            <span class="text-blue-400 text-xl font-bold">✓</span>
-            <span class="text-gray-300">Secure isolation</span>
+          <li class="flex items-center gap-3 p-4 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(135,206,250,0.25)] transition-all duration-300">
+            <span class="text-blue-300 text-xl font-bold">✓</span>
+            <span class="text-gray-200">Secure isolation</span>
           </li>
-          <li class="flex items-center gap-3 p-4 bg-black border border-blue-500/30 rounded-lg hover:border-blue-500 hover:shadow-[0_0_15px_rgba(0,102,255,0.2)] transition-all duration-300">
-            <span class="text-blue-400 text-xl font-bold">✓</span>
-            <span class="text-gray-300">Free setup</span>
+          <li class="flex items-center gap-3 p-4 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(135,206,250,0.25)] transition-all duration-300">
+            <span class="text-blue-300 text-xl font-bold">✓</span>
+            <span class="text-gray-200">Free setup</span>
           </li>
-          <li class="flex items-center gap-3 p-4 bg-black border border-blue-500/30 rounded-lg hover:border-blue-500 hover:shadow-[0_0_15px_rgba(0,102,255,0.2)] transition-all duration-300">
-            <span class="text-blue-400 text-xl font-bold">✓</span>
-            <span class="text-gray-300">Modern dashboard</span>
+          <li class="flex items-center gap-3 p-4 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(135,206,250,0.25)] transition-all duration-300">
+            <span class="text-blue-300 text-xl font-bold">✓</span>
+            <span class="text-gray-200">Modern dashboard</span>
           </li>
-          <li class="flex items-center gap-3 p-4 bg-black border border-blue-500/30 rounded-lg hover:border-blue-500 hover:shadow-[0_0_15px_rgba(0,102,255,0.2)] transition-all duration-300">
-            <span class="text-blue-400 text-xl font-bold">✓</span>
-            <span class="text-gray-300">All future features included</span>
+          <li class="flex items-center gap-3 p-4 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(135,206,250,0.25)] transition-all duration-300">
+            <span class="text-blue-300 text-xl font-bold">✓</span>
+            <span class="text-gray-200">All future features included</span>
           </li>
         </ul>
       </div>
@@ -995,21 +995,21 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <ol class="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <!-- Step 1 -->
           <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-blue-500 rounded-full text-white text-2xl font-bold shadow-[0_0_20px_rgba(0,102,255,0.4)]">1</div>
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">1</div>
             <h3 class="mb-2 text-xl font-bold text-white">Choose your plan</h3>
-            <p class="text-gray-400">Pick the hosting tier that fits your needs.</p>
+            <p class="text-gray-300">Pick the hosting tier that fits your needs.</p>
           </li>
           <!-- Step 2 -->
           <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-blue-500 rounded-full text-white text-2xl font-bold shadow-[0_0_20px_rgba(0,102,255,0.4)]">2</div>
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">2</div>
             <h3 class="mb-2 text-xl font-bold text-white">Get instant access</h3>
-            <p class="text-gray-400">Your server is provisioned and ready in minutes.</p>
+            <p class="text-gray-300">Your server is provisioned and ready in minutes.</p>
           </li>
           <!-- Step 3 -->
           <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-blue-500 rounded-full text-white text-2xl font-bold shadow-[0_0_20px_rgba(0,102,255,0.4)]">3</div>
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">3</div>
             <h3 class="mb-2 text-xl font-bold text-white">Deploy your site</h3>
-            <p class="text-gray-400">DIY or let us handle the setup — your choice.</p>
+            <p class="text-gray-300">DIY or let us handle the setup — your choice.</p>
           </li>
         </ol>
       </div>
@@ -1019,7 +1019,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     <section class="bg-black border-t border-blue-500/30 py-16">
       <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center sm:px-6 lg:px-8">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
-        <p class="mb-8 text-lg text-gray-400">Join the founding customers and lock in lifetime pricing.</p>
+        <p class="mb-8 text-lg text-gray-300">Join the founding customers and lock in lifetime pricing.</p>
         <a href="/register" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
           Sign up
           <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
