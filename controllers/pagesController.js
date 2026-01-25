@@ -50,7 +50,7 @@ exports.showTerms = (req, res) => {
 ${getHTMLHead('Terms of Service - Basement')}
     ${getResponsiveNav(req)}
     
-    <main class="bg-gray-900 min-h-screen pt-24 pb-16">
+    <main class="bg-black min-h-screen pt-24 pb-16">
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Terms of Service</h1>
         <p class="text-gray-500 text-sm mb-8">Last Updated: January 19, 2026</p>
@@ -260,7 +260,7 @@ ${getHTMLHead('Terms of Service - Basement')}
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">18. Contact Information</h2>
         <p class="text-gray-400 mb-4">If you have questions about these Terms or need to contact us regarding your account, please reach out:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li><strong class="text-white">Email:</strong> <a href="mailto:support@cloudedbasement.com" class="text-brand hover:text-cyan-400">support@cloudedbasement.com</a></li>
+          <li><strong class="text-white">Email:</strong> <a href="mailto:support@cloudedbasement.com" class="text-blue-400 hover:text-blue-500 underline">support@cloudedbasement.com</a></li>
           <li><strong class="text-white">Support Tickets:</strong> Available through your account dashboard</li>
           <li><strong class="text-white">Company Name:</strong> Clouded Basement Hosting</li>
           <li><strong class="text-white">Location:</strong> Halifax, Nova Scotia, Canada</li>
@@ -284,9 +284,9 @@ exports.showPricing = (req, res) => {
 ${getHTMLHead('Pricing - Basement')}
     ${getResponsiveNav(req)}
     
-    <main class="bg-gray-900 min-h-screen pt-24 pb-16">
+    <main class="bg-black min-h-screen pt-24 pb-16">
       <section class="py-12 px-4 text-center">
-        <div class="inline-block px-6 py-2 bg-brand bg-opacity-20 border border-brand rounded-full text-white font-bold text-sm mb-6 uppercase tracking-wider">
+        <div class="inline-block px-6 py-2 bg-blue-600/20 border border-blue-500 rounded-full text-white font-bold text-sm mb-6 uppercase tracking-wider">
             🚀 Early Adopter Pricing - Only 15 Spots
         </div>
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Lock In Lifetime Pricing</h1>
@@ -295,15 +295,15 @@ ${getHTMLHead('Pricing - Basement')}
       </section>
       
       <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 hover:border-brand transition-all">
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 hover:border-blue-500 transition-all">
           <div class="border-b border-gray-700 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Basic</div>
             <div class="flex items-baseline gap-2 mb-2">
-              <div class="text-4xl font-extrabold text-brand">$10<span class="text-base font-normal text-gray-400">/mo</span></div>
+              <div class="text-4xl font-extrabold text-blue-400">$10<span class="text-base font-normal text-gray-400">/mo</span></div>
               <div class="text-xl text-gray-500 line-through">$25</div>
             </div>
             <div class="text-sm text-gray-400">Perfect for side projects</div>
-            <div class="mt-2 px-3 py-1 bg-brand bg-opacity-20 border border-brand rounded text-white text-xs font-bold inline-block">60% OFF - LIFETIME</div>
+            <div class="mt-2 px-3 py-1 bg-blue-600/20 border border-blue-500 rounded text-white text-xs font-bold inline-block">60% OFF - LIFETIME</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">1 GB RAM</strong></li>
@@ -316,19 +316,19 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-400">Email support (48hr response)</li>
             <li class="text-gray-400">Open source tools</li>
           </ul>
-          <a href="/pay?plan=basic" class="block w-full px-6 py-3 bg-transparent border border-brand text-brand text-center font-medium rounded-lg hover:bg-brand hover:text-gray-900 transition-all uppercase tracking-wider text-sm">Select Basic</a>
+          <a href="/pay?plan=basic" class="block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded-lg hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Basic</a>
         </div>
         
-        <div class="bg-gray-800 border-2 border-brand rounded-lg p-8 relative transform md:scale-105">
-          <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand text-gray-900 text-xs font-bold rounded-full uppercase">Most Popular</div>
-          <div class="border-b border-brand pb-6 mb-6">
-            <div class="text-xl font-bold text-brand mb-2">Priority</div>
+        <div class="bg-gray-800 border-2 border-blue-500 rounded-lg p-8 relative transform md:scale-105">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-bold rounded-full uppercase shadow-[0_0_20px_rgba(0,102,255,0.4)]">Most Popular</div>
+          <div class="border-b border-blue-500 pb-6 mb-6">
+            <div class="text-xl font-bold text-blue-400 mb-2">Priority</div>
             <div class="flex items-baseline gap-2 mb-2">
-              <div class="text-4xl font-extrabold text-brand">$30<span class="text-base font-normal text-gray-400">/mo</span></div>
+              <div class="text-4xl font-extrabold text-blue-400">$30<span class="text-base font-normal text-gray-400">/mo</span></div>
               <div class="text-xl text-gray-500 line-through">$60</div>
             </div>
             <div class="text-sm text-gray-400">Most popular • For production apps</div>
-            <div class="mt-2 px-3 py-1 bg-brand text-white rounded text-xs font-bold inline-block">50% OFF - LIFETIME</div>
+            <div class="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold inline-block shadow-[0_0_15px_rgba(0,102,255,0.3)]">50% OFF - LIFETIME</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">2 GB RAM</strong></li>
@@ -338,25 +338,25 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-400">Full SSH/root access</li>
             <li class="text-gray-400">Security updates included</li>
             <li class="text-gray-400">Web dashboard</li>
-            <li class="text-brand pt-3 border-t border-gray-700">Plus everything in Basic:</li>
-            <li class="text-brand">Priority support (1-2hr response)</li>
-            <li class="text-brand">SSL automation</li>
-            <li class="text-brand">One-click staging environments</li>
-            <li class="text-brand">Advanced monitoring</li>
-            <li class="text-brand">Deploy logs & history</li>
+            <li class="text-blue-400 pt-3 border-t border-gray-700">Plus everything in Basic:</li>
+            <li class="text-blue-400">Priority support (1-2hr response)</li>
+            <li class="text-blue-400">SSL automation</li>
+            <li class="text-blue-400">One-click staging environments</li>
+            <li class="text-blue-400">Advanced monitoring</li>
+            <li class="text-blue-400">Deploy logs & history</li>
           </ul>
-          <a href="/pay?plan=priority" class="block w-full px-6 py-3 bg-brand text-white text-center font-bold rounded-lg hover:bg-cyan-500 transition-all uppercase tracking-wider text-sm">Select Priority</a>
+          <a href="/pay?plan=priority" class="block w-full px-6 py-3 bg-blue-600 text-white text-center font-bold rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Priority</a>
         </div>
         
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 hover:border-brand transition-all">
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-8 hover:border-blue-500 transition-all">
           <div class="border-b border-gray-700 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Premium</div>
             <div class="flex items-baseline gap-2 mb-2">
-              <div class="text-4xl font-extrabold text-brand">$60<span class="text-base font-normal text-gray-400">/mo</span></div>
+              <div class="text-4xl font-extrabold text-blue-400">$60<span class="text-base font-normal text-gray-400">/mo</span></div>
               <div class="text-xl text-gray-500 line-through">$120</div>
             </div>
             <div class="text-sm text-gray-400">For serious projects</div>
-            <div class="mt-2 px-3 py-1 bg-brand bg-opacity-20 border border-brand rounded text-white text-xs font-bold inline-block">50% OFF - LIFETIME</div>
+            <div class="mt-2 px-3 py-1 bg-blue-600/20 border border-blue-500 rounded text-white text-xs font-bold inline-block">50% OFF - LIFETIME</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">4 GB RAM</strong></li>
@@ -369,14 +369,14 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-400">Priority support (12hr response)</li>
             <li class="text-gray-400">SSL automation</li>
             <li class="text-gray-400">Staging environments</li>
-            <li class="text-brand pt-3 border-t border-gray-700">Plus everything in Priority:</li>
-            <li class="text-brand">Direct chat support</li>
-            <li class="text-brand">Custom deployment assistance</li>
-            <li class="text-brand">Database optimization help</li>
-            <li class="text-brand">Performance tuning</li>
-            <li class="text-brand">Priority feature requests</li>
+            <li class="text-blue-400 pt-3 border-t border-gray-700">Plus everything in Priority:</li>
+            <li class="text-blue-400">Direct chat support</li>
+            <li class="text-blue-400">Custom deployment assistance</li>
+            <li class="text-blue-400">Database optimization help</li>
+            <li class="text-blue-400">Performance tuning</li>
+            <li class="text-blue-400">Priority feature requests</li>
           </ul>
-          <a href="/pay?plan=premium" class="block w-full px-6 py-3 bg-transparent border border-brand text-brand text-center font-medium rounded-lg hover:bg-brand hover:text-gray-900 transition-all uppercase tracking-wider text-sm">Select Premium</a>
+          <a href="/pay?plan=premium" class="block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded-lg hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Premium</a>
         </div>
       </section>
     </main>
