@@ -333,13 +333,13 @@ const buildDashboardTemplate = (data) => {
                         <form action="/server-action" method="POST" class="flex-1">
                             <input type="hidden" name="_csrf" value="${data.csrfToken}">
                             <input type="hidden" name="action" value="start">
-                            <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Start Core</button>
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold">Start Core</button>
                         </form>
                     ` : `
                         <form action="/server-action" method="POST" class="flex-1">
                             <input type="hidden" name="_csrf" value="${data.csrfToken}">
                             <input type="hidden" name="action" value="restart">
-                            <button type="submit" class="w-full px-4 py-2 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-colors">Restart</button>
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold">Restart</button>
                         </form>
                         <form action="/server-action" method="POST" class="flex-1">
                             <input type="hidden" name="_csrf" value="${data.csrfToken}">
