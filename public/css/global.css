@@ -198,3 +198,138 @@ button, a, input, textarea, select {
         border-bottom: none;
     }
 }
+
+/* ============================================
+   GLASSY GAMING BUTTONS & CARDS
+   ============================================ */
+
+/* Primary Button - Glassy Liquid Blue */
+.btn-primary, button[type="submit"], .bg-blue-600 {
+    position: relative;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.8) 0%, rgba(0, 153, 255, 0.6) 100%) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 102, 255, 0.5) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 102, 255, 0.37),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.btn-primary::before, button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover, button[type="submit"]:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 48px 0 rgba(0, 102, 255, 0.5),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(0, 102, 255, 0.6);
+}
+
+.btn-primary:hover::before, button[type="submit"]:hover::before {
+    left: 100%;
+}
+
+.btn-primary:active, button[type="submit"]:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Secondary Button - Glassy Dark */
+.btn-secondary, .bg-gray-700 {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.7) 0%, rgba(15, 15, 30, 0.9) 100%) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+    border-color: rgba(0, 102, 255, 0.5) !important;
+    box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+                0 0 20px rgba(0, 102, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Danger Button - Glassy Red */
+.btn-danger, .bg-red-600 {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.8) 0%, rgba(185, 28, 28, 0.6) 100%) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(220, 38, 38, 0.5) !important;
+    box-shadow: 0 8px 32px 0 rgba(220, 38, 38, 0.37),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 12px 48px 0 rgba(220, 38, 38, 0.5),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(220, 38, 38, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Cards - Glassy Gaming Aesthetic */
+.bg-gray-800, .bg-gray-900, .card {
+    background: linear-gradient(135deg, rgba(20, 20, 40, 0.6) 0%, rgba(10, 10, 25, 0.8) 100%) !important;
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg-gray-800:hover, .bg-gray-900:hover, .card:hover {
+    border-color: rgba(0, 102, 255, 0.3) !important;
+    box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+                0 0 40px rgba(0, 102, 255, 0.15);
+    transform: translateY(-4px);
+}
+
+/* Input Fields - Glassy */
+input[type="text"], input[type="email"], input[type="password"], 
+input[type="url"], textarea, select {
+    background: rgba(20, 20, 40, 0.4) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input:focus, textarea:focus, select:focus {
+    background: rgba(20, 20, 40, 0.6) !important;
+    border-color: rgba(0, 102, 255, 0.5) !important;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3),
+                0 0 0 3px rgba(0, 102, 255, 0.1),
+                0 0 20px rgba(0, 102, 255, 0.3);
+    outline: none;
+}
+
+/* Glassy Badge/Pill */
+.badge, .bg-blue-500, .bg-green-500, .bg-yellow-500 {
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.6) 0%, rgba(0, 153, 255, 0.4) 100%);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 102, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Liquid Animation Keyframe */
+@keyframes liquid-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Apply liquid effect to primary buttons */
+.btn-primary, button[type="submit"] {
+    background-size: 200% 200%;
+    animation: liquid-flow 3s ease infinite;
+}
