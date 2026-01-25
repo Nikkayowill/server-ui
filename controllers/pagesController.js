@@ -434,7 +434,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
         
         <p class="text-gray-400 mb-4"><strong class="text-white">3.1 Service Providers</strong></p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-            <li><strong class="text-white">Stripe, Inc.:</strong> We use Stripe to process payments. Your payment information is transmitted directly to Stripe and is subject to <a href="https://stripe.com/privacy" target="_blank" class="text-brand hover:text-cyan-400 underline">Stripe's Privacy Policy</a>. We never store complete payment card information on our servers.</li>
+            <li><strong class="text-white">Stripe, Inc.:</strong> We use Stripe to process payments. Your payment information is transmitted directly to Stripe and is subject to <a href="https://stripe.com/privacy" target="_blank" class="text-blue-400 hover:text-blue-500 underline">Stripe's Privacy Policy</a>. We never store complete payment card information on our servers.</li>
         </ul>
         
         <p class="text-gray-400 mb-4"><strong class="text-white">3.2 Legal Requirements</strong></p>
@@ -482,7 +482,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
         <p><strong>5.6 Marketing Communications</strong></p>
         <p class="text-gray-400 mb-4">You may opt out of receiving promotional communications from us by following the unsubscribe instructions in those messages.</p>
         
-        <p class="text-gray-400 mb-4">To exercise any of these rights, please contact us through our <a href="/contact" style="color: var(--glow);">contact form</a>. We will respond to your request within 30 days.</p>
+        <p class="text-gray-400 mb-4">To exercise any of these rights, please contact us through our <a href="/contact" class="text-blue-400 hover:text-blue-500 underline">contact form</a>. We will respond to your request within 30 days.</p>
         
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">6. Data Retention</h2>
         
@@ -545,7 +545,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
         
         <p class="text-gray-400 mb-4">If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-            <li><strong class="text-white">Email:</strong> Via our <a href="/contact" class="text-brand hover:text-cyan-400 underline">contact form</a></li>
+            <li><strong class="text-white">Email:</strong> Via our <a href="/contact" class="text-blue-400 hover:text-blue-500 underline">contact form</a></li>
             <li><strong class="text-white">Response Time:</strong> We aim to respond to all inquiries within 48 hours</li>
         </ul>
         
@@ -572,10 +572,10 @@ ${getHTMLHead('FAQ - Basement')}
         
         <div class="space-y-4">
           
-          <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800/30 border border-blue-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white">How does it work?</h3>
-              <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
+              <span class="text-2xl text-blue-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
@@ -584,10 +584,10 @@ ${getHTMLHead('FAQ - Basement')}
             </div>
           </div>
           
-          <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800/30 border border-blue-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white">What are the plans?</h3>
-              <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
+              <span class="text-2xl text-blue-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
@@ -598,10 +598,10 @@ ${getHTMLHead('FAQ - Basement')}
             </div>
           </div>
           
-          <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800/30 border border-blue-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white">How do I deploy my code?</h3>
-              <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
+              <span class="text-2xl text-blue-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
@@ -610,10 +610,10 @@ ${getHTMLHead('FAQ - Basement')}
             </div>
           </div>
           
-          <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800/30 border border-blue-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white">Can I use my own domain?</h3>
-              <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
+              <span class="text-2xl text-blue-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
@@ -622,10 +622,10 @@ ${getHTMLHead('FAQ - Basement')}
             </div>
           </div>
           
-          <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800/30 border border-blue-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white">What if I need help?</h3>
-              <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
+              <span class="text-2xl text-blue-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
@@ -634,10 +634,10 @@ ${getHTMLHead('FAQ - Basement')}
             </div>
           </div>
           
-          <div class="faq-item mb-4 bg-gray-800/30 border border-cyan-500/10 rounded-lg overflow-hidden">
+          <div class="faq-item mb-4 bg-gray-800/30 border border-blue-500/10 rounded-lg overflow-hidden">
             <div class="p-6 cursor-pointer hover:bg-gray-800/50 transition-all flex justify-between items-center" onclick="toggleFaq(this)">
               <h3 class="text-lg font-medium text-white mb-2">Can I cancel anytime?</h3>
-              <span class="text-2xl text-cyan-400 transform transition-transform duration-300">+</span>
+              <span class="text-2xl text-blue-400 transform transition-transform duration-300">+</span>
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
@@ -648,10 +648,10 @@ ${getHTMLHead('FAQ - Basement')}
           
         </div>
         
-        <div class="bg-gray-800/30 border border-cyan-500/20 rounded-lg p-12 text-center">
+        <div class="bg-gray-800/30 border border-blue-500/20 rounded-lg p-12 text-center">
             <h2 class="text-3xl font-bold text-white mb-4">Still Have Questions?</h2>
             <p class="text-gray-400 mb-8">Can't find the answer you're looking for? Our support team is here to help.</p>
-            <a href="/contact" class="inline-block px-8 py-4 bg-cyan-400 text-gray-900 font-bold rounded hover:bg-cyan-500 transition-all duration-300 uppercase tracking-wider text-sm">Contact Support</a>
+            <a href="/contact" class="inline-block px-8 py-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300 uppercase tracking-wider text-sm">Contact Support</a>
         </div>
       </div>
     </main>
@@ -671,7 +671,7 @@ ${getHTMLHead('Documentation - Basement')}
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Documentation</h1>
         <p class="text-xl text-gray-400 mb-12">Complete guide to Basement hosting—what you get, how to use it, and technical details.</p>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">What You Get</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">What You Get</h2>
         <p class="text-gray-400 mb-4">When you sign up, you get a dedicated cloud server (VPS - Virtual Private Server). This is a complete Linux machine that you control.</p>
         
         <p class="text-gray-400 mb-6"><strong class="text-white">It's like renting a computer that runs 24/7 in a data center.</strong></p>
@@ -683,7 +683,7 @@ ${getHTMLHead('Documentation - Basement')}
             <li><strong class="text-white">Deploy your way</strong> - Git, FTP, rsync, manual uploads - your choice</li>
         </ul>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">Two Ways to Manage Your Server</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Two Ways to Manage Your Server</h2>
         <p class="text-gray-400 mb-8">You decide how much control you want at any given time.</p>
         
         <h3 class="text-xl font-bold text-white mt-8 mb-3">Dashboard</h3>
@@ -712,7 +712,7 @@ ${getHTMLHead('Documentation - Basement')}
         <p class="text-gray-400 mb-8">Most people use the dashboard for everyday tasks and SSH when they need it. You're not locked into one approach.</p>
         
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 my-8">
-            <h3 class="text-brand text-xl font-bold mb-3">Managed Infrastructure</h3>
+            <h3 class="text-blue-400 text-xl font-bold mb-3">Managed Infrastructure</h3>
             <p class="text-gray-400 mb-3">While you have full control, we handle the foundational maintenance:</p>
             <ul class="list-disc list-inside space-y-2 text-gray-400">
                 <li><strong class="text-white">Security updates:</strong> Operating system patches applied automatically</li>
@@ -721,7 +721,7 @@ ${getHTMLHead('Documentation - Basement')}
             </ul>
         </div>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">Getting Started</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Getting Started</h2>
         <p class="text-gray-400 mb-4">Here's the process from signup to deployment:</p>
         
         <ol class="list-decimal list-inside space-y-2 text-gray-400 mb-6">
@@ -734,7 +734,7 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p class="text-gray-400 mb-8">Your server is live immediately. No approval process, no configuration maze.</p>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">Technical Stack</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Technical Stack</h2>
         <p class="text-gray-400 mb-4">Full transparency on our infrastructure:</p>
         
         <ul class="list-disc list-inside space-y-2 text-gray-400 mb-8">
@@ -746,7 +746,7 @@ ${getHTMLHead('Documentation - Basement')}
         </ul>
         
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 my-8">
-            <h3 class="text-brand text-xl font-bold mb-3">Open Source</h3>
+            <h3 class="text-blue-400 text-xl font-bold mb-3">Open Source</h3>
             <p class="text-gray-400 mb-3">The dashboard and deployment tools are open source:</p>
             <ul class="list-disc list-inside space-y-2 text-gray-400">
                 <li>Review the code and understand how everything works</li>
@@ -756,7 +756,7 @@ ${getHTMLHead('Documentation - Basement')}
             </ul>
         </div>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">Who This Works For</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Who This Works For</h2>
         <p class="text-gray-400 mb-4">Basement is designed for:</p>
         <ul class="list-disc list-inside space-y-2 text-gray-400 mb-6">
             <li>Solo developers deploying projects</li>
@@ -768,7 +768,7 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p class="text-gray-400 mb-8"><strong class="text-white">Note:</strong> We're a small team building and expanding features over time. The infrastructure can support enterprise workloads, but our feature set and support capacity are currently focused on smaller deployments as we grow.</p>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">Pricing Structure</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Pricing Structure</h2>
         <p class="text-gray-400 mb-4">Three tiers based on server resources and support level:</p>
         
         <p class="text-gray-400 mb-4"><strong class="text-white">Basic ($25/mo):</strong> 1 GB RAM, 1 CPU, 25 GB storage. Email support with 48-hour response. Suitable for static sites, small APIs, personal projects.</p>
@@ -779,7 +779,7 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p class="text-gray-400 mb-8"><strong class="text-white">No usage charges.</strong> Your monthly bill is capped at your plan price. No surprise bandwidth or storage overages.</p>
         
-        <h2 class="text-2xl font-bold text-brand mt-12 mb-4">Support Approach</h2>
+        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Support Approach</h2>
         <p class="text-gray-400 mb-4">Documentation-first support model:</p>
         <ul class="list-disc list-inside space-y-2 text-gray-400 mb-4">
             <li>Comprehensive guides (including this page)</li>
@@ -790,12 +790,12 @@ ${getHTMLHead('Documentation - Basement')}
         
         <p class="text-gray-400 mb-12">Email support included with all plans. Higher tiers provide faster response times and direct chat access for urgent issues.</p>
         
-        <div class="bg-gray-800 border-2 border-brand rounded-xl p-8 text-center my-12">
+        <div class="bg-gray-800 border-2 border-blue-500 rounded-xl p-8 text-center my-12">
             <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
             <p class="text-gray-300 mb-6">All plans include a 14-day money-back guarantee.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/register" class="inline-block px-8 py-3 bg-brand text-gray-900 font-bold rounded hover:bg-cyan-500 transition-all duration-300 uppercase tracking-wider text-sm">Sign up</a>
-                <a href="/contact" class="inline-block px-8 py-3 border-2 border-brand text-brand font-bold rounded hover:bg-brand hover:bg-opacity-10 transition-all duration-300 uppercase tracking-wider text-sm">Contact Us</a>
+                <a href="/register" class="inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300 uppercase tracking-wider text-sm">Sign up</a>
+                <a href="/contact" class="inline-block px-8 py-3 border-2 border-blue-500 text-blue-400 font-bold rounded hover:bg-blue-500/10 transition-all duration-300 uppercase tracking-wider text-sm">Contact Us</a>
             </div>
         </div>
       </div>
@@ -821,20 +821,20 @@ ${getHTMLHead('Contact - Basement')}
         
         <div class="mb-6">
           <label class="block text-sm font-medium text-gray-300 mb-2">Name</label>
-          <input type="text" name="name" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand">
+          <input type="text" name="name" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         
         <div class="mb-6">
           <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-          <input type="email" name="email" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand">
+          <input type="email" name="email" required class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         
         <div class="mb-6">
           <label class="block text-sm font-medium text-gray-300 mb-2">Message</label>
-          <textarea name="message" required rows="6" class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand resize-y"></textarea>
+          <textarea name="message" required rows="6" class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
         </div>
         
-        <button type="submit" class="w-full px-6 py-3 bg-brand text-gray-900 font-bold rounded-lg hover:bg-cyan-500 transition-all uppercase tracking-wider text-sm">Send Message</button>
+        <button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Send Message</button>
       </form>
     </div>
   </main>
