@@ -10,33 +10,33 @@ ${getHTMLHead('About - Basement')}
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-8">ABOUT BASEMENT</h1>
         
-        <p class="text-gray-400 text-lg mb-8">I'm Kayo, an IT Web Programming student at NSCC in Halifax, graduating May 2026. Before switching to tech, I worked as a tradesman—different tools, same problem-solving mindset.</p>
+        <p class="text-gray-300 text-lg mb-8">I'm Kayo, an IT Web Programming student at NSCC in Halifax, graduating May 2026. Before switching to tech, I worked as a tradesman—different tools, same problem-solving mindset.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">WHY I BUILT THIS</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">WHY I BUILT THIS</h2>
         
-        <p class="text-gray-400 mb-4">I wanted to prove I could build and deploy a real production application from the ground up. Not just for a grade, but something that actually handles payments, provisions servers, and solves a real problem.</p>
+        <p class="text-gray-300 mb-4">I wanted to prove I could build and deploy a real production application from the ground up. Not just for a grade, but something that actually handles payments, provisions servers, and solves a real problem.</p>
         
-        <p class="text-gray-400 mb-8">Cloud hosting doesn't need to be complicated. You shouldn't need a PhD to deploy a Node app or a static site. Basement gives you a real server you can SSH into, plus a dashboard for the routine stuff. Simple.</p>
+        <p class="text-gray-300 mb-8">Cloud hosting doesn't need to be complicated. You shouldn't need a PhD to deploy a Node app or a static site. Basement gives you a real server you can SSH into, plus a dashboard for the routine stuff. Simple.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">HOW IT WORKS</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">HOW IT WORKS</h2>
         
-        <p class="text-gray-400 mb-4">I'm running this as a small operation. The infrastructure is enterprise-grade (DigitalOcean droplets), but I'm building features incrementally based on what users actually need. Current setup handles individual developers and small teams deploying web apps, APIs, and services.</p>
+        <p class="text-gray-300 mb-4">I'm running this as a small operation. The infrastructure is enterprise-grade (DigitalOcean droplets), but I'm building features incrementally based on what users actually need. Current setup handles individual developers and small teams deploying web apps, APIs, and services.</p>
         
-        <p class="text-gray-400 mb-8">As more people use it, I expand capabilities. I prioritize stability over speed—every feature gets tested properly before it ships.</p>
+        <p class="text-gray-300 mb-8">As more people use it, I expand capabilities. I prioritize stability over speed—every feature gets tested properly before it ships.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">THE TECH</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">THE TECH</h2>
         
-        <p class="text-gray-400 mb-8">Built with <strong class="text-white">Node.js</strong>, <strong class="text-white">Express</strong>, <strong class="text-white">PostgreSQL</strong>, and <strong class="text-white">Stripe</strong>. Servers run <strong class="text-white">Ubuntu LTS</strong> on <strong class="text-white">DigitalOcean</strong>. Security includes automated OS updates and DDoS protection.</p>
+        <p class="text-gray-300 mb-8">Built with <strong class="text-white">Node.js</strong>, <strong class="text-white">Express</strong>, <strong class="text-white">PostgreSQL</strong>, and <strong class="text-white">Stripe</strong>. Servers run <strong class="text-white">Ubuntu LTS</strong> on <strong class="text-white">DigitalOcean</strong>. Security includes automated OS updates and DDoS protection.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">OPEN SOURCE</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">OPEN SOURCE</h2>
         
-        <p class="text-gray-400 mb-4">The entire dashboard and deployment tooling is open source. You can see how everything works, contribute improvements, or fork it for your own projects. Transparency matters.</p>
+        <p class="text-gray-300 mb-4">The entire dashboard and deployment tooling is open source. You can see how everything works, contribute improvements, or fork it for your own projects. Transparency matters.</p>
         
-        <p class="mb-8"><a href="#" class="text-blue-400 underline hover:text-blue-500 transition-colors" target="_blank" rel="noopener noreferrer">View on GitHub →</a></p>
+        <p class="mb-8"><a href="#" class="text-blue-300 underline hover:text-blue-200 transition-colors" target="_blank" rel="noopener noreferrer">View on GitHub →</a></p>
         
-        <p class="mt-12 pt-8 border-t border-gray-700 text-gray-400">This is my capstone project and portfolio piece. If you're evaluating my work or have questions about the technical implementation, <a href="/contact" class="text-blue-400 underline hover:text-blue-500 transition-colors">reach out</a>.</p>
+        <p class="mt-12 pt-8 border-t border-blue-500/30 text-gray-300">This is my capstone project and portfolio piece. If you're evaluating my work or have questions about the technical implementation, <a href="/contact" class="text-blue-300 underline hover:text-blue-200 transition-colors">reach out</a>.</p>
         
-        <a href="/" class="inline-block mt-8 px-6 py-3 text-blue-400 border border-blue-400 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all font-medium uppercase tracking-wider text-sm shadow-[0_0_20px_rgba(0,102,255,0.3)]">Back to home</a>
+        <a href="/" class="inline-block mt-8 px-6 py-3 text-white border border-blue-400 rounded-lg bg-blue-600 hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(135,206,250,0.6)] transition-all font-medium uppercase tracking-wider text-sm">Back to home</a>
       </div>
     </main>
     
@@ -286,24 +286,24 @@ ${getHTMLHead('Pricing - Basement')}
     
     <main class="bg-black min-h-screen pt-24 pb-16">
       <section class="py-12 px-4 text-center">
-        <div class="inline-block px-6 py-2 bg-blue-600/20 border border-blue-500 rounded-full text-white font-bold text-sm mb-6 uppercase tracking-wider">
+        <div class="inline-block px-6 py-2 bg-gradient-to-r from-blue-300/20 to-blue-400/20 border border-blue-300 rounded-full text-white font-bold text-sm mb-6 uppercase tracking-wider shadow-[0_0_20px_rgba(135,206,250,0.3)]">
             🚀 Early Adopter Pricing - Only 15 Spots
         </div>
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">6 Months Early Adopter Pricing</h1>
-        <p class="text-gray-400 text-lg mb-2">Full-stack hosting in 5 minutes: Git deploy, one-click databases, SSL, and SSH.</p>
-        <p class="text-gray-500 text-sm italic">*Early adopter rate guaranteed for first 6 months. Then regular pricing applies.</p>
+        <p class="text-gray-300 text-lg mb-2">Full-stack hosting in 5 minutes: Git deploy, one-click databases, SSL, and SSH.</p>
+        <p class="text-gray-400 text-sm italic">*Early adopter rate guaranteed for first 6 months. Then regular pricing applies.</p>
       </section>
       
       <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-black/90 backdrop-blur-xl border border-blue-500/40 rounded p-8 hover:border-blue-500 hover:scale-[1.02] transition-all shadow-[0_0_60px_rgba(0,102,255,0.2),0_0_90px_rgba(0,102,255,0.1),inset_0_0_40px_rgba(0,102,255,0.03),inset_0_1px_1px_rgba(255,255,255,0.1)]">
-          <div class="border-b border-blue-500/20 pb-6 mb-6">
+        <div class="bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-black/90 backdrop-blur-xl border border-blue-400/40 rounded p-8 hover:border-blue-300 hover:scale-[1.02] transition-all shadow-[0_0_60px_rgba(135,206,250,0.2),0_0_90px_rgba(135,206,250,0.1),inset_0_0_40px_rgba(135,206,250,0.03),inset_0_1px_1px_rgba(255,255,255,0.1)]">
+          <div class="border-b border-blue-400/20 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Basic</div>
             <div class="flex items-baseline gap-2 mb-2">
-              <div class="text-4xl font-extrabold text-blue-400">$10<span class="text-base font-normal text-gray-400">/mo</span></div>
+              <div class="text-4xl font-extrabold text-blue-300">$10<span class="text-base font-normal text-gray-300">/mo</span></div>
               <div class="text-xl text-gray-500 line-through">$25</div>
             </div>
-            <div class="text-sm text-gray-400">Perfect for side projects</div>
-            <div class="mt-2 px-3 py-1 bg-blue-600/20 border border-blue-500 rounded text-white text-xs font-bold inline-block">60% OFF - 6 MONTHS</div>
+            <div class="text-sm text-gray-300">Perfect for side projects</div>
+            <div class="mt-2 px-3 py-1 bg-gradient-to-r from-blue-300/20 to-blue-400/20 border border-blue-300 rounded text-white text-xs font-bold inline-block">60% OFF - 6 MONTHS</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">1 GB RAM</strong></li>
@@ -322,16 +322,16 @@ ${getHTMLHead('Pricing - Basement')}
           <a href="/pay?plan=basic" class="block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Basic</a>
         </div>
         
-        <div class="bg-gradient-to-br from-gray-900/95 via-blue-950/30 to-black/95 backdrop-blur-xl border-2 border-blue-500 rounded p-8 relative transform md:scale-105 shadow-[0_0_80px_rgba(0,102,255,0.35),0_0_120px_rgba(0,102,255,0.2),inset_0_0_60px_rgba(0,102,255,0.06),inset_0_2px_2px_rgba(255,255,255,0.15)] hover:scale-[1.08] transition-all duration-300">
-          <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-bold rounded uppercase shadow-[0_0_25px_rgba(0,102,255,0.5)]">Most Popular</div>
-          <div class="border-b border-blue-500 pb-6 mb-6">
-            <div class="text-xl font-bold text-blue-400 mb-2">Priority</div>
+        <div class="bg-gradient-to-br from-gray-900/95 via-blue-950/30 to-black/95 backdrop-blur-xl border-2 border-blue-300 rounded p-8 relative transform md:scale-105 shadow-[0_0_80px_rgba(135,206,250,0.35),0_0_120px_rgba(135,206,250,0.2),inset_0_0_60px_rgba(135,206,250,0.06),inset_0_2px_2px_rgba(255,255,255,0.15)] hover:scale-[1.08] transition-all duration-300">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-blue-300 to-blue-400 text-black text-xs font-bold rounded uppercase shadow-[0_0_25px_rgba(135,206,250,0.5)]">Most Popular</div>
+          <div class="border-b border-blue-300 pb-6 mb-6">
+            <div class="text-xl font-bold text-white mb-2">Priority</div>
             <div class="flex items-baseline gap-2 mb-2">
-              <div class="text-4xl font-extrabold text-blue-400">$30<span class="text-base font-normal text-gray-400">/mo</span></div>
+              <div class="text-4xl font-extrabold text-blue-300">$30<span class="text-base font-normal text-gray-300">/mo</span></div>
               <div class="text-xl text-gray-500 line-through">$60</div>
             </div>
-            <div class="text-sm text-gray-400">Most popular • For production apps</div>
-            <div class="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold inline-block shadow-[0_0_20px_rgba(0,102,255,0.4)]">50% OFF - 6 MONTHS</div>
+            <div class="text-sm text-gray-300">Most popular • For production apps</div>
+            <div class="mt-2 px-3 py-1 bg-gradient-to-r from-blue-300 to-blue-400 text-black rounded text-xs font-bold inline-block shadow-[0_0_20px_rgba(135,206,250,0.4)]">50% OFF - 6 MONTHS</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">2 GB RAM</strong></li>
@@ -345,22 +345,22 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-400">Custom domains</li>
             <li class="text-gray-400">One-click SSL</li>
             <li class="text-gray-400">Deployment logs</li>
-            <li class="text-blue-400 pt-3 border-t border-blue-500/30">Plus Priority perks:</li>
-            <li class="text-blue-400">Priority support (12hr response)</li>
-            <li class="text-blue-400">Server controls (start/stop/restart)</li>
+            <li class="text-blue-300 pt-3 border-t border-blue-400/30">Plus Priority perks:</li>
+            <li class="text-blue-300">Priority support (12hr response)</li>
+            <li class="text-blue-300">Server controls (start/stop/restart)</li>
           </ul>
           <a href="/pay?plan=priority" class="block w-full px-6 py-3 bg-blue-600 text-white text-center font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Priority</a>
         </div>
         
-        <div class="bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-black/90 backdrop-blur-xl border border-blue-500/40 rounded p-8 hover:border-blue-500 hover:scale-[1.02] transition-all shadow-[0_0_60px_rgba(0,102,255,0.2),0_0_90px_rgba(0,102,255,0.1),inset_0_0_40px_rgba(0,102,255,0.03),inset_0_1px_1px_rgba(255,255,255,0.1)]">
-          <div class="border-b border-blue-500/20 pb-6 mb-6">
+        <div class="bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-black/90 backdrop-blur-xl border border-blue-400/40 rounded p-8 hover:border-blue-300 hover:scale-[1.02] transition-all shadow-[0_0_60px_rgba(135,206,250,0.2),0_0_90px_rgba(135,206,250,0.1),inset_0_0_40px_rgba(135,206,250,0.03),inset_0_1px_1px_rgba(255,255,255,0.1)]">
+          <div class="border-b border-blue-400/20 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Premium</div>
             <div class="flex items-baseline gap-2 mb-2">
-              <div class="text-4xl font-extrabold text-blue-400">$60<span class="text-base font-normal text-gray-400">/mo</span></div>
+              <div class="text-4xl font-extrabold text-blue-300">$60<span class="text-base font-normal text-gray-300">/mo</span></div>
               <div class="text-xl text-gray-500 line-through">$120</div>
             </div>
-            <div class="text-sm text-gray-400">For serious projects</div>
-            <div class="mt-2 px-3 py-1 bg-blue-600/20 border border-blue-500 rounded text-white text-xs font-bold inline-block">50% OFF - 6 MONTHS</div>
+            <div class="text-sm text-gray-300">For serious projects</div>
+            <div class="mt-2 px-3 py-1 bg-gradient-to-r from-blue-300/20 to-blue-400/20 border border-blue-300 rounded text-white text-xs font-bold inline-block">50% OFF - 6 MONTHS</div>
           </div>
           <ul class="space-y-3 mb-8 text-sm">
             <li class="text-gray-300"><strong class="text-white">4 GB RAM</strong></li>
@@ -375,9 +375,9 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-400">One-click SSL</li>
             <li class="text-gray-400">Deployment logs</li>
             <li class="text-gray-400">Server controls (start/stop/restart)</li>
-            <li class="text-blue-400 pt-3 border-t border-blue-500/30">Plus Premium perks:</li>
-            <li class="text-blue-400">Priority support (4-8hr response)</li>
-            <li class="text-blue-400">Email/ticket support priority</li>
+            <li class="text-blue-300 pt-3 border-t border-blue-400/30">Plus Premium perks:</li>
+            <li class="text-blue-300">Priority support (4-8hr response)</li>
+            <li class="text-blue-300">Email/ticket support priority</li>
           </ul>
           <a href="/pay?plan=premium" class="block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Premium</a>
         </div>
@@ -672,62 +672,62 @@ ${getHTMLHead('Documentation - Basement')}
     <main class="bg-black min-h-screen pt-24 pb-16">
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Documentation</h1>
-        <p class="text-xl text-gray-400 mb-12">Complete guide to Basement hosting—what you get, how to use it, and technical details.</p>
+        <p class="text-xl text-gray-300 mb-12">Complete guide to Basement hosting—what you get, how to use it, and technical details.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">What You Get</h2>
-        <p class="text-gray-400 mb-4">When you sign up, you get a dedicated cloud server (VPS - Virtual Private Server). This is a complete Linux machine that you control.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">What You Get</h2>
+        <p class="text-gray-300 mb-4">When you sign up, you get a dedicated cloud server (VPS - Virtual Private Server). This is a complete Linux machine that you control.</p>
         
-        <p class="text-gray-400 mb-6"><strong class="text-white">It's like renting a computer that runs 24/7 in a data center.</strong></p>
+        <p class="text-gray-300 mb-6"><strong class="text-white">It's like renting a computer that runs 24/7 in a data center.</strong></p>
         
-        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-8">
+        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-8">
             <li><strong class="text-white">Full root/SSH access</strong> - Complete control over your server</li>
             <li><strong class="text-white">Dedicated IP address</strong> - Point your domain wherever you want</li>
             <li><strong class="text-white">Install anything</strong> - Node, Python, Docker, databases, whatever you need</li>
             <li><strong class="text-white">Deploy your way</strong> - Git, FTP, rsync, manual uploads - your choice</li>
         </ul>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Two Ways to Manage Your Server</h2>
-        <p class="text-gray-400 mb-8">You decide how much control you want at any given time.</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">Two Ways to Manage Your Server</h2>
+        <p class="text-gray-300 mb-8">You decide how much control you want at any given time.</p>
         
         <h3 class="text-xl font-bold text-white mt-8 mb-3">Dashboard</h3>
-        <p class="text-gray-400 mb-3">A web interface for common tasks:</p>
-        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-4">
+        <p class="text-gray-300 mb-3">A web interface for common tasks:</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-4">
             <li>Deploy your code with a few clicks</li>
             <li>Restart your server</li>
             <li>View logs and monitor resources</li>
             <li>Set up SSL certificates automatically</li>
             <li>Manage backups</li>
         </ul>
-        <p class="text-gray-400 mb-8">Good for routine operations and quick deployments.</p>
+        <p class="text-gray-300 mb-8">Good for routine operations and quick deployments.</p>
         
         <h3 class="text-xl font-bold text-white mt-8 mb-3">Direct SSH Access</h3>
-        <p class="text-gray-400 mb-3">Full terminal access to your server:</p>
-        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-4">
+        <p class="text-gray-300 mb-3">Full terminal access to your server:</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-4">
             <li>Configure web servers (Nginx, Apache)</li>
             <li>Set up custom services</li>
             <li>Install any dependencies</li>
             <li>Run background processes</li>
             <li>Debug directly in production</li>
         </ul>
-        <p class="text-gray-400 mb-8">Good when you need precise control or custom configurations.</p>
+        <p class="text-gray-300 mb-8">Good when you need precise control or custom configurations.</p>
         
         <h3 class="text-xl font-bold text-white mt-8 mb-3">Use Both</h3>
-        <p class="text-gray-400 mb-8">Most people use the dashboard for everyday tasks and SSH when they need it. You're not locked into one approach.</p>
+        <p class="text-gray-300 mb-8">Most people use the dashboard for everyday tasks and SSH when they need it. You're not locked into one approach.</p>
         
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 my-8">
-            <h3 class="text-blue-400 text-xl font-bold mb-3">Managed Infrastructure</h3>
-            <p class="text-gray-400 mb-3">While you have full control, we handle the foundational maintenance:</p>
-            <ul class="list-disc list-inside space-y-2 text-gray-400">
+        <div class="bg-gray-900 border border-blue-500/30 rounded-lg p-6 my-8">
+            <h3 class="text-white text-xl font-bold mb-3">Managed Infrastructure</h3>
+            <p class="text-gray-300 mb-3">While you have full control, we handle the foundational maintenance:</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-300">
                 <li><strong class="text-white">Security updates:</strong> Operating system patches applied automatically</li>
                 <li><strong class="text-white">Uptime monitoring:</strong> We're alerted if your server goes down</li>
                 <li><strong class="text-white">DDoS protection:</strong> Network-level protection included</li>
             </ul>
         </div>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Getting Started</h2>
-        <p class="text-gray-400 mb-4">Here's the process from signup to deployment:</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">Getting Started</h2>
+        <p class="text-gray-300 mb-4">Here's the process from signup to deployment:</p>
         
-        <ol class="list-decimal list-inside space-y-2 text-gray-400 mb-6">
+        <ol class="list-decimal list-inside space-y-2 text-gray-300 mb-6">
             <li><strong class="text-white">Choose a plan</strong> - Basic ($25), Priority ($60), or Premium ($120)</li>
             <li><strong class="text-white">Complete payment</strong> - Secure checkout via Stripe</li>
             <li><strong class="text-white">Server provisioning</strong> - Takes about 60 seconds</li>
@@ -735,12 +735,12 @@ ${getHTMLHead('Documentation - Basement')}
             <li><strong class="text-white">Deploy</strong> - Use the dashboard or SSH directly</li>
         </ol>
         
-        <p class="text-gray-400 mb-8">Your server is live immediately. No approval process, no configuration maze.</p>
+        <p class="text-gray-300 mb-8">Your server is live immediately. No approval process, no configuration maze.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Technical Stack</h2>
-        <p class="text-gray-400 mb-4">Full transparency on our infrastructure:</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">Technical Stack</h2>
+        <p class="text-gray-300 mb-4">Full transparency on our infrastructure:</p>
         
-        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-8">
+        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-8">
             <li><strong class="text-white">Cloud Provider:</strong> DigitalOcean data centers</li>
             <li><strong class="text-white">Operating System:</strong> Ubuntu LTS (long-term support)</li>
             <li><strong class="text-white">Dashboard:</strong> Custom Node.js application</li>
@@ -748,10 +748,10 @@ ${getHTMLHead('Documentation - Basement')}
             <li><strong class="text-white">Monitoring:</strong> Open-source tooling</li>
         </ul>
         
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 my-8">
-            <h3 class="text-blue-400 text-xl font-bold mb-3">Open Source</h3>
-            <p class="text-gray-400 mb-3">The dashboard and deployment tools are open source:</p>
-            <ul class="list-disc list-inside space-y-2 text-gray-400">
+        <div class="bg-gray-900 border border-blue-500/30 rounded-lg p-6 my-8">
+            <h3 class="text-white text-xl font-bold mb-3">Open Source</h3>
+            <p class="text-gray-300 mb-3">The dashboard and deployment tools are open source:</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-300">
                 <li>Review the code and understand how everything works</li>
                 <li>Contribute improvements or report issues</li>
                 <li>Fork it and modify for your needs</li>
@@ -759,9 +759,9 @@ ${getHTMLHead('Documentation - Basement')}
             </ul>
         </div>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Who This Works For</h2>
-        <p class="text-gray-400 mb-4">Basement is designed for:</p>
-        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-6">
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">Who This Works For</h2>
+        <p class="text-gray-300 mb-4">Basement is designed for:</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-6">
             <li>Solo developers deploying projects</li>
             <li>Students learning production deployment</li>
             <li>Indie founders running applications</li>
@@ -769,36 +769,36 @@ ${getHTMLHead('Documentation - Basement')}
             <li>Anyone comfortable with basic Linux commands</li>
         </ul>
         
-        <p class="text-gray-400 mb-8"><strong class="text-white">Note:</strong> We're a small team building and expanding features over time. The infrastructure can support enterprise workloads, but our feature set and support capacity are currently focused on smaller deployments as we grow.</p>
+        <p class="text-gray-300 mb-8"><strong class="text-white">Note:</strong> We're a small team building and expanding features over time. The infrastructure can support enterprise workloads, but our feature set and support capacity are currently focused on smaller deployments as we grow.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Pricing Structure</h2>
-        <p class="text-gray-400 mb-4">Three tiers based on server resources and support level:</p>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">Pricing Structure</h2>
+        <p class="text-gray-300 mb-4">Three tiers based on server resources and support level:</p>
         
-        <p class="text-gray-400 mb-4"><strong class="text-white">Basic ($25/mo):</strong> 1 GB RAM, 1 CPU, 25 GB storage. Email support with 48-hour response. Suitable for static sites, small APIs, personal projects.</p>
+        <p class="text-gray-300 mb-4"><strong class="text-white">Basic ($25/mo):</strong> 1 GB RAM, 1 CPU, 25 GB storage. Email support with 48-hour response. Suitable for static sites, small APIs, personal projects.</p>
         
-        <p class="text-gray-400 mb-4"><strong class="text-white">Priority ($60/mo):</strong> 2 GB RAM, 2 CPUs, 50 GB storage. Priority support with 12-hour response, SSL automation, staging environments. Suitable for production applications.</p>
+        <p class="text-gray-300 mb-4"><strong class="text-white">Priority ($60/mo):</strong> 2 GB RAM, 2 CPUs, 50 GB storage. Priority support with 12-hour response, SSL automation, staging environments. Suitable for production applications.</p>
         
-        <p class="text-gray-400 mb-4"><strong class="text-white">Premium ($120/mo):</strong> 4 GB RAM, 2 CPUs, 80 GB storage. Direct chat support, deployment assistance, performance optimization. Suitable for revenue-generating applications.</p>
+        <p class="text-gray-300 mb-4"><strong class="text-white">Premium ($120/mo):</strong> 4 GB RAM, 2 CPUs, 80 GB storage. Direct chat support, deployment assistance, performance optimization. Suitable for revenue-generating applications.</p>
         
-        <p class="text-gray-400 mb-8"><strong class="text-white">No usage charges.</strong> Your monthly bill is capped at your plan price. No surprise bandwidth or storage overages.</p>
+        <p class="text-gray-300 mb-8"><strong class="text-white">No usage charges.</strong> Your monthly bill is capped at your plan price. No surprise bandwidth or storage overages.</p>
         
-        <h2 class="text-2xl font-bold text-blue-400 mt-12 mb-4">Support Approach</h2>
-        <p class="text-gray-400 mb-4">Documentation-first support model:</p>
-        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-4">
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">Support Approach</h2>
+        <p class="text-gray-300 mb-4">Documentation-first support model:</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-4">
             <li>Comprehensive guides (including this page)</li>
             <li>FAQ covering common questions</li>
             <li>GitHub discussions for community help</li>
             <li>Open issues for bug reports</li>
         </ul>
         
-        <p class="text-gray-400 mb-12">Email support included with all plans. Higher tiers provide faster response times and direct chat access for urgent issues.</p>
+        <p class="text-gray-300 mb-12">Email support included with all plans. Higher tiers provide faster response times and direct chat access for urgent issues.</p>
         
-        <div class="bg-gray-800 border-2 border-blue-500 rounded-xl p-8 text-center my-12">
+        <div class="bg-gray-900 border-2 border-blue-400/40 rounded-xl p-8 text-center my-12">
             <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
             <p class="text-gray-300 mb-6">All plans include a 14-day money-back guarantee.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/register" class="inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300 uppercase tracking-wider text-sm">Sign up</a>
-                <a href="/contact" class="inline-block px-8 py-3 border-2 border-blue-500 text-blue-400 font-bold rounded hover:bg-blue-500/10 transition-all duration-300 uppercase tracking-wider text-sm">Contact Us</a>
+                <a href="/register" class="inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(135,206,250,0.6)] transition-all duration-300 uppercase tracking-wider text-sm">Sign up</a>
+                <a href="/contact" class="inline-block px-8 py-3 border-2 border-blue-400 text-white bg-gray-800 font-bold rounded hover:bg-gray-700 transition-all duration-300 uppercase tracking-wider text-sm">Contact Us</a>
             </div>
         </div>
       </div>
