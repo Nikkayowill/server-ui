@@ -30,6 +30,26 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
+/* Glossy Gradient Text for Headings */
+h1, h2 {
+    background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 1) 0%, 
+        rgba(135, 206, 250, 0.9) 50%,
+        rgba(173, 216, 230, 0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h3, h4 {
+    background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(135, 206, 250, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 /* True black background with subtle blue spotlight */
 body {
     font-family: 'Inter', sans-serif;
