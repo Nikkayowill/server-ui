@@ -209,6 +209,7 @@ button, a, input, textarea, select {
     background: linear-gradient(135deg, rgba(0, 102, 255, 0.8) 0%, rgba(0, 153, 255, 0.6) 100%) !important;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 102, 255, 0.5) !important;
+    border-radius: 4px !important;
     box-shadow: 0 8px 32px 0 rgba(0, 102, 255, 0.37),
                 inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -246,6 +247,7 @@ button, a, input, textarea, select {
     background: linear-gradient(135deg, rgba(26, 26, 46, 0.7) 0%, rgba(15, 15, 30, 0.9) 100%) !important;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 4px !important;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -264,6 +266,7 @@ button, a, input, textarea, select {
     background: linear-gradient(135deg, rgba(220, 38, 38, 0.8) 0%, rgba(185, 28, 28, 0.6) 100%) !important;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(220, 38, 38, 0.5) !important;
+    border-radius: 4px !important;
     box-shadow: 0 8px 32px 0 rgba(220, 38, 38, 0.37),
                 inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -281,6 +284,7 @@ button, a, input, textarea, select {
     background: linear-gradient(135deg, rgba(20, 20, 40, 0.6) 0%, rgba(10, 10, 25, 0.8) 100%) !important;
     backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 4px !important;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
                 inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
