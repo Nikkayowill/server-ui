@@ -256,6 +256,11 @@ app.post('/dashboard/dismiss-next-steps', requireAuth, (req, res) => {
 // Database setup
 app.post('/setup-database', requireAuth, csrfProtection, serverController.setupDatabase);
 
+// Sentry test endpoint (remove after testing)
+app.get('/debug-sentry', (req, res) => {
+  throw new Error('Sentry test error - monitoring is working!');
+});
+
 // Admin - dashboard
 app.get('/admin', requireAuth, requireAdmin, csrfProtection, adminController.listUsers);
 app.post('/admin/delete-user/:id', requireAuth, requireAdmin, csrfProtection, adminController.deleteUser);
