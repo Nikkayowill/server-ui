@@ -20,6 +20,14 @@ async function createRealServer(userId, plan, stripeChargeId = null) {
 
   // Setup script for automatic Nginx + Certbot installation
   const setupScript = `#!/bin/bash
+# Set root password
+echo "root:${password}" | chpasswd
+
+# Enable password authentication for SSH
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+systemctl restart sshd
+
 # Update system
 apt-get update
 
