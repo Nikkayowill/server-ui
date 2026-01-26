@@ -169,6 +169,24 @@ app.get('/verify-email', authController.showVerifyEmail);
 app.post('/verify-email', emailVerifyLimiter, authController.verifyEmailCode);
 app.post('/resend-code', emailVerifyLimiter, authController.resendCode);
 
+// Password reset routes
+app.get('/forgot-password', csrfProtection, authController.showForgotPassword);
+app.post('/forgot-password', 
+  csrfProtection,
+  emailVerifyLimiter,
+  [body('email').trim().isEmail().normalizeEmail()],
+  authController.handleForgotPassword
+);
+app.get('/reset-password/:token', csrfProtection, authController.showResetPassword);
+app.post('/reset-password/:token',
+  csrfProtection,
+  [
+    body('password').isLength({ min: 8 }),
+    body('confirmPassword').custom((value, { req }) => value === req.body.password)
+  ],
+  authController.handleResetPassword
+);
+
 // Logout route
 app.get('/logout', authController.handleLogout);
 

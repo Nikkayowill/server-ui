@@ -200,6 +200,10 @@ ${getHTMLHead('Login - Basement')}
           </button>
         </form>
         
+        <div class="text-center mt-3">
+          <a href="/forgot-password" class="text-sm text-blue-400 hover:text-blue-300">Forgot password?</a>
+        </div>
+        
         <p class="text-center text-gray-400 mt-5 text-sm">
           Don't have an account? <a href="/register" class="text-blue-400 hover:text-blue-300 font-medium">Register</a>
         </p>
