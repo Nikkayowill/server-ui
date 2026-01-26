@@ -53,7 +53,7 @@ ${getHTMLHead('Terms of Service - Basement')}
     <main class="bg-black min-h-screen pt-24 pb-16">
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Terms of Service</h1>
-        <p class="text-gray-500 text-sm mb-8">Last Updated: January 19, 2026</p>
+        <p class="text-gray-500 text-sm mb-8">Last Updated: January 26, 2026</p>
 
         <p class="text-gray-400 mb-8">Welcome to <strong class="text-white">Clouded Basement Hosting</strong> ("we," "us," "our," or "the Company"). These Terms of Service ("Terms") govern your access to and use of our cloud hosting services, including virtual private servers (VPS), domain management, and related services (collectively, the "Services"). By creating an account or using our Services, you agree to be bound by these Terms.</p>
 
@@ -70,12 +70,13 @@ ${getHTMLHead('Terms of Service - Basement')}
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">2. Service Description</h2>
         <p class="text-gray-400 mb-4">Clouded Basement Hosting provides cloud infrastructure services including:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li><strong class="text-white">Virtual Private Servers (VPS):</strong> Linux-based server instances with root access</li>
-          <li><strong class="text-white">Domain Management:</strong> Custom domain mapping and DNS configuration</li>
-          <li><strong class="text-white">Deployment Tools:</strong> Automated provisioning and management interfaces</li>
+          <li><strong class="text-white">Virtual Private Servers (VPS):</strong> Ubuntu 22.04 server instances with full SSH root access</li>
+          <li><strong class="text-white">Custom Domain Support:</strong> Point your domains to your server IP with DNS configuration guidance</li>
+          <li><strong class="text-white">SSL Certificates:</strong> One-click Let's Encrypt SSL installation for HTTPS</li>
+          <li><strong class="text-white">Git Deployment:</strong> Automated code deployment from GitHub, GitLab, or Bitbucket repositories</li>
           <li><strong class="text-white">Support Services:</strong> Technical assistance via ticketing system</li>
         </ul>
-        <p class="text-gray-400 mb-6">Services are provided on a subscription basis with monthly billing cycles. We reserve the right to modify, suspend, or discontinue any aspect of the Services at any time with or without notice.</p>
+        <p class="text-gray-400 mb-6">Services are provided on a subscription basis with monthly billing cycles. We reserve the right to modify, suspend, or discontinue any aspect of the Services at any time with reasonable notice.</p>
 
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">3. Account Registration and Security</h2>
         <h3 class="text-xl font-bold text-white mt-8 mb-3">3.1 Account Creation</h3>
@@ -108,14 +109,13 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li><strong>Price Changes:</strong> We reserve the right to modify pricing with 30 days' advance notice</li>
         </ul>
 
-        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.2 Free Trial Period</h3>
-        <p class="text-gray-400 mb-4">New customers are eligible for a <strong>7-day free trial</strong> with the following conditions:</p>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.2 Early Adopter Pricing</h3>
+        <p class="text-gray-400 mb-4">Limited-time <strong>early adopter pricing</strong> is available for the first customers:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li>One free trial per customer</li>
-          <li>Valid payment method required at signup</li>
-          <li>Automatic conversion to paid subscription after trial period unless cancelled</li>
-          <li>Full access to standard features during trial</li>
-          <li>Cancel anytime during trial period to avoid charges</li>
+          <li>Discounted rates locked in for 6 months from signup date</li>
+          <li>After 6 months, pricing automatically transitions to standard rates</li>
+          <li>You will be notified 30 days before rate change takes effect</li>
+          <li>Standard pricing: Basic ($25/mo), Priority ($60/mo), Premium ($120/mo)</li>
         </ul>
 
         <h3 class="text-xl font-bold text-white mt-8 mb-3">4.3 Payment Processing</h3>
@@ -131,15 +131,13 @@ ${getHTMLHead('Terms of Service - Basement')}
         <p class="text-gray-400 mb-4">Prices do not include applicable taxes, duties, or fees. You are responsible for paying all taxes associated with your use of the Services, including but not limited to sales tax, GST/HST, and VAT as required by your jurisdiction.</p>
 
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">5. Refund Policy</h2>
-        <p class="text-gray-400 mb-4">We offer a <strong>20-day money-back guarantee</strong> from the date your first paid subscription begins (after any free trial period):</p>
+        <p class="text-gray-400 mb-4">All sales are final. Subscriptions are <strong>non-refundable</strong> except in the following circumstances:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li><strong>Eligibility Window:</strong> Refund requests must be submitted within 20 days of your first payment</li>
-          <li><strong>Scope:</strong> Applies to first-time customers on their initial subscription only</li>
-          <li><strong>Process:</strong> Submit a refund request via support ticket or email</li>
-          <li><strong>Processing Time:</strong> Refunds typically processed within 5-10 business days</li>
-          <li><strong>Exclusions:</strong> Domain registration fees, third-party services, and renewal payments are non-refundable</li>
+          <li><strong>Service Failure:</strong> If we are unable to provision your server within 24 hours of payment, you will receive a full automatic refund</li>
+          <li><strong>Billing Errors:</strong> Duplicate charges or billing mistakes will be refunded promptly</li>
+          <li><strong>Extraordinary Circumstances:</strong> Refunds may be issued at our sole discretion for exceptional situations</li>
         </ul>
-        <p class="text-gray-400 mb-4">Refunds are issued to the original payment method. We reserve the right to deny refunds for accounts found in violation of these Terms or for abusive refund request patterns.</p>
+        <p class="text-gray-400 mb-4">You may cancel your subscription at any time via support ticket. Your service will remain active until the end of your current billing period, but no refund will be issued for unused time.</p>
 
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">6. Acceptable Use Policy</h2>
         <p class="text-gray-400 mb-4">You agree to use our Services only for lawful purposes and in compliance with these Terms. Prohibited activities include but are not limited to:</p>
@@ -148,29 +146,28 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li><strong>Malicious Software:</strong> Distributing viruses, malware, ransomware, or other harmful code</li>
           <li><strong>Spam and Abuse:</strong> Sending unsolicited bulk email, phishing attempts, or fraudulent communications</li>
           <li><strong>Network Attacks:</strong> Port scanning, DDoS attacks, or attempts to compromise other systems</li>
-          <li><strong>Resource Abuse:</strong> Cryptocurrency mining, excessive bandwidth consumption, or activities that degrade service performance</li>
+          <li><strong>Resource Abuse:</strong> Excessive CPU usage (including cryptocurrency mining), bandwidth abuse, or activities that degrade service performance for other users</li>
           <li><strong>Intellectual Property Infringement:</strong> Hosting pirated software, copyrighted content without authorization, or counterfeit materials</li>
-          <li><strong>Adult Content:</strong> Hosting pornographic material, escort services, or sexually explicit content</li>
-          <li><strong>Harassment:</strong> Using Services to harass, threaten, or defame individuals or organizations</li>
+          <li><strong>Illegal Adult Content:</strong> Child sexual abuse material (CSAM), revenge porn, or other illegal pornographic content</li>
+          <li><strong>Harassment:</strong> Using Services to harass, threaten, stalk, or defame individuals or organizations</li>
         </ul>
         <p class="text-gray-400 mb-4">Violation of this policy may result in immediate suspension or termination of your account without refund.</p>
 
-        <h2 class="text-2xl font-bold text-white mt-12 mb-4">7. Intellectual Property and Open Source</h2>
+        <h2 class="text-2xl font-bold text-white mt-12 mb-4">7. Intellectual Property</h2>
         <h3 class="text-xl font-bold text-white mt-8 mb-3">7.1 Our Intellectual Property</h3>
-        <p class="text-gray-400 mb-4">The Clouded Basement Hosting service, including the website, dashboard, branding, logos, and proprietary software, are owned by the Company and protected by copyright, trademark, and other intellectual property laws.</p>
+        <p class="text-gray-400 mb-4">The Clouded Basement Hosting brand, including our name, logo, website design, and trademarks, are owned by the Company and protected by copyright and trademark laws. You may not use our branding without written permission.</p>
 
-        <h3 class="text-xl font-bold text-white mt-8 mb-3">7.2 Open Source Code</h3>
-        <p class="text-gray-400 mb-4">The underlying codebase for this platform is available as <strong>open-source software</strong> on GitHub. However:</p>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">7.2 Source Code Availability</h3>
+        <p class="text-gray-400 mb-4">The source code for this platform is publicly viewable for educational and transparency purposes. However:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li>The code is subject to the license terms specified in the repository</li>
-          <li>You may review, fork, and modify the code in accordance with the license</li>
-          <li><strong>Commercial use, redistribution, or deployment of derivative works requires explicit permission from the Company</strong></li>
-          <li>The "Clouded Basement Hosting" brand, logo, and associated trademarks remain proprietary and may not be used without written consent</li>
-          <li>Copying or redeploying the service for commercial purposes without authorization is strictly prohibited and may result in legal action</li>
+          <li>Viewing and studying the code for learning purposes is permitted</li>
+          <li>The "Clouded Basement Hosting" brand name, logo, and associated trademarks remain proprietary</li>
+          <li>Deploying a competing commercial service using this codebase requires explicit written permission</li>
+          <li>Contributions to the project may be accepted via GitHub pull requests</li>
         </ul>
 
         <h3 class="text-xl font-bold text-white mt-8 mb-3">7.3 User Content</h3>
-        <p class="text-gray-400 mb-4">You retain ownership of all content, data, and applications you deploy on our Services. By using our Services, you grant us a limited license to host, store, and transmit your content solely for the purpose of providing the Services.</p>
+        <p class="text-gray-400 mb-4">You retain full ownership of all content, data, and applications you deploy on our Services. By using our Services, you grant us a limited license to host, store, and transmit your content solely for the purpose of providing the Services to you.</p>
 
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">8. Data Privacy and Security</h2>
         <h3 class="text-xl font-bold text-white mt-8 mb-3">8.1 Data Collection</h3>
@@ -260,7 +257,7 @@ ${getHTMLHead('Terms of Service - Basement')}
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">18. Contact Information</h2>
         <p class="text-gray-400 mb-4">If you have questions about these Terms or need to contact us regarding your account, please reach out:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li><strong class="text-white">Email:</strong> <a href="mailto:support@cloudedbasement.com" class="text-blue-400 hover:text-blue-500 underline">support@cloudedbasement.com</a></li>
+          <li><strong class="text-white">Email:</strong> <a href="mailto:support@cloudedbasement.ca" class="text-blue-400 hover:text-blue-500 underline">support@cloudedbasement.ca</a></li>
           <li><strong class="text-white">Support Tickets:</strong> Available through your account dashboard</li>
           <li><strong class="text-white">Company Name:</strong> Clouded Basement Hosting</li>
           <li><strong class="text-white">Location:</strong> Halifax, Nova Scotia, Canada</li>
@@ -310,7 +307,6 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-300"><strong class="text-white">1 CPU core</strong></li>
             <li class="text-gray-300"><strong class="text-white">25 GB SSD storage</strong></li>
             <li class="text-gray-300"><strong class="text-white">1 TB bandwidth</strong></li>
-            <li class="text-gray-400">Weekly automated backups</li>
             <li class="text-gray-400">Full SSH/root access</li>
             <li class="text-gray-400">One-click Git deployment</li>
             <li class="text-gray-400">One-click database setup (MongoDB, PostgreSQL)</li>
@@ -338,7 +334,6 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-300"><strong class="text-white">2 CPU cores</strong></li>
             <li class="text-gray-300"><strong class="text-white">50 GB SSD storage</strong></li>
             <li class="text-gray-300"><strong class="text-white">2 TB bandwidth</strong></li>
-            <li class="text-gray-400">Weekly automated backups</li>
             <li class="text-gray-400">Full SSH/root access</li>
             <li class="text-gray-400">One-click Git deployment</li>
             <li class="text-gray-400">One-click database setup (MongoDB, PostgreSQL)</li>
@@ -367,7 +362,6 @@ ${getHTMLHead('Pricing - Basement')}
             <li class="text-gray-300"><strong class="text-white">2 CPU cores</strong></li>
             <li class="text-gray-300"><strong class="text-white">80 GB SSD storage</strong></li>
             <li class="text-gray-300"><strong class="text-white">4 TB bandwidth</strong></li>
-            <li class="text-gray-400">Weekly automated backups</li>
             <li class="text-gray-400">Full SSH/root access</li>
             <li class="text-gray-400">One-click Git deployment</li>
             <li class="text-gray-400">One-click database setup (MongoDB, PostgreSQL)</li>
@@ -397,7 +391,7 @@ ${getHTMLHead('Privacy Policy - Basement')}
     <main class="bg-black min-h-screen pt-24 pb-16">
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Privacy Policy</h1>
-        <p class="text-gray-500 text-sm mb-8"><strong>Last Updated:</strong> January 19, 2026</p>
+        <p class="text-gray-500 text-sm mb-8"><strong>Last Updated:</strong> January 26, 2026</p>
         
         <p class="text-gray-400 mb-8">Clouded Basement Hosting ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.</p>
         
@@ -454,8 +448,8 @@ ${getHTMLHead('Privacy Policy - Basement')}
         <p class="text-gray-400 mb-4">We implement industry-standard security measures to protect your personal information:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
             <li><strong>Encryption:</strong> All passwords are hashed using bcrypt with a salt factor of 10, making them irreversible and secure against brute-force attacks</li>
-            <li><strong>Secure Transmission:</strong> We use HTTPS/TLS encryption to protect data transmitted between your browser and our servers (when configured in production)</li>
-            <li><strong>Session Security:</strong> Session cookies are marked as HTTP-only to prevent client-side script access and are configured with secure flags in production environments</li>
+            <li><strong>Secure Transmission:</strong> We use HTTPS/TLS encryption to protect all data transmitted between your browser and our servers</li>
+            <li><strong>Session Security:</strong> Session cookies are HTTP-only to prevent client-side script access and are configured with secure flags in production</li>
             <li><strong>Payment Security:</strong> All payment processing is handled by Stripe, a PCI-DSS Level 1 certified service provider. We never store complete payment card information</li>
             <li><strong>Database Security:</strong> User data is stored in a secured PostgreSQL database with restricted access and regular backups</li>
             <li><strong>Access Controls:</strong> Administrative access to user data is restricted to authorized personnel only</li>
@@ -481,9 +475,6 @@ ${getHTMLHead('Privacy Policy - Basement')}
         
         <p><strong>5.5 Withdrawal of Consent</strong></p>
         <p class="text-gray-400 mb-4">Where processing is based on consent, you have the right to withdraw that consent at any time.</p>
-        
-        <p><strong>5.6 Marketing Communications</strong></p>
-        <p class="text-gray-400 mb-4">You may opt out of receiving promotional communications from us by following the unsubscribe instructions in those messages.</p>
         
         <p class="text-gray-400 mb-4">To exercise any of these rights, please contact us through our <a href="/contact" class="text-blue-400 hover:text-blue-500 underline">contact form</a>. We will respond to your request within 30 days.</p>
         
