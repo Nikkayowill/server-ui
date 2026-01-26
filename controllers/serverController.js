@@ -195,8 +195,16 @@ exports.deploy = async (req, res) => {
     console.log(`[DEPLOY] Deployment #${deploymentId} started for user ${userId}: ${gitUrl}`);
 
     // Perform deployment asynchronously (don't block response)
-    performDeployment(server, gitUrl, repoName, deploymentId).catch(err => {
+    performDeployment(server, gitUrl, repoName, deploymentId).catch(async (err) => {
       console.error(`[DEPLOY] Deployment #${deploymentId} failed:`, err);
+      try {
+        await pool.query(
+          'UPDATE deployments SET status = $1, output = $2, deployed_at = NOW() WHERE id = $3',
+          ['failed', `❌ Deployment failed: ${err.message}`, deploymentId]
+        );
+      } catch (dbErr) {
+        console.error(`[DEPLOY] Failed to update deployment #${deploymentId} status:`, dbErr);
+      }
     });
     
     res.redirect('/dashboard?success=Deployment started! Check deployment history below for progress.');
@@ -208,10 +216,14 @@ exports.deploy = async (req, res) => {
 
 // Async deployment function
 async function performDeployment(server, gitUrl, repoName, deploymentId) {
+  console.log(`[DEPLOY] Starting performDeployment for deployment #${deploymentId}`);
+  console.log(`[DEPLOY] Server IP: ${server.ip_address}, Repo: ${gitUrl}`);
+  
   const conn = new Client();
   let output = '';
 
   try {
+    console.log(`[DEPLOY] Attempting SSH connection to ${server.ip_address}...`);
     // Connect via SSH
     await new Promise((resolve, reject) => {
       conn.on('ready', resolve);
@@ -266,7 +278,9 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
     await updateDeploymentOutput(deploymentId, output, 'success');
     
   } catch (error) {
+    console.error(`[DEPLOY] Deployment #${deploymentId} error:`, error);
     output += `\n❌ Deployment failed: ${error.message}\n`;
+    output += `Error details: ${error.stack || error}\n`;
     await updateDeploymentOutput(deploymentId, output, 'failed');
   } finally {
     conn.end();
