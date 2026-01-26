@@ -48,6 +48,10 @@ async function runMigrations() {
     } else {
       console.log('[MIGRATION] Database schema is up to date');
     }
+
+    // Run additional migrations
+    const { addPasswordResetTokens } = require('./009-add-password-reset-tokens');
+    await addPasswordResetTokens();
     
   } catch (error) {
     // Safely rollback transaction (may not have started if error was early)
