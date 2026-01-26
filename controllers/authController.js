@@ -827,6 +827,52 @@ ${getHTMLHead('Reset Password - Basement')}
   }
 };
 
+// POST /reset-password/:token - Update password
+const handleResetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      return res.redirect(`/reset-password/${token}?error=Passwords do not match`);
+    }
+    
+    // Validate password length
+    if (password.length < 8) {
+      return res.redirect(`/reset-password/${token}?error=Password must be at least 8 characters`);
+    }
+    
+    // Verify token exists and is not expired
+    const result = await pool.query(
+      'SELECT id FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()',
+      [token]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.redirect('/forgot-password?error=Invalid or expired reset link. Please request a new one.');
+    }
+    
+    const userId = result.rows[0].id;
+    
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    // Update password and clear reset token
+    await pool.query(
+      'UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2',
+      [hashedPassword, userId]
+    );
+    
+    console.log(`[RESET PASSWORD] Password reset successful for user ${userId}`);
+    
+    res.redirect('/login?message=Password reset successful! Please login with your new password.');
+  } catch (error) {
+    console.error('[RESET PASSWORD] Error:', error);
+    res.redirect(`/reset-password/${req.params.token}?error=An error occurred. Please try again.`);
+  }
+};
+
 module.exports = {
   showRegister,
   register: handleRegister,
@@ -842,5 +888,6 @@ module.exports = {
   resendCode,
   showForgotPassword,
   handleForgotPassword,
-  showResetPassword
+  showResetPassword,
+  handleResetPassword
 };
