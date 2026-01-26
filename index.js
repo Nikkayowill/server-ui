@@ -1,5 +1,24 @@
-const express = require('express');
+// Sentry must be initialized FIRST, before any other imports
+const Sentry = require("@sentry/node");
+const { nodeProfilingIntegration } = require("@sentry/profiling-node");
+
 require('dotenv').config();
+
+// Initialize Sentry
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [
+      nodeProfilingIntegration(),
+    ],
+    tracesSampleRate: 1.0, // Capture 100% of transactions in production (adjust as needed)
+    profilesSampleRate: 1.0, // Capture 100% of profiles
+    environment: process.env.NODE_ENV || 'development',
+  });
+  console.log('[SENTRY] Error monitoring initialized');
+}
+
+const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const axios = require('axios');
 const { Client } = require('ssh2');
