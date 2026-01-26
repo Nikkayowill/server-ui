@@ -248,7 +248,7 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
 
     // Clone repository
     output += `\n[1/5] Cloning repository...\n`;
-    await execSSH(conn, `cd /root && rm -rf ${repoName} && GIT_TERMINAL_PROMPT=0 git clone ${gitUrl}`);
+    await execSSH(conn, `cd /root && rm -rf ${repoName} && git config --global credential.helper '' && GIT_TERMINAL_PROMPT=0 git clone ${gitUrl}`);
     output += `✓ Repository cloned\n`;
     await updateDeploymentOutput(deploymentId, output, 'in-progress');
 

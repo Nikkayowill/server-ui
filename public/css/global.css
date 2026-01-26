@@ -3,11 +3,6 @@
    Only brand colors and custom overrides
    ============================================ */
 
-/* Custom Tailwind Config */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Supercharge 3D Font */
 @font-face {
     font-family: 'Supercharge3D';
