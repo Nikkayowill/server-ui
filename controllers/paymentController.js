@@ -618,13 +618,29 @@ exports.stripeWebhook = async (req, res) => {
             break;
           }
 
+          // Security: Validate plan matches amount paid
+          const validPlans = { basic: 2500, priority: 6000, premium: 12000 }; // cents
+          const expectedAmount = validPlans[plan] || validPlans['basic'];
+          
+          if (amount !== expectedAmount) {
+            console.log(`⚠️ Amount mismatch: Paid $${amount/100}, Expected $${expectedAmount/100} for plan '${plan}'`);
+            // Force basic plan if amount doesn't match
+            plan = 'basic';
+          }
+          
+          // Validate plan is one of the allowed values
+          if (!['basic', 'priority', 'premium'].includes(plan)) {
+            console.log(`⚠️ Invalid plan '${plan}', defaulting to basic`);
+            plan = 'basic';
+          }
+          
           // Record payment in database
           await client.query(
             'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
             [userId, paymentIntent.id, amount, plan, 'succeeded']
           );
 
-          console.log(`Payment recorded: User ${userId}, $${amount}, Plan: ${plan}`);
+          console.log(`Payment recorded: User ${userId}, $${amount/100}, Plan: ${plan}`);
           
           // Create server if user doesn't have one (webhook is single source of truth)
           const serverCheck = await client.query(

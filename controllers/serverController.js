@@ -323,9 +323,14 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
         throw new Error('Failed to download repository. Please check the URL and try again.');
       }
     } else {
-      // Fallback to git clone for non-GitHub repos
+      // Security: Only allow HTTPS git URLs, no SSH or file:// protocols
+      if (!gitUrl.match(/^https:\/\/[\w\.-]+\.[a-z]{2,}\//)) {
+        throw new Error('Only HTTPS git URLs are allowed for security. Use format: https://git.example.com/user/repo.git');
+      }
+      
       output += `Using git clone (non-GitHub repository)\n`;
-      await execSSH(conn, `cd /root && rm -rf ${repoName} && git clone ${gitUrl}`);
+      // Use -- to separate options from arguments (prevents command injection)
+      await execSSH(conn, `cd /root && rm -rf ${repoName} && git clone -- "${gitUrl.replace(/["$`\\]/g, '\\$&')}"`);
       output += `✓ Repository cloned\n`;
     }
     
@@ -1112,9 +1117,15 @@ async function triggerSSLCertificateForCustomer(serverId, domain, server) {
     conn.on('ready', () => {
       console.log(`[SSL] SSH connected to server ${serverId}`);
       
-      // Use SSH2 library's exec with properly escaped parameters
-      // Domain is already validated by isValidDomain() before reaching here
-      const certbotCmd = `certbot certonly --standalone -d "${domain}" --email "admin@${domain}" --non-interactive --agree-tos`;
+      // Security: Strict domain validation (prevents command injection)
+      // Only allow alphanumeric, dots, and hyphens (RFC 1123)
+      if (!/^[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?)*$/i.test(domain)) {
+        conn.end();
+        return reject(new Error('Invalid domain format'));
+      }
+      
+      // Use SSH2 library's exec with validated domain (no quotes needed, already validated)
+      const certbotCmd = `certbot certonly --standalone -d ${domain} --email admin@${domain} --non-interactive --agree-tos`;
       
       conn.exec(certbotCmd, { timeout: 60000 }, (err, stream) => {
         if (err) {
