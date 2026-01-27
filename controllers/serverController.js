@@ -458,6 +458,68 @@ async function injectEnvVars(conn, repoName, output, deploymentId, serverId) {
   }
 }
 
+// Helper: Perform health check after deployment
+async function performHealthCheck(conn, type, output, deploymentId, serviceName = null) {
+  try {
+    output += `\n[Health Check] Verifying deployment...\n`;
+    await updateDeploymentOutput(deploymentId, output, 'in-progress');
+    
+    if (type === 'static') {
+      // Check if Nginx is serving content
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const result = await execSSH(conn, `curl -s -o /dev/null -w "%{http_code}" http://localhost/`);
+          const statusCode = result.trim();
+          
+          if (statusCode === '200') {
+            output += `✓ Site is responding (HTTP ${statusCode})\n`;
+            break;
+          } else if (attempt === 3) {
+            output += `⚠️ Site returned HTTP ${statusCode} (may need time to initialize)\n`;
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s between retries
+          }
+        } catch (err) {
+          if (attempt === 3) {
+            output += `⚠️ Health check failed: ${err.message}\n`;
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        }
+      }
+    } else if (type === 'backend' && serviceName) {
+      // Check if systemd service is running
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for service startup
+          
+          const status = await execSSH(conn, `systemctl is-active ${serviceName}`);
+          
+          if (status.trim() === 'active') {
+            output += `✓ Service is running\n`;
+            break;
+          } else if (attempt === 3) {
+            output += `⚠️ Service status: ${status.trim()}\n`;
+            output += `Check logs: journalctl -u ${serviceName} -n 20\n`;
+          }
+        } catch (err) {
+          if (attempt === 3) {
+            output += `⚠️ Service health check failed\n`;
+            output += `Check logs: journalctl -u ${serviceName} -n 20\n`;
+          }
+        }
+      }
+    }
+    
+    await updateDeploymentOutput(deploymentId, output, 'in-progress');
+    return output;
+  } catch (error) {
+    console.error('Health check error:', error);
+    output += `⚠️ Health check error: ${error.message}\n`;
+    return output;
+  }
+}
+
 // Deploy static site (React/Vue/Vite)
 async function deployStaticSite(conn, repoName, output, deploymentId, serverId) {
   // Detect and switch Node version if specified
@@ -536,6 +598,10 @@ async function deployStaticSite(conn, repoName, output, deploymentId, serverId) 
   
   output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Health check
+  output = await performHealthCheck(conn, 'static', output, deploymentId);
+  
   return output;
 }
 
@@ -548,6 +614,10 @@ async function deployStaticHTML(conn, repoName, output, deploymentId) {
   output += `✓ Site deployed to Nginx\n`;
   output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Health check
+  output = await performHealthCheck(conn, 'static', output, deploymentId);
+  
   return output;
 }
 
@@ -611,6 +681,10 @@ WantedBy=multi-user.target`;
   output += `\n🚀 Your backend is running!\n`;
   output += `Note: Configure Nginx reverse proxy for public access.\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Health check
+  output = await performHealthCheck(conn, 'backend', output, deploymentId, serviceName);
+  
   return output;
 }
 
@@ -650,6 +724,10 @@ WantedBy=multi-user.target`;
   output += `✓ Application started\n`;
   output += `\n🐍 Your Python app is running!\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Health check
+  output = await performHealthCheck(conn, 'backend', output, deploymentId, serviceName);
+  
   return output;
 }
 
