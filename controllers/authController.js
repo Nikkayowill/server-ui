@@ -236,45 +236,42 @@ const handleLogin = async (req, res) => {
     
     // Find user
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (result.rows.length === 0) {
-      return res.redirect('/login?error=Invalid email or password');
-    }
-
-    const user = result.rows[0];
     
-    // Check password
-    const match = await bcrypt.compare(password, user.password_hash);
-    if (!match) {
+    // Constant-time comparison to prevent timing attacks
+    // Always run bcrypt.compare() even if user doesn't exist
+    const user = result.rows.length > 0 ? result.rows[0] : null;
+    
+    // Use dummy hash if user doesn't exist (same bcrypt cost as real passwords)
+    const dummyHash = '$2b$10$YourDummyHashHereForTimingConsistency1234567890123456789012';
+    const hashToCompare = user ? user.password_hash : dummyHash;
+    
+    // Always run bcrypt (prevents timing attack that reveals valid emails)
+    const match = await bcrypt.compare(password, hashToCompare);
+    
+    // Reject if user doesn't exist OR password doesn't match
+    if (!user || !match) {
       return res.redirect('/login?error=Invalid email or password');
     }
 
     // Regenerate session to prevent session fixation attacks
     req.session.regenerate((err) => {
       if (err) {
-        console.error('Session regeneration error:', err);
+        console.error('Session regeneration error on login:', err);
         return res.redirect('/login?error=An error occurred. Please try again.');
       }
 
-      // Regenerate session to prevent session fixation attacks
-      req.session.regenerate((err) => {
-        if (err) {
-          console.error('Session regeneration error on login:', err);
-          return res.redirect('/login?error=An error occurred. Please try again.');
-        }
+      // Set session (allow login even without email confirmation)
+      req.session.userId = user.id;
+      req.session.userEmail = user.email;
+      req.session.userRole = user.role;
+      req.session.emailConfirmed = user.email_confirmed; // Store confirmation status
 
-        // Set session (allow login even without email confirmation)
-        req.session.userId = user.id;
-        req.session.userEmail = user.email;
-        req.session.userRole = user.role;
-        req.session.emailConfirmed = user.email_confirmed; // Store confirmation status
-
-        // Redirect based on role
-        if (user.role === 'admin') {
-          return res.redirect('/admin');
-        } else {
-          return res.redirect('/dashboard');
-        }
-      });
+      // Redirect based on role
+      if (user.role === 'admin') {
+        return res.redirect('/admin');
+      } else {
+        return res.redirect('/dashboard');
+      }
     });
   } catch (error) {
     console.error('Login error:', error);
