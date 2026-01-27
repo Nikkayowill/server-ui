@@ -3,7 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 const pool = require('../db');
 const { validationResult } = require('express-validator');
-const { getHTMLHead, getFooter, getScripts, getResponsiveNav } = require('../helpers');
+const { getHTMLHead, getFooter, getScripts, getResponsiveNav, escapeHtml } = require('../helpers');
 const { createConfirmationCode, isCodeValid } = require('../utils/emailToken');
 const { sendConfirmationEmail } = require('../services/email');
 
@@ -72,9 +72,10 @@ ${getHTMLHead('Register - Basement')}
 const handleRegister = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map(err => escapeHtml(err.msg));
     return res.status(400).send(`
       <h1 style="color: #88FE00;">Validation Error</h1>
-      <ul>${errors.array().map(err => `<li>${err.msg}</li>`).join('')}</ul>
+      <ul>${errorMessages.map(msg => `<li>${msg}</li>`).join('')}</ul>
       <a href="/register" style="color: #88FE00;">Go back</a>
     `);
   }
@@ -142,17 +143,17 @@ const handleRegister = async (req, res) => {
 const showLogin = (req, res) => {
   const flashMessage = req.session.flashMessage;
   delete req.session.flashMessage;
-  const message = req.query.message || '';
-  const error = req.query.error || '';
-  const userEmail = req.query.email || '';
-  const showResend = error.includes('confirm your email') && userEmail;
+  const message = escapeHtml(req.query.message || '');
+  const error = escapeHtml(req.query.error || '');
+  const userEmail = escapeHtml(req.query.email || '');
+  const showResend = req.query.error && req.query.error.includes('confirm your email') && userEmail;
   
   res.send(`
 ${getHTMLHead('Login - Basement')}
     ${flashMessage ? `
     <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md mx-auto px-4">
       <div id="flashMessage" class="bg-brand text-gray-900 px-6 py-4 rounded-lg shadow-lg flex items-center justify-between">
-        <span>${flashMessage}</span>
+        <span>${escapeHtml(flashMessage)}</span>
         <button onclick="dismissFlash()" class="ml-4 text-gray-900 hover:text-gray-700 font-bold text-xl">&times;</button>
       </div>
     </div>
@@ -178,7 +179,7 @@ ${getHTMLHead('Login - Basement')}
         
         ${message ? `<div class="bg-green-500/10 border border-green-500/30 text-green-300 px-4 py-2.5 rounded mb-5 text-sm">${message}</div>` : ''}
         ${error ? `<div class="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-2.5 rounded mb-5 text-sm">${error}</div>` : ''}
-        ${showResend ? `<div class="bg-blue-500/10 border border-blue-500/30 text-blue-300 px-4 py-2.5 rounded mb-5 text-sm"><a href="/resend-confirmation?email=${encodeURIComponent(userEmail)}" class="text-blue-400 hover:text-blue-300 underline">Resend confirmation email</a></div>` : ''}
+        ${showResend ? `<div class="bg-blue-500/10 border border-blue-500/30 text-blue-300 px-4 py-2.5 rounded mb-5 text-sm"><a href="/resend-confirmation?email=${encodeURIComponent(req.query.email)}" class="text-blue-400 hover:text-blue-300 underline">Resend confirmation email</a></div>` : ''}
         
         <form method="POST" action="/login" class="space-y-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">
