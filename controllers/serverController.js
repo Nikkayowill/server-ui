@@ -293,11 +293,18 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
           const tarballUrl = `https://github.com/${user}/${repo}/archive/refs/heads/${branch}.tar.gz`;
           output += `Attempting to download from '${branch}' branch...\n`;
           
-          // Download tarball
-          const wgetResult = await execSSH(conn, `cd /root && rm -rf ${repoName} ${repo}-${branch} && wget --spider "${tarballUrl}" 2>&1`);
+          // Check size first (HEAD request via wget)
+          const sizeCheck = await execSSH(conn, `wget --spider --server-response "${tarballUrl}" 2>&1 | grep -i "content-length" | awk '{print $2}' | tail -1`);
+          const sizeInBytes = parseInt(sizeCheck.trim());
           
-          // If wget spider succeeds (repo exists and is public), download for real
-          await execSSH(conn, `cd /root && wget -q -O repo.tar.gz "${tarballUrl}"`);
+          if (sizeInBytes > 100 * 1024 * 1024) { // 100MB limit
+            throw new Error(`Repository size (${Math.round(sizeInBytes / 1024 / 1024)}MB) exceeds 100MB limit`);
+          }
+          
+          output += `Repository size: ${Math.round(sizeInBytes / 1024 / 1024)}MB\n`;
+          
+          // Download tarball
+          await execSSH(conn, `cd /root && rm -rf ${repoName} ${repo}-${branch} && wget -q -O repo.tar.gz "${tarballUrl}"`);
           await execSSH(conn, `cd /root && tar -xzf repo.tar.gz && mv ${repo}-${branch} ${repoName} && rm repo.tar.gz`);
           
           output += `✓ Repository downloaded successfully (branch: ${branch})\n`;
