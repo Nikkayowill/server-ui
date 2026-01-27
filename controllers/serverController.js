@@ -246,10 +246,57 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
     output += '✓ Connected to server via SSH\n';
     await updateDeploymentOutput(deploymentId, output, 'in-progress');
 
-    // Clone repository
-    output += `\n[1/5] Cloning repository...\n`;
-    await execSSH(conn, `cd /root && rm -rf ${repoName} && git config --global credential.helper '' && GIT_TERMINAL_PROMPT=0 git clone ${gitUrl}`);
-    output += `✓ Repository cloned\n`;
+    // Download repository (GitHub tarball - no auth needed for public repos)
+    output += `\n[1/5] Downloading repository...\n`;
+    
+    if (gitUrl.includes('github.com')) {
+      // Extract user/repo from URL (handles both .git and non-.git endings)
+      // https://github.com/user/repo.git OR https://github.com/user/repo
+      const match = gitUrl.match(/github\.com[/:]([\w-]+)\/([\w-]+?)(\.git)?$/);
+      if (!match) {
+        throw new Error('Invalid GitHub URL format. Please use: https://github.com/username/repository');
+      }
+      
+      const [, user, repo] = match;
+      output += `Repository: ${user}/${repo}\n`;
+      
+      // Try main branch first, fallback to master
+      const branches = ['main', 'master'];
+      let downloadSuccess = false;
+      
+      for (const branch of branches) {
+        try {
+          const tarballUrl = `https://github.com/${user}/${repo}/archive/refs/heads/${branch}.tar.gz`;
+          output += `Attempting to download from '${branch}' branch...\n`;
+          
+          // Download tarball
+          const wgetResult = await execSSH(conn, `cd /root && rm -rf ${repoName} ${repo}-${branch} && wget --spider "${tarballUrl}" 2>&1`);
+          
+          // If wget spider succeeds (repo exists and is public), download for real
+          await execSSH(conn, `cd /root && wget -q -O repo.tar.gz "${tarballUrl}"`);
+          await execSSH(conn, `cd /root && tar -xzf repo.tar.gz && mv ${repo}-${branch} ${repoName} && rm repo.tar.gz`);
+          
+          output += `✓ Repository downloaded successfully (branch: ${branch})\n`;
+          downloadSuccess = true;
+          break;
+        } catch (err) {
+          output += `Branch '${branch}' not found or inaccessible\n`;
+          if (branch === branches[branches.length - 1]) {
+            throw new Error(`Repository not found or is private. Make sure:\n1. Repository URL is correct\n2. Repository is public\n3. Repository has a 'main' or 'master' branch`);
+          }
+        }
+      }
+      
+      if (!downloadSuccess) {
+        throw new Error('Failed to download repository. Please check the URL and try again.');
+      }
+    } else {
+      // Fallback to git clone for non-GitHub repos
+      output += `Using git clone (non-GitHub repository)\n`;
+      await execSSH(conn, `cd /root && rm -rf ${repoName} && git clone ${gitUrl}`);
+      output += `✓ Repository cloned\n`;
+    }
+    
     await updateDeploymentOutput(deploymentId, output, 'in-progress');
 
     // Detect project type
