@@ -309,6 +309,8 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
     // Detect project type
     output += `\n[2/5] Detecting project type...\n`;
     const hasPackageJson = await fileExists(conn, `/root/${repoName}/package.json`);
+    const hasCargoToml = await fileExists(conn, `/root/${repoName}/Cargo.toml`);
+    const hasGoMod = await fileExists(conn, `/root/${repoName}/go.mod`);
     const hasRequirementsTxt = await fileExists(conn, `/root/${repoName}/requirements.txt`);
     const hasIndexHtml = await fileExists(conn, `/root/${repoName}/index.html`);
 
@@ -324,6 +326,12 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
         output += `✓ Detected: Node.js backend\n`;
         output = await deployNodeBackend(conn, repoName, output, deploymentId);
       }
+    } else if (hasCargoToml) {
+      output += `✓ Detected: Rust application\n`;
+      output = await deployRustApp(conn, repoName, output, deploymentId);
+    } else if (hasGoMod) {
+      output += `✓ Detected: Go application\n`;
+      output = await deployGoApp(conn, repoName, output, deploymentId);
     } else if (hasRequirementsTxt) {
       output += `✓ Detected: Python application\n`;
       output = await deployPythonApp(conn, repoName, output, deploymentId);
@@ -569,6 +577,114 @@ WantedBy=multi-user.target`;
   await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
   output += `✓ Application started\n`;
   output += `\n🐍 Your Python app is running!\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  return output;
+}
+
+// Deploy Rust app
+async function deployRustApp(conn, repoName, output, deploymentId) {
+  output += `\n[3/5] Building Rust application...\n`;
+  output += `This may take several minutes...\n`;
+  
+  try {
+    // Source cargo environment and build
+    await execSSH(conn, `cd /root/${repoName} && source /root/.cargo/env && cargo build --release`);
+    output += `✓ Rust build successful\n`;
+  } catch (err) {
+    output += `⚠️ Cargo build failed: ${err.message}\n`;
+    output += `Attempting basic deployment...\n`;
+  }
+  
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[4/5] Deploying to Nginx...\n`;
+  
+  // Check for static files or WASM output
+  const hasStaticDir = await fileExists(conn, `/root/${repoName}/static`);
+  const hasPkgDir = await fileExists(conn, `/root/${repoName}/pkg`);
+  
+  if (hasStaticDir) {
+    await execSSH(conn, `cp -r /root/${repoName}/static/* /var/www/html/`);
+    output += `✓ Deployed static files\n`;
+  } else if (hasPkgDir) {
+    await execSSH(conn, `cp -r /root/${repoName}/pkg/* /var/www/html/`);
+    output += `✓ Deployed WASM package\n`;
+  } else {
+    // Deploy binary as systemd service
+    const binPath = `/root/${repoName}/target/release/${repoName}`;
+    const hasBinary = await fileExists(conn, binPath);
+    
+    if (hasBinary) {
+      output += `\n[5/5] Creating systemd service...\n`;
+      const serviceName = `${repoName}.service`;
+      const serviceContent = `[Unit]
+Description=${repoName} Rust App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/${repoName}
+ExecStart=${binPath}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target`;
+      
+      await execSSH(conn, `echo '${serviceContent}' > /etc/systemd/system/${serviceName}`);
+      await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
+      output += `✓ Service started\n`;
+      output += `\n🚀 Your Rust backend is running!\n`;
+    } else {
+      output += `⚠️ No deployable artifacts found\n`;
+      output += `Expected: static/, pkg/, or target/release/${repoName}\n`;
+    }
+  }
+  
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  return output;
+}
+
+// Deploy Go app
+async function deployGoApp(conn, repoName, output, deploymentId) {
+  output += `\n[3/5] Building Go application...\n`;
+  
+  try {
+    // Build the Go binary
+    await execSSH(conn, `cd /root/${repoName} && export PATH=$PATH:/usr/local/go/bin && go build -o ${repoName}`);
+    output += `✓ Go build successful\n`;
+  } catch (err) {
+    output += `⚠️ Go build failed: ${err.message}\n`;
+    throw new Error('Go build failed');
+  }
+  
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[4/5] Creating systemd service...\n`;
+  const serviceName = `${repoName}.service`;
+  const serviceContent = `[Unit]
+Description=${repoName} Go App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/${repoName}
+ExecStart=/root/${repoName}/${repoName}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target`;
+  
+  await execSSH(conn, `echo '${serviceContent}' > /etc/systemd/system/${serviceName}`);
+  output += `✓ Service file created\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+
+  output += `\n[5/5] Starting application...\n`;
+  await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
+  output += `✓ Application started\n`;
+  output += `\n🚀 Your Go backend is running!\n`;
+  output += `Note: Configure Nginx reverse proxy for public access.\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   return output;
 }

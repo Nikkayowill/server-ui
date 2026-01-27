@@ -43,6 +43,16 @@ export NVM_DIR="/root/.nvm"
 # Install Git, Nginx, Certbot, wget, and Python pip
 apt-get install -y git nginx certbot python3-certbot-nginx wget python3-pip
 
+# Install Rust (cargo/rustc)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+export PATH="/root/.cargo/bin:$PATH"
+
+# Install Go
+wget -q https://go.dev/dl/go1.21.6.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.21.6.linux-amd64.tar.gz
+export PATH="$PATH:/usr/local/go/bin"
+rm go1.21.6.linux-amd64.tar.gz
+
 # Configure firewall
 ufw allow 'Nginx Full'
 ufw allow OpenSSH
