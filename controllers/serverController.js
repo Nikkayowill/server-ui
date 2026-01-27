@@ -222,7 +222,6 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
   console.log(`[DEPLOY] ============================================`);
   console.log(`[DEPLOY] Starting performDeployment for deployment #${deploymentId}`);
   console.log(`[DEPLOY] Server IP: ${server.ip_address}, Repo: ${gitUrl}`);
-  console.log(`[DEPLOY] Server SSH password length: ${server.ssh_password?.length || 0}`);
   console.log(`[DEPLOY] ============================================`);
   
   const conn = new Client();
@@ -230,9 +229,6 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
 
   try {
     console.log(`[DEPLOY] Attempting SSH connection to ${server.ip_address}...`);
-    console.log(`[DEPLOY] Password from DB: "${server.ssh_password}"`);
-    console.log(`[DEPLOY] Password length: ${server.ssh_password?.length}`);
-    console.log(`[DEPLOY] Password type: ${typeof server.ssh_password}`);
     
     // Connect via SSH
     await new Promise((resolve, reject) => {
