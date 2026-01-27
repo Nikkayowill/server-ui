@@ -1,9 +1,5 @@
 const pool = require('../db');
 
-// Simple in-memory cache for user roles (5-minute TTL)
-const roleCache = new Map(); // userId -> { role, expiry }
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
 // Authentication middleware
 function requireAuth(req, res, next) {
   if (req.session.userId) {
@@ -20,7 +16,7 @@ function requireAuth(req, res, next) {
   }
 }
 
-// Admin-only guard with database revalidation
+// Admin-only guard (always checks database for security)
 async function requireAdmin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect('/dashboard?error=Admin access required');
@@ -28,19 +24,8 @@ async function requireAdmin(req, res, next) {
   
   try {
     const userId = req.session.userId;
-    const now = Date.now();
     
-    // Check cache first
-    const cached = roleCache.get(userId);
-    if (cached && cached.expiry > now) {
-      if (cached.role === 'admin') {
-        return next();
-      } else {
-        return res.redirect('/dashboard?error=Admin access required');
-      }
-    }
-    
-    // Cache miss or expired - query database
+    // Always query database (no cache - prevents cache poisoning)
     const result = await pool.query(
       'SELECT role FROM users WHERE id = $1',
       [userId]
@@ -53,12 +38,6 @@ async function requireAdmin(req, res, next) {
     }
     
     const actualRole = result.rows[0].role;
-    
-    // Update cache
-    roleCache.set(userId, {
-      role: actualRole,
-      expiry: now + CACHE_TTL
-    });
     
     // Verify admin role
     if (actualRole === 'admin') {
