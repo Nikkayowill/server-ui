@@ -380,7 +380,7 @@ ${getHTMLHead('Pricing - Basement')}
       <!-- Trust Link -->
       <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-12 text-center">
         <p class="text-sm text-gray-400">
-          Have questions about security or what happens if we disappear? 
+          Questions about security or how this works? 
           <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium ml-1">Is Clouded Basement safe?</a>
         </p>
       </section>
