@@ -34,6 +34,16 @@ export default {
     {
       pattern: /shadow-.*/,
     },
+    {
+      pattern: /bg-gradient-to-(r|l|t|b|tr|tl|br|bl)/,
+    },
+    // Explicit badge classes
+    '-translate-x-1/2',
+    '-top-4',
+    'left-1/2',
+    'bg-gradient-to-r',
+    'from-blue-300',
+    'to-blue-400',
     'hero-heading',
     'text-brand',
     'bg-brand',
