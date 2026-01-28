@@ -857,13 +857,6 @@ exports.showHome = async (req, res) => {
   const flashMessage = req.session.flashMessage;
   delete req.session.flashMessage;
   
-  // Count early adopter customers across all plans
-  const adopterCountResult = await pool.query(
-    "SELECT COUNT(DISTINCT user_id) as count FROM payments WHERE status = 'succeeded'"
-  );
-  const adoptersTaken = parseInt(adopterCountResult.rows[0].count) || 0;
-  const adoptersRemaining = Math.max(0, 15 - adoptersTaken);
-  
   res.send(`
 ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     ${getResponsiveNav(req)}
@@ -921,29 +914,6 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
             <span class="text-sm text-gray-300">Direct support from the founder</span>
           </li>
         </ul>
-      </div>
-    </section>
-
-    <!-- Founder Plan Card -->
-    <section class="py-8 px-8 md:px-12 lg:px-16 bg-black">
-      <div class="max-w-2xl mx-auto p-6 bg-gray-900 border border-blue-400/30 rounded-lg text-center shadow-[0_0_30px_rgba(135,206,250,0.2)]">
-        <span class="inline-block px-3 py-1 mb-3 text-xs font-bold text-black bg-gradient-to-r from-blue-300 to-blue-400 rounded-full uppercase tracking-wider">Early Adopter</span>
-        <h2 class="mb-2 text-2xl font-bold text-white">Lock In Lifetime Pricing</h2>
-        <div class="my-4">
-          <span class="text-4xl font-bold text-blue-300">$10-$60</span>
-          <span class="text-sm text-gray-300">/month forever</span>
-        </div>
-        <p class="mb-4 text-sm text-gray-300">Choose your plan. Lock in 50-60% off for life.</p>
-        <div class="flex items-center justify-center gap-2 px-6 py-3 mb-4 bg-blue-400/10 border border-blue-400/30 rounded-lg">
-          <span class="text-2xl font-bold text-blue-300">${adoptersRemaining}</span>
-          <span class="text-sm text-gray-400">spots left</span>
-        </div>
-        <a href="/pricing" class="flex justify-center items-center py-3 px-6 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
-          Claim Your Spot
-          <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-          </svg>
-        </a>
       </div>
     </section>
 
