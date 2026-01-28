@@ -1068,16 +1068,16 @@ ${getHTMLHead('Is Clouded Basement safe to use? - Basement')}
         
         <!-- Section 3: What happens if something goes wrong -->
         <section class="mb-12">
-          <h2 class="text-2xl font-bold text-white mb-6">What happens if something goes wrong?</h2>
-          <p class="text-gray-300 text-lg leading-relaxed mb-4">If Clouded Basement were to disappear tomorrow:</p>
+          <h2 class="text-2xl font-bold text-white mb-6">What if I stop running this?</h2>
+          <p class="text-gray-300 text-lg leading-relaxed mb-4">Let's say I get hit by a bus or decide to become a monk (hopefully neither):</p>
           
           <ul class="list-none space-y-2 mb-6">
-            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Your server would still exist</li>
-            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Your SSH credentials would still work</li>
-            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Your code and data would still be accessible</li>
+            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Your server keeps running on DigitalOcean</li>
+            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Your SSH credentials still work</li>
+            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Your code and data are yours to keep</li>
           </ul>
           
-          <p class="text-gray-300 text-lg leading-relaxed">There is no vendor lock-in. You can migrate, modify, or shut down your server at any time.</p>
+          <p class="text-gray-300 text-lg leading-relaxed">No vendor lock-in means you're not trapped. Take your server, move it, modify it, do whatever you want with it.</p>
         </section>
         
         <!-- Section 4: Security & responsibility -->
