@@ -376,6 +376,14 @@ ${getHTMLHead('Pricing - Basement')}
           <a href="/pay?plan=premium" class="block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm">Select Premium</a>
         </div>
       </section>
+      
+      <!-- Trust Link -->
+      <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-12 text-center">
+        <p class="text-sm text-gray-400">
+          Have questions about security or what happens if we disappear? 
+          <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium ml-1">Is Clouded Basement safe?</a>
+        </p>
+      </section>
     </main>
     
     ${getFooter()}
