@@ -75,13 +75,19 @@ h3, h4 {
     background-clip: text;
 }
 
-/* True black background with static spotlight from hero (like phone lighting dark basement) */
+/* True black background with multiple spotlights for depth */
 body {
     font-family: 'Inter', sans-serif;
     background: #000000;
     background-image: 
-        radial-gradient(ellipse 1200px 800px at 50% 10%, rgba(135, 206, 250, 0.2) 0%, rgba(0, 102, 255, 0.12) 30%, transparent 60%),
-        radial-gradient(ellipse 800px 1000px at 50% 0%, rgba(0, 102, 255, 0.15) 0%, transparent 50%);
+        /* Hero spotlight - top center */
+        radial-gradient(ellipse 1200px 800px at 50% 5%, rgba(135, 206, 250, 0.15) 0%, rgba(0, 102, 255, 0.08) 30%, transparent 60%),
+        /* Mid-page accent - left side */
+        radial-gradient(ellipse 600px 600px at 10% 50%, rgba(0, 102, 255, 0.06) 0%, transparent 50%),
+        /* Mid-page accent - right side */
+        radial-gradient(ellipse 600px 600px at 90% 60%, rgba(135, 206, 250, 0.05) 0%, transparent 50%),
+        /* Bottom CTA spotlight */
+        radial-gradient(ellipse 800px 400px at 50% 95%, rgba(0, 102, 255, 0.08) 0%, transparent 50%);
     color: var(--text-primary);
     position: relative;
     overflow-x: hidden;
