@@ -879,7 +879,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     <section class="bg-black pt-32 pb-16">
       <div class="max-w-screen-xl px-8 md:px-12 lg:px-16 mx-auto text-center lg:px-12">
         <img src="/Architype Van Der Leck.svg" alt="Clouded Basement Logo" class="mx-auto mb-6 h-32 md:h-40 lg:h-48 w-auto">
-        <h1 class="hero-heading mb-4 text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl">Your own VPS. Deployed in minutes. No DevOps headaches.</h1>
+        <h1 class="mb-4 text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl">Your own VPS. Deployed in minutes. No DevOps headaches.</h1>
         <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 xl:px-48">Clouded Basement provisions a production-ready Linux server with SSL, Git deployments, and full root access — so you can ship without babysitting infrastructure.</p>
         <div class="flex flex-col mb-4 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
           <a href="/pricing" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
