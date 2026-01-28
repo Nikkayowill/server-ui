@@ -5,7 +5,39 @@ export default {
     "./helpers.js",
     "./index.js",
     "./routes/**/*.js",
+    "./services/**/*.js",
+    "./middleware/**/*.js",
     "./public/**/*.html",
+    "./public/**/*.js",
     "./*.html"
+  ],
+  safelist: [
+    // Ensure all gradient and animation classes are included
+    {
+      pattern: /(bg|text|border)-(gray|blue|cyan|red|green|yellow|brand)-(50|100|200|300|400|500|600|700|800|900)/,
+    },
+    {
+      pattern: /animate-.*/,
+    },
+    {
+      pattern: /backdrop-.*/,
+    },
+    {
+      pattern: /-?translate-(x|y)-.*/,
+    },
+    {
+      pattern: /from-(blue|gray|cyan)-.*/,
+    },
+    {
+      pattern: /to-(blue|gray|cyan)-.*/,
+    },
+    {
+      pattern: /shadow-.*/,
+    },
+    'hero-heading',
+    'text-brand',
+    'bg-brand',
+    'border-brand',
+    'glow-brand'
   ]
 }
