@@ -1036,9 +1036,9 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     <section class="bg-black py-12 md:py-20">
       <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-center text-white">Pricing</h2>
-        <p class="text-center text-gray-400 text-base mb-12">Simple monthly pricing · No usage surprises · Cancel anytime</p>
+        <p class="text-center text-gray-400 text-base">Simple monthly pricing · No usage surprises · Cancel anytime</p>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-12">
           <!-- Basic -->
           <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
             <h3 class="text-lg font-bold text-white mb-1">Basic</h3>
