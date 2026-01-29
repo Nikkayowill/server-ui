@@ -592,7 +592,7 @@ const buildDashboardTemplate = (data) => {
                             <p class="text-xs text-gray-500 mb-1">Password:</p>
                             <div class="flex gap-1">
                                 <input type="password" readonly value="${data.postgresCredentials.dbPassword}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="postgres-password">
-                                <button onclick="togglePassword('postgres-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Show</button>
+                                <button onclick="togglePassword('postgres-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors" id="postgres-password-toggle">Show</button>
                                 <button onclick="copyToClipboard('postgres-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
                             </div>
                         </div>
@@ -637,7 +637,6 @@ conn = psycopg2.connect(
                     <div class="bg-green-900 bg-opacity-20 border border-green-600 rounded p-3 mb-3">
                         <p class="text-green-300 text-xs font-bold mb-1">✓ MongoDB Installed & Running</p>
                         <p class="text-gray-400 text-xs leading-relaxed">Your database server is fully set up and ready to use. Just copy the connection string below into your app's <code class="text-white bg-black bg-opacity-50 px-1 py-0.5 rounded">.env</code> file.</p>
-                        <p class="text-yellow-400 text-xs mt-2"><strong>Note:</strong> MongoDB runs without authentication (localhost-only) for easy setup.</p>
                     </div>
                     <div class="space-y-3 mt-4">
                         <div>
