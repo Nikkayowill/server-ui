@@ -984,30 +984,32 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       </div>
     </section>
 
-    <!-- How It Works with Timeline -->
+    <!-- How It Works -->
     <section class="bg-black py-12 md:py-20">
       <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
-        <h2 class="mb-16 text-3xl md:text-4xl font-extrabold text-center text-white">How It Works</h2>
+        <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-center text-white">How it works</h2>
+        <p class="text-center text-gray-400 text-base mb-16">From payment to a live server in just a few minutes.</p>
         <ol class="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <!-- Step 1 -->
           <li class="relative text-center">
             <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">1</div>
-            <h3 class="mb-2 text-xl font-bold text-white">Choose your plan</h3>
-            <p class="text-gray-300">Pick the hosting tier that fits your needs.</p>
+            <h3 class="mb-2 text-xl font-bold text-white">Choose a plan and deploy</h3>
+            <p class="text-gray-300">After checkout, your server provisioning starts automatically. No setup forms. No manual configuration.</p>
           </li>
           <!-- Step 2 -->
           <li class="relative text-center">
             <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">2</div>
-            <h3 class="mb-2 text-xl font-bold text-white">Get instant access</h3>
-            <p class="text-gray-300">Your server is provisioned and ready in minutes.</p>
+            <h3 class="mb-2 text-xl font-bold text-white">We provision your server</h3>
+            <p class="text-gray-300">A fresh Ubuntu 22.04 VPS is created with Nginx, Node.js, Python, SSL tools, and security defaults already configured.</p>
           </li>
           <!-- Step 3 -->
           <li class="relative text-center">
             <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">3</div>
-            <h3 class="mb-2 text-xl font-bold text-white">Deploy your site</h3>
-            <p class="text-gray-300">DIY or let us handle the setup — your choice.</p>
+            <h3 class="mb-2 text-xl font-bold text-white">Deploy from GitHub or SSH</h3>
+            <p class="text-gray-300">You receive SSH credentials by email and can deploy your app from GitHub with one click — or manage everything yourself.</p>
           </li>
         </ol>
+        <p class="text-center text-gray-500 text-sm mt-12">That's it. Your server is live and fully yours.</p>
       </div>
     </section>
 
