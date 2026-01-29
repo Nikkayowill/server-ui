@@ -599,13 +599,16 @@ const buildDashboardTemplate = (data) => {
                         <details class="mt-3">
                             <summary class="text-xs text-blue-400 cursor-pointer hover:text-blue-300 transition-colors">How to Connect</summary>
                             <div class="mt-2 bg-black bg-opacity-50 rounded p-3 border border-gray-700">
+                                <p class="text-xs text-gray-300 mb-3"><strong>Add this code to your application:</strong> Install the driver first, then use these examples in your app's database connection file (e.g., <code class="text-white bg-black bg-opacity-50 px-1 rounded">db.js</code> or <code class="text-white bg-black bg-opacity-50 px-1 rounded">config/database.js</code>).</p>
                                 <p class="text-xs text-gray-400 mb-2"><strong>Node.js (pg):</strong></p>
+                                <pre class="text-xs text-gray-500 bg-gray-900 p-2 rounded mb-1"><code># First install: npm install pg</code></pre>
                                 <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto mb-3"><code>const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: 'postgresql://${data.postgresCredentials.dbUser}:${data.postgresCredentials.dbPassword}@${data.postgresCredentials.host}:${data.postgresCredentials.port}/${data.postgresCredentials.dbName}'
 });
 const result = await pool.query('SELECT NOW()');</code></pre>
                                 <p class="text-xs text-gray-400 mb-2"><strong>Python (psycopg2):</strong></p>
+                                <pre class="text-xs text-gray-500 bg-gray-900 p-2 rounded mb-1"><code># First install: pip install psycopg2-binary</code></pre>
                                 <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto"><code>import psycopg2
 conn = psycopg2.connect(
   host='${data.postgresCredentials.host}',
@@ -668,12 +671,15 @@ conn = psycopg2.connect(
                         <details class="mt-3">
                             <summary class="text-xs text-blue-400 cursor-pointer hover:text-blue-300 transition-colors">How to Connect</summary>
                             <div class="mt-2 bg-black bg-opacity-50 rounded p-3 border border-gray-700">
+                                <p class="text-xs text-gray-300 mb-3"><strong>Add this code to your application:</strong> Install the driver first, then use these examples in your app's database connection file (e.g., <code class="text-white bg-black bg-opacity-50 px-1 rounded">db.js</code> or <code class="text-white bg-black bg-opacity-50 px-1 rounded">config/database.js</code>).</p>
                                 <p class="text-xs text-gray-400 mb-2"><strong>Node.js (mongodb):</strong></p>
+                                <pre class="text-xs text-gray-500 bg-gray-900 p-2 rounded mb-1"><code># First install: npm install mongodb</code></pre>
                                 <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto mb-3"><code>const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/${data.mongodbCredentials.dbName}');
 await client.connect();
 const db = client.db('${data.mongodbCredentials.dbName}');</code></pre>
                                 <p class="text-xs text-gray-400 mb-2"><strong>Python (pymongo):</strong></p>
+                                <pre class="text-xs text-gray-500 bg-gray-900 p-2 rounded mb-1"><code># First install: pip install pymongo</code></pre>
                                 <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto"><code>from pymongo import MongoClient
 client = MongoClient('mongodb://${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/')
 db = client['${data.mongodbCredentials.dbName}']</code></pre>
