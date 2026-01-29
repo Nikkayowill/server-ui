@@ -950,11 +950,6 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         </div>
       </div>
     </section>
-      </section>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Features List -->
     <section class="bg-black py-12 md:py-20">
