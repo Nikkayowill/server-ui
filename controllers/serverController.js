@@ -1214,10 +1214,15 @@ async function setupDatabaseAsync(server, databaseType, userId) {
       
       console.log(`[DB] PostgreSQL installed successfully on server ${server.id}`);
       
-      // Store in database that PostgreSQL is installed
+      // Store credentials in database
       await pool.query(
-        'UPDATE servers SET postgres_installed = true WHERE id = $1',
-        [server.id]
+        `UPDATE servers SET 
+          postgres_installed = true,
+          postgres_db_name = $1,
+          postgres_db_user = $2,
+          postgres_db_password = $3
+         WHERE id = $4`,
+        ['app_db', dbUser, dbPass, server.id]
       );
     } else if (databaseType === 'mongodb') {
       console.log(`[DB] Installing MongoDB on server ${server.id}...`);
@@ -1238,10 +1243,13 @@ async function setupDatabaseAsync(server, databaseType, userId) {
       
       console.log(`[DB] MongoDB installed successfully on server ${server.id}`);
       
-      // Store in database that MongoDB is installed
+      // Store in database
       await pool.query(
-        'UPDATE servers SET mongodb_installed = true WHERE id = $1',
-        [server.id]
+        `UPDATE servers SET 
+          mongodb_installed = true,
+          mongodb_db_name = $1
+         WHERE id = $2`,
+        ['app_db', server.id]
       );
     }
   } catch (error) {

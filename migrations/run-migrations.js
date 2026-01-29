@@ -53,6 +53,9 @@ async function runMigrations() {
     const { addPasswordResetTokens } = require('./009-add-password-reset-tokens');
     await addPasswordResetTokens();
     
+    const { up: addDatabaseCredentials } = require('./011-add-database-credentials');
+    await addDatabaseCredentials();
+    
   } catch (error) {
     // Safely rollback transaction (may not have started if error was early)
     try {
