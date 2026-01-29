@@ -73,7 +73,12 @@ exports.serverAction = async (req, res) => {
         console.log(`DigitalOcean action ${doAction} sent to droplet ${server.droplet_id}`);
       } catch (doError) {
         console.error('DigitalOcean action error:', doError.response?.data || doError.message);
-        return res.redirect('/dashboard?error=Failed to execute action on server');
+        // If droplet not found (404), continue anyway - it might be manually deleted
+        if (doError.response?.status === 404) {
+          console.log(`Droplet ${server.droplet_id} not found in DO, updating database only`);
+        } else {
+          return res.redirect('/dashboard?error=Failed to execute action on server');
+        }
       }
     }
 
