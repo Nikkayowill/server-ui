@@ -37,7 +37,7 @@ const deploymentLimiter = rateLimit({
   message: 'Too many deployments, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.session.userId || req.ip // Rate limit by user ID
+  keyGenerator: (req) => req.session?.userId?.toString() || 'anonymous' // Rate limit by user ID only
 });
 
 module.exports = {

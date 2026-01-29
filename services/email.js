@@ -202,7 +202,7 @@ async function sendServerRequestEmail(userEmail, region, serverName) {
     </div>
   `;
   
-  return sendEmail(userEmail, subject, text, html);
+  return sendEmail(userEmail, subject, html, text);
 }
 
 // Send server ready email with credentials

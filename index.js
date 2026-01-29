@@ -29,6 +29,7 @@ const pgSession = require('connect-pg-simple')(session);
 const pool = require('./db');
 const { getHTMLHead, getDashboardHead, getScripts, getFooter, getAuthLinks, getResponsiveNav } = require('./helpers');
 const { createRealServer: createRealServerService, syncDigitalOceanDroplets: syncDigitalOceanDropletsService } = require('./services/digitalocean');
+const { sendServerRequestEmail } = require('./services/email');
 const { requireAuth, requireAdmin } = require('./middleware/auth');
 const { generalLimiter, contactLimiter, paymentLimiter, emailVerifyLimiter, deploymentLimiter } = require('./middleware/rateLimiter');
 const pagesController = require('./controllers/pagesController');
@@ -183,6 +184,7 @@ app.get('/confirm-email/:token', authController.confirmEmail);
 app.get('/verify-email', authController.showVerifyEmail);
 app.post('/verify-email', emailVerifyLimiter, authController.verifyEmailCode);
 app.post('/resend-code', emailVerifyLimiter, authController.resendCode);
+app.get('/resend-confirmation', emailVerifyLimiter, authController.resendConfirmation);
 
 // Password reset routes
 app.get('/forgot-password', csrfProtection, authController.showForgotPassword);
