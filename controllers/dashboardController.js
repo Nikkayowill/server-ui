@@ -266,19 +266,19 @@ const buildDashboardTemplate = (data) => {
                     <h3 class="text-xl sm:text-2xl font-bold text-white">Server Online - Ready to Deploy!</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
+                    <div class="bg-gray-900 bg-opacity-40 rounded-lg p-4 backdrop-blur border border-white border-opacity-10">
                         <div class="text-white font-bold mb-2 flex items-center gap-2">
                             <span class="text-xl">1️⃣</span> Deploy with Git
                         </div>
                         <p class="text-white text-opacity-90 text-sm">Scroll down to Deployment section → paste your repo URL → automatic setup</p>
                     </div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
+                    <div class="bg-gray-900 bg-opacity-40 rounded-lg p-4 backdrop-blur border border-white border-opacity-10">
                         <div class="text-white font-bold mb-2 flex items-center gap-2">
                             <span class="text-xl">2️⃣</span> Connect via SSH
                         </div>
                         <p class="text-white text-opacity-90 text-sm">See SSH Access section below for credentials and connection command</p>
                     </div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur">
+                    <div class="bg-gray-900 bg-opacity-40 rounded-lg p-4 backdrop-blur border border-white border-opacity-10">
                         <div class="text-white font-bold mb-2 flex items-center gap-2">
                             <span class="text-xl">3️⃣</span> Add Domain + SSL
                         </div>
