@@ -75,10 +75,10 @@ h3, h4 {
     background-clip: text;
 }
 
-/* True black background with subtle moonshine */
+/* True black background */
 body {
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(ellipse at 50% 0%, #141428 0%, #000000 60%);
+    background: #000000;
     color: var(--text-primary);
     position: relative;
     overflow-x: hidden;
