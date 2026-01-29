@@ -1228,7 +1228,8 @@ async function setupDatabaseAsync(server, databaseType, userId) {
       console.log(`[DB] Installing MongoDB on server ${server.id}...`);
       
       // Add official MongoDB repository (mongodb-org not in default Ubuntu repos)
-      await execSSH(conn, `curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg`);
+      // Use --batch and --yes flags for non-interactive GPG import
+      await execSSH(conn, `curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg --batch --yes --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg`);
       await execSSH(conn, `echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list`);
       await execSSH(conn, `apt update`);
       
