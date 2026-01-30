@@ -858,7 +858,10 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <div class="max-w-screen-xl px-8 md:px-12 lg:px-16 mx-auto text-center relative z-20 hero-content">
         <!-- Hero Heading with Frosted Glass Effect -->
         <div class="relative inline-block mb-6 z-30">
-          <h1 class="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight" data-text="Your own VPS. Deployed in minutes. No DevOps headaches.">
+          <!-- Dark backdrop for text visibility -->
+          <div class="absolute -inset-8 bg-black/60 backdrop-blur-xl rounded-2xl" style="z-index: -1;"></div>
+          
+          <h1 class="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight px-6 py-4" data-text="Your own VPS. Deployed in minutes. No DevOps headaches.">
             Your own VPS.<br class="sm:hidden"> Deployed in minutes.<br class="sm:hidden"> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">No DevOps headaches.</span>
           </h1>
         </div>
