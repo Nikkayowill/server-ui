@@ -1116,10 +1116,12 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Final CTA Section -->
-    <section class="bg-black py-20 md:py-28 relative">
-      <!-- Subtle cyan glow from above -->
-      <div class="absolute inset-0 bg-gradient-to-b from-cyan-900/10 to-transparent pointer-events-none"></div>
-      <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center">
+    <section class="bg-black py-20 md:py-28 relative overflow-hidden">
+      <!-- Radial gradient reflection matching hero colors -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 100%, rgba(96, 165, 250, 0.15) 0%, rgba(232, 121, 249, 0.1) 35%, rgba(94, 234, 212, 0.08) 65%, transparent 100%);"></div>
+      </div>
+      <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center relative z-10">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
         <p class="mb-8 text-lg text-gray-300">Deploy your server in minutes. No credit card required to explore.</p>
         <a href="/register" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
