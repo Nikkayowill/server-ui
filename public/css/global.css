@@ -127,91 +127,35 @@
     22%, 94% { opacity: 0; transform: scale(0.9); }
 }
 
-/* Ice blue lightning streaks - zig-zag natural shape, subtle/muffled */
-.lightning-streak {
+/* SVG Lightning - thin strokes with many branches */
+.lightning-svg {
     position: absolute;
-    background: linear-gradient(to bottom, 
-        rgba(135, 206, 250, 0.25) 0%, 
-        rgba(45, 167, 223, 0.2) 30%,
-        rgba(100, 181, 246, 0.15) 60%,
-        rgba(64, 196, 255, 0.1) 80%,
-        transparent 100%);
     pointer-events: none;
     z-index: 12;
-    filter: blur(2px) drop-shadow(0 0 20px rgba(135, 206, 250, 0.3)) drop-shadow(0 0 40px rgba(45, 167, 223, 0.2));
+    filter: drop-shadow(0 0 8px rgba(135, 206, 250, 0.4)) drop-shadow(0 0 16px rgba(135, 206, 250, 0.2));
 }
 
 .streak-1 {
-    width: 180px;
-    height: 220px;
+    width: 100px;
+    height: 300px;
     top: -50px;
     left: 25%;
-    clip-path: polygon(
-        /* Main bolt */
-        48% 0%, 50% 0%, 52% 15%, 54% 15%, 46% 25%, 48% 25%, 51% 40%, 53% 40%, 45% 55%, 47% 55%, 50% 70%, 52% 70%, 44% 85%, 46% 85%, 48% 100%, 46% 100%, 44% 87%, 42% 87%, 48% 72%, 46% 72%, 43% 57%, 41% 57%, 49% 42%, 47% 42%, 44% 27%, 42% 27%, 50% 17%, 48% 17%,
-        /* Branch 1 - right at 15% */
-        54% 15%, 56% 15%, 68% 22%, 66% 22%, 54% 17%, 52% 17%,
-        /* Branch 2 - left at 25% */
-        46% 25%, 44% 25%, 30% 35%, 32% 35%, 46% 27%, 48% 27%,
-        /* Branch 3 - right at 40% */
-        53% 40%, 55% 40%, 70% 52%, 68% 52%, 53% 42%, 51% 42%,
-        /* Branch 4 - sub-branch right at 45% */
-        55% 45%, 57% 45%, 63% 50%, 61% 50%, 55% 47%, 53% 47%,
-        /* Branch 5 - left at 55% */
-        45% 55%, 43% 55%, 28% 68%, 30% 68%, 45% 57%, 47% 57%,
-        /* Branch 6 - right at 70% */
-        52% 70%, 54% 70%, 64% 80%, 62% 80%, 52% 72%, 50% 72%
-    );
     animation: lightning-strike-1 10s ease-in-out infinite;
 }
 
 .streak-2 {
-    width: 200px;
-    height: 250px;
+    width: 100px;
+    height: 300px;
     top: -80px;
     right: 30%;
-    clip-path: polygon(
-        /* Main bolt */
-        51% 0%, 53% 0%, 50% 12%, 52% 12%, 56% 22%, 58% 22%, 48% 35%, 50% 35%, 54% 48%, 56% 48%, 46% 60%, 48% 60%, 52% 75%, 54% 75%, 44% 90%, 46% 90%, 50% 100%, 48% 100%, 44% 92%, 42% 92%, 50% 77%, 48% 77%, 44% 62%, 42% 62%, 52% 50%, 50% 50%, 46% 37%, 44% 37%, 54% 24%, 52% 24%, 48% 14%, 46% 14%,
-        /* Branch 1 - right at 12% */
-        52% 12%, 54% 12%, 66% 18%, 64% 18%, 52% 14%, 50% 14%,
-        /* Branch 2 - right at 22% */
-        58% 22%, 60% 22%, 75% 30%, 73% 30%, 58% 24%, 56% 24%,
-        /* Branch 3 - left at 35% */
-        48% 35%, 46% 35%, 32% 45%, 34% 45%, 48% 37%, 50% 37%,
-        /* Branch 4 - right at 48% */
-        56% 48%, 58% 48%, 72% 58%, 70% 58%, 56% 50%, 54% 50%,
-        /* Branch 5 - sub-branch right at 52% */
-        58% 52%, 60% 52%, 68% 56%, 66% 56%, 58% 54%, 56% 54%,
-        /* Branch 6 - left at 60% */
-        46% 60%, 44% 60%, 28% 72%, 30% 72%, 46% 62%, 48% 62%,
-        /* Branch 7 - right at 75% */
-        54% 75%, 56% 75%, 66% 82%, 64% 82%, 54% 77%, 52% 77%
-    );
     animation: lightning-strike-2 12s ease-in-out infinite 3s;
 }
 
 .streak-3 {
-    width: 170px;
-    height: 200px;
+    width: 100px;
+    height: 300px;
     top: -40px;
     left: 60%;
-    clip-path: polygon(
-        /* Main bolt */
-        49% 0%, 51% 0%, 53% 18%, 55% 18%, 47% 30%, 49% 30%, 52% 45%, 54% 45%, 46% 60%, 48% 60%, 50% 75%, 52% 75%, 43% 92%, 45% 92%, 48% 100%, 46% 100%, 43% 94%, 41% 94%, 48% 77%, 46% 77%, 44% 62%, 42% 62%, 50% 47%, 48% 47%, 45% 32%, 43% 32%, 51% 20%, 49% 20%,
-        /* Branch 1 - right at 18% */
-        55% 18%, 57% 18%, 68% 26%, 66% 26%, 55% 20%, 53% 20%,
-        /* Branch 2 - left at 30% */
-        47% 30%, 45% 30%, 32% 40%, 34% 40%, 47% 32%, 49% 32%,
-        /* Branch 3 - right at 45% */
-        54% 45%, 56% 45%, 70% 56%, 68% 56%, 54% 47%, 52% 47%,
-        /* Branch 4 - sub-branch right at 50% */
-        56% 50%, 58% 50%, 65% 54%, 63% 54%, 56% 52%, 54% 52%,
-        /* Branch 5 - left at 60% */
-        46% 60%, 44% 60%, 30% 72%, 32% 72%, 46% 62%, 48% 62%,
-        /* Branch 6 - right at 75% */
-        52% 75%, 54% 75%, 62% 84%, 60% 84%, 52% 77%, 50% 77%
-    );
     animation: lightning-strike-3 15s ease-in-out infinite 7s;
 }
 
