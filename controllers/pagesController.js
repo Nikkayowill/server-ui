@@ -1058,8 +1058,12 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Pricing Dose Section -->
-    <section class="gradient-descending py-20 md:py-28">
-      <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
+    <section class="gradient-descending py-20 md:py-28 relative overflow-hidden">
+      <!-- Brand color gradient overlay -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle farthest-corner at 17.6% 50.7%, rgba(45, 167, 223, 0.15) 0%, rgba(0, 0, 0, 1) 90%);"></div>
+      </div>
+      <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto relative z-10">
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Pricing</h2>
         <p class="text-center text-gray-400 text-base mb-16">Simple monthly pricing · No usage surprises · Cancel anytime</p>
         
