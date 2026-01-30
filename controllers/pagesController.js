@@ -1074,7 +1074,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-12">
             <!-- Basic -->
-            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
+            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6 relative">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-amber-500 text-black text-xs font-bold px-4 py-1 rounded-full shadow-lg">3-DAY FREE TRIAL</div>
               <h3 class="text-lg font-bold text-white mb-1">Basic</h3>
               <p class="text-2xl font-extrabold text-white mb-3">$25<span class="text-sm font-normal text-gray-400">/mo</span></p>
               <p class="text-gray-400 text-sm mb-4">1 GB RAM · 1 vCPU · 25 GB SSD</p>
@@ -1082,7 +1083,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
             </div>
             
             <!-- Priority -->
-            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
+            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6 relative">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-amber-500 text-black text-xs font-bold px-4 py-1 rounded-full shadow-lg">3-DAY FREE TRIAL</div>
               <h3 class="text-lg font-bold text-white mb-1">Priority</h3>
               <p class="text-2xl font-extrabold text-white mb-3">$60<span class="text-sm font-normal text-gray-400">/mo</span></p>
               <p class="text-gray-400 text-sm mb-4">2 GB RAM · 2 vCPUs · 50 GB SSD</p>
@@ -1090,20 +1092,13 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
             </div>
             
             <!-- Premium -->
-            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
+            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6 relative">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-amber-500 text-black text-xs font-bold px-4 py-1 rounded-full shadow-lg">3-DAY FREE TRIAL</div>
               <h3 class="text-lg font-bold text-white mb-1">Premium</h3>
               <p class="text-2xl font-extrabold text-white mb-3">$120<span class="text-sm font-normal text-gray-400">/mo</span></p>
               <p class="text-gray-400 text-sm mb-4">4 GB RAM · 2 vCPUs · 80 GB SSD</p>
               <a href="/pay?plan=premium" class="block w-full px-4 py-2 bg-transparent border border-blue-500 text-blue-400 text-center text-sm font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Premium</a>
             </div>
-          </div>
-          
-          <!-- Free Trial Offer -->
-          <div class="bg-gray-900/50 border border-brand/30 rounded-lg p-6 text-center max-w-xl mx-auto">
-            <p class="text-brand font-medium mb-2">3-Day Free Trial</p>
-            <p class="text-white text-lg font-bold mb-2">Test everything risk-free</p>
-            <p class="text-gray-400 text-sm mb-4">Full server access for 3 days. No credit card required. Cancel anytime from your dashboard  —  no hoops, no emails.</p>
-            <a href="/register" class="inline-block px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Start free trial</a>
           </div>
           
           <p class="text-center text-gray-500 text-sm mt-8">
