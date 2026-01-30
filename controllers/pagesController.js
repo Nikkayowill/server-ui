@@ -857,10 +857,10 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         
         <!-- Hero Heading with Spotlight -->
         <div class="relative inline-block mb-6">
-          <!-- Spotlight backdrop -->
-          <div class="absolute inset-0 bg-gradient-radial from-blue-500/20 via-blue-600/10 to-transparent blur-3xl scale-150 -z-10"></div>
+          <!-- Spotlight backdrop - white moonlight glow -->
+          <div class="absolute inset-0 bg-gradient-radial from-white/40 via-white/20 to-transparent blur-3xl scale-150"></div>
           
-          <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white leading-tight transform transition-transform duration-300 hover:scale-105" style="text-shadow: 0 0 40px rgba(59, 130, 246, 0.5), 0 0 80px rgba(59, 130, 246, 0.3), 0 4px 20px rgba(0, 0, 0, 0.8);">
+          <h1 class="relative z-10 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white leading-tight transform transition-transform duration-300 hover:scale-105" style="text-shadow: 0 0 40px rgba(255, 255, 255, 0.4), 0 0 80px rgba(255, 255, 255, 0.2), 0 4px 20px rgba(0, 0, 0, 0.8);">
             Your own VPS.<br class="sm:hidden"> Deployed in minutes.<br class="sm:hidden"> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">No DevOps headaches.</span>
           </h1>
         </div>
