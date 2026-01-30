@@ -111,25 +111,28 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.hero-title::before {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  background: white;
-  text-shadow: 0 0 1px #ffffff;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-color: white;
-  -webkit-mask: linear-gradient(#000 0 0) luminance;
-  mask: linear-gradient(#000 0 0) luminance, alpha;
-  backdrop-filter: blur(19px) brightness(12.5);
-  -webkit-backdrop-filter: blur(19px) brightness(12.5);
-  -webkit-text-stroke: 1px white;
-  display: flex;
-  margin: auto;
-  z-index: 1;
-  pointer-events: none;
+/* Desktop only - frosted glass effect */
+@media (min-width: 769px) {
+  .hero-title::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    background: white;
+    text-shadow: 0 0 1px #ffffff;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-color: white;
+    -webkit-mask: linear-gradient(#000 0 0) luminance;
+    mask: linear-gradient(#000 0 0) luminance, alpha;
+    backdrop-filter: blur(19px) brightness(12.5);
+    -webkit-backdrop-filter: blur(19px) brightness(12.5);
+    -webkit-text-stroke: 1px white;
+    display: flex;
+    margin: auto;
+    z-index: 1;
+    pointer-events: none;
+  }
 }
 
 /* ============================================
