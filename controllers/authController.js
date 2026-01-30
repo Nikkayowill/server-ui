@@ -29,7 +29,7 @@ ${getHTMLHead('Register - Basement')}
     ${getResponsiveNav(req)}
     
     <main class="bg-black min-h-screen flex items-center justify-center py-12 px-4">
-      <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded p-6 shadow-[0_0_70px_rgba(0,102,255,0.25),0_0_110px_rgba(0,102,255,0.12),inset_0_0_35px_rgba(0,102,255,0.03)]">
+      <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded mt-10 p-6 shadow-[0_0_70px_rgba(0,102,255,0.25),0_0_110px_rgba(0,102,255,0.12),inset_0_0_35px_rgba(0,102,255,0.03)]">
         <h1 class="text-2xl font-bold text-white text-center mb-6">CREATE ACCOUNT</h1>
         
         <form method="POST" action="/register" class="space-y-4">
