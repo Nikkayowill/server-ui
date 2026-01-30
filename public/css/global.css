@@ -749,3 +749,85 @@ input:focus, textarea:focus, select:focus {
     background-size: 200% 200%;
     animation: liquid-flow 3s ease infinite;
 }
+
+/* ============================================
+   CLOUD GLOW CARDS - "Why Choose" Section
+   Subtle rotating glow effect with cloud colors
+   ============================================ */
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.cloud-glow-card {
+    --border-width: 2px;
+    --glow-offset: -15px;
+    --animation-duration: 12s;
+    
+    position: relative;
+    background: linear-gradient(135deg, rgba(30, 30, 50, 0.9), rgba(20, 20, 40, 0.95));
+    border: solid var(--border-width) transparent;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.cloud-glow-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Rotating border glow */
+.cloud-glow-card::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--border-width) * -1);
+    border: inherit;
+    border-radius: inherit;
+    background: conic-gradient(
+        from var(--angle),
+        var(--cloud-clr) 40%,
+        transparent,
+        var(--cloud-clr) 60%
+    ) border-box;
+    mask: conic-gradient(#fff 0 0) subtract,
+          conic-gradient(#fff 0 0) padding-box;
+    -webkit-mask: conic-gradient(#fff 0 0) subtract,
+                  conic-gradient(#fff 0 0) padding-box;
+    opacity: 0.4;
+    z-index: 1;
+    animation: cloud-glow-rotate var(--animation-duration) linear infinite;
+}
+
+/* Outer glow/halo effect */
+.cloud-glow-card::after {
+    content: "";
+    position: absolute;
+    inset: var(--glow-offset);
+    z-index: -1;
+    background: conic-gradient(
+        from var(--angle),
+        var(--cloud-clr),
+        transparent,
+        var(--cloud-clr)
+    );
+    border-radius: 1rem;
+    filter: blur(18px);
+    opacity: 0.35;
+    animation: cloud-glow-rotate var(--animation-duration) linear infinite;
+}
+
+/* Content layer above glows */
+.cloud-glow-card > div {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes cloud-glow-rotate {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg;
+    }
+}

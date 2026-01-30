@@ -917,21 +917,29 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement?</h2>
         <p class="text-center text-gray-400 text-base max-w-2xl mx-auto" style="margin-bottom: 5rem;">Because you want control and convenience — not one or the other.</p>
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
-            <h3 class="mb-3 text-xl font-bold text-white">Your server, not a black box</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">Every project runs on its own VPS with full root access. No abstractions, no vendor lock-in, no hidden limits.</p>
+          <div class="cloud-glow-card" style="--cloud-clr: rgba(135, 206, 250, 0.6);">
+            <div class="p-6">
+              <h3 class="mb-3 text-xl font-bold text-white">Your server, not a black box</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">Every project runs on its own VPS with full root access. No abstractions, no vendor lock-in, no hidden limits.</p>
+            </div>
           </div>
-          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
-            <h3 class="mb-3 text-xl font-bold text-white">Zero-setup infrastructure</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">Servers are provisioned with SSL, Nginx, Node.js, Python, and Git deployments automatically — ready in minutes.</p>
+          <div class="cloud-glow-card" style="--cloud-clr: rgba(173, 216, 230, 0.6);">
+            <div class="p-6">
+              <h3 class="mb-3 text-xl font-bold text-white">Zero-setup infrastructure</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">Servers are provisioned with SSL, Nginx, Node.js, Python, and Git deployments automatically — ready in minutes.</p>
+            </div>
           </div>
-          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
-            <h3 class="mb-3 text-xl font-bold text-white">Talk to the builder</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">When something breaks or you have a question, you're talking directly to the person who built the system — not a ticket queue.</p>
+          <div class="cloud-glow-card" style="--cloud-clr: rgba(176, 224, 230, 0.6);">
+            <div class="p-6">
+              <h3 class="mb-3 text-xl font-bold text-white">Talk to the builder</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">When something breaks or you have a question, you're talking directly to the person who built the system — not a ticket queue.</p>
+            </div>
           </div>
-          <div class="p-6 bg-gray-900 border border-blue-500/20 rounded-lg hover:border-blue-400/50 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(135,206,250,0.3)] transition-all duration-300">
-            <h3 class="mb-3 text-xl font-bold text-white">Simple, predictable pricing</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">Flat monthly pricing. Cancel anytime. No usage surprises or complicated tiers.</p>
+          <div class="cloud-glow-card" style="--cloud-clr: rgba(100, 181, 246, 0.6);">
+            <div class="p-6">
+              <h3 class="mb-3 text-xl font-bold text-white">Simple, predictable pricing</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">Flat monthly pricing. Cancel anytime. No usage surprises or complicated tiers.</p>
+            </div>
           </div>
         </div>
       </div>
