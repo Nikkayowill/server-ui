@@ -769,7 +769,7 @@ input:focus, textarea:focus, select:focus {
     position: relative;
     background: linear-gradient(135deg, rgba(30, 30, 50, 0.9), rgba(20, 20, 40, 0.95));
     border: solid var(--border-width) transparent;
-    border-radius: 0.5rem;
+    border-radius: 0;
     transition: transform 0.3s ease;
 }
 
@@ -794,7 +794,7 @@ input:focus, textarea:focus, select:focus {
           conic-gradient(#fff 0 0) padding-box;
     -webkit-mask: conic-gradient(#fff 0 0) subtract,
                   conic-gradient(#fff 0 0) padding-box;
-    opacity: 0.4;
+    opacity: 0.6;
     z-index: 1;
     animation: cloud-glow-rotate var(--animation-duration) linear infinite;
 }
@@ -811,9 +811,9 @@ input:focus, textarea:focus, select:focus {
         transparent,
         var(--cloud-clr)
     );
-    border-radius: 1rem;
+    border-radius: 0;
     filter: blur(18px);
-    opacity: 0.35;
+    opacity: 0.55;
     animation: cloud-glow-rotate var(--animation-duration) linear infinite;
 }
 
