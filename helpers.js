@@ -69,8 +69,12 @@ function getScripts(...scripts) {
 // Footer
 function getFooter() {
   return `
-    <footer class="py-12 mt-20">
-        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer class="py-12 mt-20 relative overflow-hidden">
+        <!-- Gradient reflection continuing from Final CTA -->
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 0%, rgba(96, 165, 250, 0.15) 0%, rgba(232, 121, 249, 0.1) 35%, rgba(94, 234, 212, 0.08) 65%, transparent 100%);"></div>
+        </div>
+        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
             <div>
                 <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
@@ -93,7 +97,7 @@ function getFooter() {
                 </ul>
             </div>
         </div>
-        <div class="text-center mt-10 pt-6 max-w-6xl mx-auto px-8">
+        <div class="text-center mt-10 pt-6 max-w-6xl mx-auto px-8 relative z-10">
             <p class="mb-3">
                 <a href="/is-this-safe" class="text-brand text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
             </p>
