@@ -945,48 +945,47 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       </div>
     </section>
 
-    <!-- How It Works -->
-    <section class="gradient-peak-light py-20 md:py-28 relative overflow-hidden">
-      <!-- Brand color gradient overlay (centered) -->
+    <!-- Unified Gradient Section: How It Works → What You Get → Pricing -->
+    <section class="py-0 relative overflow-hidden" style="background: linear-gradient(to bottom, #0a1628 0%, #001a33 20%, #003d7a 40%, #0066ff 50%, #003d7a 60%, #002b5c 80%, #0a1628 100%);">
+      <!-- Brand color gradient overlay -->
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle farthest-corner at 50% 50%, rgba(45, 167, 223, 0.18) 0%, rgba(0, 0, 0, 1) 85%);"></div>
+        <div class="absolute inset-0" style="background-image: radial-gradient(ellipse 1200px 800px at 50% 50%, rgba(45, 167, 223, 0.15) 0%, transparent 70%);"></div>
       </div>
-      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 relative z-10">
-        <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">How it works</h2>
-        <p class="text-center text-gray-400 text-base mb-16">Payment to live server in minutes.</p>
-        <ol class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          <!-- Step 1 -->
-          <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">1</div>
-            <h3 class="mb-2 text-xl font-bold text-white">Pick a plan</h3>
-            <p class="text-gray-300">Checkout. Done. Provisioning starts automatically.</p>
-          </li>
-          <!-- Step 2 -->
-          <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">2</div>
-            <h3 class="mb-2 text-xl font-bold text-white">We build your server</h3>
-            <p class="text-gray-300">Ubuntu, Nginx, Node, Python, SSL. Pre-configured and secure.</p>
-          </li>
-          <!-- Step 3 -->
-          <li class="relative text-center">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">3</div>
-            <h3 class="mb-2 text-xl font-bold text-white">Deploy your app</h3>
-            <p class="text-gray-300">SSH in or push from GitHub. Your choice.</p>
-          </li>
-        </ol>
-        <p class="text-center text-gray-500 text-sm mt-12">That's it. Your server is live.</p>
-      </div>
-    </section>
 
-    <!-- What You Get -->
-    <section class="gradient-ascending py-20 md:py-28 relative overflow-hidden">
-      <!-- Brand color gradient overlay (flipped from pricing) -->
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle farthest-corner at 82.4% 49.3%, rgba(45, 167, 223, 0.12) 0%, rgba(0, 0, 0, 1) 90%);"></div>
+      <!-- How It Works -->
+      <div class="py-20 md:py-28 relative z-10">
+        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
+          <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">How it works</h2>
+          <p class="text-center text-gray-400 text-base mb-16">Payment to live server in minutes.</p>
+          <ol class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <!-- Step 1 -->
+            <li class="relative text-center">
+              <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">1</div>
+              <h3 class="mb-2 text-xl font-bold text-white">Pick a plan</h3>
+              <p class="text-gray-300">Checkout. Done. Provisioning starts automatically.</p>
+            </li>
+            <!-- Step 2 -->
+            <li class="relative text-center">
+              <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">2</div>
+              <h3 class="mb-2 text-xl font-bold text-white">We build your server</h3>
+              <p class="text-gray-300">Ubuntu, Nginx, Node, Python, SSL. Pre-configured and secure.</p>
+            </li>
+            <!-- Step 3 -->
+            <li class="relative text-center">
+              <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">3</div>
+              <h3 class="mb-2 text-xl font-bold text-white">Deploy your app</h3>
+              <p class="text-gray-300">SSH in or push from GitHub. Your choice.</p>
+            </li>
+          </ol>
+          <p class="text-center text-gray-500 text-sm mt-12">That's it. Your server is live.</p>
+        </div>
       </div>
-      <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto relative z-10">
-        <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">What you get</h2>
-        <p class="text-center text-white text-base" style="margin-bottom: 5rem;">Everything you need to run a production app  —  without managing infrastructure from scratch.</p>
+
+      <!-- What You Get -->
+      <div class="py-20 md:py-28 relative z-10">
+        <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
+          <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">What you get</h2>
+          <p class="text-center text-white text-base" style="margin-bottom: 5rem;">Everything you need to run a production app  —  without managing infrastructure from scratch.</p>
         
         <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           <li class="flex items-start gap-3 p-6 bg-gray-900/50">
@@ -1063,56 +1062,52 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         
         <p class="text-center text-white text-sm" style="margin-top: 5rem;">You can install anything else you need  —  it's your server.</p>
       </div>
-    </section>
 
-    <!-- Pricing Dose Section -->
-    <section class="gradient-descending py-20 md:py-28 relative overflow-hidden">
-      <!-- Brand color gradient overlay -->
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle farthest-corner at 17.6% 50.7%, rgba(45, 167, 223, 0.15) 0%, rgba(0, 0, 0, 1) 90%);"></div>
-      </div>
-      <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto relative z-10">
-        <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Pricing</h2>
-        <p class="text-center text-gray-400 text-base mb-16">Simple monthly pricing · No usage surprises · Cancel anytime</p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-12">
-          <!-- Basic -->
-          <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
-            <h3 class="text-lg font-bold text-white mb-1">Basic</h3>
-            <p class="text-2xl font-extrabold text-white mb-3">$25<span class="text-sm font-normal text-gray-400">/mo</span></p>
-            <p class="text-gray-400 text-sm mb-4">1 GB RAM · 1 vCPU · 25 GB SSD</p>
-            <a href="/pay?plan=basic" class="block w-full px-4 py-2 bg-transparent border border-blue-500 text-blue-400 text-center text-sm font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Basic</a>
+      <!-- Pricing Dose -->
+      <div class="py-20 md:py-28 relative z-10">
+        <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
+          <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Pricing</h2>
+          <p class="text-center text-gray-400 text-base mb-16">Simple monthly pricing · No usage surprises · Cancel anytime</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-12">
+            <!-- Basic -->
+            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
+              <h3 class="text-lg font-bold text-white mb-1">Basic</h3>
+              <p class="text-2xl font-extrabold text-white mb-3">$25<span class="text-sm font-normal text-gray-400">/mo</span></p>
+              <p class="text-gray-400 text-sm mb-4">1 GB RAM · 1 vCPU · 25 GB SSD</p>
+              <a href="/pay?plan=basic" class="block w-full px-4 py-2 bg-transparent border border-blue-500 text-blue-400 text-center text-sm font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Basic</a>
+            </div>
+            
+            <!-- Priority -->
+            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
+              <h3 class="text-lg font-bold text-white mb-1">Priority</h3>
+              <p class="text-2xl font-extrabold text-white mb-3">$60<span class="text-sm font-normal text-gray-400">/mo</span></p>
+              <p class="text-gray-400 text-sm mb-4">2 GB RAM · 2 vCPUs · 50 GB SSD</p>
+              <a href="/pay?plan=priority" class="block w-full px-4 py-2 bg-blue-600 text-white text-center text-sm font-medium rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Priority</a>
+            </div>
+            
+            <!-- Premium -->
+            <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
+              <h3 class="text-lg font-bold text-white mb-1">Premium</h3>
+              <p class="text-2xl font-extrabold text-white mb-3">$120<span class="text-sm font-normal text-gray-400">/mo</span></p>
+              <p class="text-gray-400 text-sm mb-4">4 GB RAM · 2 vCPUs · 80 GB SSD</p>
+              <a href="/pay?plan=premium" class="block w-full px-4 py-2 bg-transparent border border-blue-500 text-blue-400 text-center text-sm font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Premium</a>
+            </div>
           </div>
           
-          <!-- Priority -->
-          <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
-            <h3 class="text-lg font-bold text-white mb-1">Priority</h3>
-            <p class="text-2xl font-extrabold text-white mb-3">$60<span class="text-sm font-normal text-gray-400">/mo</span></p>
-            <p class="text-gray-400 text-sm mb-4">2 GB RAM · 2 vCPUs · 50 GB SSD</p>
-            <a href="/pay?plan=priority" class="block w-full px-4 py-2 bg-blue-600 text-white text-center text-sm font-medium rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Priority</a>
+          <!-- Free Trial Offer -->
+          <div class="bg-gray-900/50 border border-brand/30 rounded-lg p-6 text-center max-w-xl mx-auto">
+            <p class="text-brand font-medium mb-2">3-Day Free Trial</p>
+            <p class="text-white text-lg font-bold mb-2">Test everything risk-free</p>
+            <p class="text-gray-400 text-sm mb-4">Full server access for 3 days. No credit card required. Cancel anytime from your dashboard  —  no hoops, no emails.</p>
+            <a href="/register" class="inline-block px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Start free trial</a>
           </div>
           
-          <!-- Premium -->
-          <div class="bg-gray-900 border border-blue-500/20 rounded-lg p-6">
-            <h3 class="text-lg font-bold text-white mb-1">Premium</h3>
-            <p class="text-2xl font-extrabold text-white mb-3">$120<span class="text-sm font-normal text-gray-400">/mo</span></p>
-            <p class="text-gray-400 text-sm mb-4">4 GB RAM · 2 vCPUs · 80 GB SSD</p>
-            <a href="/pay?plan=premium" class="block w-full px-4 py-2 bg-transparent border border-blue-500 text-blue-400 text-center text-sm font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Deploy Premium</a>
-          </div>
+          <p class="text-center text-gray-500 text-sm mt-8">
+            No contracts. Cancel anytime. 
+            <a href="/pricing" class="text-brand hover:text-cyan-400 underline">Full pricing details →</a>
+          </p>
         </div>
-        
-        <!-- Free Trial Offer -->
-        <div class="bg-gray-900/50 border border-brand/30 rounded-lg p-6 text-center max-w-xl mx-auto">
-          <p class="text-brand font-medium mb-2">3-Day Free Trial</p>
-          <p class="text-white text-lg font-bold mb-2">Test everything risk-free</p>
-          <p class="text-gray-400 text-sm mb-4">Full server access for 3 days. No credit card required. Cancel anytime from your dashboard  —  no hoops, no emails.</p>
-          <a href="/register" class="inline-block px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Start free trial</a>
-        </div>
-        
-        <p class="text-center text-gray-500 text-sm mt-8">
-          No contracts. Cancel anytime. 
-          <a href="/pricing" class="text-brand hover:text-cyan-400 underline">Full pricing details →</a>
-        </p>
       </div>
     </section>
 
