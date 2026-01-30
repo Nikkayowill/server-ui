@@ -976,85 +976,82 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- What You Get -->
     <section class="gradient-peak-light py-12 md:py-20">
-      <div class="max-w-3xl px-8 md:px-12 lg:px-16 mx-auto">
+      <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-center text-white">What you get</h2>
         <p class="text-center text-gray-400 text-base mb-12">Everything you need to run a production app — without managing infrastructure from scratch.</p>
         
-        <!-- 3D Card Stack -->
-        <div class="card-stack-container">
-          <ul class="card-stack">
-            <li class="card-stack-item" style="--i: 0;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Dedicated VPS (not shared hosting)</h3>
-                <p>Your own isolated server environment</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 1;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Ubuntu 22.04 LTS</h3>
-                <p>Latest stable long-term support release</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 2;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Full root SSH access</h3>
-                <p>Complete control over your server</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 3;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Nginx preconfigured</h3>
-                <p>Web server ready to serve your apps</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 4;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Node.js & Python environments</h3>
-                <p>Modern runtime environments pre-installed</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 5;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>One-click GitHub deployments</h3>
-                <p>Deploy directly from your repository</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 6;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Custom domains supported</h3>
-                <p>Point any domain to your server</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 7;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Free SSL certificates (Let's Encrypt)</h3>
-                <p>HTTPS encryption included</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 8;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Secure-by-default configuration</h3>
-                <p>Hardened security settings out of the box</p>
-              </div>
-            </li>
-            <li class="card-stack-item" style="--i: 9;">
-              <span class="card-icon">✓</span>
-              <div class="card-content">
-                <h3>Cancel anytime</h3>
-                <p>No long-term contracts or commitments</p>
-              </div>
-            </li>
-          </ul>
-        </div>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Dedicated VPS (not shared hosting)</h3>
+              <p class="text-gray-400 text-sm">Your own isolated server environment</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Ubuntu 22.04 LTS</h3>
+              <p class="text-gray-400 text-sm">Latest stable long-term support release</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Full root SSH access</h3>
+              <p class="text-gray-400 text-sm">Complete control over your server</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Nginx preconfigured</h3>
+              <p class="text-gray-400 text-sm">Web server ready to serve your apps</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Node.js & Python environments</h3>
+              <p class="text-gray-400 text-sm">Modern runtime environments pre-installed</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">One-click GitHub deployments</h3>
+              <p class="text-gray-400 text-sm">Deploy directly from your repository</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Custom domains supported</h3>
+              <p class="text-gray-400 text-sm">Point any domain to your server</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Free SSL certificates (Let's Encrypt)</h3>
+              <p class="text-gray-400 text-sm">HTTPS encryption included</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Secure-by-default configuration</h3>
+              <p class="text-gray-400 text-sm">Hardened security settings out of the box</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-gray-900/50 border border-blue-500/20 rounded-lg">
+            <span class="text-brand text-xl flex-shrink-0 mt-1">✓</span>
+            <div>
+              <h3 class="text-white font-semibold mb-1">Cancel anytime</h3>
+              <p class="text-gray-400 text-sm">No long-term contracts or commitments</p>
+            </div>
+          </li>
+        </ul>
         
         <p class="text-center text-gray-500 text-sm mt-12">You can install anything else you need — it's your server.</p>
       </div>
