@@ -10,7 +10,7 @@ ${getHTMLHead('About - Basement')}
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-8">ABOUT BASEMENT</h1>
         
-        <p class="text-gray-300 text-lg mb-8">I'm Kayo, an IT Web Programming student at NSCC in Halifax, graduating May 2026. Before switching to tech, I worked as a tradesman—different tools, same problem-solving mindset.</p>
+        <p class="text-gray-300 text-lg mb-8">I'm Kayo, an IT Web Programming student at NSCC in Halifax, graduating May 2026. Before switching to tech, I worked as a tradesman — different tools, same problem-solving mindset.</p>
         
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">WHY I BUILT THIS</h2>
         
@@ -22,7 +22,7 @@ ${getHTMLHead('About - Basement')}
         
         <p class="text-gray-300 mb-4">I'm running this as a small operation. The infrastructure is enterprise-grade (DigitalOcean droplets), but I'm building features incrementally based on what users actually need. Current setup handles individual developers and small teams deploying web apps, APIs, and services.</p>
         
-        <p class="text-gray-300 mb-8">As more people use it, I expand capabilities. I prioritize stability over speed—every feature gets tested properly before it ships.</p>
+        <p class="text-gray-300 mb-8">As more people use it, I expand capabilities. I prioritize stability over speed — every feature gets tested properly before it ships.</p>
         
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">THE TECH</h2>
         
@@ -208,7 +208,7 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li>Our total liability to you shall not exceed the amount you paid us in the 12 months preceding the claim</li>
           <li>We are not responsible for losses resulting from unauthorized access to your account</li>
           <li>We are not liable for third-party services, content, or links provided through our platform</li>
-          <li>We do not guarantee backup or recovery of your data—regular backups are your responsibility</li>
+          <li>We do not guarantee backup or recovery of your data — regular backups are your responsibility</li>
         </ul>
 
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">11. Indemnification</h2>
@@ -582,7 +582,7 @@ ${getHTMLHead('FAQ - Basement')}
             </div>
             <div class="faq-answer overflow-hidden transition-all duration-300 max-h-0">
               <div class="px-6 pb-6">
-                <p class="text-gray-400">DigitalOcean gives you raw infrastructure (Droplets) or a managed app platform. Droplets require you to install and maintain everything yourself — Ubuntu, Nginx, SSL, runtimes, and deployments. The App Platform automates deployments but does not give full server control. Clouded Basement automates provisioning and deployment while giving you full root access to your own server, saving you setup time without losing control.</p>
+                <p class="text-gray-400">DigitalOcean gives you raw infrastructure (Droplets) or a managed app platform. Droplets require you to install and maintain everything yourself  —  Ubuntu, Nginx, SSL, runtimes, and deployments. The App Platform automates deployments but does not give full server control. Clouded Basement automates provisioning and deployment while giving you full root access to your own server, saving you setup time without losing control.</p>
               </div>
             </div>
           </div>
@@ -646,7 +646,7 @@ ${getHTMLHead('Documentation - Basement')}
     <main class="bg-black min-h-screen pt-24 pb-16">
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Documentation</h1>
-        <p class="text-xl text-gray-300 mb-12">Complete guide to Basement hosting—what you get, how to use it, and technical details.</p>
+        <p class="text-xl text-gray-300 mb-12">Complete guide to Basement hosting — what you get, how to use it, and technical details.</p>
         
         <h2 class="text-2xl font-bold text-white mt-12 mb-4">What You Get</h2>
         <p class="text-gray-300 mb-4">When you sign up, you get a dedicated cloud server (VPS - Virtual Private Server). This is a complete Linux machine that you control.</p>
@@ -866,7 +866,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           </h1>
         </div>
         
-        <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 xl:px-48 relative z-30">Clouded Basement provisions a production-ready Linux server with SSL, Git deployments, and full root access — so you can ship without babysitting infrastructure.</p>
+        <p class="mb-8 text-lg font-normal text-gray-400 lg:text-xl sm:px-16 xl:px-48 relative z-30">Clouded Basement provisions a production-ready Linux server with SSL, Git deployments, and full root access  —  so you can ship without babysitting infrastructure.</p>
         <div class="flex flex-col mb-4 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
           <a href="/pricing" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
             Deploy your server
@@ -899,7 +899,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
             <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
-            <span class="text-sm text-gray-300">Cancel anytime — no contracts</span>
+            <span class="text-sm text-gray-300">Cancel anytime  —  no contracts</span>
           </li>
           <li class="flex flex-col md:flex-row items-center md:items-start gap-2">
             <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -915,7 +915,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     <section class="py-20 md:py-28 gradient-basement-glimpse">
       <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement?</h2>
-        <p class="text-center text-gray-400 text-base max-w-2xl mx-auto mb-16">Because you want control and convenience — not one or the other.</p>
+        <p class="text-center text-gray-400 text-base max-w-2xl mx-auto mb-32">Because you want control and convenience  —  not one or the other.</p>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div class="cloud-glow-card" style="--cloud-clr: rgba(135, 206, 250, 0.6);">
             <div class="p-6">
@@ -926,13 +926,13 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           <div class="cloud-glow-card" style="--cloud-clr: rgba(173, 216, 230, 0.6);">
             <div class="p-6">
               <h3 class="mb-3 text-xl font-bold text-white">Zero-setup infrastructure</h3>
-              <p class="text-gray-300 text-sm leading-relaxed">Servers are provisioned with SSL, Nginx, Node.js, Python, and Git deployments automatically — ready in minutes.</p>
+              <p class="text-gray-300 text-sm leading-relaxed">Servers are provisioned with SSL, Nginx, Node.js, Python, and Git deployments automatically  —  ready in minutes.</p>
             </div>
           </div>
           <div class="cloud-glow-card" style="--cloud-clr: rgba(176, 224, 230, 0.6);">
             <div class="p-6">
               <h3 class="mb-3 text-xl font-bold text-white">Talk to the builder</h3>
-              <p class="text-gray-300 text-sm leading-relaxed">When something breaks or you have a question, you're talking directly to the person who built the system — not a ticket queue.</p>
+              <p class="text-gray-300 text-sm leading-relaxed">When something breaks or you have a question, you're talking directly to the person who built the system  —  not a ticket queue.</p>
             </div>
           </div>
           <div class="cloud-glow-card" style="--cloud-clr: rgba(100, 181, 246, 0.6);">
@@ -967,7 +967,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           <li class="relative text-center">
             <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-black text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">3</div>
             <h3 class="mb-2 text-xl font-bold text-white">Deploy from GitHub or SSH</h3>
-            <p class="text-gray-300">You receive SSH credentials by email and can deploy your app from GitHub with one click — or manage everything yourself.</p>
+            <p class="text-gray-300">You receive SSH credentials by email and can deploy your app from GitHub with one click  —  or manage everything yourself.</p>
           </li>
         </ol>
         <p class="text-center text-gray-500 text-sm mt-12">That's it. Your server is live and fully yours.</p>
@@ -978,7 +978,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     <section class="gradient-peak-light py-20 md:py-28">
       <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">What you get</h2>
-        <p class="text-center text-white text-base" style="margin-bottom: 5rem;">Everything you need to run a production app — without managing infrastructure from scratch.</p>
+        <p class="text-center text-white text-base" style="margin-bottom: 5rem;">Everything you need to run a production app  —  without managing infrastructure from scratch.</p>
         
         <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           <li class="flex items-start gap-3 p-6 bg-gray-900/50">
@@ -1053,7 +1053,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           </li>
         </ul>
         
-        <p class="text-center text-white text-sm" style="margin-top: 5rem;">You can install anything else you need — it's your server.</p>
+        <p class="text-center text-white text-sm" style="margin-top: 5rem;">You can install anything else you need  —  it's your server.</p>
       </div>
     </section>
 
@@ -1097,7 +1097,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <div class="bg-gray-900/50 border border-brand/30 rounded-lg p-6 text-center max-w-xl mx-auto">
           <p class="text-brand font-medium mb-2">3-Day Free Trial</p>
           <p class="text-white text-lg font-bold mb-2">Test everything risk-free</p>
-          <p class="text-gray-400 text-sm mb-4">Full server access for 3 days. No credit card required. Cancel anytime from your dashboard—no hoops, no emails.</p>
+          <p class="text-gray-400 text-sm mb-4">Full server access for 3 days. No credit card required. Cancel anytime from your dashboard  —  no hoops, no emails.</p>
           <a href="/register" class="inline-block px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">Start free trial</a>
         </div>
         
@@ -1193,7 +1193,7 @@ ${getHTMLHead('Is Clouded Basement safe to use? - Basement')}
         <!-- Section 1: Honest opener -->
         <section class="mb-12">
           <p class="text-gray-300 text-lg leading-relaxed mb-4">Clouded Basement is a new product, built and operated by a solo developer.</p>
-          <p class="text-gray-300 text-lg leading-relaxed">If you're deciding whether to trust it with your code or data, that's a fair question — and this page exists to answer it honestly.</p>
+          <p class="text-gray-300 text-lg leading-relaxed">If you're deciding whether to trust it with your code or data, that's a fair question  —  and this page exists to answer it honestly.</p>
         </section>
         
         <!-- Section 2: What you actually get -->
@@ -1209,7 +1209,7 @@ ${getHTMLHead('Is Clouded Basement safe to use? - Basement')}
             <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Direct control over your files, processes, and data</li>
           </ul>
           
-          <p class="text-gray-300 text-lg leading-relaxed">Clouded Basement automates setup and deployment — but the server itself is yours.</p>
+          <p class="text-gray-300 text-lg leading-relaxed">Clouded Basement automates setup and deployment  —  but the server itself is yours.</p>
         </section>
         
         <!-- Section 3: What happens if something goes wrong -->
@@ -1238,7 +1238,7 @@ ${getHTMLHead('Is Clouded Basement safe to use? - Basement')}
           </ul>
           
           <p class="text-gray-300 text-lg leading-relaxed mb-4">That said, Clouded Basement is not an enterprise compliance platform.</p>
-          <p class="text-gray-300 text-lg leading-relaxed">If you require HIPAA, SOC 2, or regulated data hosting, this service is not a fit — and that's intentional.</p>
+          <p class="text-gray-300 text-lg leading-relaxed">If you require HIPAA, SOC 2, or regulated data hosting, this service is not a fit  —  and that's intentional.</p>
         </section>
         
         <!-- Section 5: Support & accountability -->
@@ -1254,8 +1254,8 @@ ${getHTMLHead('Is Clouded Basement safe to use? - Basement')}
           <p class="text-gray-300 text-lg leading-relaxed mb-4">If Clouded Basement doesn't work for you:</p>
           
           <ul class="list-none space-y-2 mb-6">
-            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Cancel anytime — no contracts</li>
-            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Full root access — it's your server</li>
+            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Cancel anytime  —  no contracts</li>
+            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Full root access  —  it's your server</li>
             <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-brand">Direct support from the founder</li>
           </ul>
           
