@@ -3,6 +3,27 @@
    Only brand colors and custom overrides
    ============================================ */
 
+/* Cloud Gradient Journey - Dark Basement to Bright Sky */
+.gradient-basement-glimpse {
+    background: linear-gradient(to bottom, #000000, #0a1628, #001a33);
+}
+
+.gradient-ascending {
+    background: linear-gradient(to bottom, #001a33, #002b5c, #003d7a);
+}
+
+.gradient-peak-light {
+    background: linear-gradient(to bottom, #003d7a, #0066ff, #004080);
+}
+
+.gradient-descending {
+    background: linear-gradient(to bottom, #004080, #002b5c, #0a1628);
+}
+
+.gradient-return-dark {
+    background: linear-gradient(to bottom, #0a1628, #000000);
+}
+
 /* Most Popular Badge - explicit styles for Tailwind v4 */
 .popular-badge {
     position: absolute;

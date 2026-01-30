@@ -912,7 +912,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Why Choose Section -->
-    <section class="py-20 md:py-28 bg-gradient-to-b from-black via-[#0a1628] to-[#001a33]">
+    <section class="py-20 md:py-28 gradient-basement-glimpse">
       <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement?</h2>
         <p class="text-center text-gray-400 text-base max-w-2xl mx-auto" style="margin-bottom: 5rem;">Because you want control and convenience — not one or the other.</p>
@@ -946,7 +946,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- How It Works -->
-    <section class="bg-gradient-to-b from-[#001a33] via-[#002b5c] to-[#003d7a] py-12 md:py-20">
+    <section class="gradient-ascending py-12 md:py-20">
       <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-center text-white">How it works</h2>
         <p class="text-center text-gray-400 text-base mb-16">From payment to a live server in just a few minutes.</p>
@@ -975,7 +975,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- What You Get -->
-    <section class="bg-gradient-to-b from-[#003d7a] via-[#0066ff] to-[#004080] py-12 md:py-20">
+    <section class="gradient-peak-light py-12 md:py-20">
       <div class="max-w-3xl px-8 md:px-12 lg:px-16 mx-auto">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-center text-white">What you get</h2>
         <p class="text-center text-gray-400 text-base mb-12">Everything you need to run a production app — without managing infrastructure from scratch.</p>
@@ -1061,7 +1061,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Pricing Dose Section -->
-    <section class="bg-gradient-to-b from-[#004080] via-[#002b5c] to-[#0a1628] py-12 md:py-20">
+    <section class="gradient-descending py-12 md:py-20">
       <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-center text-white">Pricing</h2>
         <p class="text-center text-gray-400 text-base">Simple monthly pricing · No usage surprises · Cancel anytime</p>
@@ -1108,7 +1108,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Micro FAQ Section -->
-    <section class="bg-gradient-to-b from-[#0a1628] to-black py-8">
+    <section class="gradient-return-dark py-8">
       <div class="max-w-2xl px-8 md:px-12 lg:px-16 mx-auto text-center">
         <p class="text-gray-400 text-sm">
           <span class="text-gray-500">Got questions about server ownership or setup?</span>
