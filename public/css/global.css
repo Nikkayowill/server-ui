@@ -127,6 +127,69 @@
     22%, 94% { opacity: 0; transform: scale(0.9); }
 }
 
+/* Yellow lightning streaks */
+.lightning-streak {
+    position: absolute;
+    width: 3px;
+    background: linear-gradient(to bottom, 
+        rgba(255, 223, 0, 0.9) 0%, 
+        rgba(255, 193, 7, 0.8) 20%,
+        rgba(255, 223, 0, 0.7) 40%,
+        rgba(255, 193, 7, 0.6) 60%,
+        transparent 100%);
+    pointer-events: none;
+    z-index: 16;
+    box-shadow: 0 0 10px rgba(255, 223, 0, 0.8), 0 0 20px rgba(255, 193, 7, 0.5);
+}
+
+.streak-1 {
+    height: 200px;
+    top: -50px;
+    left: 25%;
+    transform: rotate(8deg);
+    animation: lightning-strike-1 10s ease-in-out infinite;
+}
+
+.streak-2 {
+    height: 250px;
+    top: -80px;
+    right: 30%;
+    transform: rotate(-12deg);
+    animation: lightning-strike-2 12s ease-in-out infinite 3s;
+}
+
+.streak-3 {
+    height: 180px;
+    top: -40px;
+    left: 60%;
+    transform: rotate(5deg);
+    animation: lightning-strike-3 15s ease-in-out infinite 7s;
+}
+
+@keyframes lightning-strike-1 {
+    0%, 100% { opacity: 0; }
+    5% { opacity: 1; }
+    6% { opacity: 0; }
+    7% { opacity: 0.9; }
+    8%, 95% { opacity: 0; }
+}
+
+@keyframes lightning-strike-2 {
+    0%, 100% { opacity: 0; }
+    4% { opacity: 1; }
+    4.5% { opacity: 0; }
+    5% { opacity: 0.8; }
+    5.5%, 96% { opacity: 0; }
+}
+
+@keyframes lightning-strike-3 {
+    0%, 100% { opacity: 0; }
+    3% { opacity: 1; }
+    3.3% { opacity: 0; }
+    3.6% { opacity: 0.7; }
+    4%, 97% { opacity: 0; }
+}
+
 /* PS5 Design System - Brand Colors & Motion */
 :root {
     --brand-blue: #87CEFA;

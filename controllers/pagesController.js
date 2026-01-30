@@ -859,6 +859,10 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <div class="cloud cloud-3"></div>
         <div class="lightning lightning-1"></div>
         <div class="lightning lightning-2"></div>
+        <!-- Yellow lightning streaks from sky -->
+        <div class="lightning-streak streak-1"></div>
+        <div class="lightning-streak streak-2"></div>
+        <div class="lightning-streak streak-3"></div>
       </div>
       
       <div class="max-w-screen-xl px-8 md:px-12 lg:px-16 mx-auto text-center relative z-20">
