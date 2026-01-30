@@ -915,8 +915,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     <section class="py-20 md:py-28 gradient-basement-glimpse">
       <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement?</h2>
-        <p class="text-center text-gray-400 text-base max-w-2xl mx-auto mb-32">Because you want control and convenience  —  not one or the other.</p>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <p class="text-center text-gray-400 text-base max-w-2xl mx-auto mb-16">Because you want control and convenience  —  not one or the other.</p>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-16">
           <div class="cloud-glow-card" style="--cloud-clr: rgba(135, 206, 250, 0.6);">
             <div class="p-6">
               <h3 class="mb-3 text-xl font-bold text-white">Your server, not a black box</h3>
