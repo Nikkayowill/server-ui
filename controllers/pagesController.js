@@ -1115,13 +1115,15 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       </div>
     </section>
 
-    <!-- Final CTA Section -->
+    <!-- Final CTA Section with Footer -->
     <section class="py-20 md:py-28 relative overflow-hidden">
       <!-- Radial gradient reflection matching hero colors -->
       <div class="absolute inset-0 pointer-events-none">
         <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 100%, rgba(96, 165, 250, 0.15) 0%, rgba(232, 121, 249, 0.1) 35%, rgba(94, 234, 212, 0.08) 65%, transparent 100%);"></div>
       </div>
-      <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center relative z-10">
+      
+      <!-- CTA Content -->
+      <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center relative z-10 mb-20">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
         <p class="mb-8 text-lg text-gray-300">Deploy your server in minutes. No credit card required to explore.</p>
         <a href="/register" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
@@ -1131,9 +1133,41 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           </svg>
         </a>
       </div>
+      
+      <!-- Footer Content -->
+      <footer class="relative z-10 py-12">
+        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
+            </div>
+            <div>
+                <h4 class="text-blue-400 text-sm font-bold mb-3">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="/about" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">About</a></li>
+                    <li><a href="/pricing" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Pricing</a></li>
+                    <li><a href="/docs" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Documentation</a></li>
+                    <li><a href="/contact" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Contact</a></li>
+                    <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-blue-400 text-sm font-bold mb-3">Legal</h4>
+                <ul class="space-y-2">
+                    <li><a href="/terms" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Terms of Service</a></li>
+                    <li><a href="/privacy" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center mt-10 pt-6 max-w-6xl mx-auto px-8">
+            <p class="mb-3">
+                <a href="/is-this-safe" class="text-brand text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
+            </p>
+            <p class="text-gray-500 text-xs">&copy; ${new Date().getFullYear()} Basement. All rights reserved.</p>
+        </div>
+      </footer>
     </section>
     
-    ${getFooter()}
     ${getScripts('nav.js')}
   `);
 };
