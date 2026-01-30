@@ -856,8 +856,6 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <div class="hero-stripes"></div>
       
       <div class="max-w-screen-xl px-8 md:px-12 lg:px-16 mx-auto text-center relative z-20 hero-content">
-        <img src="/Architype Van Der Leck.svg" alt="Clouded Basement Logo" class="mx-auto mb-8 h-28 md:h-36 lg:h-40 w-auto relative z-30">
-        
         <!-- Hero Heading with Frosted Glass Effect -->
         <div class="relative inline-block mb-6 z-30">
           <h1 class="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight" data-text="Your own VPS. Deployed in minutes. No DevOps headaches.">

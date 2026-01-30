@@ -99,17 +99,18 @@
   mix-blend-mode: difference;
 }
 
-/* Hero Content Styling */
+/* Hero Content Styling - Enhanced visibility */
 .hero-content {
-  mix-blend-mode: difference;
-  -webkit-mix-blend-mode: difference;
-  filter: invert(1);
+  position: relative;
 }
 
-/* Frosted Glass Text Effect */
+/* Frosted Glass Text Effect with strong contrast */
 .hero-title {
   position: relative;
   color: white;
+  text-shadow: 0 0 80px rgba(0, 0, 0, 0.9), 
+               0 0 40px rgba(0, 0, 0, 0.8),
+               0 4px 20px rgba(0, 0, 0, 0.95);
 }
 
 .hero-title::before {
