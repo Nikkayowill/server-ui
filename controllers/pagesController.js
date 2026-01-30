@@ -912,8 +912,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Why Choose Section -->
-    <section class="py-20 md:py-28 gradient-basement-glimpse">
-      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
+    <section class="py-20 md:py-28 gradient-basement-glimpse relative overflow-hidden">
+      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 relative z-10">
         <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">Why Choose Clouded Basement?</h2>
         <p class="text-center text-gray-400 text-base max-w-2xl mx-auto mb-16">Because you want control and convenience  —  not one or the other.</p>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-16">
@@ -980,7 +980,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
               <p class="text-gray-300">SSH in or push from GitHub. Your choice.</p>
             </li>
           </ol>
-          <p class="text-center text-gray-500 text-sm mt-12">That's it. Your server is live.</p>
+          <p class="text-center text-gray-500 text-sm mt-20">That's it. Your server is live.</p>
         </div>
       </div>
 
@@ -1115,10 +1115,12 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Micro FAQ Section - Seamless gradient bridge -->
-    <section class="py-12 md:py-16 relative overflow-hidden" style="background: linear-gradient(to bottom, #0a1628 0%, #000000 100%);">
-      <!-- Subtle brand glow fading down -->
+    <section class="py-12 md:py-16 relative overflow-hidden" style="background: linear-gradient(to bottom, #0a0812 0%, #050408 50%, #000000 100%);">
+      <!-- Subtle brand glow fading from top and bottom -->
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute inset-0" style="background-image: radial-gradient(ellipse 800px 400px at 50% 0%, rgba(45, 167, 223, 0.06) 0%, transparent 60%);"></div>
+        <div class="absolute inset-0" style="background-image: 
+          radial-gradient(ellipse 800px 300px at 50% 0%, rgba(90, 85, 149, 0.08) 0%, transparent 50%),
+          radial-gradient(ellipse 800px 300px at 50% 100%, rgba(96, 165, 250, 0.06) 0%, transparent 50%);"></div>
       </div>
       <div class="max-w-2xl px-8 md:px-12 lg:px-16 mx-auto text-center relative z-10">
         <p class="text-gray-400 text-sm">

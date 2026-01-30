@@ -5,7 +5,7 @@
 
 /* Cloud Gradient Journey - Dark Basement to Bright Sky */
 .gradient-basement-glimpse {
-    background: linear-gradient(to bottom, #000000, #0a1628, #001a33);
+    background: linear-gradient(to bottom, #000000, #0a1628, #001a33, #0a0812);
     position: relative;
     overflow: hidden;
 }
