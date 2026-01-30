@@ -946,13 +946,13 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Unified Gradient Section: How It Works → What You Get → Pricing -->
-    <section class="py-0 relative overflow-hidden" style="background: linear-gradient(to bottom, #d9b3e2 0%, #d2a4e3 8.333%, #ca94e2 16.667%, #c183e1 25%, #b673de 33.333%, #aa63da 41.667%, #9d54d5 50%, #9047ce 58.333%, #833cc7 66.667%, #7533bf 75%, #692eb7 83.333%, #5d2bae 91.667%, #522ca4 100%);">
-      <!-- Subtle brand color wash -->
+    <section class="py-0 relative overflow-hidden" style="background: linear-gradient(to bottom, #0a0812 0%, #1a1535 10%, #2a2555 20%, #3a3570 30%, #4a4585 40%, #5a5595 50%, #4a4585 60%, #3a3570 70%, #2a2555 80%, #1a1535 90%, #0a0812 100%);">
+      <!-- Rainbow ray colors as subtle overlay -->
       <div class="absolute inset-0 pointer-events-none">
         <div class="absolute inset-0" style="background-image: 
-          radial-gradient(ellipse 1600px 600px at 50% 15%, rgba(45, 167, 223, 0.05) 0%, transparent 50%),
-          radial-gradient(ellipse 1600px 600px at 50% 50%, rgba(45, 167, 223, 0.06) 0%, transparent 50%),
-          radial-gradient(ellipse 1600px 600px at 50% 85%, rgba(45, 167, 223, 0.05) 0%, transparent 50%);"></div>
+          radial-gradient(ellipse 1400px 500px at 30% 20%, rgba(96, 165, 250, 0.06) 0%, transparent 50%),
+          radial-gradient(ellipse 1400px 500px at 70% 50%, rgba(232, 121, 249, 0.05) 0%, transparent 50%),
+          radial-gradient(ellipse 1400px 500px at 40% 80%, rgba(94, 234, 212, 0.04) 0%, transparent 50%);"></div>
       </div>
 
       <!-- How It Works -->
