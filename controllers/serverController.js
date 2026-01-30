@@ -100,9 +100,9 @@ exports.deleteServer = async (req, res) => {
   try {
     const userId = req.session.userId;
 
-    // Get user's server
+    // Get user's server and email
     const serverResult = await pool.query(
-      'SELECT * FROM servers WHERE user_id = $1',
+      'SELECT s.*, u.email FROM servers s JOIN users u ON s.user_id = u.id WHERE s.user_id = $1',
       [userId]
     );
 
@@ -111,46 +111,39 @@ exports.deleteServer = async (req, res) => {
     }
 
     const server = serverResult.rows[0];
+    const userEmail = server.email;
 
-    // Find and destroy the DigitalOcean droplet
-    try {
-      // List all droplets with our tag
-      const dropletsResponse = await axios.get('https://api.digitalocean.com/v2/droplets?tag_name=basement-server', {
-        headers: {
-          'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      });
+    // Find droplet info for admin notification
+    let dropletId = server.droplet_id || 'Unknown';
+    let dropletIp = server.ip_address || 'Unknown';
 
-      // Find droplet matching this user
-      const droplet = dropletsResponse.data.droplets.find(d => 
-        d.name.startsWith(`basement-${userId}-`)
-      );
-
-      if (droplet) {
-        // Destroy the droplet
-        await axios.delete(`https://api.digitalocean.com/v2/droplets/${droplet.id}`, {
-          headers: {
-            'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        console.log(`Destroyed droplet ${droplet.id} for user ${userId}`);
-      } else {
-        console.log(`No droplet found for user ${userId}, proceeding with database cleanup`);
-      }
-    } catch (doError) {
-      console.error('DigitalOcean deletion error:', doError.response?.data || doError.message);
-      // Continue with database deletion even if DO call fails
-    }
-
-    // Delete server from database
+    // Delete server from database first (locks customer out immediately)
     await pool.query(
       'DELETE FROM servers WHERE user_id = $1',
       [userId]
     );
 
     console.log(`Deleted server record for user ${userId}`);
+
+    // Send admin notification email (don't wait for it)
+    const { sendEmail } = require('../services/email');
+    sendEmail({
+      to: 'support@cloudedbasement.ca',
+      subject: '🚨 Server Termination - Action Required',
+      html: `
+        <h2>Customer Terminated Server</h2>
+        <p><strong>User ID:</strong> ${userId}</p>
+        <p><strong>Email:</strong> ${userEmail}</p>
+        <p><strong>Droplet ID:</strong> ${dropletId}</p>
+        <p><strong>IP Address:</strong> ${dropletIp}</p>
+        <p><strong>Plan:</strong> ${server.plan || 'Unknown'}</p>
+        <p><strong>Time:</strong> ${new Date().toISOString()}</p>
+        <hr>
+        <p><strong>Action Required:</strong> Delete droplet ${dropletId} from DigitalOcean dashboard to stop billing.</p>
+        <p><a href="https://cloud.digitalocean.com/droplets/${dropletId}">View Droplet in DO Dashboard</a></p>
+      `
+    }).catch(err => console.error('Failed to send termination notification:', err));
+
     res.redirect('/pricing?message=Server deleted successfully');
   } catch (error) {
     console.error('Delete server error:', error);
