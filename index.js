@@ -246,10 +246,6 @@ app.post('/add-domain', requireAuth, csrfProtection, serverController.addDomain)
 // Enable SSL route
 app.post('/enable-ssl', requireAuth, csrfProtection, serverController.enableSSL);
 
-// Environment variables routes
-app.post('/add-env-var', requireAuth, csrfProtection, serverController.addEnvVar);
-app.post('/delete-env-var', requireAuth, csrfProtection, serverController.deleteEnvVar);
-
 // Dashboard route
 app.get('/dashboard', requireAuth, csrfProtection, dashboardController.showDashboard);
 app.post('/submit-ticket', requireAuth, csrfProtection, dashboardController.submitSupportTicket);

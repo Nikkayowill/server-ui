@@ -64,12 +64,6 @@ exports.showDashboard = async (req, res) => {
             'SELECT * FROM domains WHERE user_id = $1 ORDER BY created_at DESC',
             [userId]
         );
-        
-        // Get environment variables
-        const envVarsResult = hasServer ? await pool.query(
-            'SELECT * FROM environment_variables WHERE server_id = $1 ORDER BY key ASC',
-            [server.id]
-        ) : { rows: [] };
 
         // Get support tickets
         const ticketsResult = await pool.query(
@@ -95,7 +89,6 @@ exports.showDashboard = async (req, res) => {
             csrfToken,
             deployments: deploymentsResult.rows || [],
             domains: domainsResult.rows || [],
-            envVars: envVarsResult.rows || [],
             tickets: ticketsResult.rows || [],
             userEmail: req.session.userEmail,
             userRole: req.session.userRole,

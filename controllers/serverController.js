@@ -144,7 +144,7 @@ exports.deleteServer = async (req, res) => {
     sendEmail('support@cloudedbasement.ca', '🚨 Server Termination - Action Required', emailHtml, emailText)
       .catch(err => console.error('Failed to send termination notification:', err));
 
-    res.redirect('/pricing?message=Server deleted successfully');
+    res.redirect('/pricing?success=Plan cancelled successfully. We\'re sad to see you go!');
   } catch (error) {
     console.error('Delete server error:', error);
     res.redirect('/dashboard?error=Failed to delete server');
@@ -1335,74 +1335,7 @@ exports.deleteDeployment = async (req, res) => {
   }
 };
 
-// POST /add-env-var
-exports.addEnvVar = async (req, res) => {
-  try {
-    const { key, value } = req.body;
-    const userId = req.session.userId;
-    
-    if (!key || !value) {
-      return res.redirect('/dashboard?error=Key and value are required');
-    }
-    
-    // Validate key format (alphanumeric + underscore only)
-    if (!/^[A-Z_][A-Z0-9_]*$/.test(key)) {
-      return res.redirect('/dashboard?error=Invalid key format. Use uppercase letters, numbers, and underscores only (e.g., DATABASE_URL)');
-    }
-    
-    // Get user's server
-    const serverResult = await pool.query(
-      'SELECT id FROM servers WHERE user_id = $1',
-      [userId]
-    );
-    
-    if (serverResult.rows.length === 0) {
-      return res.redirect('/dashboard?error=No server found');
-    }
-    
-    const serverId = serverResult.rows[0].id;
-    
-    // Insert or update env var
-    await pool.query(
-      `INSERT INTO environment_variables (server_id, key, value, updated_at) 
-       VALUES ($1, $2, $3, NOW()) 
-       ON CONFLICT (server_id, key) 
-       DO UPDATE SET value = $3, updated_at = NOW()`,
-      [serverId, key, value]
-    );
-    
-    res.redirect('/dashboard?success=Environment variable added');
-  } catch (error) {
-    console.error('Add env var error:', error);
-    res.redirect('/dashboard?error=Failed to add environment variable');
-  }
-};
 
-// POST /delete-env-var
-exports.deleteEnvVar = async (req, res) => {
-  try {
-    const { id } = req.body;
-    const userId = req.session.userId;
-    
-    // SECURITY: Atomic delete with ownership verification (prevents TOCTOU race)
-    const result = await pool.query(
-      `DELETE FROM environment_variables ev
-       USING servers s
-       WHERE ev.id = $1 AND ev.server_id = s.id AND s.user_id = $2
-       RETURNING ev.id`,
-      [id, userId]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.redirect('/dashboard?error=Environment variable not found or access denied');
-    }
-    
-    res.redirect('/dashboard?success=Environment variable deleted');
-  } catch (error) {
-    console.error('Delete env var error:', error);
-    res.redirect('/dashboard?error=Failed to delete environment variable');
-  }
-};
 
 module.exports = {
   serverAction: exports.serverAction,
@@ -1411,7 +1344,5 @@ module.exports = {
   addDomain: exports.addDomain,
   enableSSL: exports.enableSSL,
   setupDatabase: exports.setupDatabase,
-  deleteDeployment: exports.deleteDeployment,
-  addEnvVar: exports.addEnvVar,
-  deleteEnvVar: exports.deleteEnvVar
+  deleteDeployment: exports.deleteDeployment
 };
