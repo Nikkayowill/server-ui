@@ -60,7 +60,6 @@ ${getHTMLHead('Register - Basement')}
               <span class="text-2xl font-mono font-bold text-blue-400 tracking-[0.3em]">${botCode}</span>
             </div>
             <input type="text" id="botCode" name="botCode" required maxlength="6"
-              onpaste="return false" oncopy="return false" oncut="return false"
               class="w-full px-4 py-2.5 bg-black/40 border border-red-500/50 rounded text-white text-center font-mono text-lg tracking-[0.3em] uppercase placeholder-gray-500 focus:outline-none focus:ring-1 transition-all"
               placeholder="TYPE CODE HERE">
           </div>
