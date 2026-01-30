@@ -1115,7 +1115,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Final CTA Section with Footer -->
-    <section class="py-20 md:py-28 relative overflow-hidden">
+    <section class="py-12 md:py-16 relative overflow-hidden">
       <!-- Radial gradient reflection matching hero colors (intensified) -->
       <div class="absolute inset-0 pointer-events-none">
         <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 100%, rgba(96, 165, 250, 0.25) 0%, rgba(232, 121, 249, 0.18) 35%, rgba(94, 234, 212, 0.14) 65%, transparent 100%);"></div>
