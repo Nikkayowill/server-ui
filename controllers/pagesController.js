@@ -879,7 +879,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           </a>
         </div>
         <p class="text-sm text-gray-500 mt-6">
-          Runs on DigitalOcean infrastructure · Full root access · Cancel anytime
+          Production-ready in 2 minutes · Full root SSH · No lock-in
           <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline ml-2">Is this safe? →</a>
         </p>
       </div>
