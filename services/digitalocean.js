@@ -8,6 +8,14 @@ const activePolls = new Map(); // serverId -> intervalId
 
 // Helper function to create real DigitalOcean server
 async function createRealServer(userId, plan, stripeChargeId = null) {
+  // Check if user has trial available
+  const userResult = await pool.query(
+    'SELECT trial_used, email FROM users WHERE id = $1',
+    [userId]
+  );
+  
+  const isTrial = !stripeChargeId && !userResult.rows[0].trial_used;
+  
   const specs = {
     basic: { ram: '1 GB', cpu: '1 CPU', storage: '25 GB SSD', bandwidth: '1 TB', slug: 's-1vcpu-1gb' },
     priority: { ram: '2 GB', cpu: '2 CPUs', storage: '50 GB SSD', bandwidth: '2 TB', slug: 's-2vcpu-2gb' },
@@ -139,11 +147,20 @@ echo "Setup complete!" > /root/setup.log
     // Save to database - wrapped in try-catch to handle race condition
     try {
       const result = await pool.query(
-        `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id, droplet_name)
-         VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6, $7, $8)
+        `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id, droplet_name, is_trial)
+         VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6, $7, $8, $9)
          RETURNING *`,
-        [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId, String(droplet.id), dropletName]
+        [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId, String(droplet.id), dropletName, isTrial]
       );
+      
+      // If this is a trial server, mark trial as used
+      if (isTrial) {
+        await pool.query(
+          'UPDATE users SET trial_used = true, trial_used_at = NOW() WHERE id = $1',
+          [userId]
+        );
+        console.log(`Trial marked as used for user ${userId}`);
+      }
 
       // Always poll for IP - droplet might not have it immediately
       console.log('Starting polling for droplet:', droplet.id, 'server:', result.rows[0].id);
@@ -208,10 +225,10 @@ echo "Setup complete!" > /root/setup.log
     
     // Save failed server to database
     const result = await pool.query(
-      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id)
-       VALUES ($1, $2, 'failed', 'N/A', 'root', 'N/A', $3, $4, NULL)
+      `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id, is_trial)
+       VALUES ($1, $2, 'failed', 'N/A', 'root', 'N/A', $3, $4, NULL, $5)
        RETURNING *`,
-      [userId, plan, JSON.stringify(specs[plan] || specs.basic), stripeChargeId]
+      [userId, plan, JSON.stringify(specs[plan] || specs.basic), stripeChargeId, isTrial]
     );
     
     return result.rows[0];

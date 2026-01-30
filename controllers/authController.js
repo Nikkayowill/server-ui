@@ -6,9 +6,24 @@ const { validationResult } = require('express-validator');
 const { getHTMLHead, getFooter, getScripts, getResponsiveNav, escapeHtml } = require('../helpers');
 const { createConfirmationCode, isCodeValid } = require('../utils/emailToken');
 const { sendConfirmationEmail } = require('../services/email');
+const { isDisposableEmail } = require('../utils/emailValidation');
+
+// Helper function to generate random verification code
+function generateBotCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars like O, 0, I, 1
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
 
 // GET /register - Display registration form with CSRF token
 const showRegister = (req, res) => {
+  // Generate and store bot verification code
+  const botCode = generateBotCode();
+  req.session.botCode = botCode;
+  
   res.send(`
 ${getHTMLHead('Register - Basement')}
     ${getResponsiveNav(req)}
@@ -38,6 +53,18 @@ ${getHTMLHead('Register - Basement')}
               class="w-full px-4 py-2.5 bg-black/40 border border-blue-500/30 rounded text-white placeholder-gray-500 focus:border-blue-500 focus:bg-black/60 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all">
           </div>
           
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">Verify you're human</label>
+            <p class="text-xs text-gray-400 mb-2">Type this code exactly as shown (no paste allowed):</p>
+            <div class="bg-black/60 border border-blue-500/40 rounded px-4 py-3 mb-2 text-center">
+              <span class="text-2xl font-mono font-bold text-blue-400 tracking-[0.3em]">${botCode}</span>
+            </div>
+            <input type="text" id="botCode" name="botCode" required maxlength="6"
+              onpaste="return false" oncopy="return false" oncut="return false"
+              class="w-full px-4 py-2.5 bg-black/40 border border-red-500/50 rounded text-white text-center font-mono text-lg tracking-[0.3em] uppercase placeholder-gray-500 focus:outline-none focus:ring-1 transition-all"
+              placeholder="TYPE CODE HERE">
+          </div>
+          
           <div class="flex items-start gap-2.5">
             <input type="checkbox" id="acceptTerms" name="acceptTerms" required 
               class="mt-0.5 w-4 h-4 cursor-pointer accent-blue-500">
@@ -46,7 +73,7 @@ ${getHTMLHead('Register - Basement')}
             </label>
           </div>
           
-          <button type="submit" class="w-full py-2.5 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all">
+          <button type="submit" id="submitBtn" disabled class="w-full py-2.5 bg-gray-600 text-white font-bold rounded cursor-not-allowed opacity-50 transition-all">
             Register
           </button>
         </form>
@@ -65,11 +92,49 @@ ${getHTMLHead('Register - Basement')}
     
     ${getFooter()}
     ${getScripts('nav.js')}
+    <script>
+      const botInput = document.getElementById('botCode');
+      const submitBtn = document.getElementById('submitBtn');
+      const correctCode = '${botCode}';
+      
+      botInput.addEventListener('input', function() {
+        const value = this.value.toUpperCase();
+        this.value = value;
+        
+        if (value === correctCode) {
+          // Correct code - green border, enable submit
+          this.classList.remove('border-red-500/50');
+          this.classList.add('border-green-500/50', 'focus:ring-green-500/50');
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('bg-gray-600', 'cursor-not-allowed', 'opacity-50');
+          submitBtn.classList.add('bg-blue-600', 'hover:bg-blue-500', 'hover:shadow-[0_0_30px_rgba(0,102,255,0.6)]', 'cursor-pointer');
+        } else {
+          // Incorrect code - red border, disable submit
+          this.classList.remove('border-green-500/50', 'focus:ring-green-500/50');
+          this.classList.add('border-red-500/50');
+          submitBtn.disabled = true;
+          submitBtn.classList.remove('bg-blue-600', 'hover:bg-blue-500', 'hover:shadow-[0_0_30px_rgba(0,102,255,0.6)]', 'cursor-pointer');
+          submitBtn.classList.add('bg-gray-600', 'cursor-not-allowed', 'opacity-50');
+        }
+      });
+    </script>
   `);
 };
 
 // POST /register - Handle registration with email confirmation
 const handleRegister = async (req, res) => {
+  // Validate bot verification code first
+  if (!req.body.botCode || req.body.botCode.toUpperCase() !== req.session.botCode) {
+    return res.status(400).send(`
+      <h1 style="color: #ff4444;">Verification Failed</h1>
+      <p>The verification code you entered is incorrect. Bots are not allowed.</p>
+      <a href="/register" style="color: #88FE00;">Try again</a>
+    `);
+  }
+  
+  // Clear the bot code so it can't be reused
+  delete req.session.botCode;
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const errorMessages = errors.array().map(err => escapeHtml(err.msg));
@@ -92,6 +157,32 @@ const handleRegister = async (req, res) => {
       `);
     }
     
+    // Block disposable email addresses
+    if (isDisposableEmail(email)) {
+      return res.status(400).send(`
+        <h1 style="color: #22d3ee;">Invalid Email</h1>
+        <p style="color: #e2e8f0;">Temporary/disposable email addresses are not allowed. Please use a permanent email address.</p>
+        <a href="/register" style="color: #22d3ee;">Go back</a>
+      `);
+    }
+    
+    // Get client IP address (handles proxy/load balancer)
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || 
+                     req.headers['x-real-ip'] || 
+                     req.connection.remoteAddress || 
+                     req.socket.remoteAddress;
+    
+    // Check if this IP has already used a trial in the last 30 days
+    const ipTrialCheck = await pool.query(
+      `SELECT COUNT(*) as count FROM users 
+       WHERE signup_ip = $1 
+       AND trial_used = true 
+       AND trial_used_at > NOW() - INTERVAL '30 days'`,
+      [clientIp]
+    );
+    
+    const ipHasUsedTrial = parseInt(ipTrialCheck.rows[0].count) > 0;
+    
     // Check if user exists
     const userCheck = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
     if (userCheck.rows.length > 0) {
@@ -104,10 +195,11 @@ const handleRegister = async (req, res) => {
     // Generate 6-digit confirmation code
     const { code, expiresAt } = createConfirmationCode();
     
-    // Insert user with code and terms acceptance timestamp
+    // Insert user with code, terms acceptance, and signup IP
     await pool.query(
-      'INSERT INTO users (email, password_hash, email_token, token_expires_at, terms_accepted_at) VALUES ($1, $2, $3, $4, NOW())',
-      [email, passwordHash, code, expiresAt]
+      `INSERT INTO users (email, password_hash, email_token, token_expires_at, terms_accepted_at, signup_ip, trial_used) 
+       VALUES ($1, $2, $3, $4, NOW(), $5, $6)`,
+      [email, passwordHash, code, expiresAt, clientIp, ipHasUsedTrial]
     );
 
     // Send confirmation email with code (non-blocking)
