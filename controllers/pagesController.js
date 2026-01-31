@@ -1129,20 +1129,20 @@ ${getHTMLHead('Documentation - Basement')}
             <div>
               <h3 class="text-xl font-semibold text-white mb-3">What "Ownership" Means</h3>
               <p class="text-gray-300 leading-relaxed mb-3">
-                Technically, the DigitalOcean droplet is created under Clouded Basement's account for billing aggregation. You do not have direct DigitalOcean dashboard access to the droplet.
+                The DigitalOcean droplet is created under Clouded Basement's account for billing aggregation. You do not have direct DigitalOcean dashboard access to the droplet.
               </p>
               <p class="text-gray-300 leading-relaxed mb-3">
-                <strong class="text-white">However, in practical terms:</strong>
+                <strong class="text-white">In practical terms:</strong>
               </p>
               <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
                 <li>You have root SSH access with full system control</li>
-                <li>Your data and applications are completely portable</li>
-                <li>You can disable platform automation anytime (change SSH password)</li>
-                <li>You control when the server is powered on/off or deleted</li>
-                <li>No vendor-specific dependencies exist in your application stack</li>
+                <li>Your data and applications are completely portable (standard Linux environment)</li>
+                <li>You can change SSH password anytime to disable platform automation</li>
+                <li>You control when the server is powered on/off or deleted via dashboard</li>
+                <li>No vendor-specific dependencies in your application stack</li>
               </ul>
               <p class="text-gray-300 leading-relaxed mt-4">
-                This is a <strong class="text-white">convenience layer over standard VPS hosting</strong>, not a proprietary platform. You're paying for automated provisioning and deployment tools, not sacrificing portability or control.
+                This is a managed provisioning layer over standard VPS infrastructure. The platform handles initial setup, deployment automation, and SSL configuration, but does not restrict or modify the underlying Linux system beyond initial configuration.
               </p>
             </div>
           </div>
@@ -1169,7 +1169,7 @@ ${getHTMLHead('Documentation - Basement')}
                   <strong class="text-white">One server per customer:</strong> Database constraint enforces single server limit. No support for multiple servers, staging environments, or load-balanced clusters. This is a deliberate scope limitation for early-stage customers.
                 </li>
                 <li>
-                  <strong class="text-white">No automated backups:</strong> DigitalOcean backups are disabled on droplets to reduce costs. You must implement your own backup strategy via cron jobs (mysqldump, rsync, tar). Contact support if you need a manual snapshot before risky operations.
+                  <strong class="text-white">Automated backups enabled:</strong> DigitalOcean weekly backups are active on all droplets. Backups rotate automatically (4 most recent kept). Restore requires manual coordination with support—contact support@cloudedbasement.ca if you need a server restored from backup.
                 </li>
               </ul>
             </div>
@@ -1238,6 +1238,138 @@ ${getHTMLHead('Documentation - Basement')}
               <p class="text-gray-300 leading-relaxed mt-4">
                 This platform is designed for <strong class="text-white">indie developers, side projects, prototypes, and small applications</strong> where simplicity and cost matter more than enterprise features.
               </p>
+            </div>
+          </div>
+        </section>
+        
+        <!-- ============================================ -->
+        <!-- SECTION 8: ROADMAP -->
+        <!-- ============================================ -->
+        <section class="mb-20">
+          <h2 class="text-3xl font-bold text-white mb-6 pb-3 border-b border-gray-800">Development Roadmap</h2>
+          
+          <p class="text-gray-300 leading-relaxed mb-8">
+            Solo founder. No bullshit timelines. This platform is feature-complete for launch. New features get built when real customers ask for them, not before.
+          </p>
+
+          <div class="space-y-6">
+            <!-- What's Working Now -->
+            <div class="bg-blue-950/30 border border-blue-900/30 rounded-lg p-8">
+              <h3 class="text-xl font-semibold text-white mb-4">✅ What's Working Now</h3>
+              <ul class="space-y-3 text-gray-300">
+                <li><strong class="text-white">Automated VPS provisioning:</strong> Ubuntu 22.04 droplet ready in 90-120 seconds with Node 20.x, Python 3, Rust, Go 1.21.6, Nginx, Certbot pre-installed</li>
+                <li><strong class="text-white">Git deployment:</strong> 6 project types supported (React/Vue frontend, Node.js backend, Python, Rust, Go, Static HTML). GitHub via tarball download, other hosts via git clone. 100MB repository limit enforced.</li>
+                <li><strong class="text-white">One-click SSL:</strong> Certbot automation via SSH, Let's Encrypt certificates installed in 60 seconds, auto-renewal configured</li>
+                <li><strong class="text-white">Server controls:</strong> Power on/off/restart/delete via DigitalOcean API. No SSH required for power management.</li>
+                <li><strong class="text-white">Trial enforcement:</strong> 3-day trial from provisioning. Automatic power-off at day 3, permanent destruction at day 10. Monitored every 6 hours.</li>
+                <li><strong class="text-white">Weekly backups:</strong> DigitalOcean automated snapshots enabled. 4 most recent backups retained. Restore requires manual coordination with support.</li>
+                <li><strong class="text-white">Environment variables:</strong> Secure injection during deployment. Shell-escaped, stored in .env file. Secrets sanitized from deployment logs via regex pattern matching.</li>
+                <li><strong class="text-white">Health checks:</strong> 3 retries at 2-second intervals. Static sites check HTTP 200. Backend services check systemd status.</li>
+                <li><strong class="text-white">Deployment history:</strong> All deployment logs stored in database with timestamps. Real-time log streaming during active deployments.</li>
+              </ul>
+            </div>
+
+            <!-- Actively Being Built -->
+            <div class="bg-gray-900/50 border-l-4 border-blue-400 p-6">
+              <h3 class="text-lg font-semibold text-white mb-4">🔧 Actively Being Built</h3>
+              <p class="text-gray-300 mb-4">
+                Platform is stable. Current focus: <strong class="text-white">final testing before first paying customers</strong>.
+              </p>
+              <ul class="space-y-2 text-gray-300 ml-4">
+                <li>Monitoring trial system behavior in production environment</li>
+                <li>Stress-testing concurrent deployments (10+ simultaneous users)</li>
+                <li>Verifying backup restoration procedures with real droplet recovery</li>
+                <li>Edge case handling (DigitalOcean API timeouts, corrupted deployments, SSH failures)</li>
+                <li>Email delivery testing across multiple providers (SendGrid, Gmail OAuth2, SMTP)</li>
+              </ul>
+            </div>
+
+            <!-- Planned Features -->
+            <div class="bg-blue-950/40 border-l-4 border-blue-400 p-6">
+              <h3 class="text-lg font-semibold text-white mb-4">📋 Planned Features</h3>
+              <p class="text-gray-300 mb-4 italic">
+                These get built when customers need them. No fixed timeline (solo dev).
+              </p>
+              <ul class="space-y-3 text-gray-300 ml-4">
+                <li>
+                  <strong class="text-white">Private repository support:</strong> GitHub Personal Access Token authentication. Requires secure token storage, OAuth flow implementation, and testing with private repos. Currently only public repos supported via tarball download.
+                </li>
+                <li>
+                  <strong class="text-white">Multi-region expansion:</strong> Currently hardcoded to NYC3 (New York). Adding SFO3 (San Francisco), LON1 (London), SGP1 (Singapore) requires geographic testing, latency verification, and UI updates. Dashboard already has region selector—backend ignores it.
+                </li>
+                <li>
+                  <strong class="text-white">Plan upgrades/downgrades:</strong> Change server size without destroying droplet. Requires DigitalOcean resize API integration, downtime coordination, and database migration logic. Currently must delete server and create new one.
+                </li>
+                <li>
+                  <strong class="text-white">Deployment size increase:</strong> Raise 100MB tarball limit to 250MB or 500MB. Requires storage impact analysis and clone timeout adjustments (currently 15-minute SSH timeout).
+                </li>
+              </ul>
+            </div>
+
+            <!-- Under Consideration -->
+            <div class="bg-gray-900/50 border-l-4 border-blue-400 p-6">
+              <h3 class="text-lg font-semibold text-white mb-4">💭 Under Consideration</h3>
+              <p class="text-gray-300 mb-4">
+                Might build based on customer demand. Not committed.
+              </p>
+              <ul class="space-y-2 text-gray-300 ml-4">
+                <li><strong class="text-white">Multiple servers per customer:</strong> Lift one-server database constraint. Staging/production environments. Requires billing changes (per-server pricing vs per-account).</li>
+                <li><strong class="text-white">CI/CD webhooks:</strong> Auto-deploy on git push. Requires webhook secret validation, GitHub/GitLab integration, and event processing.</li>
+                <li><strong class="text-white">Database provisioning UI:</strong> One-click PostgreSQL/MySQL setup via SSH automation. Currently manual configuration required.</li>
+                <li><strong class="text-white">Team collaboration:</strong> Shared server access for dev teams. Multiple user accounts per server. Role-based permissions.</li>
+                <li><strong class="text-white">Custom domain management:</strong> UI improvements for DNS configuration instructions. Currently shows basic A record setup.</li>
+                <li><strong class="text-white">IPv6 support:</strong> Currently disabled on all droplets. Would require firewall configuration updates and testing.</li>
+              </ul>
+            </div>
+
+            <!-- Not Planned -->
+            <div class="bg-gray-900/50 border border-red-500/30 rounded-lg p-6">
+              <h3 class="text-white text-lg font-semibold mb-4 flex items-center gap-2">
+                <span>❌</span> Not Planned
+              </h3>
+              <p class="text-gray-300 mb-4">
+                Wrong scope for this platform. Use specialized providers if you need these features.
+              </p>
+              <ul class="space-y-3 text-gray-300 ml-4">
+                <li>
+                  <strong class="text-white">Docker/containerization:</strong> Adds orchestration complexity, security isolation concerns, and resource overhead. Out of scope. Use Railway, Render, or Fly.io if you need containers.
+                </li>
+                <li>
+                  <strong class="text-white">Kubernetes orchestration:</strong> Enterprise feature for wrong market. If you need K8s, use GKE (Google), EKS (AWS), or AKS (Azure).
+                </li>
+                <li>
+                  <strong class="text-white">Load balancing / auto-scaling:</strong> Infrastructure complexity beyond solo founder capacity. Use AWS Elastic Load Balancer, GCP Load Balancing, or Cloudflare Load Balancing.
+                </li>
+                <li>
+                  <strong class="text-white">Edge caching / CDN:</strong> Not rebuilding Cloudflare. Use Cloudflare (free tier works great), Fastly, or Vercel Edge Network.
+                </li>
+                <li>
+                  <strong class="text-white">Compliance certifications:</strong> No SOC 2, HIPAA, PCI-DSS audits planned. Solo founder, no legal team. If you need compliance, use AWS, GCP, or Azure with certified services.
+                </li>
+                <li>
+                  <strong class="text-white">24/7 enterprise support:</strong> Best-effort email support only. Response time typically same-day during Atlantic Time business hours. No on-call support staff.
+                </li>
+              </ul>
+            </div>
+
+            <!-- Philosophy Callout -->
+            <div class="bg-blue-900/30 border border-blue-500/40 rounded-lg p-6">
+              <h3 class="text-white text-lg font-semibold mb-3">Development Philosophy</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">
+                This platform solves one problem well: <strong class="text-white">simple VPS hosting with automated Git deployment</strong>. It won't do everything. If you need enterprise features, compliance certifications, or complex orchestration, use AWS/GCP/Azure. This is for developers who want a server running their code, not a platform engineering team.
+              </p>
+              <p class="text-gray-300 leading-relaxed">
+                Features get prioritized based on <strong class="text-white">real customer needs, not theoretical roadmaps</strong>. If 10 customers ask for private repo support, it gets built. If nobody asks for Kubernetes, it doesn't get built. This keeps the platform focused, maintainable, and actually useful instead of feature-bloated.
+              </p>
+            </div>
+          </div>
+        </section>
+        
+      </div>
+    </main>
+    
+    ${getFooter()}
+    ${getScripts('nav.js')}
             </div>
           </div>
         </section>
