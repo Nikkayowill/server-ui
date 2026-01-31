@@ -69,19 +69,19 @@ function getScripts(...scripts) {
 // Footer
 function getFooter() {
   return `
-    <footer class="py-10 md:py-12 mt-12 md:mt-20 relative overflow-hidden">
+    <footer class="py-12 mt-12 md:mt-20 relative overflow-hidden">
         <!-- Gradient reflection continuing from Final CTA -->
         <div class="absolute inset-0 pointer-events-none">
           <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 0%, rgba(96, 165, 250, 0.15) 0%, rgba(232, 121, 249, 0.1) 35%, rgba(94, 234, 212, 0.08) 65%, transparent 100%);"></div>
         </div>
-        <div class="max-w-6xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
-            <div class="col-span-2 md:col-span-1 mb-4 md:mb-0">
-                <h3 class="text-blue-400 text-base font-bold mb-3 md:mb-4">Basement</h3>
+        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+            <div class="text-center md:text-left">
+                <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
             </div>
-            <div>
-                <h4 class="text-blue-400 text-sm font-bold mb-2 md:mb-3">Quick Links</h4>
-                <ul class="space-y-1.5 md:space-y-2">
+            <div class="text-center md:text-left">
+                <h4 class="text-blue-400 text-sm font-bold mb-3">Quick Links</h4>
+                <ul class="space-y-2">
                     <li><a href="/about" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">About</a></li>
                     <li><a href="/pricing" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Pricing</a></li>
                     <li><a href="/docs" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Documentation</a></li>
@@ -89,17 +89,17 @@ function getFooter() {
                     <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
                 </ul>
             </div>
-            <div>
-                <h4 class="text-blue-400 text-sm font-bold mb-2 md:mb-3">Legal</h4>
-                <ul class="space-y-1.5 md:space-y-2">
+            <div class="text-center md:text-left">
+                <h4 class="text-blue-400 text-sm font-bold mb-3">Legal</h4>
+                <ul class="space-y-2">
                     <li><a href="/terms" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Terms of Service</a></li>
                     <li><a href="/privacy" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Privacy Policy</a></li>
                 </ul>
             </div>
         </div>
-        <div class="text-center mt-8 md:mt-10 pt-6 border-t border-gray-800/50 max-w-6xl mx-auto px-6 sm:px-8 relative z-10">
-            <p class="mb-2 md:mb-3">
-                <a href="/is-this-safe" class="text-brand text-sm md:text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
+        <div class="text-center mt-10 pt-6 max-w-6xl mx-auto px-8">
+            <p class="mb-3">
+                <a href="/is-this-safe" class="text-brand text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
             </p>
             <p class="text-gray-500 text-xs">&copy; ${new Date().getFullYear()} Basement. All rights reserved.</p>
         </div>
