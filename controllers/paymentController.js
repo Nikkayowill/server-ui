@@ -304,7 +304,9 @@ exports.createPaymentIntent = async (req, res) => {
 exports.createCheckoutSession = async (req, res) => {
   try {
     const plan = req.body.plan || 'basic';
-    // Early access pricing - $0.50 (production will be $25/$60/$120)
+    const interval = req.body.interval || 'monthly'; // 'monthly' or 'yearly'
+    
+    // Early access pricing - $0.50 (production will be $15/$35/$75 monthly, $150/$350/$750 yearly)
     const planPrices = {
       basic: { amount: 50, name: 'Basic Plan' },
       pro: { amount: 50, name: 'Pro Plan' },
@@ -320,7 +322,7 @@ exports.createCheckoutSession = async (req, res) => {
             currency: 'usd',
             product_data: {
               name: selectedPlan.name,
-              description: `${selectedPlan.name} - Monthly subscription`,
+              description: `${selectedPlan.name} - ${interval === 'yearly' ? 'Yearly' : 'Monthly'} subscription`,
             },
             unit_amount: selectedPlan.amount,
           },
@@ -328,10 +330,11 @@ exports.createCheckoutSession = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${req.protocol}://${req.get('host')}/payment-success?plan=${plan}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.protocol}://${req.get('host')}/payment-success?plan=${plan}&interval=${interval}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.protocol}://${req.get('host')}/payment-cancel`,
       metadata: {
         plan: plan,
+        interval: interval,
         user_id: req.session.userId
       }
     });
