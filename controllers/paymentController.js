@@ -275,7 +275,7 @@ exports.createPaymentIntent = async (req, res) => {
       return res.status(401).json({ error: 'Session expired. Please log in again.' });
     }
     
-    // Early access pricing - $0.50 (production will be $25/$60/$120)
+    // Test pricing - $0.50 (allows testing without real charges)
     const planPrices = {
       basic: { amount: 50, name: 'Basic Plan' },
       pro: { amount: 50, name: 'Pro Plan' },
@@ -307,13 +307,14 @@ exports.createCheckoutSession = async (req, res) => {
     const plan = req.body.plan || 'basic';
     const interval = req.body.interval || 'monthly'; // 'monthly' or 'yearly'
     
-    // Early access pricing - $0.50 (production will be $15/$35/$75 monthly, $150/$350/$750 yearly)
+    // Test pricing - $0.50 (allows testing without real charges)
     const planPrices = {
-      basic: { amount: 50, name: 'Basic Plan' },
-      pro: { amount: 50, name: 'Pro Plan' },
-      premium: { amount: 50, name: 'Premium Plan' }
+      basic: { monthly: 50, yearly: 50, name: 'Basic Plan' },
+      pro: { monthly: 50, yearly: 50, name: 'Pro Plan' },
+      premium: { monthly: 50, yearly: 50, name: 'Premium Plan' }
     };
     const selectedPlan = planPrices[plan] || planPrices.basic;
+    const amount = interval === 'yearly' ? selectedPlan.yearly : selectedPlan.monthly;
 
     const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
@@ -325,13 +326,13 @@ exports.createCheckoutSession = async (req, res) => {
               name: selectedPlan.name,
               description: `${selectedPlan.name} - ${interval === 'yearly' ? 'Yearly' : 'Monthly'} subscription`,
             },
-            unit_amount: selectedPlan.amount,
+            unit_amount: amount,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${req.protocol}://${req.get('host')}/payment-success?plan=${plan}&interval=${interval}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.protocol}://${req.get('host')}/payment-success?plan=${plan}&interval=${interval}&payment_intent_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.protocol}://${req.get('host')}/payment-cancel`,
       metadata: {
         plan: plan,
@@ -349,16 +350,18 @@ exports.createCheckoutSession = async (req, res) => {
 // GET /payment-success
 exports.paymentSuccess = async (req, res) => {
   try {
-    const paymentIntentId = req.query.payment_intent_id;
-    const plan = req.query.plan || 'founder';
+    const sessionId = req.query.payment_intent_id; // Actually session_id from Stripe
+    const plan = req.query.plan || 'basic';
     const interval = req.query.interval || 'monthly';
     
     // Record payment immediately so onboarding wizard detects it
-    if (!paymentIntentId) {
-      return res.redirect('/payment-cancel?error=Missing payment intent ID');
+    if (!sessionId) {
+      return res.redirect('/payment-cancel?error=Missing session ID');
     }
 
-    const paymentIntent = await getStripe().paymentIntents.retrieve(paymentIntentId);
+    // Retrieve session to get payment intent
+    const session = await getStripe().checkout.sessions.retrieve(sessionId);
+    const paymentIntent = await getStripe().paymentIntents.retrieve(session.payment_intent);
     
     // If session expired, skip recording (webhook will handle it)
     // User still gets redirected to dashboard if they log back in
@@ -391,7 +394,7 @@ exports.paymentSuccess = async (req, res) => {
       
       if (existingServer.rows.length === 0) {
         console.log('Creating server from payment-success page for user:', req.session.userId);
-        await createRealServer(req.session.userId, plan, paymentIntentId, interval);
+        await createRealServer(req.session.userId, plan, paymentIntent.id, interval);
       } else {
         console.log('User already has server, skipping creation');
       }
