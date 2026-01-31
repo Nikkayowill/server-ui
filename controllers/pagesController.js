@@ -965,6 +965,84 @@ ${getHTMLHead('Documentation - Basement')}
           </div>
         </section>
         
+        <!-- ============================================ -->
+        <!-- SECTION 5: SECURITY & TRUST MODEL -->
+        <!-- ============================================ -->
+        <section class="mb-20 bg-blue-950/30 border border-blue-900/30 rounded-lg p-8">
+          <h2 class="text-3xl font-bold text-white mb-6 pb-3 border-b border-blue-800/50">Security & Trust Model</h2>
+          
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-3">Stored Credentials</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">
+                SSH credentials (IP address, username, password) are stored in the platform database in plaintext. This is required for automated deployment and SSL certificate installation features to function. Without stored credentials, the platform cannot connect to your server to execute deployment commands.
+              </p>
+              <p class="text-gray-300 leading-relaxed mb-4">
+                This is standard practice for managed hosting platforms—services like Heroku, Render, and Vercel all store deployment credentials to enable automation. The trade-off is convenience (one-click deployments) versus manual SSH key management.
+              </p>
+              <p class="text-gray-300 leading-relaxed">
+                <strong class="text-white">You can change your SSH password at any time.</strong> Log into your server via SSH and run <code class="bg-gray-900 px-2 py-1 rounded text-sm text-blue-400">passwd</code> to set a new password. Future deployments will fail until you provide the new credentials in your dashboard, giving you full control over access.
+              </p>
+            </div>
+            
+            <div class="bg-gray-900/50 border-l-4 border-blue-400 p-6">
+              <h3 class="text-lg font-semibold text-white mb-3">Database Security</h3>
+              <p class="text-gray-300 leading-relaxed mb-3">
+                Platform database credentials are protected with:
+              </p>
+              <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li><strong class="text-white">Password hashing:</strong> User passwords hashed with bcrypt (10 rounds) before storage</li>
+                <li><strong class="text-white">Parameterized queries:</strong> All database operations use parameterized queries to prevent SQL injection</li>
+                <li><strong class="text-white">Session security:</strong> HTTP-only cookies prevent JavaScript access to session tokens</li>
+                <li><strong class="text-white">CSRF protection:</strong> All form submissions require valid CSRF tokens</li>
+                <li><strong class="text-white">Rate limiting:</strong> Brute-force protection on authentication endpoints</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-3">Platform Access Transparency</h3>
+              <p class="text-gray-300 leading-relaxed mb-3">
+                The platform connects to your server only when you explicitly trigger an action:
+              </p>
+              <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li><strong class="text-white">Git deployment:</strong> When you click "Deploy from Git" button in dashboard</li>
+                <li><strong class="text-white">SSL installation:</strong> When you click "Enable SSL" for a domain</li>
+                <li><strong class="text-white">Database setup:</strong> When you click "Setup Database" (if applicable)</li>
+              </ul>
+              <p class="text-gray-300 leading-relaxed mt-4">
+                There are no background processes monitoring your server, reading files, or analyzing traffic. The control plane only acts when you initiate an operation through the dashboard.
+              </p>
+            </div>
+            
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-3">Audit Trail Limitations</h3>
+              <p class="text-gray-300 leading-relaxed mb-4">
+                Deployment logs are stored in the platform database and displayed in your dashboard. These logs include command outputs but with secrets automatically redacted (API keys, tokens, passwords matched via regex patterns).
+              </p>
+              <p class="text-gray-300 leading-relaxed">
+                <strong class="text-white">What is NOT logged:</strong> Server access outside of platform-triggered deployments is not tracked. If you SSH directly into your server and make changes manually, those actions are not visible to the platform. Only operations initiated through the dashboard appear in deployment history.
+              </p>
+            </div>
+            
+            <div class="bg-blue-900/30 border border-blue-500/40 rounded-lg p-6">
+              <h3 class="text-white text-lg font-semibold mb-3">Trust Model Summary</h3>
+              <p class="text-gray-300 leading-relaxed mb-3">
+                Clouded Basement operates on a <strong class="text-white">"convenience with transparency"</strong> security model:
+              </p>
+              <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>Credentials stored for automation features (industry standard practice)</li>
+                <li>You can revoke platform access anytime by changing SSH password</li>
+                <li>Platform only connects when you trigger an action explicitly</li>
+                <li>No background monitoring or file scanning</li>
+                <li>Open about what is stored and why</li>
+              </ul>
+              <p class="text-gray-300 leading-relaxed mt-4">
+                This is a solo-founder operation. I'm not harvesting data, training AI models on your code, or selling information. The business model is simple: you pay for server hosting, I provision and maintain infrastructure. Stored credentials exist solely to enable the features you're paying for.
+              </p>
+            </div>
+          </div>
+        </section>
+        
       </div>
     </main>
     
