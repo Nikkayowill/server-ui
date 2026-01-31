@@ -160,8 +160,44 @@ if (document.querySelector('[data-deployment-status="pending"], [data-deployment
     setInterval(pollDeploymentStatus, 3000); // Then every 3 seconds
 }
 
-// Add loading states to forms
-document.querySelectorAll('form').forEach(form => {
+// AJAX form submission for database setup (prevents page jump)
+document.querySelectorAll('form[action="/setup-database"]').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btn = this.querySelector('button[type="submit"]');
+        const originalText = btn.textContent;
+        const dbType = this.querySelector('input[name="database_type"]').value;
+        const csrfToken = this.querySelector('input[name="_csrf"]').value;
+        
+        // Show loading state
+        btn.disabled = true;
+        btn.innerHTML = `<svg class="animate-spin h-4 w-4 inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Installing ${dbType === 'postgres' ? 'PostgreSQL' : 'MongoDB'}...`;
+        btn.classList.add('opacity-75');
+        
+        try {
+            const response = await fetch('/setup-database', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `database_type=${dbType}&_csrf=${csrfToken}`
+            });
+            
+            if (response.redirected) {
+                // Show success message in place
+                btn.innerHTML = `<svg class="h-4 w-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Installing... Refresh in 2-3 min`;
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.add('bg-green-600');
+            }
+        } catch (error) {
+            btn.textContent = 'Error - Try Again';
+            btn.disabled = false;
+            btn.classList.remove('opacity-75');
+        }
+    });
+});
+
+// Add loading states to other forms (not database setup)
+document.querySelectorAll('form:not([action="/setup-database"])').forEach(form => {
     form.addEventListener('submit', function(e) {
         const btn = this.querySelector('button[type="submit"]');
         if (btn && !btn.classList.contains('btn-loading')) {
