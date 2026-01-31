@@ -724,6 +724,99 @@ ${getHTMLHead('Documentation - Basement')}
           </div>
         </section>
         
+        <!-- ============================================ -->
+        <!-- SECTION 3: PROVISIONING PIPELINE -->
+        <!-- ============================================ -->
+        <section class="mb-20">
+          <h2 class="text-3xl font-bold text-white mb-6 pb-3 border-b border-gray-800">Provisioning Pipeline</h2>
+          
+          <p class="text-gray-300 leading-relaxed mb-8">
+            When you complete payment, the following automated sequence executes. Typical provisioning time is 90-120 seconds from payment to server availability.
+          </p>
+          
+          <div class="space-y-6">
+            <div class="bg-gray-900/50 border-l-4 border-blue-500 p-6">
+              <h3 class="text-lg font-semibold text-white mb-2">Step 1: Payment Validation</h3>
+              <p class="text-gray-300 leading-relaxed">
+                Stripe webhook confirms payment success and extracts plan details. The system verifies you don't already have an active server (one server per customer enforced at database level). If validation passes, provisioning begins immediately.
+              </p>
+            </div>
+            
+            <div class="bg-gray-900/50 border-l-4 border-blue-500 p-6">
+              <h3 class="text-lg font-semibold text-white mb-2">Step 2: Droplet Creation</h3>
+              <p class="text-gray-300 leading-relaxed mb-3">
+                DigitalOcean API call creates a new droplet with these specifications:
+              </p>
+              <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li><strong class="text-white">Image:</strong> Ubuntu 22.04 x64 LTS</li>
+                <li><strong class="text-white">Region:</strong> NYC3 (New York City)</li>
+                <li><strong class="text-white">Size:</strong> Varies by plan (s-1vcpu-1gb, s-2vcpu-2gb, s-2vcpu-4gb)</li>
+                <li><strong class="text-white">Features:</strong> Monitoring enabled, backups disabled</li>
+                <li><strong class="text-white">Tags:</strong> clouded-basement (for inventory tracking)</li>
+              </ul>
+            </div>
+            
+            <div class="bg-gray-900/50 border-l-4 border-blue-500 p-6">
+              <h3 class="text-lg font-semibold text-white mb-2">Step 3: Cloud-Init Execution</h3>
+              <p class="text-gray-300 leading-relaxed mb-3">
+                The droplet boots and runs a cloud-init script that installs the complete development environment. This process takes 60-90 seconds.
+              </p>
+              
+              <h4 class="text-md font-semibold text-white mb-2 mt-4">Packages Installed:</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <div>
+                  <p class="text-gray-300"><strong class="text-white">Node.js:</strong> 20.x (via NodeSource)</p>
+                  <p class="text-gray-300"><strong class="text-white">nvm:</strong> Latest (Node Version Manager)</p>
+                  <p class="text-gray-300"><strong class="text-white">Python:</strong> 3.x + pip3</p>
+                  <p class="text-gray-300"><strong class="text-white">Go:</strong> 1.21.6</p>
+                </div>
+                <div>
+                  <p class="text-gray-300"><strong class="text-white">Rust:</strong> Latest stable (via rustup)</p>
+                  <p class="text-gray-300"><strong class="text-white">Nginx:</strong> Latest from Ubuntu repos</p>
+                  <p class="text-gray-300"><strong class="text-white">Certbot:</strong> Latest (Let's Encrypt)</p>
+                  <p class="text-gray-300"><strong class="text-white">Git:</strong> Latest + wget, curl</p>
+                </div>
+              </div>
+              
+              <h4 class="text-md font-semibold text-white mb-2 mt-4">Security Configuration:</h4>
+              <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li><strong class="text-white">SSH:</strong> Root password authentication enabled (generated with 256-bit entropy)</li>
+                <li><strong class="text-white">Firewall:</strong> UFW configured with ports 22 (SSH), 80 (HTTP), 443 (HTTPS) open</li>
+                <li><strong class="text-white">Nginx:</strong> Default welcome page deployed to /var/www/html</li>
+              </ul>
+            </div>
+            
+            <div class="bg-gray-900/50 border-l-4 border-blue-500 p-6">
+              <h3 class="text-lg font-semibold text-white mb-2">Step 4: IP Address Polling</h3>
+              <p class="text-gray-300 leading-relaxed mb-3">
+                The control plane polls the DigitalOcean API every 10 seconds to check droplet status and IP assignment. Maximum timeout is 5 minutes.
+              </p>
+              <p class="text-gray-300 leading-relaxed">
+                When the droplet reaches "active" status and has an assigned IP address, the system updates the database and sends a welcome email with your dashboard link. SSH credentials are displayed in the dashboard (never sent via email for security).
+              </p>
+            </div>
+            
+            <div class="bg-gray-900/50 border-l-4 border-blue-500 p-6">
+              <h3 class="text-lg font-semibold text-white mb-2">Step 5: Server Ready</h3>
+              <p class="text-gray-300 leading-relaxed">
+                Your server is now fully operational. You can SSH in immediately using the credentials displayed in your dashboard. Nginx is serving a default welcome page, and all development tools are ready to use.
+              </p>
+            </div>
+          </div>
+          
+          <div class="bg-gray-900/50 border border-yellow-500/30 rounded-lg p-6 mt-8">
+            <h3 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+              <span>⚠️</span> Failure Handling
+            </h3>
+            <p class="text-gray-300 leading-relaxed mb-3">
+              If provisioning fails (e.g., DigitalOcean API error, network timeout), the system automatically issues a Stripe refund and marks the server as "failed" in the database for audit purposes.
+            </p>
+            <p class="text-gray-300 leading-relaxed">
+              Provisioning timeouts after 5 minutes are rare but can occur during DigitalOcean capacity issues. These require manual intervention—contact support if your server remains in "provisioning" status beyond 5 minutes.
+            </p>
+          </div>
+        </section>
+        
       </div>
     </main>
     
