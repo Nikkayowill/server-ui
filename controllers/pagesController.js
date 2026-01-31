@@ -1266,6 +1266,8 @@ ${getHTMLHead('Documentation - Basement')}
                 <li><strong class="text-white">Environment variables:</strong> Secure injection during deployment. Shell-escaped, stored in .env file. Secrets sanitized from deployment logs via regex pattern matching.</li>
                 <li><strong class="text-white">Health checks:</strong> 3 retries at 2-second intervals. Static sites check HTTP 200. Backend services check systemd status.</li>
                 <li><strong class="text-white">Deployment history:</strong> All deployment logs stored in database with timestamps. Real-time log streaming during active deployments.</li>
+                <li><strong class="text-white">Domain management:</strong> Add unlimited custom domains via dashboard. DNS configuration instructions displayed. Domain-server linkage tracked in database. Admin panel with full CRUD operations.</li>
+                <li><strong class="text-white">One-click database provisioning:</strong> PostgreSQL and MongoDB installation via SSH automation. Takes 2-3 minutes. Generates credentials, creates users, configures authentication. Connection strings displayed in dashboard.</li>
               </ul>
             </div>
 
@@ -1315,10 +1317,9 @@ ${getHTMLHead('Documentation - Basement')}
               <ul class="space-y-2 text-gray-300 ml-4">
                 <li><strong class="text-white">Multiple servers per customer:</strong> Lift one-server database constraint. Staging/production environments. Requires billing changes (per-server pricing vs per-account).</li>
                 <li><strong class="text-white">CI/CD webhooks:</strong> Auto-deploy on git push. Requires webhook secret validation, GitHub/GitLab integration, and event processing.</li>
-                <li><strong class="text-white">Database provisioning UI:</strong> One-click PostgreSQL/MySQL setup via SSH automation. Currently manual configuration required.</li>
                 <li><strong class="text-white">Team collaboration:</strong> Shared server access for dev teams. Multiple user accounts per server. Role-based permissions.</li>
-                <li><strong class="text-white">Custom domain management:</strong> UI improvements for DNS configuration instructions. Currently shows basic A record setup.</li>
-                <li><strong class="text-white">IPv6 support:</strong> Currently disabled on all droplets. Would require firewall configuration updates and testing.</li>
+                <li><strong class="text-white">Redis caching layer:</strong> One-click Redis installation for session storage and caching. Similar to current PostgreSQL/MongoDB provisioning.</li>
+                <li><strong class="text-white">Firewall management UI:</strong> Open/close ports beyond default 22/80/443. Currently requires manual SSH and ufw commands.</li>
               </ul>
             </div>
 
