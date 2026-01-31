@@ -199,6 +199,29 @@ exports.deploy = async (req, res) => {
       return res.redirect('/dashboard?error=Server not ready yet. Please wait for provisioning to complete.');
     }
 
+    // Check if this is a new site or an update
+    const existingDeployment = await pool.query(
+      'SELECT id FROM deployments WHERE server_id = $1 AND git_url = $2 LIMIT 1',
+      [server.id, gitUrl]
+    );
+
+    const isUpdate = existingDeployment.rows.length > 0;
+
+    // If new site, check site limit
+    if (!isUpdate) {
+      const siteCount = await pool.query(
+        'SELECT COUNT(DISTINCT git_url) as count FROM deployments WHERE server_id = $1',
+        [server.id]
+      );
+
+      const currentSites = parseInt(siteCount.rows[0].count);
+      const siteLimit = server.site_limit || 2;
+
+      if (currentSites >= siteLimit) {
+        return res.redirect(`/dashboard?error=Site limit reached (${siteLimit} sites). Please upgrade your plan or delete an existing site to add a new one.`);
+      }
+    }
+
     // Extract repo name from URL
     const repoName = gitUrl.split('/').pop().replace('.git', '');
     
