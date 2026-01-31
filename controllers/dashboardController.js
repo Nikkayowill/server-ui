@@ -15,6 +15,9 @@ exports.showDashboard = async (req, res) => {
         const flashSuccess = escapeHtml(req.query.success || sessionFlash || '');
         const flashError = escapeHtml(req.query.error || '');
         const emailConfirmed = !!req.session.emailConfirmed;
+        
+        // Check if coming from payment (show provisioning UI even if server not created yet)
+        const isProvisioning = req.query.provisioning === 'true';
 
         // Check if user has paid
         const hasPaid = await hasSuccessfulPayment(userId);
@@ -81,12 +84,15 @@ exports.showDashboard = async (req, res) => {
         );
 
         const csrfToken = typeof req.csrfToken === 'function' ? req.csrfToken() : '';
+        
+        // Show provisioning UI if: coming from payment OR server exists with provisioning status
+        const showProvisioningUI = isProvisioning || (hasServer && server?.status === 'provisioning');
 
         const dashboardHTML = buildDashboardTemplate({
             flashSuccess,
             flashError,
             emailConfirmed,
-            serverStatus: server?.status || 'unknown',
+            serverStatus: server?.status || (isProvisioning ? 'provisioning' : 'unknown'),
             serverName: server?.hostname || 'basement-core',
             plan: (server?.plan || paidPlan || 'basic').toString(),
             ipAddress: server?.ip_address || '',
@@ -104,6 +110,7 @@ exports.showDashboard = async (req, res) => {
             userRole: req.session.userRole,
             hasPaid,
             hasServer,
+            isProvisioning: showProvisioningUI,
             dismissedNextSteps: req.session.dismissedNextSteps || false,
             postgresInstalled,
             mongodbInstalled,
@@ -323,7 +330,7 @@ const buildDashboardTemplate = (data) => {
 
     <!-- Main Content Grid -->
     <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 space-y-6">
-        ${data.hasServer ? `
+        ${(data.hasServer || data.isProvisioning) ? `
         <div class="bg-gray-800 rounded-lg overflow-hidden" data-server-status="${data.serverStatus}">
             <div class="px-6 py-4 border-b border-gray-700 bg-gray-900 bg-opacity-40">
                 <div class="flex items-center justify-between">
@@ -340,6 +347,18 @@ const buildDashboardTemplate = (data) => {
                 </div>
             </div>
             <div class="p-6">
+                ${data.isProvisioning && !data.hasServer ? `
+                <!-- Provisioning Banner -->
+                <div class="bg-brand bg-opacity-10 border-2 border-brand rounded-lg p-6 mb-6 text-center">
+                    <svg class="animate-spin h-12 w-12 text-brand mx-auto mb-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <circle class="opacity-75" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="32" stroke-dashoffset="16"></circle>
+                    </svg>
+                    <h3 class="text-xl font-bold text-white mb-2">Setting Up Your Server...</h3>
+                    <p class="text-gray-400 text-sm mb-2">Your server is being created. This usually takes 2-3 minutes.</p>
+                    <p class="text-brand text-xs">This page will auto-refresh when ready.</p>
+                </div>
+                ` : `
                 <div class="space-y-4 mb-6">
                     <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
                         <span class="text-xs text-gray-500 uppercase font-bold">IPv4 Interface</span>
@@ -379,9 +398,11 @@ const buildDashboardTemplate = (data) => {
                         <button type="button" onclick="openTerminateModal()" class="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-300">Terminate</button>
                     </form>
                 </div>
+                `}
             </div>
         </div>
 
+        ${data.hasServer ? `
         <!-- SSH Access Card -->
         <div class="bg-gray-800 rounded-lg p-6">
             <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">🔒 SSH Access</h4>
@@ -427,8 +448,9 @@ const buildDashboardTemplate = (data) => {
                 ` : ''}
             </div>
         </div>
+        ` : ''}
         ` : `
-        <!-- Server Placeholder (Provisioning or No Server) -->
+        <!-- Server Placeholder (No Server) -->
         <div class="bg-gray-800 rounded-lg p-8 text-center">
             <h3 class="text-xl font-bold text-gray-400 mb-2">Server Details</h3>
             <p class="text-sm text-gray-500">${data.hasPaid ? 'Waiting for server setup (contact support if delayed)' : 'Purchase a plan to see your server details here'}</p>

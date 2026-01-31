@@ -349,12 +349,10 @@ exports.createCheckoutSession = async (req, res) => {
 
 // GET /payment-success
 exports.paymentSuccess = async (req, res) => {
-  // Webhook handles everything (server creation, payment recording)
-  // This page just confirms to the user and redirects to dashboard
   console.log('[PAYMENT-SUCCESS] User returned from Stripe checkout');
   
-  // Redirect to dashboard - webhook has already processed everything
-  res.redirect('/dashboard?success=Payment successful! Your server is being provisioned (2-5 minutes).');
+  // Just redirect to dashboard - it will show provisioning UI
+  res.redirect('/dashboard?provisioning=true');
 };
 
 // GET /payment-cancel

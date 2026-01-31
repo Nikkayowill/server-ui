@@ -79,16 +79,22 @@ async function dismissNextSteps() {
 
 // Auto-refresh dashboard every 15 seconds if server is provisioning
 const serverStatusElement = document.querySelector('[data-server-status]');
-if (serverStatusElement) {
-    const serverStatus = serverStatusElement.dataset.serverStatus;
-    
-    if (serverStatus === 'provisioning') {
-        console.log('Server is provisioning, will auto-refresh in 15 seconds...');
-        setTimeout(() => {
-            console.log('Auto-refreshing dashboard to check server status...');
-            window.location.reload();
-        }, 15000); // 15 seconds
-    }
+const urlParams = new URLSearchParams(window.location.search);
+const isProvisioningParam = urlParams.get('provisioning') === 'true';
+
+// Check if we're in provisioning state (either from data attribute or URL param)
+const currentStatus = serverStatusElement?.dataset.serverStatus;
+const isProvisioning = currentStatus === 'provisioning' || isProvisioningParam;
+
+if (isProvisioning && currentStatus !== 'running') {
+    console.log('Server is provisioning, will auto-refresh in 10 seconds...');
+    setTimeout(() => {
+        console.log('Auto-refreshing dashboard to check server status...');
+        // Remove the provisioning param on refresh to avoid infinite loop once server is ready
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('provisioning');
+        window.location.href = newUrl.toString();
+    }, 10000); // 10 seconds
 }
 
 // Auto-fade alerts after 5 seconds
