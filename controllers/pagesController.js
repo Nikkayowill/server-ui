@@ -1136,11 +1136,11 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <!-- Footer Content -->
       <footer class="relative z-10 py-12">
         <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center">
+            <div class="text-center md:text-left">
                 <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
             </div>
-            <div class="text-center">
+            <div class="text-center md:text-left">
                 <h4 class="text-blue-400 text-sm font-bold mb-3">Quick Links</h4>
                 <ul class="space-y-2">
                     <li><a href="/about" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">About</a></li>
@@ -1150,7 +1150,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
                     <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
                 </ul>
             </div>
-            <div class="text-center">
+            <div class="text-center md:text-left">
                 <h4 class="text-blue-400 text-sm font-bold mb-3">Legal</h4>
                 <ul class="space-y-2">
                     <li><a href="/terms" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Terms of Service</a></li>
