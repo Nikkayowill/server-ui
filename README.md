@@ -15,14 +15,13 @@
 ## 💰 PRICING
 
 ### Three Plans:
-- **Basic:** $25/month - 1GB RAM, 1 CPU, 25GB storage
-- **Priority:** $60/month - 2GB RAM, 2 CPUs, 50GB storage  
-- **Premium:** $120/month - 4GB RAM, 2 CPUs, 80GB storage
+- **Basic:** $15/month - 1GB RAM, 1 CPU, 25GB storage, 2 sites
+- **Pro:** $35/month - 2GB RAM, 2 CPUs, 50GB storage, 5 sites
+- **Premium:** $75/month - 4GB RAM, 2 CPUs, 80GB storage, 10 sites
 
-### Founder Launch Promo:
-- **$10/month lifetime** for first customers (limited availability)
-- Locked-in price forever
-- Full platform access
+### Payment Options:
+- **Monthly:** Pay monthly, cancel anytime
+- **Yearly:** Pay upfront, save 17% (10 months price for 12 months)
 
 ---
 
