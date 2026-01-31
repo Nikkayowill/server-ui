@@ -537,7 +537,7 @@ exports.stripeWebhook = async (req, res) => {
 
           // Extract user_id and plan from metadata (set during createPaymentIntent)
           const userIdStr = paymentIntent.metadata?.user_id;
-          const plan = paymentIntent.metadata?.plan || 'basic';
+          let plan = paymentIntent.metadata?.plan || 'basic';
           const interval = paymentIntent.metadata?.interval || 'monthly';
           const amount = paymentIntent.amount / 100; // Convert cents to dollars
 
