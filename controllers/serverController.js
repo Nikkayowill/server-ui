@@ -1,4 +1,5 @@
 const axios = require('axios');
+const crypto = require('crypto');
 const { Client } = require('ssh2');
 const pool = require('../db');
 const { escapeHtml } = require('../helpers');

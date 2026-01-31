@@ -545,40 +545,9 @@ const buildDashboardTemplate = (data) => {
         </div>
         ` : ''}
 
-        <!-- Database Setup (hidden if both installed) -->
-        ${!data.postgresInstalled || !data.mongodbInstalled ? `
-        <div class="bg-gray-800 rounded-lg p-6">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Add Database</h4>
-            ${data.hasServer ? `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                <form action="/setup-database" method="POST" class="flex gap-3">
-                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                    <input type="hidden" name="database_type" value="postgres">
-                    <button type="submit" ${data.postgresInstalled ? 'disabled' : ''} class="flex-1 px-6 py-3 ${data.postgresInstalled ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold text-sm transition-colors">
-                        ${data.postgresInstalled ? 'PostgreSQL Installed' : 'Add PostgreSQL'}
-                    </button>
-                </form>
-                <form action="/setup-database" method="POST" class="flex gap-3">
-                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                    <input type="hidden" name="database_type" value="mongodb">
-                    <button type="submit" ${data.mongodbInstalled ? 'disabled' : ''} class="flex-1 px-6 py-3 ${data.mongodbInstalled ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold text-sm transition-colors">
-                        ${data.mongodbInstalled ? 'MongoDB Installed' : 'Add MongoDB'}
-                    </button>
-                </form>
-            </div>
-            <p class="text-xs text-gray-500">One-click setup installs and configures your database. Takes 2-3 minutes. View credentials below after installation completes.</p>
-            ` : `
-            <div class="bg-red-900 bg-opacity-20 border-2 border-red-600 rounded-lg p-4">
-                <p class="text-red-400 text-sm font-medium">⚠️ No active server detected</p>
-                <p class="text-red-300 text-xs">Add a database after your server is provisioned.</p>
-            </div>
-            `}
-        </div>
-        ` : ''}
-
         <!-- Database Status -->
         <div class="bg-gray-800 rounded-lg p-6">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Database Status</h4>
+            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Databases</h4>
             ${data.hasServer ? `
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <!-- PostgreSQL -->
@@ -667,7 +636,14 @@ conn = psycopg2.connect(
                         </details>
                     </div>
                     ` : `
-                    <p class="text-xs text-gray-500 mt-3">Install PostgreSQL to view credentials and connection details.</p>
+                    <p class="text-xs text-gray-500 mt-3 mb-4">Install PostgreSQL to view credentials and connection details.</p>
+                    <form action="/setup-database" method="POST">
+                        <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                        <input type="hidden" name="database_type" value="postgres">
+                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded transition-colors">
+                            Install PostgreSQL
+                        </button>
+                    </form>
                     `}
                 </div>
                 
@@ -751,7 +727,14 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
                         </details>
                     </div>
                     ` : `
-                    <p class="text-xs text-gray-500 mt-3">Install MongoDB to view credentials and connection details.</p>
+                    <p class="text-xs text-gray-500 mt-3 mb-4">Install MongoDB to view credentials and connection details.</p>
+                    <form action="/setup-database" method="POST">
+                        <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                        <input type="hidden" name="database_type" value="mongodb">
+                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded transition-colors">
+                            Install MongoDB
+                        </button>
+                    </form>
                     `}
                 </div>
             </div>
