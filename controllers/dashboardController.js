@@ -59,6 +59,15 @@ exports.showDashboard = async (req, res) => {
             [userId]
         );
 
+        // Count unique sites for this server (distinct git_urls)
+        const siteCountResult = hasServer ? await pool.query(
+            'SELECT COUNT(DISTINCT git_url) as count FROM deployments WHERE server_id = $1',
+            [server.id]
+        ) : { rows: [{ count: 0 }] };
+        
+        const siteCount = parseInt(siteCountResult.rows[0]?.count || 0);
+        const siteLimit = server?.site_limit || 2;
+
         // Get domains
         const domainsResult = await pool.query(
             'SELECT * FROM domains WHERE user_id = $1 ORDER BY created_at DESC',
@@ -99,7 +108,9 @@ exports.showDashboard = async (req, res) => {
             postgresInstalled,
             mongodbInstalled,
             postgresCredentials,
-            mongodbCredentials
+            mongodbCredentials,
+            siteCount,
+            siteLimit
         });
 
         res.send(`
@@ -352,6 +363,10 @@ const buildDashboardTemplate = (data) => {
                         <span class="text-xs text-gray-500 uppercase font-bold">Status</span>
                         <span class="text-sm font-mono ${data.serverStatus === 'running' ? 'text-green-500' : data.serverStatus === 'provisioning' ? 'text-brand animate-pulse' : 'text-red-400'}">${escapeHtml(data.serverStatus.toUpperCase())}</span>
                     </div>
+                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
+                        <span class="text-xs text-gray-500 uppercase font-bold">Sites Deployed</span>
+                        <span class="text-sm font-mono ${data.siteCount >= data.siteLimit ? 'text-red-400 font-bold' : 'text-brand'}">${data.siteCount}/${data.siteLimit}</span>
+                    </div>
                 </div>
                 <div class="flex gap-3">
                     <form action="/server-action" method="POST" class="flex-1">
@@ -440,6 +455,24 @@ const buildDashboardTemplate = (data) => {
             </div>
             `}
         </div>
+
+        <!-- Site Limit Warning -->
+        ${data.hasServer && data.siteCount >= data.siteLimit ? `
+        <div class="bg-gradient-to-r from-orange-600 to-red-600 rounded-lg p-6 border-l-4 border-red-400">
+            <div class="flex items-start gap-4">
+                <svg class="w-6 h-6 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-2">⚠️ Site Limit Reached</h4>
+                    <p class="text-white text-xs mb-4">You've deployed ${data.siteCount} of ${data.siteLimit} sites on your ${escapeHtml(data.plan)} plan. To deploy more sites, upgrade your plan or delete an existing site.</p>
+                    <a href="/pricing" class="inline-block px-6 py-2 bg-white text-red-600 font-bold text-xs uppercase rounded hover:bg-gray-100 transition-colors">
+                        Upgrade Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+        ` : ''}
 
         <!-- Deployments Card -->
         ${data.hasServer && data.deployments.length > 0 ? `
