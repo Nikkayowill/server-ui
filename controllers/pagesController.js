@@ -1385,15 +1385,6 @@ ${getHTMLHead('Documentation - Basement')}
     
     ${getFooter()}
     ${getScripts('nav.js')}
-            </div>
-          </div>
-        </section>
-        
-      </div>
-    </main>
-    
-    ${getFooter()}
-    ${getScripts('nav.js')}
   `);
 };
 
