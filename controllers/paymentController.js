@@ -349,80 +349,12 @@ exports.createCheckoutSession = async (req, res) => {
 
 // GET /payment-success
 exports.paymentSuccess = async (req, res) => {
-  try {
-    const sessionId = req.query.session_id; // Stripe checkout session ID
-    const plan = req.query.plan || 'basic';
-    const interval = req.query.interval || 'monthly';
-    
-    console.log('[PAYMENT-SUCCESS] Received:', { sessionId, plan, interval, userId: req.session.userId });
-    
-    // Record payment immediately so onboarding wizard detects it
-    if (!sessionId) {
-      console.error('[PAYMENT-SUCCESS] Missing session ID');
-      return res.redirect('/payment-cancel?error=Missing session ID');
-    }
-
-    // Retrieve session to get payment intent
-    const session = await getStripe().checkout.sessions.retrieve(sessionId);
-    console.log('[PAYMENT-SUCCESS] Session retrieved:', { sessionId, paymentIntent: session.payment_intent, status: session.payment_status });
-    
-    if (!session.payment_intent) {
-      console.error('[PAYMENT-SUCCESS] No payment intent in session:', sessionId);
-      return res.redirect('/payment-cancel?error=Invalid payment session');
-    }
-    
-    const paymentIntent = await getStripe().paymentIntents.retrieve(session.payment_intent);
-    console.log('[PAYMENT-SUCCESS] Payment intent retrieved:', { id: paymentIntent.id, status: paymentIntent.status });
-    
-    // If session expired, skip recording (webhook will handle it)
-    // User still gets redirected to dashboard if they log back in
-    if (req.session.userId) {
-      // Check if payment already recorded
-      const existingPayment = await pool.query(
-        'SELECT * FROM payments WHERE stripe_payment_id = $1',
-        [paymentIntent.id]
-      );
-      
-      // Record payment if not already in database
-      if (existingPayment.rows.length === 0) {
-        await pool.query(
-          'INSERT INTO payments (user_id, stripe_payment_id, amount, plan, status) VALUES ($1, $2, $3, $4, $5)',
-          [req.session.userId, paymentIntent.id, paymentIntent.amount / 100, plan, 'succeeded']
-        );
-        console.log('Payment recorded:', paymentIntent.id);
-      }
-    } else {
-      console.log('Session expired at payment-success, webhook will handle payment recording');
-    }
-    
-    // CRITICAL FIX: Create server here as fallback since webhook may not fire for Payment Intents
-    // Check if user already has a server (race condition protection)
-    if (req.session.userId) {
-      const existingServer = await pool.query(
-        'SELECT * FROM servers WHERE user_id = $1 AND status NOT IN (\'deleted\', \'failed\')',
-        [req.session.userId]
-      );
-      
-      if (existingServer.rows.length === 0) {
-        console.log('Creating server from payment-success page for user:', req.session.userId);
-        await createRealServer(req.session.userId, plan, paymentIntent.id, interval);
-      } else {
-        console.log('User already has server, skipping creation');
-      }
-    }
-
-  } catch (error) {
-    console.error('[PAYMENT-SUCCESS ERROR]', {
-      message: error.message,
-      sessionId: req.query.session_id,
-      userId: req.session.userId,
-      stack: error.stack
-    });
-    return res.redirect('/payment-cancel?error=Payment recording failed. Please contact support.');
-  }
-
-  // Redirect to dashboard - provisioning status will be visible there
-  res.redirect('/dashboard?success=Payment successful! Your server is being provisioned (2-5 minutes). You\'ll receive an email when ready.');
+  // Webhook handles everything (server creation, payment recording)
+  // This page just confirms to the user and redirects to dashboard
+  console.log('[PAYMENT-SUCCESS] User returned from Stripe checkout');
+  
+  // Redirect to dashboard - webhook has already processed everything
+  res.redirect('/dashboard?success=Payment successful! Your server is being provisioned (2-5 minutes).');
 };
 
 // GET /payment-cancel
