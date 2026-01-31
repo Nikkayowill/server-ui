@@ -350,6 +350,7 @@ exports.paymentSuccess = async (req, res) => {
   try {
     const paymentIntentId = req.query.payment_intent_id;
     const plan = req.query.plan || 'founder';
+    const interval = req.query.interval || 'monthly';
     
     // Record payment immediately so onboarding wizard detects it
     if (!paymentIntentId) {
@@ -389,7 +390,7 @@ exports.paymentSuccess = async (req, res) => {
       
       if (existingServer.rows.length === 0) {
         console.log('Creating server from payment-success page for user:', req.session.userId);
-        await createRealServer(req.session.userId, plan, paymentIntentId);
+        await createRealServer(req.session.userId, plan, paymentIntentId, interval);
       } else {
         console.log('User already has server, skipping creation');
       }
