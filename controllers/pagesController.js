@@ -980,12 +980,12 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
               <p class="text-gray-300">SSH in or push from GitHub. Your choice.</p>
             </li>
           </ol>
-          <p class="text-center text-gray-500 text-sm mt-32">That's it. Your server is live.</p>
+          <p class="text-center text-gray-500 text-sm mt-32 mb-32">That's it. Your server is live.</p>
         </div>
       </div>
 
       <!-- What You Get -->
-      <div class="py-20 md:py-28 relative z-10 mt-16">
+      <div class="py-20 md:py-28 relative z-10">
         <div class="max-w-4xl px-8 md:px-12 lg:px-16 mx-auto">
           <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">What you get</h2>
           <p class="text-center text-white text-base" style="margin-bottom: 5rem;">Everything you need to run a production app  —  without managing infrastructure from scratch.</p>
