@@ -957,10 +957,10 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
       <!-- How It Works -->
       <div class="py-20 md:py-28 relative z-10">
-        <div class="max-w-6xl mx-auto px-8 mt-6 md:px-12 lg:px-16">
+        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
           <h2 class="mb-6 text-3xl md:text-4xl font-extrabold text-center text-white">How it works</h2>
           <p class="text-center text-gray-400 text-base mb-16">Payment to live server in minutes.</p>
-          <ol class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <ol class="grid grid-cols-1 gap-6 sm:grid-cols-3 mt-8">
             <!-- Step 1 -->
             <li class="relative text-center">
               <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full text-white text-2xl font-bold shadow-[0_0_20px_rgba(135,206,250,0.5)]">1</div>
