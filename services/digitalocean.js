@@ -133,13 +133,14 @@ echo "Setup complete!" > /root/setup.log
 
     // Create droplet via DigitalOcean API (only after confirming no existing server)
     const dropletName = `basement-${userId}-${Date.now()}`;
+    const enableBackups = plan === 'pro' || plan === 'premium'; // Backups only for Pro and Premium
     const response = await axios.post('https://api.digitalocean.com/v2/droplets', {
       name: dropletName,
       region: 'nyc3',
       size: selectedSpec.slug,
       image: 'ubuntu-22-04-x64',
       ssh_keys: null,
-      backups: true,
+      backups: enableBackups,
       ipv6: true,
       user_data: setupScript,
       monitoring: true,
