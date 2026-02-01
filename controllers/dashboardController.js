@@ -342,7 +342,6 @@ const buildDashboardTemplate = (data) => {
                     </div>
                     <div class="flex gap-2">
                         <button onclick="refreshDashboard()" class="p-2 border border-white border-opacity-5 bg-transparent hover:bg-white hover:bg-opacity-5 text-brand rounded transition-transform hover:rotate-180" title="Refresh Dashboard">⟳</button>
-                        <button class="p-2 border border-white border-opacity-5 bg-transparent hover:bg-white hover:bg-opacity-5 text-gray-500 rounded" disabled title="Coming Soon">Settings</button>
                     </div>
                 </div>
             </div>
