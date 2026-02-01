@@ -1,7 +1,7 @@
 # Clouded Basement - AI Agent Instructions
 
 ## Project Overview
-Production cloud hosting platform (cloudedbasement.ca) where customers pay $10/month for managed VPS servers. Full-stack Express.js application with PostgreSQL, Stripe payments, and DigitalOcean API integration.
+Production cloud hosting platform (cloudedbasement.ca) with automated VPS provisioning and subscription billing. Three plans: Basic ($15/mo), Pro ($35/mo), Premium ($75/mo) with yearly discounts. Full-stack Express.js application with PostgreSQL, Stripe subscriptions, and DigitalOcean API integration.
 
 ## Architecture
 - **Backend**: Express.js 5.2.1 with MVC structure (controllers, middleware, services, routes)

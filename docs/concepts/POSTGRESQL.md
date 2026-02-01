@@ -115,7 +115,7 @@ users               # User accounts
 servers             # VPS servers
 ├── id
 ├── user_id         # FK to users
-├── plan            # basic/priority/premium
+├── plan            # basic/pro/premium
 ├── status          # provisioning/running/stopped/failed/deleted
 ├── ip_address
 ├── droplet_id      # DigitalOcean ID

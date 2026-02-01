@@ -18,7 +18,7 @@ Automated cloud hosting that provisions VPS servers in minutes. When a customer 
 
 ### Customer Journey
 1. Register account → email confirmation required
-2. Choose plan ($25/$60/$120) → Stripe checkout
+2. Choose plan ($15/$35/$75 monthly or yearly) → Stripe checkout
 3. Payment succeeds → webhook fires
 4. Platform creates DigitalOcean droplet automatically
 5. Ubuntu 22.04 + Nginx installed via cloud-init script

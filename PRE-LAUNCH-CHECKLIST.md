@@ -119,10 +119,10 @@
 ## 🟡 MEDIUM PRIORITY (Polish before marketing)
 
 ### Marketing Consistency
-- [ ] **"Priority" → "Pro" everywhere**
-  - Check all remaining "Priority" references
-  - Update any old pricing references ($25/$60/$120)
-  - Verify all CTAs use "Pro" not "Priority"
+- [x] **\"Priority\" → \"Pro\" everywhere** ✅ Done Jan 2026
+  - All references updated to Pro
+  - Pricing is now $15/$35/$75 monthly
+  - Yearly option available (17% discount)
 
 - [ ] **Support response times consistent**
   - Basic: 24hr

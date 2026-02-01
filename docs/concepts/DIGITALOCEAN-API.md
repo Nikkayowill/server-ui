@@ -7,7 +7,7 @@ DigitalOcean API lets you programmatically create, manage, and destroy VPS serve
 ## Why We Use It
 
 **Manual provisioning (old way):**
-1. Customer pays $25
+1. Customer pays $15/month
 2. You log into DigitalOcean dashboard
 3. Click "Create Droplet"
 4. Select region, size, OS
@@ -18,7 +18,7 @@ DigitalOcean API lets you programmatically create, manage, and destroy VPS serve
 9. Email customer credentials (20 minutes total)
 
 **API provisioning (automated):**
-1. Customer pays $25
+1. Customer subscribes ($15-$75/month)
 2. Webhook fires → API call to DigitalOcean
 3. Droplet created with cloud-init script (auto-installs Nginx)
 4. Poll for IP address (2-5 minutes)
@@ -201,10 +201,12 @@ Prevents dashboard showing "Server Running" when it's actually gone.
 
 **Pricing:**
 - Basic: $6/month ($0.009/hour) - 1GB RAM, 1 CPU
-- Priority: $18/month ($0.027/hour) - 2GB RAM, 2 CPUs
-- Premium: $48/month ($0.071/hour) - 4GB RAM, 2 CPUs
+- Pro: $12/month ($0.018/hour) - 2GB RAM, 2 CPUs
+- Premium: $24/month ($0.036/hour) - 4GB RAM, 2 CPUs
 
-We charge $25/$60/$120 → margins of $19/$42/$72 per customer.
+We charge $15/$35/$75 → margins of $9/$17/$27 per customer monthly.
+
+**Yearly discounts:** 17% off (10 months for 12)
 
 **Bandwidth:**
 - 1TB/month included (enough for most sites)

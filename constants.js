@@ -52,30 +52,34 @@ const PORTS = {
   MONGODB: 27017
 };
 
-// Pricing plans (amounts in cents)
+// Pricing plans (amounts in cents) - ACTUAL PRICING IS IN paymentController.js
+// These constants are for reference only
 const PRICING_PLANS = {
   basic: {
     name: 'Basic Plan',
-    price: 2500,           // $25.00
-    displayPrice: '$25',
+    monthlyPrice: 1500,     // $15.00/month
+    yearlyPrice: 15000,     // $150.00/year (save 17%)
+    displayPrice: '$15/mo',
     ram: '1GB',
     cpu: 1,
     storage: '25GB',
     dropletSize: 's-1vcpu-1gb'
   },
-  priority: {
-    name: 'Priority Plan',
-    price: 6000,           // $60.00
-    displayPrice: '$60',
+  pro: {
+    name: 'Pro Plan',
+    monthlyPrice: 3500,     // $35.00/month
+    yearlyPrice: 35000,     // $350.00/year (save 17%)
+    displayPrice: '$35/mo',
     ram: '2GB',
     cpu: 2,
-    storage: '50GB',
+    storage: '60GB',
     dropletSize: 's-2vcpu-2gb'
   },
   premium: {
     name: 'Premium Plan',
-    price: 12000,          // $120.00
-    displayPrice: '$120',
+    monthlyPrice: 7500,     // $75.00/month
+    yearlyPrice: 75000,     // $750.00/year (save 17%)
+    displayPrice: '$75/mo',
     ram: '4GB',
     cpu: 2,
     storage: '80GB',

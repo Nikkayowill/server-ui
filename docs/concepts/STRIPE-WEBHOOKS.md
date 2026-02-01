@@ -53,7 +53,7 @@ sendServerRequestEmail(user.email, region, serverName);
 ```
 
 **Customer experience:**
-- Pays $25
+- Subscribes ($15-$75/month)
 - Gets confirmation page
 - Receives email 3 minutes later: "Your server is ready"
 - SSH credentials included
@@ -85,7 +85,7 @@ if (server) {
 
 **Why it matters:**
 - Refund issued → server automatically destroyed within 30 seconds
-- No orphaned droplets costing you $25/month
+- No orphaned droplets costing you money monthly
 - No manual cleanup required
 
 ## Webhook Security

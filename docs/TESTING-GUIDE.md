@@ -67,8 +67,8 @@ Visit http://localhost:3000
 
 ### 4. Payment Flow (TEST MODE)
 1. Click "View Plans" → goes to `/pricing`
-2. Pick any plan (Basic $25, Priority $60, Premium $120)
-3. Click "Get Started"
+2. Pick any plan (Basic $15/mo, Pro $35/mo, Premium $75/mo)
+3. Click "Get Started" (subscriptions) or "Pay Once" (one-time)
 4. Stripe checkout opens
 5. Use test card: `4242 4242 4242 4242`
 6. Any future expiry, any CVC
@@ -158,10 +158,10 @@ Before launch:
 
 ---
 2. Review three plans:
-   - Basic ($25/mo)
-   - Priority ($60/mo)
-   - Premium ($120/mo)
-3. Click "Get Started" on any plan
+   - Basic ($15/mo)
+   - Pro ($35/mo)
+   - Premium ($75/mo)
+3. Click "Get Started" on any plan (subscriptions) or "Pay Once" (one-time)
 4. **Expected:** Redirect to payment page
 
 #### Test Payment Flow (REAL CHARGE)
@@ -534,7 +534,7 @@ DELETE FROM users WHERE email = 'test@example.com';
 12. Logout
 
 **Time:** ~10 minutes  
-**Cost:** $25 + refund processing fee (~$0.50)
+**Cost:** $15 (Basic) + refund processing fee (~$0.50) - use test mode to avoid real charges
 
 ### Scenario 2: Refund Auto-Cleanup
 1. Create server with payment
