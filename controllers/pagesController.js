@@ -348,7 +348,7 @@ ${getHTMLHead('Pricing - Basement')}
         
         <!-- PRO -->
         <div class="bg-gradient-to-br from-gray-900/95 via-blue-950/30 to-black/95 backdrop-blur-xl border-2 border-blue-300 rounded p-8 relative transform md:scale-105 shadow-[0_0_80px_rgba(135,206,250,0.35),0_0_120px_rgba(135,206,250,0.2),inset_0_0_60px_rgba(135,206,250,0.06),inset_0_2px_2px_rgba(255,255,255,0.15)] hover:scale-[1.08] transition-all duration-300">
-          <div class="popular-badge">Most Popular</div>
+          <div class="popular-badge">Best Value</div>
           <div class="border-b border-blue-300 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Pro</div>
             <div class="flex items-baseline gap-2 mb-2">
