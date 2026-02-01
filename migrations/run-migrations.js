@@ -56,6 +56,10 @@ async function runMigrations() {
     const { up: addDatabaseCredentials } = require('./011-add-database-credentials');
     await addDatabaseCredentials();
     
+    // Add browser fingerprint column for trial abuse prevention
+    const { run: addBrowserFingerprint } = require('./016-add-browser-fingerprint');
+    await addBrowserFingerprint();
+    
   } catch (error) {
     // Safely rollback transaction (may not have started if error was early)
     try {

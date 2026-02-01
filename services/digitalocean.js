@@ -5,6 +5,7 @@ const { sendServerReadyEmail } = require('./email');
 
 // Track active polling intervals to prevent memory leaks
 const activePolls = new Map(); // serverId -> intervalId
+const MAX_ACTIVE_POLLS = 50; // Prevent DoS via polling amplification
 
 // Helper function to create real DigitalOcean server
 async function createRealServer(userId, plan, stripeChargeId = null, paymentInterval = 'monthly', stripeSubscriptionId = null) {
@@ -255,12 +256,24 @@ async function pollDropletStatus(dropletId, serverId) {
   let attempts = 0;
   const startTime = Date.now();
 
-  // Thread-safe check: prevent race condition if two polls start simultaneously
-  const existingPoll = activePolls.get(serverId);
-  if (existingPoll) {
-    clearInterval(existingPoll);
-    console.log(`Cleared existing poll for server ${serverId}`);
+  // Prevent DoS via polling amplification - reject if too many active polls
+  if (activePolls.size >= MAX_ACTIVE_POLLS) {
+    console.error(`[POLL] Max concurrent polls (${MAX_ACTIVE_POLLS}) reached. Rejecting poll for server ${serverId}`);
+    await pool.query(
+      'UPDATE servers SET status = $1 WHERE id = $2',
+      ['failed', serverId]
+    ).catch(err => console.error('Failed to update server status:', err));
+    return;
   }
+
+  // Thread-safe check: prevent race condition if two polls start simultaneously
+  if (activePolls.has(serverId)) {
+    console.log(`[POLL] Poll already active for server ${serverId}, skipping duplicate`);
+    return;
+  }
+  
+  // Reserve slot immediately before async operations
+  activePolls.set(serverId, null);
 
   const interval = setInterval(async () => {
     attempts++;
@@ -333,9 +346,9 @@ async function pollDropletStatus(dropletId, serverId) {
     }
   }, pollInterval);
   
-  // Store interval ID for cleanup
+  // Store interval ID for cleanup (replace null placeholder)
   activePolls.set(serverId, interval);
-  console.log(`Started polling for server ${serverId} (${activePolls.size} active polls)`);
+  console.log(`[POLL] Started polling for server ${serverId} (${activePolls.size}/${MAX_ACTIVE_POLLS} active polls)`);
 }
 
 // DigitalOcean sync - Check if droplets still exist

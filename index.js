@@ -351,6 +351,103 @@ app.post('/request-server', requireAuth, deploymentLimiter, csrfProtection, asyn
   }
 });
 
+// Free Trial Endpoint - provisions a Basic server for 3 days without payment
+app.post('/start-trial', requireAuth, deploymentLimiter, csrfProtection, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    
+    // Require email confirmation before starting trial
+    if (!req.session.emailConfirmed) {
+      return res.redirect('/dashboard?error=Please confirm your email before starting a trial');
+    }
+    
+    // Global daily trial cap - prevent mass abuse (50 trials/day max)
+    const dailyTrialCount = await pool.query(
+      `SELECT COUNT(*) as count FROM servers 
+       WHERE is_trial = true AND created_at > NOW() - INTERVAL '24 hours'`
+    );
+    if (parseInt(dailyTrialCount.rows[0].count) >= 50) {
+      console.log(`[TRIAL] Daily trial cap reached (50/day). Rejecting user ${userId}`);
+      return res.redirect('/dashboard?error=Trial signups temporarily limited. Please try again tomorrow or subscribe now.');
+    }
+    
+    // Check if user has already used their trial
+    const userResult = await pool.query(
+      'SELECT trial_used, email, browser_fingerprint FROM users WHERE id = $1',
+      [userId]
+    );
+    
+    if (userResult.rows.length === 0) {
+      return res.redirect('/dashboard?error=User not found');
+    }
+    
+    if (userResult.rows[0].trial_used) {
+      return res.redirect('/dashboard?error=You have already used your free trial. Please subscribe to continue.');
+    }
+    
+    // Check if user already has a server
+    const serverCheck = await pool.query(
+      'SELECT * FROM servers WHERE user_id = $1',
+      [userId]
+    );
+    
+    if (serverCheck.rows.length > 0) {
+      return res.redirect('/dashboard?error=You already have a server');
+    }
+    
+    // Check if same IP has used trial within 90 days (prevent abuse)
+    // Use req.ip which respects trust proxy setting instead of manually parsing headers
+    const clientIp = req.ip || req.socket.remoteAddress;
+    const recentTrialCheck = await pool.query(
+      `SELECT id FROM users 
+       WHERE signup_ip = $1 
+       AND trial_used = true 
+       AND trial_used_at > NOW() - INTERVAL '90 days'
+       AND id != $2`,
+      [clientIp, userId]
+    );
+    
+    if (recentTrialCheck.rows.length > 0) {
+      return res.redirect('/dashboard?error=A trial was recently used from this network. Please subscribe to continue.');
+    }
+    
+    // Check if same browser fingerprint has used trial within 90 days (VPN bypass prevention)
+    const userFingerprint = userResult.rows[0].browser_fingerprint;
+    
+    // Require fingerprint to start trial (prevents JS-disabled bypass)
+    if (!userFingerprint) {
+      return res.redirect('/dashboard?error=Browser verification required. Please enable JavaScript and try again.');
+    }
+    
+    const fingerprintTrialCheck = await pool.query(
+      `SELECT id FROM users 
+       WHERE browser_fingerprint = $1 
+       AND trial_used = true 
+       AND trial_used_at > NOW() - INTERVAL '90 days'
+       AND id != $2`,
+      [userFingerprint, userId]
+    );
+    
+    if (fingerprintTrialCheck.rows.length > 0) {
+      console.log(`[TRIAL] Blocked trial for user ${userId} - device fingerprint already used`);
+      return res.redirect('/dashboard?error=A trial was recently used from this device. Please subscribe to continue.');
+    }
+    
+    console.log(`[TRIAL] Starting free trial for user ${userId}`);
+    
+    // Create server with no payment (this will trigger trial mode in createRealServer)
+    // Pass null for stripeChargeId to indicate it's a trial
+    await createRealServerService(userId, 'basic', null, 'monthly', null);
+    
+    // Note: trial_used is set to true inside createRealServer after successful creation
+    
+    res.redirect('/dashboard?success=Your 3-day free trial has started! Your server is being provisioned.&provisioning=true');
+  } catch (err) {
+    console.error('[TRIAL] Start trial error:', err);
+    res.redirect('/dashboard?error=Failed to start trial. Please try again or contact support.');
+  }
+});
+
 // Payment Success page
 app.get('/payment-success', requireAuth, paymentController.paymentSuccess);
 

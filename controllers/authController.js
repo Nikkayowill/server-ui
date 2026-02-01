@@ -34,6 +34,7 @@ ${getHTMLHead('Register - Basement')}
         
         <form method="POST" action="/register" class="space-y-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+          <input type="hidden" name="fingerprint" value="">
           
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
@@ -90,7 +91,7 @@ ${getHTMLHead('Register - Basement')}
     </main>
     
     ${getFooter()}
-    ${getScripts('nav.js')}
+    ${getScripts('nav.js', 'fingerprint.js')}
     <script>
       const botInput = document.getElementById('botCode');
       const submitBtn = document.getElementById('submitBtn');
@@ -171,12 +172,12 @@ const handleRegister = async (req, res) => {
                      req.connection.remoteAddress || 
                      req.socket.remoteAddress;
     
-    // Check if this IP has already used a trial in the last 30 days
+    // Check if this IP has already used a trial in the last 90 days
     const ipTrialCheck = await pool.query(
       `SELECT COUNT(*) as count FROM users 
        WHERE signup_ip = $1 
        AND trial_used = true 
-       AND trial_used_at > NOW() - INTERVAL '30 days'`,
+       AND trial_used_at > NOW() - INTERVAL '90 days'`,
       [clientIp]
     );
     
@@ -194,11 +195,35 @@ const handleRegister = async (req, res) => {
     // Generate 6-digit confirmation code
     const { code, expiresAt } = createConfirmationCode();
     
-    // Insert user with code, terms acceptance, and signup IP
+    // Get browser fingerprint (for trial abuse prevention)
+    // Validate fingerprint format: must be 64-char hex string (SHA-256) or null
+    let fingerprint = req.body.fingerprint || null;
+    if (fingerprint) {
+      fingerprint = String(fingerprint).trim();
+      // Reject if not valid 64-char hex (SHA-256 output)
+      if (!/^[a-f0-9]{64}$/i.test(fingerprint)) {
+        fingerprint = null; // Invalid format, treat as no fingerprint
+      }
+    }
+    
+    // Check if this fingerprint has already used a trial (VPN bypass prevention)
+    let fingerprintHasUsedTrial = false;
+    if (fingerprint) {
+      const fpTrialCheck = await pool.query(
+        `SELECT COUNT(*) as count FROM users 
+         WHERE browser_fingerprint = $1 
+         AND trial_used = true 
+         AND trial_used_at > NOW() - INTERVAL '90 days'`,
+        [fingerprint]
+      );
+      fingerprintHasUsedTrial = parseInt(fpTrialCheck.rows[0].count) > 0;
+    }
+    
+    // Insert user with code, terms acceptance, signup IP, and fingerprint
     await pool.query(
-      `INSERT INTO users (email, password_hash, email_token, token_expires_at, terms_accepted_at, signup_ip, trial_used) 
-       VALUES ($1, $2, $3, $4, NOW(), $5, $6)`,
-      [email, passwordHash, code, expiresAt, clientIp, ipHasUsedTrial]
+      `INSERT INTO users (email, password_hash, email_token, token_expires_at, terms_accepted_at, signup_ip, trial_used, browser_fingerprint) 
+       VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7)`,
+      [email, passwordHash, code, expiresAt, clientIp, ipHasUsedTrial || fingerprintHasUsedTrial, fingerprint]
     );
 
     // Send confirmation email with code (non-blocking)

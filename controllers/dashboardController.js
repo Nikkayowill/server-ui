@@ -83,6 +83,48 @@ exports.showDashboard = async (req, res) => {
             [userId]
         );
 
+        // Check if user is eligible for free trial (comprehensive check to match /start-trial endpoint)
+        const trialCheckResult = await pool.query(
+            'SELECT trial_used, browser_fingerprint FROM users WHERE id = $1',
+            [userId]
+        );
+        
+        let trialAvailable = !trialCheckResult.rows[0]?.trial_used && !hasServer && !hasPaid;
+        
+        // Additional checks to match /start-trial endpoint validation
+        if (trialAvailable) {
+            // Must have fingerprint (JS enabled)
+            const userFingerprint = trialCheckResult.rows[0]?.browser_fingerprint;
+            if (!userFingerprint) {
+                trialAvailable = false;
+            } else {
+                // Check if IP or fingerprint already used trial within 90 days
+                const clientIp = req.ip || req.socket.remoteAddress;
+                
+                const ipTrialCheck = await pool.query(
+                    `SELECT id FROM users 
+                     WHERE signup_ip = $1 
+                     AND trial_used = true 
+                     AND trial_used_at > NOW() - INTERVAL '90 days'
+                     AND id != $2`,
+                    [clientIp, userId]
+                );
+                
+                const fpTrialCheck = await pool.query(
+                    `SELECT id FROM users 
+                     WHERE browser_fingerprint = $1 
+                     AND trial_used = true 
+                     AND trial_used_at > NOW() - INTERVAL '90 days'
+                     AND id != $2`,
+                    [userFingerprint, userId]
+                );
+                
+                if (ipTrialCheck.rows.length > 0 || fpTrialCheck.rows.length > 0) {
+                    trialAvailable = false;
+                }
+            }
+        }
+
         const csrfToken = typeof req.csrfToken === 'function' ? req.csrfToken() : '';
         
         // Show provisioning UI if: coming from payment OR server exists with provisioning status
@@ -117,7 +159,8 @@ exports.showDashboard = async (req, res) => {
             postgresCredentials,
             mongodbCredentials,
             siteCount,
-            siteLimit
+            siteLimit,
+            trialAvailable
         });
 
         res.send(`
@@ -452,7 +495,7 @@ const buildDashboardTemplate = (data) => {
         <!-- Server Placeholder (No Server) -->
         <div class="bg-gray-800 rounded-lg p-8 text-center">
             <h3 class="text-xl font-bold text-gray-400 mb-2">Server Details</h3>
-            <p class="text-sm text-gray-500">${data.hasPaid ? 'Waiting for server setup (contact support if delayed)' : 'Purchase a plan to see your server details here'}</p>
+            <p class="text-sm text-gray-500">${data.hasPaid ? 'Waiting for server setup (contact support if delayed)' : data.trialAvailable ? 'Start your free trial below to get a server' : 'Purchase a plan to see your server details here'}</p>
         </div>
         `}
 
@@ -468,6 +511,23 @@ const buildDashboardTemplate = (data) => {
                 </div>
                 <p class="text-xs text-gray-500 mt-2">Paste your public or private GitHub repository URL to deploy automatically.</p>
             </form>
+            ` : data.trialAvailable ? `
+            <div class="bg-green-900 bg-opacity-20 border-2 border-green-600 rounded-lg p-6 text-center">
+                <div class="text-4xl mb-3">🚀</div>
+                <h3 class="text-green-400 text-lg font-bold mb-2">Start Your Free Trial</h3>
+                <p class="text-green-300 text-sm mb-4">Get a fully-functional Basic server for 3 days — no credit card required.</p>
+                <form action="/start-trial" method="POST" class="inline-block">
+                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                    <button type="submit" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] transition-all duration-300">
+                        Start 3-Day Free Trial
+                    </button>
+                </form>
+                <p class="text-green-400 text-xs mt-3">1 GB RAM · 1 vCPU · 25 GB SSD · Full SSH access</p>
+            </div>
+            <div class="mt-4 text-center">
+                <span class="text-gray-500 text-sm">or</span>
+                <a href="/pricing" class="text-brand hover:text-cyan-400 text-sm ml-2">View paid plans →</a>
+            </div>
             ` : `
             <div class="bg-red-900 bg-opacity-20 border-2 border-red-600 rounded-lg p-4">
                 <p class="text-red-400 text-sm font-medium mb-3">⚠️ No active server detected</p>
