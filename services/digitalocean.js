@@ -7,7 +7,7 @@ const { sendServerReadyEmail } = require('./email');
 const activePolls = new Map(); // serverId -> intervalId
 
 // Helper function to create real DigitalOcean server
-async function createRealServer(userId, plan, stripeChargeId = null, paymentInterval = 'monthly') {
+async function createRealServer(userId, plan, stripeChargeId = null, paymentInterval = 'monthly', stripeSubscriptionId = null) {
   // Check if user has trial available
   const userResult = await pool.query(
     'SELECT trial_used, email FROM users WHERE id = $1',
@@ -159,10 +159,10 @@ echo "Setup complete!" > /root/setup.log
     // Save to database - wrapped in try-catch to handle race condition
     try {
       const result = await pool.query(
-        `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id, droplet_name, is_trial, payment_interval, site_limit)
-         VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6, $7, $8, $9, $10, $11)
+        `INSERT INTO servers (user_id, plan, status, ip_address, ssh_username, ssh_password, specs, stripe_charge_id, droplet_id, droplet_name, is_trial, payment_interval, site_limit, stripe_subscription_id, subscription_start_date)
+         VALUES ($1, $2, 'provisioning', $3, 'root', $4, $5, $6, $7, $8, $9, $10, $11, $12, CURRENT_TIMESTAMP)
          RETURNING *`,
-        [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId, String(droplet.id), dropletName, isTrial, paymentInterval, siteLimit]
+        [userId, plan, droplet.networks?.v4?.[0]?.ip_address || 'pending', password, JSON.stringify(selectedSpec), stripeChargeId, String(droplet.id), dropletName, isTrial, paymentInterval, siteLimit, stripeSubscriptionId]
       );
       
       // If this is a trial server, mark trial as used
@@ -393,7 +393,27 @@ async function syncDigitalOceanDroplets() {
 module.exports = {
   createRealServer,
   syncDigitalOceanDroplets,
-  destroyDroplet: async (serverId) => {
+  
+  // Destroy droplet by droplet ID directly (for webhook/cancellation use)
+  destroyDroplet: async (dropletId) => {
+    try {
+      await axios.delete(`https://api.digitalocean.com/v2/droplets/${dropletId}`, {
+        headers: { 'Authorization': `Bearer ${process.env.DIGITALOCEAN_TOKEN}` }
+      });
+      console.log(`Destroyed droplet ${dropletId}`);
+      return { success: true };
+    } catch (error) {
+      if (error.response?.status === 404) {
+        console.log(`Droplet ${dropletId} already deleted`);
+        return { success: true, message: 'Already deleted' };
+      }
+      console.error('Destroy droplet error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+  
+  // Destroy droplet by server ID (looks up droplet ID from database)
+  destroyDropletByServerId: async (serverId) => {
     try {
       // Get server info
       const serverResult = await pool.query('SELECT * FROM servers WHERE id = $1', [serverId]);

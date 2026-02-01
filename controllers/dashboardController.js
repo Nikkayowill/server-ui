@@ -394,7 +394,7 @@ const buildDashboardTemplate = (data) => {
                     </form>
                     <form id="terminate-form" action="/delete-server" method="POST" class="flex-1">
                         <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                        <button type="button" onclick="openTerminateModal()" class="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-300">Terminate</button>
+                        <button type="button" onclick="openTerminateModal()" class="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-300">Cancel Plan</button>
                     </form>
                 </div>
                 `}
@@ -936,11 +936,11 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
     </div>
 </main>
 
-<!-- Terminate Confirmation Modal -->
+<!-- Cancel Plan Confirmation Modal -->
 <div id="terminate-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center">
     <div class="bg-gray-900 border border-red-600 rounded-lg p-8 max-w-lg w-11/12">
-        <h2 class="text-2xl font-bold text-red-500 mb-4">⚠️ Terminate Server</h2>
-        <p class="text-gray-300 mb-4">This action will <span class="text-red-500 font-bold">PERMANENTLY DESTROY</span> your server and all data. There is no undo.</p>
+        <h2 class="text-2xl font-bold text-red-500 mb-4">⚠️ Cancel Plan</h2>
+        <p class="text-gray-300 mb-4">This action will <span class="text-red-500 font-bold">CANCEL YOUR SUBSCRIPTION</span> and destroy your server and all data. There is no undo.</p>
         
         <div class="bg-black bg-opacity-40 border border-gray-700 rounded-lg p-4 mb-4">
             <p class="text-xs text-gray-400 mb-2 uppercase font-bold">To confirm, type the server name below:</p>
@@ -953,7 +953,7 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
         
         <div class="flex gap-3">
             <button onclick="closeTerminateModal()" class="flex-1 px-4 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-            <button id="confirm-button" onclick="confirmTermination()" disabled class="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors opacity-50 cursor-not-allowed">Confirm Termination</button>
+            <button id="confirm-button" onclick="confirmTermination()" disabled class="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors opacity-50 cursor-not-allowed">Confirm Cancellation</button>
         </div>
     </div>
 </div>

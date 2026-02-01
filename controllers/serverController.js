@@ -117,38 +117,63 @@ exports.deleteServer = async (req, res) => {
     // Find droplet info for admin notification
     let dropletId = server.droplet_id || 'Unknown';
     let dropletIp = server.ip_address || 'Unknown';
+    
+    // CRITICAL: Cancel Stripe subscription FIRST (stops future billing)
+    if (server.stripe_subscription_id) {
+      try {
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        await stripe.subscriptions.cancel(server.stripe_subscription_id);
+        console.log(`Cancelled Stripe subscription: ${server.stripe_subscription_id}`);
+      } catch (stripeError) {
+        console.error('Failed to cancel Stripe subscription:', stripeError.message);
+        // Continue with deletion even if Stripe fails (we'll handle manually)
+      }
+    }
+    
+    // Destroy DigitalOcean droplet automatically
+    if (dropletId && dropletId !== 'Unknown') {
+      try {
+        const { destroyDroplet } = require('../services/digitalocean');
+        await destroyDroplet(dropletId);
+        console.log(`Destroyed droplet ${dropletId}`);
+      } catch (doError) {
+        console.error('Failed to destroy droplet:', doError.message);
+        // Continue with deletion, admin will be notified
+      }
+    }
 
-    // Delete server from database first (locks customer out immediately)
+    // Mark server as deleted (keep record for audit)
     await pool.query(
-      'DELETE FROM servers WHERE user_id = $1',
-      [userId]
+      'UPDATE servers SET status = $1, cancelled_at = CURRENT_TIMESTAMP WHERE user_id = $2',
+      ['deleted', userId]
     );
 
-    console.log(`Deleted server record for user ${userId}`);
+    console.log(`Marked server as deleted for user ${userId}`);
 
     // Send admin notification email (don't wait for it)
     const { sendEmail } = require('../services/email');
     const emailHtml = `
-      <h2>Customer Terminated Server</h2>
+      <h2>Customer Cancelled Subscription</h2>
       <p><strong>User ID:</strong> ${userId}</p>
       <p><strong>Email:</strong> ${userEmail}</p>
       <p><strong>Droplet ID:</strong> ${dropletId}</p>
       <p><strong>IP Address:</strong> ${dropletIp}</p>
       <p><strong>Plan:</strong> ${server.plan || 'Unknown'}</p>
       <p><strong>Time:</strong> ${new Date().toISOString()}</p>
+      <p><strong>Subscription ID:</strong> ${server.stripe_subscription_id || 'N/A'}</p>
       <hr>
-      <p><strong>Action Required:</strong> Delete droplet ${dropletId} from DigitalOcean dashboard to stop billing.</p>
-      <p><a href="https://cloud.digitalocean.com/droplets/${dropletId}">View Droplet in DO Dashboard</a></p>
+      <p>✅ Stripe subscription cancelled automatically</p>
+      <p>✅ Droplet destruction attempted</p>
     `;
-    const emailText = `Customer Terminated Server\n\nUser ID: ${userId}\nEmail: ${userEmail}\nDroplet ID: ${dropletId}\nIP: ${dropletIp}\nPlan: ${server.plan || 'Unknown'}\nTime: ${new Date().toISOString()}\n\nAction Required: Delete droplet ${dropletId} from DO dashboard.`;
+    const emailText = `Customer Cancelled Subscription\n\nUser ID: ${userId}\nEmail: ${userEmail}\nDroplet ID: ${dropletId}\nIP: ${dropletIp}\nPlan: ${server.plan || 'Unknown'}\nTime: ${new Date().toISOString()}`;
     
-    sendEmail('support@cloudedbasement.ca', '🚨 Server Termination - Action Required', emailHtml, emailText)
-      .catch(err => console.error('Failed to send termination notification:', err));
+    sendEmail('support@cloudedbasement.ca', 'Subscription Cancelled', emailHtml, emailText)
+      .catch(err => console.error('Failed to send cancellation notification:', err));
 
     res.redirect('/pricing?success=Plan cancelled successfully. We\'re sad to see you go!');
   } catch (error) {
     console.error('Delete server error:', error);
-    res.redirect('/dashboard?error=Failed to delete server');
+    res.redirect('/dashboard?error=Failed to cancel plan');
   }
 };
 

@@ -109,13 +109,14 @@ ${getHTMLHead('Terms of Service - Basement')}
           <li><strong>Price Changes:</strong> We reserve the right to modify pricing with 30 days' advance notice</li>
         </ul>
 
-        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.2 Early Adopter Pricing</h3>
-        <p class="text-gray-400 mb-4">Limited-time <strong>early adopter pricing</strong> is available for the first customers:</p>
+        <h3 class="text-xl font-bold text-white mt-8 mb-3">4.2 Free Trial</h3>
+        <p class="text-gray-400 mb-4">New users may be eligible for a <strong>3-day free trial</strong> of our Basic plan:</p>
         <ul class="list-disc list-inside text-gray-400 mb-6 space-y-2">
-          <li>Discounted rates locked in for 6 months from signup date</li>
-          <li>After 6 months, pricing automatically transitions to standard rates</li>
-          <li>You will be notified 30 days before rate change takes effect</li>
-          <li>Standard pricing: Basic ($15/mo), Pro ($35/mo), Premium ($75/mo)</li>
+          <li>Trial includes a fully functional server with all Basic plan features</li>
+          <li>No credit card required to start the trial</li>
+          <li>One free trial per user (determined by email address)</li>
+          <li>At the end of 3 days, your server will be suspended unless you subscribe</li>
+          <li>You can upgrade to a paid plan at any time during the trial</li>
         </ul>
 
         <h3 class="text-xl font-bold text-white mt-8 mb-3">4.3 Payment Processing</h3>

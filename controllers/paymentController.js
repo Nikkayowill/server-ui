@@ -4,15 +4,15 @@ const getStripe = () => {
   return stripe;
 };
 const pool = require('../db');
-const { createRealServer } = require('../services/digitalocean');
+const { createRealServer, destroyDroplet } = require('../services/digitalocean');
 const { getHTMLHead, getScripts, getFooter, getResponsiveNav, escapeHtml } = require('../helpers');
 
-// Pricing plans configuration (monthly and yearly prices)
+// Pricing plans configuration (monthly and yearly prices in CENTS for Stripe)
 const PRICING_PLANS = {
-  basic: { name: 'Basic', monthly: 15, yearly: 150, was: 25, description: 'Perfect for side projects', features: ['1GB RAM', '1 CPU', '25GB Storage', '2 sites'] },
-  pro: { name: 'Pro', monthly: 35, yearly: 350, was: 60, description: 'Most popular • For production apps', features: ['2GB RAM', '2 CPUs', '50GB Storage', '5 sites'] },
-  priority: { name: 'Pro', monthly: 35, yearly: 350, was: 60, description: 'Most popular • For production apps', features: ['2GB RAM', '2 CPUs', '50GB Storage', '5 sites'] }, // legacy
-  premium: { name: 'Premium', monthly: 75, yearly: 750, was: 120, description: 'For serious projects', features: ['4GB RAM', '2 CPUs', '80GB Storage', '10 sites'] }
+  basic: { name: 'Basic', monthly: 1500, yearly: 15000, was: 25, description: 'Perfect for side projects', features: ['1GB RAM', '1 CPU', '25GB Storage', '2 sites'] },
+  pro: { name: 'Pro', monthly: 3500, yearly: 35000, was: 60, description: 'Most popular • For production apps', features: ['2GB RAM', '2 CPUs', '60GB Storage', '5 sites'] },
+  priority: { name: 'Pro', monthly: 3500, yearly: 35000, was: 60, description: 'Most popular • For production apps', features: ['2GB RAM', '2 CPUs', '60GB Storage', '5 sites'] }, // legacy
+  premium: { name: 'Premium', monthly: 7500, yearly: 75000, was: 120, description: 'For serious projects', features: ['4GB RAM', '2 CPUs', '80GB Storage', '10 sites'] }
 };
 
 // GET /pay
@@ -26,8 +26,9 @@ exports.showCheckout = (req, res) => {
   const interval = req.query.interval || 'monthly';
   const selectedPlan = PRICING_PLANS[plan] || PRICING_PLANS.basic;
   
-  // Get the right price based on interval
-  const price = interval === 'yearly' ? selectedPlan.yearly : selectedPlan.monthly;
+  // Get the right price based on interval (convert cents to dollars for display)
+  const priceInCents = interval === 'yearly' ? selectedPlan.yearly : selectedPlan.monthly;
+  const price = priceInCents / 100; // Convert to dollars for display
   const intervalLabel = interval === 'yearly' ? 'Yearly' : 'Monthly';
   const intervalShort = interval === 'yearly' ? '/year' : '/month';
   
@@ -224,6 +225,9 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
             throw new Error(data.error);
           }
           
+          // Store subscription ID for success page
+          const subscriptionId = data.subscriptionId;
+          
           // Confirm payment with card (handles 3D Secure automatically)
           const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
             payment_method: {
@@ -247,10 +251,10 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
             buttonText.classList.remove('hidden');
             spinner.classList.add('hidden');
           } else if (paymentIntent.status === 'succeeded') {
-            window.location.href = '/payment-success?plan=' + plan + '&interval=' + interval + '&payment_intent_id=' + paymentIntent.id;
+            window.location.href = '/payment-success?plan=' + plan + '&interval=' + interval + '&subscription_id=' + subscriptionId;
           } else if (paymentIntent.status === 'processing') {
             // Payment is processing asynchronously (some payment methods)
-            window.location.href = '/payment-success?plan=' + plan + '&interval=' + interval + '&payment_intent_id=' + paymentIntent.id;
+            window.location.href = '/payment-success?plan=' + plan + '&interval=' + interval + '&subscription_id=' + subscriptionId;
           } else {
             // Handle unexpected payment states (requires_action shouldn't happen - confirmCardPayment handles it)
             document.getElementById('card-errors').textContent = 'Payment status: ' + paymentIntent.status + '. Please contact support.';
@@ -271,7 +275,7 @@ ${getHTMLHead('Checkout - Clouded  Basement')}
 `);
 };
 
-// POST /create-payment-intent
+// POST /create-payment-intent - Creates a subscription with incomplete payment for embedded form
 exports.createPaymentIntent = async (req, res) => {
   try {
     const plan = req.body.plan || 'basic';
@@ -282,20 +286,48 @@ exports.createPaymentIntent = async (req, res) => {
       return res.status(401).json({ error: 'Session expired. Please log in again.' });
     }
     
-    // Test pricing - $0.50 (allows testing without real charges)
-    const planPrices = {
-      basic: { monthly: 50, yearly: 50, name: 'Basic Plan' },
-      pro: { monthly: 50, yearly: 50, name: 'Pro Plan' },
-      premium: { monthly: 50, yearly: 50, name: 'Premium Plan' }
-    };
-    const selectedPlan = planPrices[plan] || planPrices.basic;
-    const amount = interval === 'yearly' ? selectedPlan.yearly : selectedPlan.monthly;
+    // Get user email for Stripe customer
+    const userResult = await pool.query('SELECT email FROM users WHERE id = $1', [req.session.userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(401).json({ error: 'User not found.' });
+    }
+    const userEmail = userResult.rows[0].email;
     
-    // Create Payment Intent
-    const paymentIntent = await getStripe().paymentIntents.create({
-      amount: amount,
+    // Use real pricing from PRICING_PLANS (in cents)
+    const selectedPlan = PRICING_PLANS[plan] || PRICING_PLANS.basic;
+    const amount = interval === 'yearly' ? selectedPlan.yearly : selectedPlan.monthly;
+    const stripeInterval = interval === 'yearly' ? 'year' : 'month';
+    
+    // Find or create Stripe customer
+    let customer;
+    const existingCustomers = await getStripe().customers.list({ email: userEmail, limit: 1 });
+    if (existingCustomers.data.length > 0) {
+      customer = existingCustomers.data[0];
+    } else {
+      customer = await getStripe().customers.create({
+        email: userEmail,
+        metadata: { user_id: String(req.session.userId) }
+      });
+    }
+    
+    // Create a price for the subscription
+    const price = await getStripe().prices.create({
+      unit_amount: amount,
       currency: 'usd',
-      description: `${selectedPlan.name} - ${interval === 'yearly' ? 'Yearly' : 'Monthly'} subscription`,
+      recurring: { interval: stripeInterval },
+      product_data: {
+        name: `${selectedPlan.name} Plan`,
+        metadata: { plan: plan }
+      }
+    });
+    
+    // Create subscription with incomplete payment (lets us use embedded form)
+    const subscription = await getStripe().subscriptions.create({
+      customer: customer.id,
+      items: [{ price: price.id }],
+      payment_behavior: 'default_incomplete',
+      payment_settings: { save_default_payment_method: 'on_subscription' },
+      expand: ['latest_invoice.payment_intent'],
       metadata: {
         plan: plan,
         interval: interval,
@@ -303,26 +335,27 @@ exports.createPaymentIntent = async (req, res) => {
       }
     });
     
-    res.json({ clientSecret: paymentIntent.client_secret });
+    // Return the client secret from the subscription's payment intent
+    const clientSecret = subscription.latest_invoice.payment_intent.client_secret;
+    
+    res.json({ 
+      clientSecret: clientSecret,
+      subscriptionId: subscription.id
+    });
   } catch (error) {
-    console.error('Payment Intent error:', error);
+    console.error('Subscription creation error:', error);
     res.status(500).json({ error: error.message });
   }
 };
 
-// POST /create-checkout-session
+// POST /create-checkout-session - One-time payment option (redirects to Stripe Checkout)
 exports.createCheckoutSession = async (req, res) => {
   try {
     const plan = req.body.plan || 'basic';
     const interval = req.body.interval || 'monthly'; // 'monthly' or 'yearly'
     
-    // Test pricing - $0.50 (allows testing without real charges)
-    const planPrices = {
-      basic: { monthly: 50, yearly: 50, name: 'Basic Plan' },
-      pro: { monthly: 50, yearly: 50, name: 'Pro Plan' },
-      premium: { monthly: 50, yearly: 50, name: 'Premium Plan' }
-    };
-    const selectedPlan = planPrices[plan] || planPrices.basic;
+    // Use real pricing (in cents) - same as subscriptions
+    const selectedPlan = PRICING_PLANS[plan] || PRICING_PLANS.basic;
     const amount = interval === 'yearly' ? selectedPlan.yearly : selectedPlan.monthly;
 
     const session = await getStripe().checkout.sessions.create({
@@ -333,7 +366,7 @@ exports.createCheckoutSession = async (req, res) => {
             currency: 'usd',
             product_data: {
               name: selectedPlan.name,
-              description: `${selectedPlan.name} - ${interval === 'yearly' ? 'Yearly' : 'Monthly'} subscription`,
+              description: `${selectedPlan.name} - ${interval === 'yearly' ? 'Yearly' : 'Monthly'} (one-time payment)`,
             },
             unit_amount: amount,
           },
@@ -346,7 +379,8 @@ exports.createCheckoutSession = async (req, res) => {
       metadata: {
         plan: plan,
         interval: interval,
-        user_id: req.session.userId
+        user_id: req.session.userId,
+        payment_type: 'one_time'
       }
     });
     res.redirect(303, session.url);
@@ -426,41 +460,53 @@ exports.stripeWebhook = async (req, res) => {
     switch (event.type) {
       case 'charge.refunded': {
         const charge = event.data.object;
-        console.log('Charge refunded:', charge.id);
+        // IMPORTANT: We store PaymentIntent IDs (pi_xxx), not Charge IDs (ch_xxx)
+        const paymentIntentId = charge.payment_intent;
+        console.log('Charge refunded:', charge.id, 'PaymentIntent:', paymentIntentId);
 
         // Use database transaction for atomicity
         const client = await pool.connect();
         try {
           await client.query('BEGIN');
 
-          // Update payment status to refunded
+          // Update payment status to refunded (search by payment_intent ID)
           await client.query(
-            'UPDATE payments SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE stripe_charge_id = $2',
-            ['refunded', charge.id]
+            'UPDATE payments SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE stripe_payment_id = $2',
+            ['refunded', paymentIntentId]
           );
 
-          // Find server with this charge ID and mark as deleted
+          // Find server with this payment intent ID and destroy it
           const serverResult = await client.query(
             'SELECT * FROM servers WHERE stripe_charge_id = $1',
-            [charge.id]
+            [paymentIntentId]
           );
 
           if (serverResult.rows.length > 0) {
             const server = serverResult.rows[0];
-            console.log(`Refund processed for server ${server.id}, marking as deleted`);
+            console.log(`Refund processed for server ${server.id}, destroying droplet and marking as deleted`);
+            
+            // Destroy droplet if exists (same as subscription cancellation)
+            if (server.droplet_id) {
+              try {
+                await destroyDroplet(server.droplet_id);
+                console.log(`Droplet ${server.droplet_id} destroyed due to refund`);
+              } catch (err) {
+                console.error('Failed to destroy droplet on refund:', err.message);
+              }
+            }
             
             await client.query(
-              'UPDATE servers SET status = $1 WHERE id = $2',
+              'UPDATE servers SET status = $1, cancelled_at = CURRENT_TIMESTAMP WHERE id = $2',
               ['deleted', server.id]
             );
           }
 
           await client.query('COMMIT');
-          client.release();
         } catch (error) {
-          await client.query('ROLLBACK');
-          client.release();
+          await client.query('ROLLBACK').catch(() => {});
           console.error('Error processing charge.refunded:', error);
+        } finally {
+          client.release();
         }
         break;
       }
@@ -479,19 +525,13 @@ exports.stripeWebhook = async (req, res) => {
           const paymentIntentId = session.payment_intent;
           const amount = session.amount_total / 100; // Convert cents to dollars
           
-          // Extract plan from success_url
-          const successUrl = session.success_url || '';
-          const planMatch = successUrl.match(/[?&]plan=([^&]+)/);
-          const plan = planMatch ? planMatch[1] : 'basic';
-          
-          // Extract interval from success_url
-          const intervalMatch = successUrl.match(/[?&]interval=([^&]+)/);
-          const interval = intervalMatch ? intervalMatch[1] : 'monthly';
+          // Get plan and interval from metadata (set in createCheckoutSession)
+          const plan = session.metadata?.plan || 'basic';
+          const interval = session.metadata?.interval || 'monthly';
 
           if (!customerEmail) {
             console.log('No customer email found in checkout session');
             await client.query('ROLLBACK');
-            client.release();
             break;
           }
 
@@ -504,7 +544,6 @@ exports.stripeWebhook = async (req, res) => {
           if (userResult.rows.length === 0) {
             console.log(`User not found for email: ${customerEmail}`);
             await client.query('ROLLBACK');
-            client.release();
             break;
           }
 
@@ -524,11 +563,11 @@ exports.stripeWebhook = async (req, res) => {
           }
 
           await client.query('COMMIT');
-          client.release();
         } catch (error) {
-          await client.query('ROLLBACK');
-          client.release();
+          await client.query('ROLLBACK').catch(() => {});
           console.error('Error processing checkout.session.completed:', error);
+        } finally {
+          client.release();
         }
         break;
       }
@@ -536,6 +575,12 @@ exports.stripeWebhook = async (req, res) => {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object;
         console.log('PaymentIntent succeeded:', paymentIntent.id);
+
+        // If this is a subscription payment, let invoice.paid handle it
+        if (paymentIntent.invoice) {
+          console.log('Subscription payment intent - letting invoice.paid handle server creation');
+          break;
+        }
 
         // Use database transaction for atomicity
         const client = await pool.connect();
@@ -551,7 +596,6 @@ exports.stripeWebhook = async (req, res) => {
           if (!userIdStr) {
             console.log('No user_id found in payment intent metadata');
             await client.query('ROLLBACK');
-            client.release();
             break;
           }
 
@@ -560,7 +604,6 @@ exports.stripeWebhook = async (req, res) => {
           if (isNaN(userId)) {
             console.log(`Invalid user_id in metadata: ${userIdStr}`);
             await client.query('ROLLBACK');
-            client.release();
             break;
           }
 
@@ -573,7 +616,6 @@ exports.stripeWebhook = async (req, res) => {
           if (userResult.rows.length === 0) {
             console.log(`User not found for ID: ${userId}`);
             await client.query('ROLLBACK');
-            client.release();
             break;
           }
 
@@ -586,22 +628,23 @@ exports.stripeWebhook = async (req, res) => {
           if (existingPayment.rows.length > 0) {
             console.log('Payment already recorded:', paymentIntent.id);
             await client.query('COMMIT');
-            client.release();
             break;
           }
 
-          // Security: Validate plan matches amount paid
-          const validPlans = { basic: 2500, pro: 6000, premium: 12000 }; // cents
-          const expectedAmount = validPlans[plan] || validPlans['basic'];
+          // Security: Validate plan matches amount paid (in cents)
+          // Use PRICING_PLANS constant for single source of truth
+          const expectedMonthly = PRICING_PLANS[plan]?.monthly || PRICING_PLANS.basic.monthly;
+          const expectedYearly = PRICING_PLANS[plan]?.yearly || PRICING_PLANS.basic.yearly;
+          const paidCents = paymentIntent.amount;
           
-          if (amount !== expectedAmount) {
-            console.log(`⚠️ Amount mismatch: Paid $${amount/100}, Expected $${expectedAmount/100} for plan '${plan}'`);
+          if (paidCents !== expectedMonthly && paidCents !== expectedYearly) {
+            console.log(`⚠️ Amount mismatch: Paid ${paidCents} cents, Expected ${expectedMonthly} or ${expectedYearly} for plan '${plan}'`);
             // Force basic plan if amount doesn't match
             plan = 'basic';
           }
           
           // Validate plan is one of the allowed values
-          if (!['basic', 'pro', 'premium'].includes(plan)) {
+          if (!['basic', 'pro', 'priority', 'premium'].includes(plan)) {
             console.log(`⚠️ Invalid plan '${plan}', defaulting to basic`);
             plan = 'basic';
           }
@@ -612,7 +655,7 @@ exports.stripeWebhook = async (req, res) => {
             [userId, paymentIntent.id, amount, plan, 'succeeded']
           );
 
-          console.log(`Payment recorded: User ${userId}, $${amount/100}, Plan: ${plan}`);
+          console.log(`Payment recorded: User ${userId}, $${amount}, Plan: ${plan}`);
           
           // Create server if user doesn't have one (webhook is single source of truth)
           const serverCheck = await client.query(
@@ -628,11 +671,169 @@ exports.stripeWebhook = async (req, res) => {
           }
 
           await client.query('COMMIT');
-          client.release();
         } catch (error) {
-          await client.query('ROLLBACK');
-          client.release();
+          await client.query('ROLLBACK').catch(() => {});
           console.error('Error processing payment_intent.succeeded:', error);
+        } finally {
+          client.release();
+        }
+        break;
+      }
+
+      case 'invoice.paid': {
+        // Handle subscription invoice payments (first and recurring)
+        const invoice = event.data.object;
+        console.log('Invoice paid:', invoice.id, 'Subscription:', invoice.subscription);
+        
+        // Only process subscription invoices
+        if (!invoice.subscription) {
+          console.log('Not a subscription invoice, skipping');
+          break;
+        }
+        
+        const client = await pool.connect();
+        try {
+          await client.query('BEGIN');
+          
+          // Get subscription details from Stripe
+          const subscription = await getStripe().subscriptions.retrieve(invoice.subscription);
+          const userId = parseInt(subscription.metadata?.user_id, 10);
+          const plan = subscription.metadata?.plan || 'basic';
+          const interval = subscription.metadata?.interval || 'monthly';
+          
+          if (!userId || isNaN(userId)) {
+            console.log('No valid user_id in subscription metadata');
+            await client.query('ROLLBACK');
+            break;
+          }
+          
+          // Check if this is the first invoice (billing_reason = 'subscription_create')
+          if (invoice.billing_reason === 'subscription_create') {
+            console.log(`First subscription payment for user ${userId}, plan: ${plan}`);
+            
+            // Check if server already exists
+            const serverCheck = await client.query(
+              'SELECT * FROM servers WHERE user_id = $1 AND status NOT IN (\'deleted\', \'failed\')',
+              [userId]
+            );
+            
+            if (serverCheck.rows.length === 0) {
+              console.log('Creating server for subscription:', invoice.subscription);
+              await createRealServer(userId, plan, invoice.payment_intent, interval, invoice.subscription);
+            } else {
+              // Server exists, just update subscription ID if needed
+              await client.query(
+                'UPDATE servers SET stripe_subscription_id = $1 WHERE user_id = $2 AND status NOT IN (\'deleted\', \'failed\')',
+                [invoice.subscription, userId]
+              );
+              console.log('Updated existing server with subscription ID');
+            }
+          } else {
+            // Recurring payment - just log it
+            console.log(`Recurring payment received for user ${userId}, subscription: ${invoice.subscription}`);
+          }
+          
+          await client.query('COMMIT');
+        } catch (error) {
+          await client.query('ROLLBACK').catch(() => {});
+          console.error('Error processing invoice.paid:', error);
+        } finally {
+          client.release();
+        }
+        break;
+      }
+
+      case 'invoice.payment_failed': {
+        // Subscription payment failed (card declined, expired, etc.)
+        const invoice = event.data.object;
+        console.log('Invoice payment failed:', invoice.id, 'Subscription:', invoice.subscription);
+        
+        if (!invoice.subscription) {
+          break;
+        }
+        
+        const client = await pool.connect();
+        try {
+          await client.query('BEGIN');
+          
+          // Get subscription to find user
+          const subscription = await getStripe().subscriptions.retrieve(invoice.subscription);
+          const userId = parseInt(subscription.metadata?.user_id, 10);
+          
+          if (userId && !isNaN(userId)) {
+            // Get user email
+            const userResult = await client.query('SELECT email FROM users WHERE id = $1', [userId]);
+            if (userResult.rows.length > 0) {
+              const userEmail = userResult.rows[0].email;
+              console.log(`Payment failed for user ${userId} (${userEmail})`);
+              
+              // TODO: Send payment failed email notification
+              // Note: Stripe will automatically retry and eventually cancel if all retries fail
+            }
+          }
+          
+          await client.query('COMMIT');
+        } catch (error) {
+          await client.query('ROLLBACK').catch(() => {});
+          console.error('Error processing invoice.payment_failed:', error);
+        } finally {
+          client.release();
+        }
+        break;
+      }
+
+      case 'customer.subscription.deleted': {
+        // Subscription cancelled (by admin, user request, or payment failure)
+        const subscription = event.data.object;
+        console.log('Subscription deleted:', subscription.id);
+        
+        const client = await pool.connect();
+        try {
+          await client.query('BEGIN');
+          
+          // Find server with this subscription
+          const serverResult = await client.query(
+            'SELECT * FROM servers WHERE stripe_subscription_id = $1',
+            [subscription.id]
+          );
+          
+          if (serverResult.rows.length > 0) {
+            const server = serverResult.rows[0];
+            
+            // Skip if already deleted (avoid duplicate processing)
+            if (server.status === 'deleted') {
+              console.log('Server already deleted, skipping webhook processing');
+              await client.query('COMMIT');
+              break;
+            }
+            
+            console.log(`Cancelling server ${server.id} due to subscription deletion`);
+            
+            // Destroy droplet if exists
+            if (server.droplet_id) {
+              try {
+                await destroyDroplet(server.droplet_id);
+                console.log(`Droplet ${server.droplet_id} destroyed`);
+              } catch (err) {
+                console.error('Failed to destroy droplet:', err.message);
+              }
+            }
+            
+            // Mark server as deleted
+            await client.query(
+              'UPDATE servers SET status = $1, cancelled_at = CURRENT_TIMESTAMP WHERE id = $2',
+              ['deleted', server.id]
+            );
+          } else {
+            console.log('No server found for subscription:', subscription.id);
+          }
+          
+          await client.query('COMMIT');
+        } catch (error) {
+          await client.query('ROLLBACK').catch(() => {});
+          console.error('Error processing customer.subscription.deleted:', error);
+        } finally {
+          client.release();
         }
         break;
       }
