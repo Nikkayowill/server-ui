@@ -1110,16 +1110,25 @@ async function triggerSSLCertificateForCustomer(serverId, domain, server) {
         stream.on('close', async (code) => {
           conn.end();
           
+          console.log(`[SSL] Certbot finished for ${domain}, exit code: ${code}`);
+          console.log(`[SSL] stdout: ${stdout.substring(0, 500)}`);
+          console.log(`[SSL] stderr: ${stderr.substring(0, 500)}`);
+          
           try {
-            if (stdout.includes('Congratulations') || stderr.includes('Congratulations')) {
-              // Certificate generated successfully
+            if (stdout.includes('Congratulations') || stderr.includes('Congratulations') || stdout.includes('Successfully received certificate') || stderr.includes('Successfully received certificate')) {
+              // Certificate generated successfully - update BOTH servers and domains tables
               await pool.query(
                 'UPDATE servers SET ssl_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
                 ['active', serverId]
               );
+              await pool.query(
+                'UPDATE domains SET ssl_enabled = true WHERE domain = $1',
+                [domain]
+              );
               console.log(`[SSL] Certificate activated for ${domain} on server ${serverId}`);
               resolve();
             } else {
+              console.error(`[SSL] Certbot did not succeed. Code: ${code}, stdout: ${stdout}, stderr: ${stderr}`);
               throw new Error('Certbot command did not complete successfully');
             }
           } catch (dbError) {
