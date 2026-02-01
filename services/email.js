@@ -92,6 +92,11 @@ const emailFooterText = `\n\n---\nClouded Basement\nToronto, Ontario, Canada\nht
 
 if (provider === 'sendgrid') {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('[EMAIL] Using SendGrid as email provider');
+} else if (provider !== 'none') {
+  console.log(`[EMAIL] Using ${provider} as email provider`);
+} else {
+  console.warn('[EMAIL] No email provider configured! Emails will fail.');
 }
 
 const transporter = provider === 'sendgrid' ? null : nodemailer.createTransport(options);
@@ -348,8 +353,14 @@ async function sendContactEmail(name, email, message) {
   };
   
   try {
+    if (provider === 'sendgrid') {
+      const [resp] = await sgMail.send(mailOptions);
+      console.log(`[EMAIL] (sendgrid) Contact form sent to support@cloudedbasement.ca from ${email}`);
+      return { success: true, messageId: resp.headers['x-message-id'] || resp.statusCode };
+    }
+    
     const info = await transporter.sendMail(mailOptions);
-    console.log(`[EMAIL] Contact form sent to support@cloudedbasement.ca from ${email}`);
+    console.log(`[EMAIL] (${provider}) Contact form sent to support@cloudedbasement.ca from ${email}`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error(`[EMAIL] Failed to send contact form:`, error.message);
