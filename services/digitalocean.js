@@ -17,9 +17,10 @@ async function createRealServer(userId, plan, stripeChargeId = null, paymentInte
   const isTrial = !stripeChargeId && !userResult.rows[0].trial_used;
   
   const specs = {
-    basic: { ram: '1 GB', cpu: '1 CPU', storage: '25 GB SSD', bandwidth: '1 TB', slug: 's-1vcpu-1gb' },
-    priority: { ram: '2 GB', cpu: '2 CPUs', storage: '50 GB SSD', bandwidth: '2 TB', slug: 's-2vcpu-2gb' },
-    premium: { ram: '4 GB', cpu: '2 CPUs', storage: '80 GB SSD', bandwidth: '4 TB', slug: 's-2vcpu-4gb' }
+    basic: { ram: '1 GB', cpu: '1 vCPU', storage: '25 GB NVMe SSD', bandwidth: '1 TB', slug: 's-1vcpu-1gb' },
+    pro: { ram: '2 GB', cpu: '2 vCPUs', storage: '60 GB NVMe SSD', bandwidth: '3 TB', slug: 's-2vcpu-2gb' },
+    priority: { ram: '2 GB', cpu: '2 vCPUs', storage: '60 GB NVMe SSD', bandwidth: '3 TB', slug: 's-2vcpu-2gb' }, // legacy
+    premium: { ram: '4 GB', cpu: '2 vCPUs', storage: '80 GB NVMe SSD', bandwidth: '4 TB', slug: 's-2vcpu-4gb' }
   };
 
   // Site limits based on plan

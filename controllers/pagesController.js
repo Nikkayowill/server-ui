@@ -284,7 +284,7 @@ ${getHTMLHead('Pricing - Basement')}
     <main class="bg-black min-h-screen pt-24 pb-16">
       <section class="py-12 px-4 text-center">
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Simple, Transparent Pricing</h1>
-        <p class="text-gray-300 text-lg mb-8">Full-stack hosting in 5 minutes: Git deploy, one-click databases, SSL, and SSH.</p>
+        <p class="text-gray-300 text-lg mb-8">Full-stack hosting in 5 minutes. One server, unlimited deploys.</p>
         
         <!-- Billing Toggle -->
         <div class="flex items-center justify-center gap-4 mb-12">
@@ -296,7 +296,8 @@ ${getHTMLHead('Pricing - Basement')}
         </div>
       </section>
       
-      <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- BASIC -->
         <div class="bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-black/90 backdrop-blur-xl border border-blue-400/40 rounded p-8 hover:border-blue-300 hover:scale-[1.02] transition-all shadow-[0_0_60px_rgba(135,206,250,0.2),0_0_90px_rgba(135,206,250,0.1),inset_0_0_40px_rgba(135,206,250,0.03),inset_0_1px_1px_rgba(255,255,255,0.1)]">
           <div class="border-b border-blue-400/20 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Basic</div>
@@ -306,26 +307,46 @@ ${getHTMLHead('Pricing - Basement')}
                 <span class="text-base font-normal text-gray-300 price-interval">/mo</span>
               </div>
             </div>
-            <div class="text-sm text-gray-300">Perfect for side projects</div>
+            <div class="text-sm text-gray-300">Perfect for side projects & learning</div>
           </div>
-          <ul class="space-y-3 mb-8 text-sm">
-            <li class="text-gray-300"><strong class="text-white">1 GB RAM</strong></li>
-            <li class="text-gray-300"><strong class="text-white">1 CPU core</strong></li>
-            <li class="text-gray-300"><strong class="text-white">25 GB SSD storage</strong></li>
-            <li class="text-gray-300"><strong class="text-white">1 TB bandwidth</strong></li>
-            <li class="text-blue-300 pt-3 border-t border-blue-400/30"><strong class="text-white">2 sites included</strong></li>
-            <li class="text-blue-300">Unlimited updates per site</li>
-            <li class="text-gray-400">Full SSH/root access</li>
-            <li class="text-gray-400">One-click Git deployment</li>
-            <li class="text-gray-400">One-click database setup (MongoDB, PostgreSQL)</li>
-            <li class="text-gray-400">Custom domains</li>
-            <li class="text-gray-400">One-click SSL</li>
-            <li class="text-gray-400">Deployment logs</li>
-            <li class="text-gray-400">Email support (24-48hr)</li>
-          </ul>
+          
+          <div class="mb-6">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Server Specs</h5>
+            <ul class="space-y-2 text-sm">
+              <li class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white font-medium">1 GB</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white font-medium">1 vCPU</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white font-medium">25 GB NVMe SSD</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white font-medium">1 TB/mo</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white font-medium">2 sites</span></li>
+            </ul>
+          </div>
+          
+          <div class="mb-6">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Features Included</h5>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free SSL certificates</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Email support (24-48hr)</li>
+            </ul>
+          </div>
+          
+          <div class="mb-8">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-red-400 mb-3">Not Included</h5>
+            <ul class="space-y-2 text-sm text-gray-500">
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Automated backups</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Priority support</li>
+            </ul>
+          </div>
+          
           <a href="/pay?plan=basic&interval=monthly" class="plan-cta block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm" data-plan="basic">Select Basic</a>
         </div>
         
+        <!-- PRO -->
         <div class="bg-gradient-to-br from-gray-900/95 via-blue-950/30 to-black/95 backdrop-blur-xl border-2 border-blue-300 rounded p-8 relative transform md:scale-105 shadow-[0_0_80px_rgba(135,206,250,0.35),0_0_120px_rgba(135,206,250,0.2),inset_0_0_60px_rgba(135,206,250,0.06),inset_0_2px_2px_rgba(255,255,255,0.15)] hover:scale-[1.08] transition-all duration-300">
           <div class="popular-badge">Most Popular</div>
           <div class="border-b border-blue-300 pb-6 mb-6">
@@ -336,28 +357,38 @@ ${getHTMLHead('Pricing - Basement')}
                 <span class="text-base font-normal text-gray-300 price-interval">/mo</span>
               </div>
             </div>
-            <div class="text-sm text-gray-300">Most popular • For production apps</div>
+            <div class="text-sm text-gray-300">Best for production apps & freelancers</div>
           </div>
-          <ul class="space-y-3 mb-8 text-sm">
-            <li class="text-gray-300"><strong class="text-white">2 GB RAM</strong></li>
-            <li class="text-gray-300"><strong class="text-white">2 CPU cores</strong></li>
-            <li class="text-gray-300"><strong class="text-white">50 GB SSD storage</strong></li>
-            <li class="text-gray-300"><strong class="text-white">2 TB bandwidth</strong></li>
-            <li class="text-blue-300 pt-3 border-t border-blue-400/30"><strong class="text-white">5 sites included</strong></li>
-            <li class="text-blue-300">Unlimited updates per site</li>
-            <li class="text-gray-400">Full SSH/root access</li>
-            <li class="text-gray-400">One-click Git deployment</li>
-            <li class="text-gray-400">One-click database setup (MongoDB, PostgreSQL)</li>
-            <li class="text-gray-400">Custom domains</li>
-            <li class="text-gray-400">One-click SSL</li>
-            <li class="text-gray-400">Deployment logs</li>
-            <li class="text-blue-300 pt-3 border-t border-blue-400/30">Plus Pro perks:</li>
-            <li class="text-blue-300">Priority support (12hr response)</li>
-            <li class="text-blue-300">Server controls (start/stop/restart)</li>
-          </ul>
+          
+          <div class="mb-6">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Server Specs</h5>
+            <ul class="space-y-2 text-sm">
+              <li class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white font-medium">2 GB</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white font-medium">2 vCPUs</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white font-medium">60 GB NVMe SSD</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white font-medium">3 TB/mo</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white font-medium">5 sites</span></li>
+            </ul>
+          </div>
+          
+          <div class="mb-6">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Everything in Basic, plus:</h5>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + free SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Weekly automated backups</span></li>
+              <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Priority support (12hr response)</span></li>
+            </ul>
+          </div>
+          
           <a href="/pay?plan=pro&interval=monthly" class="plan-cta block w-full px-6 py-3 bg-blue-600 text-white text-center font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm" data-plan="pro">Select Pro</a>
         </div>
         
+        <!-- PREMIUM -->
         <div class="bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-black/90 backdrop-blur-xl border border-blue-400/40 rounded p-8 hover:border-blue-300 hover:scale-[1.02] transition-all shadow-[0_0_60px_rgba(135,206,250,0.2),0_0_90px_rgba(135,206,250,0.1),inset_0_0_40px_rgba(135,206,250,0.03),inset_0_1px_1px_rgba(255,255,255,0.1)]">
           <div class="border-b border-blue-400/20 pb-6 mb-6">
             <div class="text-xl font-bold text-white mb-2">Premium</div>
@@ -367,27 +398,115 @@ ${getHTMLHead('Pricing - Basement')}
                 <span class="text-base font-normal text-gray-300 price-interval">/mo</span>
               </div>
             </div>
-            <div class="text-sm text-gray-300">For serious projects</div>
+            <div class="text-sm text-gray-300">For agencies & high-traffic apps</div>
           </div>
-          <ul class="space-y-3 mb-8 text-sm">
-            <li class="text-gray-300"><strong class="text-white">4 GB RAM</strong></li>
-            <li class="text-gray-300"><strong class="text-white">2 CPU cores</strong></li>
-            <li class="text-gray-300"><strong class="text-white">80 GB SSD storage</strong></li>
-            <li class="text-gray-300"><strong class="text-white">4 TB bandwidth</strong></li>
-            <li class="text-blue-300 pt-3 border-t border-blue-400/30"><strong class="text-white">10 sites included</strong></li>
-            <li class="text-blue-300">Unlimited updates per site</li>
-            <li class="text-gray-400">Full SSH/root access</li>
-            <li class="text-gray-400">One-click Git deployment</li>
-            <li class="text-gray-400">One-click database setup (MongoDB, PostgreSQL)</li>
-            <li class="text-gray-400">Custom domains</li>
-            <li class="text-gray-400">One-click SSL</li>
-            <li class="text-gray-400">Deployment logs</li>
-            <li class="text-gray-400">Server controls (start/stop/restart)</li>
-            <li class="text-blue-300 pt-3 border-t border-blue-400/30">Plus Premium perks:</li>
-            <li class="text-blue-300">Priority support (4-8hr response)</li>
-            <li class="text-blue-300">Email/ticket support priority</li>
-          </ul>
+          
+          <div class="mb-6">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Server Specs</h5>
+            <ul class="space-y-2 text-sm">
+              <li class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white font-medium">4 GB</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white font-medium">2 vCPUs</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white font-medium">80 GB NVMe SSD</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white font-medium">4 TB/mo</span></li>
+              <li class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white font-medium">10 sites</span></li>
+            </ul>
+          </div>
+          
+          <div class="mb-6">
+            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Everything in Pro, plus:</h5>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + free SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Weekly automated backups</li>
+              <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300">Priority support (4-8hr response)</span></li>
+              <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300">2x the RAM for heavy workloads</span></li>
+            </ul>
+          </div>
+          
           <a href="/pay?plan=premium&interval=monthly" class="plan-cta block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm" data-plan="premium">Select Premium</a>
+        </div>
+      </section>
+      
+      <!-- Feature Comparison Table -->
+      <section class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16 pb-16">
+        <h2 class="text-2xl font-bold text-white text-center mb-8">Full Feature Comparison</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-700">
+                <th class="text-left py-3 px-4 text-gray-400 font-medium">Feature</th>
+                <th class="text-center py-3 px-4 text-gray-300 font-bold">Basic</th>
+                <th class="text-center py-3 px-4 text-blue-300 font-bold">Pro</th>
+                <th class="text-center py-3 px-4 text-purple-300 font-bold">Premium</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-300">
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">RAM</td><td class="text-center">1 GB</td><td class="text-center">2 GB</td><td class="text-center">4 GB</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">vCPUs</td><td class="text-center">1</td><td class="text-center">2</td><td class="text-center">2</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">NVMe SSD Storage</td><td class="text-center">25 GB</td><td class="text-center">60 GB</td><td class="text-center">80 GB</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Monthly Bandwidth</td><td class="text-center">1 TB</td><td class="text-center">3 TB</td><td class="text-center">4 TB</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Sites/Projects</td><td class="text-center">2</td><td class="text-center">5</td><td class="text-center">10</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">SSH & Root Access</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Git Deployment</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">One-Click Database</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Custom Domains</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Free SSL (Let's Encrypt)</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Server Controls</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Weekly Automated Backups</td><td class="text-center text-red-400">✗</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Support Response Time</td><td class="text-center">24-48hr</td><td class="text-center text-blue-300">12hr</td><td class="text-center text-purple-300">4-8hr</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      
+      <!-- Tech Stack Info -->
+      <section class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16 pb-16">
+        <h2 class="text-2xl font-bold text-white text-center mb-8">What's Pre-Installed</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🐧</div>
+            <div class="text-white font-medium text-sm">Ubuntu 22.04</div>
+            <div class="text-gray-500 text-xs">LTS</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🟢</div>
+            <div class="text-white font-medium text-sm">Node.js 20</div>
+            <div class="text-gray-500 text-xs">+ nvm</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🌐</div>
+            <div class="text-white font-medium text-sm">Nginx</div>
+            <div class="text-gray-500 text-xs">Web server</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🔒</div>
+            <div class="text-white font-medium text-sm">Certbot</div>
+            <div class="text-gray-500 text-xs">Free SSL</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🐍</div>
+            <div class="text-white font-medium text-sm">Python 3</div>
+            <div class="text-gray-500 text-xs">+ pip</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🦀</div>
+            <div class="text-white font-medium text-sm">Rust</div>
+            <div class="text-gray-500 text-xs">cargo</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🐹</div>
+            <div class="text-white font-medium text-sm">Go 1.21</div>
+            <div class="text-gray-500 text-xs">golang</div>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+            <div class="text-2xl mb-2">🔥</div>
+            <div class="text-white font-medium text-sm">UFW Firewall</div>
+            <div class="text-gray-500 text-xs">Configured</div>
+          </div>
         </div>
       </section>
       
