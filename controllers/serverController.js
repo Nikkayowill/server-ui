@@ -1059,19 +1059,12 @@ exports.enableSSL = async (req, res) => {
       return res.redirect('/dashboard?error=Domain not found or access denied');
     }
 
-    // Update server domain and set SSL status to pending
-    await pool.query(
-      'UPDATE servers SET domain = $1, ssl_status = $2 WHERE id = $3',
-      [domain, 'pending', server.id]
-    );
-
     // Send response immediately - process SSL in background
-    res.redirect('/dashboard?message=Domain assigned. SSL certificate generation started!');
+    res.redirect('/dashboard?message=SSL certificate generation started! This may take a minute.');
 
     // Background process - trigger SSL certificate generation
     triggerSSLCertificateForCustomer(server.id, domain, server).catch(err => {
       console.error('[SSL] Failed to trigger certificate for server', server.id, ':', err);
-      pool.query('UPDATE servers SET ssl_status = $1 WHERE id = $2', ['failed', server.id]).catch(e => console.error(e));
     });
 
   } catch (error) {
@@ -1116,11 +1109,7 @@ async function triggerSSLCertificateForCustomer(serverId, domain, server) {
           
           try {
             if (stdout.includes('Congratulations') || stderr.includes('Congratulations') || stdout.includes('Successfully received certificate') || stderr.includes('Successfully received certificate')) {
-              // Certificate generated successfully - update BOTH servers and domains tables
-              await pool.query(
-                'UPDATE servers SET ssl_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-                ['active', serverId]
-              );
+              // Certificate generated successfully - update domains table
               await pool.query(
                 'UPDATE domains SET ssl_enabled = true WHERE domain = $1',
                 [domain]
@@ -1159,10 +1148,7 @@ async function triggerSSLCertificateForCustomer(serverId, domain, server) {
     });
   }).catch(async (error) => {
     console.error(`[SSL] Error generating certificate for server ${serverId}:`, error.message);
-    await pool.query(
-      'UPDATE servers SET ssl_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-      ['failed', serverId]
-    );
+    // Log the failure - domains.ssl_enabled stays false
   });
 }
 
