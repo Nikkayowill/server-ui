@@ -739,8 +739,32 @@ WantedBy=multi-user.target`;
   output += `\n[5/5] Starting application...\n`;
   await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
   output += `✓ Application started\n`;
-  output += `\n🚀 Your backend is running!\n`;
-  output += `Note: Configure Nginx reverse proxy for public access.\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Configure Nginx as reverse proxy
+  output += `\nConfiguring Nginx reverse proxy...\n`;
+  const nginxConfig = `server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \\$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \\$host;
+        proxy_set_header X-Real-IP \\$remote_addr;
+        proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \\$scheme;
+        proxy_cache_bypass \\$http_upgrade;
+    }
+}`;
+  
+  await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/default`);
+  await execSSH(conn, `nginx -t && systemctl reload nginx`);
+  output += `✓ Nginx configured as reverse proxy to port 3000\n`;
+  output += `\n🚀 Your backend is live!\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   
   // Health check
@@ -783,7 +807,32 @@ WantedBy=multi-user.target`;
   output += `\n[5/5] Starting application...\n`;
   await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
   output += `✓ Application started\n`;
-  output += `\n🐍 Your Python app is running!\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Configure Nginx as reverse proxy (assuming Flask/FastAPI on port 5000)
+  output += `\nConfiguring Nginx reverse proxy...\n`;
+  const nginxConfig = `server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \\$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \\$host;
+        proxy_set_header X-Real-IP \\$remote_addr;
+        proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \\$scheme;
+        proxy_cache_bypass \\$http_upgrade;
+    }
+}`;
+  
+  await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/default`);
+  await execSSH(conn, `nginx -t && systemctl reload nginx`);
+  output += `✓ Nginx configured as reverse proxy to port 5000\n`;
+  output += `\n🐍 Your Python app is live!\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   
   // Health check
@@ -848,7 +897,32 @@ WantedBy=multi-user.target`;
       await execSSH(conn, `echo '${serviceContent}' > /etc/systemd/system/${serviceName}`);
       await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
       output += `✓ Service started\n`;
-      output += `\n🚀 Your Rust backend is running!\n`;
+      await updateDeploymentOutput(deploymentId, output, 'in-progress');
+      
+      // Configure Nginx as reverse proxy (Rust apps typically run on port 8080)
+      output += `\nConfiguring Nginx reverse proxy...\n`;
+      const nginxConfig = `server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \\$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \\$host;
+        proxy_set_header X-Real-IP \\$remote_addr;
+        proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \\$scheme;
+        proxy_cache_bypass \\$http_upgrade;
+    }
+}`;
+      
+      await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/default`);
+      await execSSH(conn, `nginx -t && systemctl reload nginx`);
+      output += `✓ Nginx configured as reverse proxy to port 8080\n`;
+      output += `\n🚀 Your Rust backend is live!\n`;
     } else {
       output += `⚠️ No deployable artifacts found\n`;
       output += `Expected: static/, pkg/, or target/release/${repoName}\n`;
@@ -900,8 +974,32 @@ WantedBy=multi-user.target`;
   output += `\n[5/5] Starting application...\n`;
   await execSSH(conn, `systemctl daemon-reload && systemctl enable ${serviceName} && systemctl restart ${serviceName}`);
   output += `✓ Application started\n`;
-  output += `\n🚀 Your Go backend is running!\n`;
-  output += `Note: Configure Nginx reverse proxy for public access.\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  // Configure Nginx as reverse proxy (Go apps typically run on port 8080)
+  output += `\nConfiguring Nginx reverse proxy...\n`;
+  const nginxConfig = `server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \\$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \\$host;
+        proxy_set_header X-Real-IP \\$remote_addr;
+        proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \\$scheme;
+        proxy_cache_bypass \\$http_upgrade;
+    }
+}`;
+  
+  await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/default`);
+  await execSSH(conn, `nginx -t && systemctl reload nginx`);
+  output += `✓ Nginx configured as reverse proxy to port 8080\n`;
+  output += `\n🚀 Your Go backend is live!\n`;
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   return output;
 }
