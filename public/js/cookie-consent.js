@@ -1,7 +1,31 @@
 // Cookie Consent Banner
 (function() {
+  // Helper functions with fallback to cookies if localStorage fails
+  function getConsent() {
+    try {
+      // Try localStorage first
+      const local = localStorage.getItem('cookieConsent');
+      if (local) return local;
+    } catch (e) {
+      console.log('[Cookie] localStorage not available');
+    }
+    // Fallback to cookie
+    const match = document.cookie.match(/cookieConsent=([^;]+)/);
+    return match ? match[1] : null;
+  }
+  
+  function setConsent(value) {
+    try {
+      localStorage.setItem('cookieConsent', value);
+    } catch (e) {
+      console.log('[Cookie] localStorage failed, using cookie');
+    }
+    // Always set cookie as backup (expires in 1 year)
+    document.cookie = 'cookieConsent=' + value + '; path=/; max-age=31536000; SameSite=Lax';
+  }
+  
   // Check if user already made a choice (accepted or declined)
-  const consent = localStorage.getItem('cookieConsent');
+  const consent = getConsent();
   console.log('[Cookie] Current consent value:', consent);
   if (consent === 'accepted' || consent === 'declined') {
     console.log('[Cookie] User already made choice, not showing banner');
@@ -41,7 +65,8 @@
 
   // Handle accept
   document.getElementById('acceptCookies').addEventListener('click', function() {
-    localStorage.setItem('cookieConsent', 'accepted');
+    setConsent('accepted');
+    console.log('[Cookie] Set to accepted');
     banner.style.transform = 'translateY(100%)';
     banner.style.opacity = '0';
     setTimeout(() => banner.remove(), 300);
@@ -49,7 +74,8 @@
 
   // Handle decline
   document.getElementById('declineCookies').addEventListener('click', function() {
-    localStorage.setItem('cookieConsent', 'declined');
+    setConsent('declined');
+    console.log('[Cookie] Set to declined');
     banner.style.transform = 'translateY(100%)';
     banner.style.opacity = '0';
     setTimeout(() => banner.remove(), 300);
