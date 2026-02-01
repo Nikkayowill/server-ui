@@ -516,14 +516,45 @@ const buildDashboardTemplate = (data) => {
                 <div class="text-4xl mb-3">🚀</div>
                 <h3 class="text-green-400 text-lg font-bold mb-2">Start Your Free Trial</h3>
                 <p class="text-green-300 text-sm mb-4">Get a fully-functional Basic server for 3 days — no credit card required.</p>
-                <form action="/start-trial" method="POST" class="inline-block">
+                <form action="/start-trial" method="POST" class="inline-block" id="trialForm">
                     <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                    <button type="submit" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] transition-all duration-300">
+                    <button type="button" onclick="showTrialModal()" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] transition-all duration-300">
                         Start 3-Day Free Trial
                     </button>
                 </form>
                 <p class="text-green-400 text-xs mt-3">1 GB RAM · 1 vCPU · 25 GB SSD · Full SSH access</p>
             </div>
+            
+            <!-- Trial Confirmation Modal -->
+            <div id="trialModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
+                <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md mx-4 text-center">
+                    <div class="text-5xl mb-4">🖥️</div>
+                    <h3 class="text-xl font-bold text-white mb-3">You're about to create your own server</h3>
+                    <p class="text-gray-400 text-sm mb-6">This will provision a real Ubuntu server with full SSH access. It takes about 2-5 minutes to set up.</p>
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="hideTrialModal()" class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+                        <button onclick="submitTrial()" class="px-6 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 transition-colors">Proceed</button>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                function showTrialModal() {
+                    document.getElementById('trialModal').classList.remove('hidden');
+                    document.getElementById('trialModal').classList.add('flex');
+                }
+                function hideTrialModal() {
+                    document.getElementById('trialModal').classList.add('hidden');
+                    document.getElementById('trialModal').classList.remove('flex');
+                }
+                function submitTrial() {
+                    document.getElementById('trialForm').submit();
+                }
+                // Close modal on backdrop click
+                document.getElementById('trialModal').addEventListener('click', function(e) {
+                    if (e.target === this) hideTrialModal();
+                });
+            </script>
             <div class="mt-4 text-center">
                 <span class="text-gray-500 text-sm">or</span>
                 <a href="/pricing" class="text-brand hover:text-cyan-400 text-sm ml-2">View paid plans →</a>
