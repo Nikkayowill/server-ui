@@ -269,8 +269,59 @@ module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, ch
  */
 const buildDashboardTemplate = (data) => {
   return `
+<!-- Dashboard Sidebar (Desktop: fixed left, Mobile: slide-out drawer) -->
+<aside id="dashboard-sidebar" class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-16 bg-gray-900 bg-opacity-95 backdrop-blur-sm border-r border-gray-800 z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <nav class="flex flex-col items-center py-4 h-full">
+        <ul class="space-y-2 flex-1">
+            <li>
+                <a href="#server-status" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Server Status">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                </a>
+            </li>
+            <li>
+                <a href="#ssh-access" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="SSH Access">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </a>
+            </li>
+            <li>
+                <a href="#deploy" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Deploy">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                </a>
+            </li>
+            <li>
+                <a href="#databases" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Databases">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                </a>
+            </li>
+            <li>
+                <a href="#domains" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Domains">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                </a>
+            </li>
+            <li>
+                <a href="#support" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Support">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </a>
+            </li>
+            <li>
+                <a href="#settings" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Settings">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+<!-- Mobile Sidebar Toggle Button -->
+<button id="sidebar-toggle" class="md:hidden fixed left-4 top-20 z-50 w-10 h-10 bg-gray-800 border border-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:text-brand hover:border-brand transition-all">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+</button>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+
 <!-- Main Content -->
-<main class="flex-1 px-4 md:px-8 lg:px-12 pt-24 pb-12 bg-black">
+<main class="flex-1 md:ml-16 px-4 md:px-8 lg:px-12 pt-24 pb-12 bg-black">
     <!-- Header -->
     <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
     <header class="flex flex-col gap-6 mb-12">
@@ -382,7 +433,7 @@ const buildDashboardTemplate = (data) => {
     <!-- Main Content Grid -->
     <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 space-y-6">
         ${(data.hasServer || data.isProvisioning) ? `
-        <div class="bg-gray-800 rounded-lg overflow-hidden" data-server-status="${data.serverStatus}">
+        <div id="server-status" class="bg-gray-800 rounded-lg overflow-hidden scroll-mt-24" data-server-status="${data.serverStatus}">
             <div class="px-6 py-4 border-b border-gray-700 bg-gray-900 bg-opacity-40">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -454,7 +505,7 @@ const buildDashboardTemplate = (data) => {
 
         ${data.hasServer ? `
         <!-- SSH Access Card -->
-        <div class="bg-gray-800 rounded-lg p-6">
+        <div id="ssh-access" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
             <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">🔒 SSH Access</h4>
             <p class="text-xs text-gray-500 mb-4">Use these credentials to connect to your server via SSH:</p>
             
@@ -508,7 +559,7 @@ const buildDashboardTemplate = (data) => {
         `}
 
         <!-- Deploy from GitHub -->
-        <div class="bg-gray-800 rounded-lg p-6">
+        <div id="deploy" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
             <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Deploy from GitHub</h4>
             ${data.hasServer ? `
             <form action="/deploy" method="POST" class="mb-4">
@@ -650,7 +701,7 @@ const buildDashboardTemplate = (data) => {
         ` : ''}
 
         <!-- Database Status -->
-        <div class="bg-gray-800 rounded-lg p-6">
+        <div id="databases" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
             <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Databases</h4>
             ${data.hasServer ? `
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -846,7 +897,7 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
         </div>
 
         <!-- Custom Domains -->
-        <div class="bg-gray-800 rounded-lg p-6">
+        <div id="domains" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
             <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Custom Domains</h4>
             
             ${data.ipAddress ? `
@@ -974,7 +1025,7 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
         </div>
 
         <!-- Support Tickets -->
-        <div class="bg-gray-800 rounded-lg p-6">
+        <div id="support" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
             <div class="flex justify-between items-center mb-6">
                 <h4 class="text-sm font-bold uppercase tracking-wide text-white">Support Tickets</h4>
                 <button onclick="openSubmitTicketModal()" class="px-4 py-2 bg-brand bg-opacity-90 text-black font-bold text-xs rounded-lg hover:bg-brand transition-colors">+ New</button>
@@ -1000,7 +1051,7 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
         </div>
 
         <!-- Account Settings -->
-        <div class="bg-gray-800 rounded-lg p-6">
+        <div id="settings" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
             <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Account Settings</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
@@ -1193,6 +1244,76 @@ function confirmTermination() {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeTerminateModal();
 });
+
+// ==========================================
+// SIDEBAR NAVIGATION
+// ==========================================
+
+// Mobile sidebar toggle
+const sidebar = document.getElementById('dashboard-sidebar');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+function openSidebar() {
+    sidebar.classList.remove('-translate-x-full');
+    sidebarOverlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    sidebar.classList.add('-translate-x-full');
+    sidebarOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+sidebarToggle?.addEventListener('click', () => {
+    if (sidebar.classList.contains('-translate-x-full')) {
+        openSidebar();
+    } else {
+        closeSidebar();
+    }
+});
+
+sidebarOverlay?.addEventListener('click', closeSidebar);
+
+// Close sidebar on link click (mobile)
+document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+            closeSidebar();
+        }
+    });
+});
+
+// Scroll-spy: highlight active section
+const sections = ['server-status', 'ssh-access', 'deploy', 'databases', 'domains', 'support', 'settings'];
+const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+function updateActiveSection() {
+    let current = '';
+    const scrollPos = window.scrollY + 150; // Offset for header
+    
+    sections.forEach(id => {
+        const section = document.getElementById(id);
+        if (section && section.offsetTop <= scrollPos) {
+            current = id;
+        }
+    });
+    
+    sidebarLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === '#' + current) {
+            link.classList.add('bg-gray-800', 'text-brand');
+            link.classList.remove('text-gray-400');
+        } else {
+            link.classList.remove('bg-gray-800', 'text-brand');
+            link.classList.add('text-gray-400');
+        }
+    });
+}
+
+window.addEventListener('scroll', updateActiveSection);
+updateActiveSection(); // Initial check
 </script>
   `;
 };
