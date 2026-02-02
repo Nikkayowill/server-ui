@@ -25,96 +25,222 @@ const listUsers = async (req, res) => {
 ${getHTMLHead('Admin Dashboard')}
     ${getResponsiveNav(req)}
 
-    <main class="bg-gray-900 min-h-screen pt-24 pb-16 px-4 md:px-8">
-      <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
-        <h1 class="text-3xl md:text-4xl font-bold text-brand text-center mb-12">Admin Dashboard</h1>
-
-      <!-- Pending Server Requests (Priority) -->
-      ${pendingRequests.length > 0 ? `
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-brand mb-4 flex items-center gap-2">
-          <span>⚡</span>
-          <span>Pending Server Requests (${pendingRequests.length})</span>
-        </h2>
-        <div class="bg-gray-800 border-2 border-brand rounded-lg overflow-hidden glow-brand">
-          <table class="w-full">
-            <thead class="bg-brand bg-opacity-10">
-              <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Customer</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Details</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Requested</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Action</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-700">
-              ${pendingRequests.map(r => {
-                const details = r.description.split('\n').reduce((acc, line) => {
-                  const [key, val] = line.split(': ');
-                  acc[key] = val;
-                  return acc;
-                }, {});
-                return `
-                <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-sm text-white font-bold">${escapeHtml(r.customer_email)}</td>
-                  <td class="px-6 py-4">
-                    <div class="text-xs text-gray-400 space-y-1">
-                      <div>Region: <span class="text-brand font-bold">${escapeHtml(details.Region || 'N/A')}</span></div>
-                      <div>Name: <span class="text-gray-300">${escapeHtml(details['Server Name'] || 'Default')}</span></div>
-                      <div>Use: <span class="text-gray-300">${escapeHtml(details['Use Case'] || 'Not specified')}</span></div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-sm">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase bg-orange-500 bg-opacity-20 text-orange-400">
-                      ${escapeHtml(r.status)}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-gray-400">
-                    ${new Date(r.created_at).toLocaleDateString()}<br/>
-                    <span class="text-xs">${new Date(r.created_at).toLocaleTimeString()}</span>
-                  </td>
-                  <td class="px-6 py-4 text-sm">
-                    <a href="https://cloud.digitalocean.com/droplets/new" 
-                       target="_blank" 
-                       class="text-brand hover:text-cyan-400 font-medium underline transition-colors">
-                      Provision →
-                    </a>
-                  </td>
-                </tr>
-              `}).join('')}
-            </tbody>
-          </table>
+    <div class="dashboard-grid">
+    <!-- Admin Sidebar -->
+    <aside class="dashboard-sidebar hidden md:block">
+        <!-- Admin Badge -->
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar bg-gradient-to-br from-red-500 to-orange-600">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name">Admin Panel</div>
+                <div class="sidebar-user-plan text-red-400">Full Access</div>
+            </div>
         </div>
-      </div>
-      ` : ''}
+        
+        <!-- Overview Section -->
+        <nav class="sidebar-section">
+            <h3 class="sidebar-section-title">Overview</h3>
+            <ul class="sidebar-nav-list">
+                <li>
+                    <a href="#stats" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        Stats
+                    </a>
+                </li>
+                ${pendingRequests.length > 0 ? `
+                <li>
+                    <a href="#pending" class="sidebar-nav-link text-orange-400">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Pending (${pendingRequests.length})
+                    </a>
+                </li>
+                ` : ''}
+            </ul>
+        </nav>
+        
+        <!-- Data Section -->
+        <nav class="sidebar-section">
+            <h3 class="sidebar-section-title">Data</h3>
+            <ul class="sidebar-nav-list">
+                <li>
+                    <a href="#users" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+                        Users (${users.length})
+                    </a>
+                </li>
+                <li>
+                    <a href="#servers" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"/></svg>
+                        Servers (${servers.length})
+                    </a>
+                </li>
+                <li>
+                    <a href="#domains" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+                        Domains (${domains.length})
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Activity Section -->
+        <nav class="sidebar-section">
+            <h3 class="sidebar-section-title">Activity</h3>
+            <ul class="sidebar-nav-list">
+                <li>
+                    <a href="#deployments" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Deployments
+                    </a>
+                </li>
+                <li>
+                    <a href="#payments" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        Payments
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Quick Links -->
+        <nav class="sidebar-section">
+            <h3 class="sidebar-section-title">Quick Links</h3>
+            <ul class="sidebar-nav-list">
+                <li>
+                    <a href="https://cloud.digitalocean.com/droplets" target="_blank" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        DigitalOcean
+                    </a>
+                </li>
+                <li>
+                    <a href="https://dashboard.stripe.com" target="_blank" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Stripe
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard" class="sidebar-nav-link">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+                        User Dashboard
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
 
-      <!-- Users Section -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-white mb-4">Users (${users.length})</h2>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden"></div>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-content">
+        <!-- Admin Header -->
+        <header class="flex flex-col gap-4 mb-8">
+            <div class="flex items-center gap-4">
+                <!-- Mobile sidebar toggle -->
+                <button id="mobile-sidebar-toggle" class="md:hidden p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-white">Admin Dashboard</h1>
+                    <p class="text-gray-500 text-xs">Manage users, servers, and payments</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Sections -->
+        <div class="space-y-8">
+        
+            <!-- STATS SECTION -->
+            <div id="stats" class="scroll-mt-24">
+                <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-4">Stats</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-1">Users</p>
+                        <p class="text-2xl font-bold text-brand">${users.length}</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-1">Servers</p>
+                        <p class="text-2xl font-bold text-green-400">${servers.filter(s => s.status === 'running').length}/${servers.length}</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-1">Domains</p>
+                        <p class="text-2xl font-bold text-purple-400">${domains.length}</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-1">Revenue</p>
+                        <p class="text-2xl font-bold text-yellow-400">$${(payments.filter(p => p.status === 'succeeded').reduce((sum, p) => sum + p.amount, 0) / 100).toFixed(0)}</p>
+                    </div>
+                </div>
+            </div>
+
+            ${pendingRequests.length > 0 ? `
+            <!-- PENDING SECTION -->
+            <div id="pending" class="bg-gray-800 rounded-lg p-6 scroll-mt-24 border-2 border-orange-500">
+                <h4 class="text-sm font-bold uppercase tracking-wide text-orange-400 mb-4">⚡ Pending Requests (${pendingRequests.length})</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-black bg-opacity-30">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Customer</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Details</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Date</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            ${pendingRequests.map(r => {
+                              const details = r.description.split('\\n').reduce((acc, line) => {
+                                const [key, val] = line.split(': ');
+                                acc[key] = val;
+                                return acc;
+                              }, {});
+                              return `
+                              <tr class="hover:bg-gray-700 transition-colors">
+                                <td class="px-4 py-3 text-sm text-white">${escapeHtml(r.customer_email)}</td>
+                                <td class="px-4 py-3 text-xs text-gray-400">
+                                    <span class="text-brand">${escapeHtml(details.Region || 'N/A')}</span> · ${escapeHtml(details['Server Name'] || 'Default')}
+                                </td>
+                                <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-bold uppercase rounded bg-orange-900 text-orange-300">${escapeHtml(r.status)}</span></td>
+                                <td class="px-4 py-3 text-xs text-gray-400">${new Date(r.created_at).toLocaleDateString()}</td>
+                                <td class="px-4 py-3">
+                                    <a href="https://cloud.digitalocean.com/droplets/new" target="_blank" class="text-brand hover:text-cyan-400 text-xs font-bold">Provision →</a>
+                                </td>
+                              </tr>
+                            `}).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            ` : ''}
+
+      <!-- USERS SECTION -->
+      <div id="users" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
+        <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-4">Users (${users.length})</h4>
+        <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-white bg-opacity-5">
+            <thead class="bg-black bg-opacity-30">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Email</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Role</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Confirmed</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Created</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Action</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Email</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Role</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Confirmed</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Created</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Action</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
               ${users.map(u => `
                 <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-sm text-white">${escapeHtml(u.email)}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${u.role}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${u.email_confirmed ? 'Yes' : 'No'}</td>
-                  <td class="px-6 py-4 text-sm text-gray-400">${new Date(u.created_at).toLocaleDateString()}</td>
-                  <td class="px-6 py-4 text-sm">
-                    <form method="POST" action="/admin/delete-user/${u.id}" class="inline" onsubmit="return confirm('Delete user ${escapeHtml(u.email)}? This will also delete all their servers, deployments, and payments.');">
+                  <td class="px-4 py-3 text-sm text-white">${escapeHtml(u.email)}</td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded ${u.role === 'admin' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'}">${u.role}</span></td>
+                  <td class="px-4 py-3 text-xs">${u.email_confirmed ? '<span class="text-green-400">✓</span>' : '<span class="text-red-400">✗</span>'}</td>
+                  <td class="px-4 py-3 text-xs text-gray-400">${new Date(u.created_at).toLocaleDateString()}</td>
+                  <td class="px-4 py-3">
+                    <form method="POST" action="/admin/delete-user/${u.id}" class="inline" onsubmit="return confirm('Delete ${escapeHtml(u.email)}?');">
                       <input type="hidden" name="_csrf" value="${req.csrfToken()}">
-                      <button type="submit" class="px-3 py-1.5 bg-red-600 text-white font-bold text-xs rounded hover:bg-red-700 transition-colors">
-                        Delete
-                      </button>
+                      <button type="submit" class="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">Delete</button>
                     </form>
                   </td>
                 </tr>
@@ -124,55 +250,42 @@ ${getHTMLHead('Admin Dashboard')}
         </div>
       </div>
 
-      <!-- Servers Section -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-white mb-4">Servers (${servers.length})</h2>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+      <!-- SERVERS SECTION -->
+      <div id="servers" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
+        <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-4">Servers (${servers.length})</h4>
+        <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-white bg-opacity-5">
+            <thead class="bg-black bg-opacity-30">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Owner</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Plan</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">IP Addresses</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Created</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Action</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">ID</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Owner</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Plan</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">IP</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Created</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
               ${servers.map(s => `
                 <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-sm text-gray-400 font-mono">#${s.id}</td>
-                  <td class="px-6 py-4 text-sm text-white">${escapeHtml(s.owner_email || '-')}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${escapeHtml(s.plan)}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${escapeHtml(s.status)}</td>
-                  <td class="px-6 py-4 text-xs font-mono">
-                    <div class="text-brand">${escapeHtml(s.ip_address || '-')}</div>
-                    ${s.ipv6_address ? `<div class="text-purple-400 mt-1">${escapeHtml(s.ipv6_address)}</div>` : ''}
-                  </td>
-                  <td class="px-6 py-4 text-sm text-gray-400">${new Date(s.created_at).toLocaleDateString()}</td>
-                  <td class="px-6 py-4 text-sm">
-                    <div class="flex flex-col sm:flex-row gap-2">
+                  <td class="px-4 py-3 text-xs text-gray-400 font-mono">#${s.id}</td>
+                  <td class="px-4 py-3 text-sm text-white">${escapeHtml(s.owner_email || '-')}</td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded bg-blue-900 text-blue-300">${escapeHtml(s.plan)}</span></td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded ${s.status === 'running' ? 'bg-green-900 text-green-300' : s.status === 'provisioning' ? 'bg-yellow-900 text-yellow-300' : 'bg-red-900 text-red-300'}">${escapeHtml(s.status)}</span></td>
+                  <td class="px-4 py-3 text-xs font-mono text-brand">${escapeHtml(s.ip_address || '-')}</td>
+                  <td class="px-4 py-3 text-xs text-gray-400">${new Date(s.created_at).toLocaleDateString()}</td>
+                  <td class="px-4 py-3">
+                    <div class="flex gap-1">
                       ${s.status === 'provisioning' ? `
-                      <form method="POST" action="/admin/cancel-provisioning/${s.id}" class="inline" onsubmit="return confirm('Cancel provisioning for server #${s.id}? This will mark it as failed.');">
+                      <form method="POST" action="/admin/cancel-provisioning/${s.id}" class="inline" onsubmit="return confirm('Cancel provisioning?');">
                         <input type="hidden" name="_csrf" value="${req.csrfToken()}">
-                        <button type="submit" class="px-3 py-1.5 bg-orange-600 text-white font-bold text-xs rounded hover:bg-orange-700 transition-colors whitespace-nowrap">
-                          Cancel
-                        </button>
+                        <button type="submit" class="px-2 py-1 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">Cancel</button>
                       </form>
                       ` : ''}
-                      <form method="POST" action="/admin/destroy-droplet/${s.id}" class="inline" onsubmit="return confirm('DESTROY droplet for server #${s.id}? This will permanently delete the DigitalOcean droplet AND the database record. This cannot be undone!');">
+                      <form method="POST" action="/admin/destroy-droplet/${s.id}" class="inline" onsubmit="return confirm('DESTROY droplet #${s.id}? Cannot be undone!');">
                         <input type="hidden" name="_csrf" value="${req.csrfToken()}">
-                        <button type="submit" class="px-3 py-1.5 bg-red-800 text-white font-bold text-xs rounded hover:bg-red-900 transition-colors whitespace-nowrap">
-                          Destroy
-                        </button>
-                      </form>
-                      <form method="POST" action="/admin/delete-server/${s.id}" class="inline" onsubmit="return confirm('Delete server record #${s.id}? This will remove it from the database but NOT destroy the actual droplet.');">
-                        <input type="hidden" name="_csrf" value="${req.csrfToken()}">
-                        <button type="submit" class="px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors whitespace-nowrap">
-                          Delete DB
-                        </button>
+                        <button type="submit" class="px-2 py-1 bg-red-800 text-white text-xs rounded hover:bg-red-900">Destroy</button>
                       </form>
                     </div>
                   </td>
@@ -183,26 +296,26 @@ ${getHTMLHead('Admin Dashboard')}
         </div>
       </div>
 
-      <!-- Domains Section -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-white mb-4">Domains (${domains.length})</h2>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+      <!-- DOMAINS SECTION -->
+      <div id="domains" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
+        <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-4">Domains (${domains.length})</h4>
+        <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-white bg-opacity-5">
+            <thead class="bg-black bg-opacity-30">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Domain</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">SSL Enabled</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">SSL Expires</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Created</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Domain</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">SSL</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Expires</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Created</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
               ${domains.map(d => `
                 <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-sm text-white font-mono">${escapeHtml(d.domain)}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${d.ssl_enabled ? 'Yes' : 'No'}</td>
-                  <td class="px-6 py-4 text-sm text-gray-400">${d.ssl_expires_at ? new Date(d.ssl_expires_at).toLocaleDateString() : '-'}</td>
-                  <td class="px-6 py-4 text-sm text-gray-400">${new Date(d.created_at).toLocaleDateString()}</td>
+                  <td class="px-4 py-3 text-sm text-white font-mono">${escapeHtml(d.domain)}</td>
+                  <td class="px-4 py-3 text-xs">${d.ssl_enabled ? '<span class="text-green-400">🔒 Active</span>' : '<span class="text-gray-500">—</span>'}</td>
+                  <td class="px-4 py-3 text-xs text-gray-400">${d.ssl_expires_at ? new Date(d.ssl_expires_at).toLocaleDateString() : '-'}</td>
+                  <td class="px-4 py-3 text-xs text-gray-400">${new Date(d.created_at).toLocaleDateString()}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -210,28 +323,28 @@ ${getHTMLHead('Admin Dashboard')}
         </div>
       </div>
 
-      <!-- Deployments Section -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-white mb-4">Recent Deployments (${deployments.length})</h2>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+      <!-- DEPLOYMENTS SECTION -->
+      <div id="deployments" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
+        <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-4">Deployments (${deployments.length})</h4>
+        <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-white bg-opacity-5">
+            <thead class="bg-black bg-opacity-30">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Owner</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Git URL</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Deployed</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">ID</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Owner</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Git URL</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Deployed</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
               ${deployments.map(d => `
                 <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-sm text-gray-400 font-mono">#${d.id}</td>
-                  <td class="px-6 py-4 text-sm text-white">${escapeHtml(d.owner_email || '-')}</td>
-                  <td class="px-6 py-4 text-xs text-gray-300 font-mono">${escapeHtml(d.git_url || '-')}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${escapeHtml(d.status)}</td>
-                  <td class="px-6 py-4 text-sm text-gray-400">${d.deployed_at ? new Date(d.deployed_at).toLocaleDateString() : '-'}</td>
+                  <td class="px-4 py-3 text-xs text-gray-400 font-mono">#${d.id}</td>
+                  <td class="px-4 py-3 text-sm text-white">${escapeHtml(d.owner_email || '-')}</td>
+                  <td class="px-4 py-3 text-xs text-gray-300 font-mono truncate max-w-[200px]">${escapeHtml(d.git_url || '-')}</td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded ${d.status === 'success' ? 'bg-green-900 text-green-300' : d.status === 'failed' ? 'bg-red-900 text-red-300' : 'bg-yellow-900 text-yellow-300'}">${escapeHtml(d.status)}</span></td>
+                  <td class="px-4 py-3 text-xs text-gray-400">${d.deployed_at ? new Date(d.deployed_at).toLocaleDateString() : '-'}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -239,41 +352,43 @@ ${getHTMLHead('Admin Dashboard')}
         </div>
       </div>
 
-      <!-- Payments Section -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-white mb-4">Recent Payments (${payments.length})</h2>
-        <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+      <!-- PAYMENTS SECTION -->
+      <div id="payments" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
+        <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-4">Payments (${payments.length})</h4>
+        <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-white bg-opacity-5">
+            <thead class="bg-black bg-opacity-30">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Customer</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Plan</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">ID</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Customer</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Plan</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Amount</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase">Date</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
               ${payments.map(p => `
                 <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-sm text-gray-400 font-mono">#${p.id}</td>
-                  <td class="px-6 py-4 text-sm text-white">${escapeHtml(p.customer_email || '-')}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${escapeHtml(p.plan)}</td>
-                  <td class="px-6 py-4 text-sm text-brand font-bold">$${(p.amount / 100).toFixed(2)}</td>
-                  <td class="px-6 py-4 text-sm text-gray-300">${escapeHtml(p.status)}</td>
-                  <td class="px-6 py-4 text-sm text-gray-400">${new Date(p.created_at).toLocaleDateString()}</td>
+                  <td class="px-4 py-3 text-xs text-gray-400 font-mono">#${p.id}</td>
+                  <td class="px-4 py-3 text-sm text-white">${escapeHtml(p.customer_email || '-')}</td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded bg-blue-900 text-blue-300">${escapeHtml(p.plan)}</span></td>
+                  <td class="px-4 py-3 text-sm text-brand font-bold">$${(p.amount / 100).toFixed(2)}</td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded ${p.status === 'succeeded' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}">${escapeHtml(p.status)}</span></td>
+                  <td class="px-4 py-3 text-xs text-gray-400">${new Date(p.created_at).toLocaleDateString()}</td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
         </div>
       </div>
-      </div>
+
+        </div>
     </main>
+    </div>
 
     ${getFooter()}
-    ${getScripts('nav.js')}
+    ${getScripts('nav.js', 'dashboard.js')}
   `);
   } catch (error) {
     console.error('Admin error:', error);
