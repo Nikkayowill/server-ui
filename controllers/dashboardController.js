@@ -544,38 +544,46 @@ const buildDashboardTemplate = (data) => {
             <div class="space-y-4">
                 <div>
                     <p class="text-xs text-gray-400 uppercase font-bold mb-2">Username</p>
-                    <div class="flex gap-2">
-                        <input type="password" id="sshUsername" value="${escapeHtml(data.sshUsername)}" readonly class="flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <button onclick="togglePassword('sshUsername', this)" class="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs">Show</button>
-                        <button onclick="navigator.clipboard.writeText('${data.sshUsername.replace(/'/g, "\\'")}')" class="px-4 py-2 bg-brand text-gray-900 font-bold rounded hover:bg-cyan-500 transition-colors text-xs">Copy</button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="password" id="sshUsername" value="${escapeHtml(data.sshUsername)}" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
+                        <div class="flex gap-2">
+                            <button onclick="togglePassword('sshUsername', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
+                            <button onclick="navigator.clipboard.writeText('${data.sshUsername.replace(/'/g, "\\'")}')" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
+                        </div>
                     </div>
                 </div>
                 
                 <div>
                     <p class="text-xs text-gray-400 uppercase font-bold mb-2">Password</p>
-                    <div class="flex gap-2">
-                        <input type="password" id="sshPassword" value="${escapeHtml(data.sshPassword)}" readonly class="flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <button onclick="togglePassword('sshPassword', this)" class="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs">Show</button>
-                        <button onclick="navigator.clipboard.writeText('${data.sshPassword.replace(/'/g, "\\'")}')" class="px-4 py-2 bg-brand text-gray-900 font-bold rounded hover:bg-cyan-500 transition-colors text-xs">Copy</button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="password" id="sshPassword" value="${escapeHtml(data.sshPassword)}" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
+                        <div class="flex gap-2">
+                            <button onclick="togglePassword('sshPassword', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
+                            <button onclick="navigator.clipboard.writeText('${data.sshPassword.replace(/'/g, "\\'")}')" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
+                        </div>
                     </div>
                 </div>
                 
                 <div>
                     <p class="text-xs text-gray-400 uppercase font-bold mb-2">Connection Command (IPv4)</p>
-                    <div class="flex gap-2">
-                        <input type="password" id="sshCommand" value="ssh ${escapeHtml(data.sshUsername)}@${escapeHtml(data.ipAddress)}" readonly class="flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <button onclick="togglePassword('sshCommand', this)" class="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs">Show</button>
-                        <button onclick="navigator.clipboard.writeText('ssh ${data.sshUsername.replace(/'/g, "\\'")}@${data.ipAddress.replace(/'/g, "\\'")}')" class="px-4 py-2 bg-brand text-gray-900 font-bold rounded hover:bg-cyan-500 transition-colors text-xs">Copy</button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="password" id="sshCommand" value="ssh ${escapeHtml(data.sshUsername)}@${escapeHtml(data.ipAddress)}" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
+                        <div class="flex gap-2">
+                            <button onclick="togglePassword('sshCommand', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
+                            <button onclick="navigator.clipboard.writeText('ssh ${data.sshUsername.replace(/'/g, "\\'")}@${data.ipAddress.replace(/'/g, "\\'")}')" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
+                        </div>
                     </div>
                 </div>
                 
                 ${data.ipv6Address ? `
                 <div>
                     <p class="text-xs text-gray-400 uppercase font-bold mb-2">Connection Command (IPv6)</p>
-                    <div class="flex gap-2">
-                        <input type="password" id="sshCommandIPv6" value="ssh ${escapeHtml(data.sshUsername)}@[${escapeHtml(data.ipv6Address)}]" readonly class="flex-1 px-3 py-2 bg-black bg-opacity-30 border border-purple-700 rounded text-purple-300 font-mono text-sm">
-                        <button onclick="togglePassword('sshCommandIPv6', this)" class="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs">Show</button>
-                        <button onclick="navigator.clipboard.writeText(\`ssh ${data.sshUsername.replace(/'/g, "\\'")}@[${data.ipv6Address.replace(/'/g, "\\'")}]\`)" class="px-4 py-2 bg-purple-600 text-white font-bold rounded hover:bg-purple-500 transition-colors text-xs">Copy</button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="password" id="sshCommandIPv6" value="ssh ${escapeHtml(data.sshUsername)}@[${escapeHtml(data.ipv6Address)}]" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
+                        <div class="flex gap-2">
+                            <button onclick="togglePassword('sshCommandIPv6', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
+                            <button onclick="navigator.clipboard.writeText(\`ssh ${data.sshUsername.replace(/'/g, "\\'")}@[${data.ipv6Address.replace(/'/g, "\\'")}]\`)" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
+                        </div>
                     </div>
                 </div>
                 ` : ''}

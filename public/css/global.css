@@ -933,6 +933,7 @@ input:focus, textarea:focus, select:focus {
 .dashboard-content {
     grid-area: content;
     padding: 2rem;
+    padding-top: 5rem; /* Push below fixed nav */
     overflow-y: auto;
     background: #000;
 }
