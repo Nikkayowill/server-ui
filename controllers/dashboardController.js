@@ -269,10 +269,10 @@ module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, ch
  */
 const buildDashboardTemplate = (data) => {
   return `
-<!-- Dashboard Sidebar (Desktop: fixed left, Mobile: slide-out drawer) -->
-<aside id="dashboard-sidebar" class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-16 bg-gray-900 bg-opacity-95 backdrop-blur-sm border-r border-gray-800 z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-    <nav class="flex flex-col items-center py-4 h-full">
-        <ul class="space-y-2 flex-1">
+<!-- Dashboard Sidebar (Tablet+: fixed left, Mobile: slide-out drawer) -->
+<aside id="dashboard-sidebar" class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-16 bg-gray-900/95 backdrop-blur-md border-r border-gray-700/50 z-40 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 shadow-xl shadow-black/20">
+    <nav class="flex flex-col items-center py-6 h-full">
+        <ul class="space-y-3 flex flex-col justify-center flex-1">
             <li>
                 <a href="#server-status" class="sidebar-link group flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-brand transition-all" title="Server Status">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
@@ -312,16 +312,16 @@ const buildDashboardTemplate = (data) => {
     </nav>
 </aside>
 
-<!-- Mobile Sidebar Toggle Button -->
-<button id="sidebar-toggle" class="md:hidden fixed left-4 top-20 z-50 w-10 h-10 bg-gray-800 border border-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:text-brand hover:border-brand transition-all">
+<!-- Mobile Sidebar Toggle Button (only on phones) -->
+<button id="sidebar-toggle" class="sm:hidden fixed left-4 top-20 z-50 w-10 h-10 bg-gray-800/90 backdrop-blur-sm border border-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:text-brand hover:border-brand transition-all shadow-lg">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
 </button>
 
-<!-- Mobile Sidebar Overlay -->
-<div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+<!-- Mobile Sidebar Overlay (only on phones) -->
+<div id="sidebar-overlay" class="sm:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden"></div>
 
 <!-- Main Content -->
-<main class="flex-1 md:ml-16 px-4 md:px-8 lg:px-12 pt-24 pb-12 bg-black">
+<main class="flex-1 sm:ml-16 px-4 sm:px-6 md:px-8 lg:px-12 pt-24 pb-12 bg-black">
     <!-- Header -->
     <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16">
     <header class="flex flex-col gap-6 mb-12">
@@ -1279,7 +1279,7 @@ sidebarOverlay?.addEventListener('click', closeSidebar);
 // Close sidebar on link click (mobile)
 document.querySelectorAll('.sidebar-link').forEach(link => {
     link.addEventListener('click', () => {
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 640) { // sm breakpoint
             closeSidebar();
         }
     });
