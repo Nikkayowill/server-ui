@@ -940,6 +940,7 @@ input:focus, textarea:focus, select:focus {
 @media (max-width: 768px) {
     .dashboard-content {
         padding: 1rem;
+        padding-top: 5rem; /* Push below fixed nav (60px) + breathing room */
     }
 }
 
