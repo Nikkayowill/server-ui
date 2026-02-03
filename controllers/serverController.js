@@ -6,6 +6,7 @@ const { escapeHtml } = require('../helpers');
 const { getUserServer, verifyServerOwnership, updateServerStatus, appendDeploymentOutput, updateDeploymentStatus } = require('../utils/db-helpers');
 const { SERVER_STATUS, DEPLOYMENT_STATUS, TIMEOUTS, PORTS } = require('../constants');
 const { sendDeployErrorEmail } = require('../services/email');
+const { generateSubdomain, createDNSRecord, deleteDNSRecord } = require('../services/dns');
 
 // Strict DNS-compliant domain validation
 function isValidDomain(domain) {
@@ -252,18 +253,36 @@ exports.deploy = async (req, res) => {
     // Extract repo name from URL
     const repoName = gitUrl.split('/').pop().replace('.git', '');
     
-    // Store deployment in database with pending status
+    // Generate subdomain for this deployment (Vercel-style)
+    const subdomain = generateSubdomain(repoName, userId);
+    console.log(`[DEPLOY] Generated subdomain: ${subdomain}.cloudedbasement.ca`);
+    
+    // Create DNS record pointing to user's server
+    let dnsRecordId = null;
+    try {
+      const dnsResult = await createDNSRecord(subdomain, server.ip_address);
+      if (dnsResult.success) {
+        dnsRecordId = dnsResult.recordId;
+        console.log(`[DEPLOY] DNS record created: ${subdomain}.cloudedbasement.ca -> ${server.ip_address} (ID: ${dnsRecordId})`);
+      } else {
+        console.error(`[DEPLOY] Failed to create DNS record: ${dnsResult.error}`);
+      }
+    } catch (dnsErr) {
+      console.error(`[DEPLOY] DNS creation error:`, dnsErr);
+    }
+    
+    // Store deployment in database with pending status and subdomain
     const deployResult = await pool.query(
-      'INSERT INTO deployments (server_id, user_id, git_url, status, output) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-      [server.id, userId, gitUrl, 'pending', 'Starting deployment...']
+      'INSERT INTO deployments (server_id, user_id, git_url, status, output, subdomain, dns_record_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [server.id, userId, gitUrl, 'pending', 'Starting deployment...', subdomain, dnsRecordId]
     );
 
     const deploymentId = deployResult.rows[0].id;
-    console.log(`[DEPLOY] Deployment #${deploymentId} started for user ${userId}: ${gitUrl}`);
+    console.log(`[DEPLOY] Deployment #${deploymentId} started for user ${userId}: ${gitUrl} -> ${subdomain}.cloudedbasement.ca`);
 
     // Perform deployment asynchronously (don't block response)
     setImmediate(() => {
-      performDeployment(server, gitUrl, repoName, deploymentId).catch(async (err) => {
+      performDeployment(server, gitUrl, repoName, deploymentId, subdomain).catch(async (err) => {
         console.error(`[DEPLOY] Deployment #${deploymentId} failed:`, err);
         console.error(`[DEPLOY] Stack trace:`, err.stack);
         try {
@@ -285,10 +304,11 @@ exports.deploy = async (req, res) => {
 };
 
 // Async deployment function
-async function performDeployment(server, gitUrl, repoName, deploymentId) {
+async function performDeployment(server, gitUrl, repoName, deploymentId, subdomain = null) {
   console.log(`[DEPLOY] ============================================`);
   console.log(`[DEPLOY] Starting performDeployment for deployment #${deploymentId}`);
   console.log(`[DEPLOY] Server IP: ${server.ip_address}, Repo: ${gitUrl}`);
+  console.log(`[DEPLOY] Subdomain: ${subdomain ? `${subdomain}.cloudedbasement.ca` : 'none'}`);
   console.log(`[DEPLOY] ============================================`);
   
   const conn = new Client();
@@ -396,23 +416,23 @@ async function performDeployment(server, gitUrl, repoName, deploymentId) {
       
       if (isReactOrVue) {
         output += `✓ Detected: Static site (React/Vue)\n`;
-        output = await deployStaticSite(conn, repoName, output, deploymentId, server.id);
+        output = await deployStaticSite(conn, repoName, output, deploymentId, server.id, subdomain);
       } else {
         output += `✓ Detected: Node.js backend\n`;
-        output = await deployNodeBackend(conn, repoName, output, deploymentId, server.id);
+        output = await deployNodeBackend(conn, repoName, output, deploymentId, server.id, subdomain);
       }
     } else if (hasCargoToml) {
       output += `✓ Detected: Rust application\n`;
-      output = await deployRustApp(conn, repoName, output, deploymentId, server.id);
+      output = await deployRustApp(conn, repoName, output, deploymentId, server.id, subdomain);
     } else if (hasGoMod) {
       output += `✓ Detected: Go application\n`;
-      output = await deployGoApp(conn, repoName, output, deploymentId, server.id);
+      output = await deployGoApp(conn, repoName, output, deploymentId, server.id, subdomain);
     } else if (hasRequirementsTxt) {
       output += `✓ Detected: Python application\n`;
-      output = await deployPythonApp(conn, repoName, output, deploymentId, server.id);
+      output = await deployPythonApp(conn, repoName, output, deploymentId, server.id, subdomain);
     } else if (hasIndexHtml) {
       output += `✓ Detected: Static HTML site\n`;
-      output = await deployStaticHTML(conn, repoName, output, deploymentId);
+      output = await deployStaticHTML(conn, repoName, output, deploymentId, subdomain);
     } else {
       throw new Error('Unable to detect project type. Ensure package.json, requirements.txt, or index.html exists.');
     }
@@ -582,7 +602,7 @@ async function performHealthCheck(conn, type, output, deploymentId, serviceName 
 }
 
 // Deploy static site (React/Vue/Vite)
-async function deployStaticSite(conn, repoName, output, deploymentId, serverId) {
+async function deployStaticSite(conn, repoName, output, deploymentId, serverId, subdomain = null) {
   // Detect and switch Node version if specified
   output += `\n[3/5] Installing dependencies...\n`;
   await setupNodeVersion(conn, repoName, output, deploymentId);
@@ -657,7 +677,13 @@ async function deployStaticSite(conn, repoName, output, deploymentId, serverId) 
     output += `✓ Site deployed to Nginx (from ${buildDir}/)\n`;
   }
   
-  output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
+  // Show URLs (subdomain is primary, IP is backup)
+  if (subdomain) {
+    output += `\n🌐 Your site is live at: http://${subdomain}.cloudedbasement.ca/\n`;
+    output += `   (also accessible via: http://${conn.config.host}/)\n`;
+  } else {
+    output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
+  }
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   
   // Health check
@@ -667,13 +693,20 @@ async function deployStaticSite(conn, repoName, output, deploymentId, serverId) 
 }
 
 // Deploy static HTML (no build step)
-async function deployStaticHTML(conn, repoName, output, deploymentId) {
+async function deployStaticHTML(conn, repoName, output, deploymentId, subdomain = null) {
   output += `\n[3/5] Skipping dependencies (static HTML)\n`;
   output += `[4/5] Skipping build (static HTML)\n`;
   output += `\n[5/5] Deploying to web server...\n`;
   await execSSH(conn, `rm -rf /var/www/html/* && cp -r /root/${repoName}/* /var/www/html/`);
   output += `✓ Site deployed to Nginx\n`;
-  output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
+  
+  // Show URLs (subdomain is primary, IP is backup)
+  if (subdomain) {
+    output += `\n🌐 Your site is live at: http://${subdomain}.cloudedbasement.ca/\n`;
+    output += `   (also accessible via: http://${conn.config.host}/)\n`;
+  } else {
+    output += `\n🌐 Your site is live at: http://${conn.config.host}/\n`;
+  }
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   
   // Health check
@@ -683,7 +716,7 @@ async function deployStaticHTML(conn, repoName, output, deploymentId) {
 }
 
 // Deploy Node.js backend
-async function deployNodeBackend(conn, repoName, output, deploymentId, serverId) {
+async function deployNodeBackend(conn, repoName, output, deploymentId, serverId, subdomain = null) {
   output += `\n[3/5] Installing dependencies...\n`;
   
   // Inject environment variables
@@ -764,7 +797,14 @@ WantedBy=multi-user.target`;
   await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/default`);
   await execSSH(conn, `nginx -t && systemctl reload nginx`);
   output += `✓ Nginx configured as reverse proxy to port 3000\n`;
-  output += `\n🚀 Your backend is live!\n`;
+  
+  // Show URLs (subdomain is primary, IP is backup)
+  if (subdomain) {
+    output += `\n🚀 Your backend is live at: http://${subdomain}.cloudedbasement.ca/\n`;
+    output += `   (also accessible via: http://${conn.config.host}/)\\n`;
+  } else {
+    output += `\n🚀 Your backend is live!\n`;
+  }
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   
   // Health check
@@ -774,7 +814,7 @@ WantedBy=multi-user.target`;
 }
 
 // Deploy Python app
-async function deployPythonApp(conn, repoName, output, deploymentId, serverId) {
+async function deployPythonApp(conn, repoName, output, deploymentId, serverId, subdomain = null) {
   output += `\n[3/5] Installing dependencies...\n`;
   
   // Inject environment variables
@@ -832,7 +872,14 @@ WantedBy=multi-user.target`;
   await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/default`);
   await execSSH(conn, `nginx -t && systemctl reload nginx`);
   output += `✓ Nginx configured as reverse proxy to port 5000\n`;
-  output += `\n🐍 Your Python app is live!\n`;
+  
+  // Show URLs (subdomain is primary, IP is backup)
+  if (subdomain) {
+    output += `\n🐍 Your Python app is live at: http://${subdomain}.cloudedbasement.ca/\n`;
+    output += `   (also accessible via: http://${conn.config.host}/)\\n`;
+  } else {
+    output += `\n🐍 Your Python app is live!\n`;
+  }
   await updateDeploymentOutput(deploymentId, output, 'in-progress');
   
   // Health check
@@ -842,7 +889,7 @@ WantedBy=multi-user.target`;
 }
 
 // Deploy Rust app
-async function deployRustApp(conn, repoName, output, deploymentId, serverId) {
+async function deployRustApp(conn, repoName, output, deploymentId, serverId, subdomain = null) {
   output += `\n[3/5] Building Rust application...\n`;
   output += `This may take several minutes...\n`;
   
@@ -934,7 +981,7 @@ WantedBy=multi-user.target`;
 }
 
 // Deploy Go app
-async function deployGoApp(conn, repoName, output, deploymentId, serverId) {
+async function deployGoApp(conn, repoName, output, deploymentId, serverId, subdomain = null) {
   output += `\n[3/5] Building Go application...\n`;
   
   // Inject environment variables
