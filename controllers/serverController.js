@@ -1537,14 +1537,31 @@ exports.deleteDeployment = async (req, res) => {
       return res.redirect('/dashboard?error=Invalid deployment ID');
     }
     
-    // SECURITY: Verify deployment belongs to this user (direct ownership check)
+    // SECURITY: Verify deployment belongs to this user and get DNS record info
     const deploymentCheck = await pool.query(
-      'SELECT id FROM deployments WHERE id = $1 AND user_id = $2',
+      'SELECT id, subdomain, dns_record_id FROM deployments WHERE id = $1 AND user_id = $2',
       [deploymentId, userId]
     );
     
     if (deploymentCheck.rows.length === 0) {
       return res.redirect('/dashboard?error=Deployment not found or access denied');
+    }
+    
+    const deployment = deploymentCheck.rows[0];
+    
+    // Clean up DNS record if one exists
+    if (deployment.subdomain) {
+      try {
+        const dnsResult = await deleteDNSRecord(deployment.subdomain);
+        if (dnsResult.success) {
+          console.log(`[DELETE] Deleted DNS record for ${deployment.subdomain}.cloudedbasement.ca`);
+        } else {
+          console.log(`[DELETE] DNS cleanup note: ${dnsResult.error}`);
+        }
+      } catch (dnsErr) {
+        console.error(`[DELETE] DNS cleanup error:`, dnsErr.message);
+        // Continue with deletion even if DNS cleanup fails
+      }
     }
     
     // Delete deployment
