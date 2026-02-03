@@ -1066,52 +1066,90 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
                 <p class="text-xs text-gray-500 mt-2">Link to a deployment to serve that site on your custom domain.</p>
             </form>
             ${data.domains.length > 0 ? `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 gap-4">
                     ${data.domains.map(dom => {
-                        // Determine SSL badge based on ssl_status (not just ssl_enabled)
-                        const sslStatus = dom.ssl_status || (dom.ssl_enabled ? 'active' : 'none');
-                        let sslBadge = '';
-                        let sslMessage = '';
+                        // Multi-dimensional status (DNS, SSL, HTTPS)
+                        const dnsValid = dom.ssl_dns_valid;
+                        const certExists = dom.ssl_cert_exists;
+                        const httpsReachable = dom.ssl_reachable;
+                        const sslStatus = dom.ssl_status || 'none';
                         
-                        switch(sslStatus) {
-                            case 'active':
-                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">🔒 SSL Active</span>';
-                                break;
-                            case 'orphaned':
-                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-red-900 text-red-300">⚠️ DNS Changed</span>';
-                                sslMessage = '<p class="text-xs text-red-400 mt-2">DNS no longer points to your server. SSL will fail.</p>';
-                                break;
-                            case 'unreachable':
-                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-orange-900 text-orange-300">🔧 SSL Error</span>';
-                                sslMessage = '<p class="text-xs text-orange-400 mt-2">Certificate exists but HTTPS not working. Check nginx config.</p>';
-                                break;
-                            case 'pending':
-                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-blue-900 text-blue-300">⏳ Issuing SSL</span>';
-                                sslMessage = '<p class="text-xs text-blue-400 mt-2">SSL certificate being issued...</p>';
-                                break;
-                            case 'expired':
-                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-red-900 text-red-300">❌ SSL Expired</span>';
-                                sslMessage = '<p class="text-xs text-red-400 mt-2">Certificate expired. Renewal may have failed.</p>';
-                                break;
-                            default: // 'none'
-                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">⏳ Pending SSL</span>';
-                                sslMessage = '<p class="text-xs text-gray-500 mt-2">SSL will auto-enable once DNS points to your server</p>';
+                        // DNS Status
+                        let dnsIcon, dnsLabel, dnsClass;
+                        if (dnsValid === true) {
+                            dnsIcon = '🟢'; dnsLabel = 'Connected'; dnsClass = 'text-green-400';
+                        } else if (dnsValid === false) {
+                            dnsIcon = '🟡'; dnsLabel = 'Not Connected'; dnsClass = 'text-yellow-400';
+                        } else {
+                            dnsIcon = '⚪'; dnsLabel = 'Unknown'; dnsClass = 'text-gray-400';
                         }
                         
-                        // Show last verified time if available
+                        // SSL Status
+                        let sslIcon, sslLabel, sslClass;
+                        if (certExists && httpsReachable) {
+                            sslIcon = '🟢'; sslLabel = 'Secured'; sslClass = 'text-green-400';
+                        } else if (certExists) {
+                            sslIcon = '🟡'; sslLabel = 'Configured'; sslClass = 'text-yellow-400';
+                        } else {
+                            sslIcon = '🔴'; sslLabel = 'Not Secured'; sslClass = 'text-red-400';
+                        }
+                        
+                        // HTTPS Reachable
+                        let httpsIcon, httpsLabel, httpsClass;
+                        if (httpsReachable === true) {
+                            httpsIcon = '🟢'; httpsLabel = 'Reachable'; httpsClass = 'text-green-400';
+                        } else if (httpsReachable === false) {
+                            httpsIcon = '🔴'; httpsLabel = 'Not Reachable'; httpsClass = 'text-red-400';
+                        } else {
+                            httpsIcon = '⚪'; httpsLabel = 'Pending'; httpsClass = 'text-gray-400';
+                        }
+                        
+                        // Warning banner for DNS issues
+                        const showWarning = dnsValid === false && certExists;
+                        
+                        // Last verified
                         const lastVerified = dom.ssl_last_verified_at 
-                            ? `<p class="text-xs text-gray-600 mt-1">Last checked: ${new Date(dom.ssl_last_verified_at).toLocaleString()}</p>`
-                            : '';
+                            ? new Date(dom.ssl_last_verified_at).toLocaleString()
+                            : 'Never';
                         
                         return `
-                        <div class="bg-black bg-opacity-30 border ${sslStatus === 'orphaned' ? 'border-red-700' : 'border-gray-700'} rounded-lg p-3">
-                            <p class="text-sm text-white font-medium mb-2">${escapeHtml(dom.domain)}</p>
-                            ${dom.linked_subdomain ? `<p class="text-xs text-blue-400 mb-2">→ ${escapeHtml(dom.linked_subdomain)}.cloudedbasement.ca</p>` : ''}
-                            <div class="flex items-center gap-2">
-                                ${sslBadge}
+                        <div class="bg-black bg-opacity-30 border ${showWarning ? 'border-yellow-600' : 'border-gray-700'} rounded-lg overflow-hidden">
+                            ${showWarning ? `
+                            <div class="bg-yellow-900 bg-opacity-50 px-4 py-2 border-b border-yellow-700">
+                                <p class="text-xs text-yellow-300">⚠️ Domain not pointing to our servers. HTTPS will not work until DNS is corrected.</p>
                             </div>
-                            ${sslMessage}
-                            ${lastVerified}
+                            ` : ''}
+                            <div class="p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="text-white font-bold">${escapeHtml(dom.domain)}</p>
+                                        ${dom.linked_subdomain ? `<p class="text-xs text-blue-400">→ ${escapeHtml(dom.linked_subdomain)}.cloudedbasement.ca</p>` : ''}
+                                    </div>
+                                    <button onclick="openDeleteDomainModal('${escapeHtml(dom.domain)}', ${dom.id})" 
+                                            class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Delete domain">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <div class="grid grid-cols-3 gap-2 text-xs mb-3">
+                                    <div class="bg-gray-900 rounded p-2">
+                                        <p class="text-gray-500 uppercase text-[10px] mb-1">DNS</p>
+                                        <p class="${dnsClass}">${dnsIcon} ${dnsLabel}</p>
+                                    </div>
+                                    <div class="bg-gray-900 rounded p-2">
+                                        <p class="text-gray-500 uppercase text-[10px] mb-1">SSL</p>
+                                        <p class="${sslClass}">${sslIcon} ${sslLabel}</p>
+                                    </div>
+                                    <div class="bg-gray-900 rounded p-2">
+                                        <p class="text-gray-500 uppercase text-[10px] mb-1">HTTPS</p>
+                                        <p class="${httpsClass}">${httpsIcon} ${httpsLabel}</p>
+                                    </div>
+                                </div>
+                                
+                                <p class="text-[10px] text-gray-600">Last checked: ${lastVerified}</p>
+                            </div>
                         </div>
                         `;
                     }).join('')}
@@ -1228,6 +1266,24 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
                 <button type="button" class="flex-1 px-6 py-3 bg-gray-700 text-white font-bold" onclick="closeSubmitTicketModal()">Cancel</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Delete Domain Confirmation Modal -->
+<div id="delete-domain-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center">
+    <div class="bg-gray-900 border border-red-600 rounded-lg p-6 max-w-md w-11/12">
+        <h2 class="text-xl font-bold text-red-400 mb-4">🗑️ Delete Domain</h2>
+        <p class="text-gray-300 mb-2">Are you sure you want to delete:</p>
+        <p class="text-white font-mono bg-black px-3 py-2 rounded mb-4" id="delete-domain-name"></p>
+        
+        <div class="bg-yellow-900 bg-opacity-30 border border-yellow-700 rounded p-3 mb-4">
+            <p class="text-yellow-300 text-sm">⚠️ This will remove the domain from your server's nginx configuration. If SSL was enabled, the certificate will remain but won't be renewed.</p>
+        </div>
+        
+        <div class="flex gap-3">
+            <button onclick="closeDeleteDomainModal()" class="flex-1 px-4 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+            <button onclick="confirmDeleteDomain()" class="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Delete Domain</button>
+        </div>
     </div>
 </div>
 
@@ -1410,6 +1466,61 @@ function updateActiveSection() {
 
 window.addEventListener('scroll', updateActiveSection);
 updateActiveSection(); // Initial check
+
+// ==========================================
+// DELETE DOMAIN MODAL
+// ==========================================
+
+let deleteDomainId = null;
+let deleteDomainName = '';
+
+function openDeleteDomainModal(domain, id) {
+    deleteDomainId = id;
+    deleteDomainName = domain;
+    document.getElementById('delete-domain-name').textContent = domain;
+    document.getElementById('delete-domain-modal').classList.remove('hidden');
+    document.getElementById('delete-domain-modal').classList.add('flex');
+}
+
+function closeDeleteDomainModal() {
+    document.getElementById('delete-domain-modal').classList.add('hidden');
+    document.getElementById('delete-domain-modal').classList.remove('flex');
+    deleteDomainId = null;
+    deleteDomainName = '';
+}
+
+async function confirmDeleteDomain() {
+    if (!deleteDomainId) return;
+    
+    const btn = document.querySelector('#delete-domain-modal button.bg-red-600');
+    btn.disabled = true;
+    btn.textContent = 'Deleting...';
+    
+    try {
+        const res = await fetch('/delete-domain', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'CSRF-Token': '${data.csrfToken}' },
+            body: JSON.stringify({ domainId: deleteDomainId })
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.reload();
+        } else {
+            alert('Error: ' + result.error);
+            btn.disabled = false;
+            btn.textContent = 'Delete Domain';
+        }
+    } catch (err) {
+        alert('Network error');
+        btn.disabled = false;
+        btn.textContent = 'Delete Domain';
+    }
+}
+
+// Close on click outside
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'delete-domain-modal') closeDeleteDomainModal();
+});
 </script>
   `;
 };

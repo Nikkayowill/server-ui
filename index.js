@@ -245,6 +245,9 @@ app.post('/delete-deployment', requireAuth, csrfProtection, serverController.del
 // Add domain route
 app.post('/add-domain', requireAuth, csrfProtection, serverController.addDomain);
 
+// Delete domain route
+app.post('/delete-domain', requireAuth, csrfProtection, serverController.deleteDomain);
+
 // Enable SSL route
 app.post('/enable-ssl', requireAuth, csrfProtection, serverController.enableSSL);
 

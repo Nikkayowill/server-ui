@@ -1315,6 +1315,96 @@ exports.addDomain = async (req, res) => {
   }
 };
 
+// POST /delete-domain
+exports.deleteDomain = async (req, res) => {
+  try {
+    const domainId = req.body.domainId;
+    const userId = req.session.userId;
+
+    if (!domainId) {
+      return res.json({ success: false, error: 'Domain ID required' });
+    }
+
+    // Verify the domain belongs to this user
+    const domainResult = await pool.query(
+      'SELECT d.id, d.domain, d.server_id, s.ip_address, s.ssh_password FROM domains d JOIN servers s ON d.server_id = s.id WHERE d.id = $1 AND d.user_id = $2',
+      [domainId, userId]
+    );
+
+    if (domainResult.rows.length === 0) {
+      return res.json({ success: false, error: 'Domain not found or access denied' });
+    }
+
+    const domain = domainResult.rows[0];
+    const domainName = domain.domain;
+
+    // Try to remove nginx config for this domain on the server
+    // This is best-effort - domain will be deleted from DB regardless
+    if (domain.ip_address && domain.ssh_password) {
+      try {
+        const Client = require('ssh2').Client;
+        const conn = new Client();
+        
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            conn.end();
+            resolve(); // Don't fail on timeout, just continue
+          }, 15000);
+
+          conn.on('ready', () => {
+            // Remove nginx config for this domain
+            const cmd = `sudo rm -f /etc/nginx/sites-enabled/${domainName} /etc/nginx/sites-available/${domainName} && sudo nginx -t && sudo systemctl reload nginx`;
+            
+            conn.exec(cmd, (err, stream) => {
+              if (err) {
+                clearTimeout(timeout);
+                conn.end();
+                resolve(); // Don't fail, continue with DB deletion
+                return;
+              }
+              
+              stream.on('close', () => {
+                clearTimeout(timeout);
+                conn.end();
+                resolve();
+              });
+              
+              stream.on('data', () => {}); // Drain output
+              stream.stderr.on('data', () => {}); // Drain errors
+            });
+          });
+
+          conn.on('error', () => {
+            clearTimeout(timeout);
+            resolve(); // Don't fail, continue with DB deletion
+          });
+
+          conn.connect({
+            host: domain.ip_address,
+            port: 22,
+            username: 'root',
+            password: domain.ssh_password,
+            readyTimeout: 10000
+          });
+        });
+      } catch (sshError) {
+        console.error('SSH cleanup error (non-fatal):', sshError.message);
+        // Continue with deletion regardless
+      }
+    }
+
+    // Delete from database
+    await pool.query('DELETE FROM domains WHERE id = $1', [domainId]);
+
+    console.log(`[DELETE-DOMAIN] User ${userId} deleted domain: ${domainName}`);
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Delete domain error:', error);
+    return res.json({ success: false, error: 'Failed to delete domain' });
+  }
+};
+
 // POST /enable-ssl
 exports.enableSSL = async (req, res) => {
   try {
@@ -1717,6 +1807,7 @@ module.exports = {
   deleteServer: exports.deleteServer,
   deploy: exports.deploy,
   addDomain: exports.addDomain,
+  deleteDomain: exports.deleteDomain,
   enableSSL: exports.enableSSL,
   setupDatabase: exports.setupDatabase,
   deleteDeployment: exports.deleteDeployment
