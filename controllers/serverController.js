@@ -7,6 +7,7 @@ const { getUserServer, verifyServerOwnership, updateServerStatus, appendDeployme
 const { SERVER_STATUS, DEPLOYMENT_STATUS, TIMEOUTS, PORTS } = require('../constants');
 const { sendDeployErrorEmail } = require('../services/email');
 const { generateSubdomain, createDNSRecord, deleteDNSRecord } = require('../services/dns');
+const { generateNginxConfig, isValidDomainName } = require('../utils/nginxTemplates');
 
 // Strict DNS-compliant domain validation
 function isValidDomain(domain) {
@@ -762,6 +763,9 @@ async function deployStaticSite(conn, repoName, output, deploymentId, serverId, 
   // Setup SSL for subdomain (auto HTTPS)
   output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
   
+  // Set deployment_type = 'static' for future NGINX config generation
+  await pool.query('UPDATE deployments SET deployment_type = $1 WHERE id = $2', ['static', deploymentId]);
+  
   return output;
 }
 
@@ -793,6 +797,9 @@ async function deployStaticHTML(conn, repoName, output, deploymentId, subdomain 
   if (subdomain) {
     output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
   }
+  
+  // Set deployment_type = 'static' for future NGINX config generation
+  await pool.query('UPDATE deployments SET deployment_type = $1 WHERE id = $2', ['static', deploymentId]);
   
   return output;
 }
@@ -896,6 +903,9 @@ WantedBy=multi-user.target`;
   if (subdomain) {
     output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
   }
+  
+  // Set deployment_type = 'node' and app_port for future NGINX config generation
+  await pool.query('UPDATE deployments SET deployment_type = $1, app_port = $2 WHERE id = $3', ['node', 3000, deploymentId]);
   
   return output;
 }
@@ -1455,126 +1465,192 @@ exports.enableSSL = async (req, res) => {
 };
 
 // Background function to trigger SSL via SSH2 library (secure, no command injection)
+// REFACTORED: Now uses explicit deployment_type from database - no guessing!
 async function triggerSSLCertificateForCustomer(serverId, domain, server, linkedSubdomain = null) {
-  return new Promise((resolve, reject) => {
-    const conn = new Client();
-    
-    conn.on('ready', async () => {
-      console.log(`[SSL] SSH connected to server ${serverId}`);
-      
-      // Security: Strict domain validation (prevents command injection)
-      // Only allow alphanumeric, dots, and hyphens (RFC 1123)
-      if (!/^[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?)*$/i.test(domain)) {
-        conn.end();
-        return reject(new Error('Invalid domain format'));
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Step 0: Domain validation (RFC 1123 compliance)
+      if (!isValidDomainName(domain)) {
+        return reject(new Error(`Invalid domain format: ${domain}`));
       }
-      
-      try {
-        // Step 1: Create nginx config for this custom domain
-        // Use linked deployment's directory if specified, otherwise default
-        const siteDir = linkedSubdomain ? `/var/www/sites/${linkedSubdomain}` : '/var/www/html';
-        console.log(`[SSL] Setting up ${domain} to serve from ${siteDir}`);
-        
-        // Create the nginx config file with proper root
-        const nginxConfig = `server {
-    listen 80;
-    listen [::]:80;
-    server_name ${domain};
-    root ${siteDir};
-    index index.html index.htm;
 
-    location / {
-        try_files \\$uri \\$uri/ /index.html;
-    }
-}`;
-        
-        // Write nginx config
-        await new Promise((res, rej) => {
-          const writeCmd = `cat > /etc/nginx/sites-available/${domain.replace(/\./g, '-')} << 'NGINXEOF'\n${nginxConfig}\nNGINXEOF`;
-          conn.exec(writeCmd, (err, stream) => {
-            if (err) return rej(err);
-            stream.on('close', () => res());
-            stream.on('data', () => {});
-            stream.stderr.on('data', () => {});
-          });
-        });
-        
-        // Enable the site
-        await new Promise((res, rej) => {
-          conn.exec(`ln -sf /etc/nginx/sites-available/${domain.replace(/\./g, '-')} /etc/nginx/sites-enabled/ && nginx -t && systemctl reload nginx`, (err, stream) => {
-            if (err) return rej(err);
-            stream.on('close', (code) => code === 0 ? res() : rej(new Error('Nginx reload failed')));
-            stream.on('data', () => {});
-            stream.stderr.on('data', () => {});
-          });
-        });
-        
-        console.log(`[SSL] Nginx config created for ${domain}`);
-        
-        // Step 2: Run certbot to get SSL certificate
-        const certbotCmd = `certbot --nginx -d ${domain} --email admin@${domain} --non-interactive --agree-tos --redirect`;
-        
-        conn.exec(certbotCmd, { timeout: 60000 }, (err, stream) => {
-          if (err) {
-            conn.end();
-            return reject(err);
-          }
-          
-          let stdout = '';
-          let stderr = '';
-          
-          stream.on('close', async (code) => {
-            console.log(`[SSL] Certbot finished for ${domain}, exit code: ${code}`);
-            console.log(`[SSL] stdout: ${stdout.substring(0, 500)}`);
-            console.log(`[SSL] stderr: ${stderr.substring(0, 500)}`);
-            
-            try {
-              if (stdout.includes('Congratulations') || stderr.includes('Congratulations') || stdout.includes('Successfully received certificate') || stderr.includes('Successfully received certificate')) {
-                // Certificate generated successfully
-                console.log(`[SSL] Certificate success for ${domain}`);
-                
-                conn.end();
-                
-                // Update domains table - SSL cert is working
-                await pool.query('UPDATE domains SET ssl_enabled = true WHERE domain = $1', [domain]);
-                console.log(`[SSL] Certificate activated for ${domain} on server ${serverId}`);
-                resolve();
-              } else {
-                conn.end();
-                console.error(`[SSL] Certbot did not succeed. Code: ${code}, stdout: ${stdout}, stderr: ${stderr}`);
-                reject(new Error('Certbot command did not complete successfully'));
-              }
-            } catch (dbError) {
-              conn.end();
-              reject(dbError);
-            }
-          });
-          
-          stream.on('data', (data) => {
-            stdout += data.toString();
-          });
-          
-          stream.stderr.on('data', (data) => {
-            stderr += data.toString();
-          });
-        });
-      } catch (nginxErr) {
-        conn.end();
-        reject(nginxErr);
+      // Step 1: Determine deployment type from database - NEVER GUESS
+      let deploymentType = 'static'; // Default for legacy domains without linked subdomain
+      let appPort = null;
+      let siteDirectory = '/var/www/html';
+
+      if (linkedSubdomain) {
+        const deploymentResult = await pool.query(
+          'SELECT deployment_type, app_port FROM deployments WHERE subdomain = $1',
+          [linkedSubdomain]
+        );
+
+        if (deploymentResult.rows.length === 0) {
+          return reject(new Error(`NGINX_CONFIG_ERROR: No deployment found for subdomain "${linkedSubdomain}". Cannot determine config type.`));
+        }
+
+        const deployment = deploymentResult.rows[0];
+        deploymentType = deployment.deployment_type;
+        appPort = deployment.app_port;
+        siteDirectory = `/var/www/sites/${linkedSubdomain}`;
+
+        // GUARDRAIL: Fail loudly if deployment_type is not set
+        if (!deploymentType) {
+          return reject(new Error(`NGINX_CONFIG_ERROR: Deployment "${linkedSubdomain}" has NULL deployment_type. Run migration 020 to fix.`));
+        }
+
+        // GUARDRAIL: Node apps MUST have a port
+        if (deploymentType === 'node' && !appPort) {
+          return reject(new Error(`NGINX_CONFIG_ERROR: Node deployment "${linkedSubdomain}" has no app_port. Cannot create proxy config.`));
+        }
       }
-    });
-    
-    conn.on('error', (err) => {
-      console.error(`[SSL] SSH connection error for server ${serverId}:`, err.message);
-      reject(err);
-    });
-    
-    conn.connect({
-      host: server.ip_address,
-      port: 22,
-      username: server.ssh_username,
-      password: server.ssh_password
-    });
+
+      console.log(`[SSL] Config decision: domain=${domain}, subdomain=${linkedSubdomain}, type=${deploymentType}, port=${appPort}`);
+
+      // Step 2: Generate the correct nginx config using templates
+      const nginxConfig = generateNginxConfig({
+        domain,
+        deploymentType,
+        siteDirectory,
+        appPort
+      });
+
+      console.log(`[SSL] Generated ${deploymentType} config for ${domain} -> ${siteDirectory}`);
+
+      // Step 3: SSH and apply config
+      const conn = new Client();
+
+      conn.on('ready', async () => {
+        console.log(`[SSL] SSH connected to server ${serverId}`);
+
+        try {
+          // Step 3a: Preflight check - verify directory/port exists
+          const preflightCmd = deploymentType === 'static'
+            ? `test -d ${siteDirectory} && test -f ${siteDirectory}/index.html && echo "PREFLIGHT_OK" || echo "PREFLIGHT_FAIL: ${siteDirectory} missing or no index.html"`
+            : `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:${appPort}/ 2>/dev/null | grep -q "^[2345]" && echo "PREFLIGHT_OK" || echo "PREFLIGHT_FAIL: Nothing listening on port ${appPort}"`;
+
+          const preflightResult = await new Promise((res, rej) => {
+            conn.exec(preflightCmd, (err, stream) => {
+              if (err) return rej(err);
+              let output = '';
+              stream.on('close', () => res(output.trim()));
+              stream.on('data', (data) => { output += data.toString(); });
+              stream.stderr.on('data', () => {});
+            });
+          });
+
+          console.log(`[SSL] Preflight result: ${preflightResult}`);
+
+          // Warn but don't fail on preflight - directory might be created during deploy
+          if (preflightResult.includes('PREFLIGHT_FAIL')) {
+            console.warn(`[SSL] Preflight warning for ${domain}: ${preflightResult}`);
+            // Continue anyway - user might be setting up domain before deploy
+          }
+
+          // Step 3b: Write nginx config
+          const configFilename = domain.replace(/\./g, '-');
+          const writeCmd = `cat > /etc/nginx/sites-available/${configFilename} << 'NGINXEOF'\n${nginxConfig}\nNGINXEOF`;
+
+          await new Promise((res, rej) => {
+            conn.exec(writeCmd, (err, stream) => {
+              if (err) return rej(err);
+              stream.on('close', () => res());
+              stream.on('data', () => {});
+              stream.stderr.on('data', () => {});
+            });
+          });
+
+          // Step 3c: Enable site and test config
+          await new Promise((res, rej) => {
+            conn.exec(`ln -sf /etc/nginx/sites-available/${configFilename} /etc/nginx/sites-enabled/ && nginx -t && systemctl reload nginx`, (err, stream) => {
+              if (err) return rej(err);
+              let stderr = '';
+              stream.on('close', (code) => {
+                if (code === 0) {
+                  res();
+                } else {
+                  rej(new Error(`Nginx config test failed: ${stderr}`));
+                }
+              });
+              stream.on('data', () => {});
+              stream.stderr.on('data', (data) => { stderr += data.toString(); });
+            });
+          });
+
+          console.log(`[SSL] Nginx config applied for ${domain} (type: ${deploymentType})`);
+
+          // Step 4: Run certbot to get SSL certificate
+          const certbotCmd = `certbot --nginx -d ${domain} --email admin@cloudedbasement.ca --non-interactive --agree-tos --redirect`;
+
+          conn.exec(certbotCmd, { timeout: 90000 }, (err, stream) => {
+            if (err) {
+              conn.end();
+              return reject(err);
+            }
+
+            let stdout = '';
+            let stderr = '';
+
+            stream.on('close', async (code) => {
+              console.log(`[SSL] Certbot finished for ${domain}, exit code: ${code}`);
+              if (stdout) console.log(`[SSL] stdout: ${stdout.substring(0, 500)}`);
+              if (stderr) console.log(`[SSL] stderr: ${stderr.substring(0, 500)}`);
+
+              try {
+                const success = stdout.includes('Congratulations') ||
+                  stderr.includes('Congratulations') ||
+                  stdout.includes('Successfully received certificate') ||
+                  stderr.includes('Successfully received certificate') ||
+                  stdout.includes('Certificate not yet due for renewal');
+
+                if (success || code === 0) {
+                  console.log(`[SSL] Certificate success for ${domain}`);
+                  conn.end();
+
+                  // Update domains table - SSL cert is working
+                  await pool.query('UPDATE domains SET ssl_enabled = true WHERE domain = $1', [domain]);
+                  console.log(`[SSL] Certificate activated for ${domain} on server ${serverId}`);
+                  resolve();
+                } else {
+                  conn.end();
+                  console.error(`[SSL] Certbot did not succeed. Code: ${code}`);
+                  reject(new Error('Certbot command did not complete successfully'));
+                }
+              } catch (dbError) {
+                conn.end();
+                reject(dbError);
+              }
+            });
+
+            stream.on('data', (data) => {
+              stdout += data.toString();
+            });
+
+            stream.stderr.on('data', (data) => {
+              stderr += data.toString();
+            });
+          });
+        } catch (nginxErr) {
+          conn.end();
+          reject(nginxErr);
+        }
+      });
+
+      conn.on('error', (err) => {
+        console.error(`[SSL] SSH connection error for server ${serverId}:`, err.message);
+        reject(err);
+      });
+
+      conn.connect({
+        host: server.ip_address,
+        port: 22,
+        username: server.ssh_username,
+        password: server.ssh_password
+      });
+
+    } catch (error) {
+      reject(error);
+    }
   }).catch(async (error) => {
     console.error(`[SSL] Error generating certificate for server ${serverId}:`, error.message);
     // Log the failure - domains.ssl_enabled stays false
