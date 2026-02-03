@@ -1067,19 +1067,54 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
             </form>
             ${data.domains.length > 0 ? `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    ${data.domains.map(dom => `
-                    <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
-                        <p class="text-sm text-white font-medium mb-2">${escapeHtml(dom.domain)}</p>
-                        ${dom.linked_subdomain ? `<p class="text-xs text-blue-400 mb-2">→ ${escapeHtml(dom.linked_subdomain)}.cloudedbasement.ca</p>` : ''}
-                        <div class="flex items-center gap-2">
-                            ${dom.ssl_enabled 
-                                ? '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">🔒 SSL Active</span>' 
-                                : '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">⏳ Pending SSL</span>'
-                            }
+                    ${data.domains.map(dom => {
+                        // Determine SSL badge based on ssl_status (not just ssl_enabled)
+                        const sslStatus = dom.ssl_status || (dom.ssl_enabled ? 'active' : 'none');
+                        let sslBadge = '';
+                        let sslMessage = '';
+                        
+                        switch(sslStatus) {
+                            case 'active':
+                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">🔒 SSL Active</span>';
+                                break;
+                            case 'orphaned':
+                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-red-900 text-red-300">⚠️ DNS Changed</span>';
+                                sslMessage = '<p class="text-xs text-red-400 mt-2">DNS no longer points to your server. SSL will fail.</p>';
+                                break;
+                            case 'unreachable':
+                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-orange-900 text-orange-300">🔧 SSL Error</span>';
+                                sslMessage = '<p class="text-xs text-orange-400 mt-2">Certificate exists but HTTPS not working. Check nginx config.</p>';
+                                break;
+                            case 'pending':
+                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-blue-900 text-blue-300">⏳ Issuing SSL</span>';
+                                sslMessage = '<p class="text-xs text-blue-400 mt-2">SSL certificate being issued...</p>';
+                                break;
+                            case 'expired':
+                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-red-900 text-red-300">❌ SSL Expired</span>';
+                                sslMessage = '<p class="text-xs text-red-400 mt-2">Certificate expired. Renewal may have failed.</p>';
+                                break;
+                            default: // 'none'
+                                sslBadge = '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">⏳ Pending SSL</span>';
+                                sslMessage = '<p class="text-xs text-gray-500 mt-2">SSL will auto-enable once DNS points to your server</p>';
+                        }
+                        
+                        // Show last verified time if available
+                        const lastVerified = dom.ssl_last_verified_at 
+                            ? `<p class="text-xs text-gray-600 mt-1">Last checked: ${new Date(dom.ssl_last_verified_at).toLocaleString()}</p>`
+                            : '';
+                        
+                        return `
+                        <div class="bg-black bg-opacity-30 border ${sslStatus === 'orphaned' ? 'border-red-700' : 'border-gray-700'} rounded-lg p-3">
+                            <p class="text-sm text-white font-medium mb-2">${escapeHtml(dom.domain)}</p>
+                            ${dom.linked_subdomain ? `<p class="text-xs text-blue-400 mb-2">→ ${escapeHtml(dom.linked_subdomain)}.cloudedbasement.ca</p>` : ''}
+                            <div class="flex items-center gap-2">
+                                ${sslBadge}
+                            </div>
+                            ${sslMessage}
+                            ${lastVerified}
                         </div>
-                        ${!dom.ssl_enabled ? '<p class="text-xs text-gray-500 mt-2">SSL will auto-enable once DNS points to your server</p>' : ''}
-                    </div>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
             ` : '<p class="text-gray-500 text-xs italic">No domains configured yet.</p>'}
         </div>

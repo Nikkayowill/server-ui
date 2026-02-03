@@ -513,6 +513,13 @@ setInterval(checkAndProvisionSSL, 5 * 60 * 1000);
 // Run auto-SSL check on startup (after 2 minutes to let server initialize)
 setTimeout(checkAndProvisionSSL, 2 * 60 * 1000);
 
+// SSL Verification: Reconcile SSL states every 30 minutes
+const { reconcileAllSSLStates } = require('./services/sslVerification');
+setInterval(reconcileAllSSLStates, 30 * 60 * 1000);
+
+// Run SSL verification on startup (after 3 minutes)
+setTimeout(reconcileAllSSLStates, 3 * 60 * 1000);
+
 // Global error handler (must be last)
 app.use(errorHandler);
 
