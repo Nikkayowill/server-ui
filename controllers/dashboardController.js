@@ -691,8 +691,8 @@ const buildDashboardTemplate = (data) => {
                             <td class="px-6 py-4 text-xs text-gray-400">${escapeHtml(dep.git_url.split('/').pop() || 'repo')}</td>
                             <td class="px-6 py-4 text-xs">
                                 ${dep.subdomain ? `
-                                <a href="http://${escapeHtml(dep.subdomain)}.cloudedbasement.ca" target="_blank" class="text-brand hover:text-cyan-400 font-mono">
-                                    ${escapeHtml(dep.subdomain)}.cloudedbasement.ca
+                                <a href="https://${escapeHtml(dep.subdomain)}.cloudedbasement.ca" target="_blank" class="text-brand hover:text-cyan-400 font-mono">
+                                    🔒 ${escapeHtml(dep.subdomain)}.cloudedbasement.ca
                                 </a>
                                 ` : '<span class="text-gray-500">—</span>'}
                             </td>

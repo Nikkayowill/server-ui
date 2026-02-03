@@ -601,6 +601,65 @@ async function performHealthCheck(conn, type, output, deploymentId, serviceName 
   }
 }
 
+// Helper: Setup SSL for subdomain using certbot
+async function setupSubdomainSSL(conn, subdomain, output, deploymentId) {
+  if (!subdomain) return output;
+  
+  const fullDomain = `${subdomain}.cloudedbasement.ca`;
+  output += `\n[SSL] Setting up HTTPS for ${fullDomain}...\n`;
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  
+  try {
+    // Step 1: Update nginx config with subdomain as server_name
+    output += `Configuring nginx for subdomain...\n`;
+    const nginxConfig = `server {
+    listen 80;
+    listen [::]:80;
+    server_name ${fullDomain};
+    root /var/www/html;
+    index index.html index.htm;
+
+    location / {
+        try_files \\$uri \\$uri/ /index.html;
+    }
+}`;
+    
+    await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/${subdomain}`);
+    await execSSH(conn, `ln -sf /etc/nginx/sites-available/${subdomain} /etc/nginx/sites-enabled/`);
+    await execSSH(conn, `nginx -t && systemctl reload nginx`);
+    output += `✓ Nginx configured for ${fullDomain}\n`;
+    await updateDeploymentOutput(deploymentId, output, 'in-progress');
+    
+    // Step 2: Wait a moment for DNS propagation (usually instant since we control DO DNS)
+    output += `Waiting for DNS propagation...\n`;
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // Step 3: Run certbot
+    output += `Requesting SSL certificate from Let's Encrypt...\n`;
+    await updateDeploymentOutput(deploymentId, output, 'in-progress');
+    
+    const certbotResult = await execSSH(conn, 
+      `certbot --nginx -d ${fullDomain} --non-interactive --agree-tos --email support@cloudedbasement.ca --redirect 2>&1 || echo "CERTBOT_FAILED"`
+    );
+    
+    if (certbotResult.includes('CERTBOT_FAILED') || certbotResult.includes('error')) {
+      output += `⚠️ SSL setup failed (site works on HTTP). You can retry later.\n`;
+      output += `   Error: ${certbotResult.substring(0, 200)}\n`;
+    } else {
+      output += `✓ SSL certificate installed!\n`;
+      output += `🔒 Your site is now live at: https://${fullDomain}/\n`;
+    }
+    
+  } catch (err) {
+    console.error(`[SSL] Error setting up SSL for ${fullDomain}:`, err.message);
+    output += `⚠️ SSL setup error: ${err.message}\n`;
+    output += `   Your site is still accessible via HTTP.\n`;
+  }
+  
+  await updateDeploymentOutput(deploymentId, output, 'in-progress');
+  return output;
+}
+
 // Deploy static site (React/Vue/Vite)
 async function deployStaticSite(conn, repoName, output, deploymentId, serverId, subdomain = null) {
   // Detect and switch Node version if specified
@@ -689,6 +748,9 @@ async function deployStaticSite(conn, repoName, output, deploymentId, serverId, 
   // Health check
   output = await performHealthCheck(conn, 'static', output, deploymentId);
   
+  // Setup SSL for subdomain (auto HTTPS)
+  output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
+  
   return output;
 }
 
@@ -711,6 +773,11 @@ async function deployStaticHTML(conn, repoName, output, deploymentId, subdomain 
   
   // Health check
   output = await performHealthCheck(conn, 'static', output, deploymentId);
+  
+  // Setup SSL for subdomain
+  if (subdomain) {
+    output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
+  }
   
   return output;
 }
@@ -810,6 +877,11 @@ WantedBy=multi-user.target`;
   // Health check
   output = await performHealthCheck(conn, 'backend', output, deploymentId, serviceName);
   
+  // Setup SSL for subdomain
+  if (subdomain) {
+    output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
+  }
+  
   return output;
 }
 
@@ -884,6 +956,11 @@ WantedBy=multi-user.target`;
   
   // Health check
   output = await performHealthCheck(conn, 'backend', output, deploymentId, serviceName);
+  
+  // Setup SSL for subdomain
+  if (subdomain) {
+    output = await setupSubdomainSSL(conn, subdomain, output, deploymentId);
+  }
   
   return output;
 }
