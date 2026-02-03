@@ -612,7 +612,11 @@ async function setupSubdomainSSL(conn, subdomain, output, deploymentId) {
   try {
     // Step 1: Update nginx config with subdomain as server_name
     output += `Configuring nginx for subdomain...\n`;
-    const nginxConfig = `server {
+    
+    // Use heredoc to avoid escaping issues with $uri
+    // Note: 'NGINXEOF' (quoted) prevents shell expansion, so $uri stays literal
+    const nginxConfigCmd = `cat > /etc/nginx/sites-available/${subdomain} << 'NGINXEOF'
+server {
     listen 80;
     listen [::]:80;
     server_name ${fullDomain};
@@ -620,11 +624,12 @@ async function setupSubdomainSSL(conn, subdomain, output, deploymentId) {
     index index.html index.htm;
 
     location / {
-        try_files \\$uri \\$uri/ /index.html;
+        try_files $uri $uri/ /index.html;
     }
-}`;
+}
+NGINXEOF`;
     
-    await execSSH(conn, `echo '${nginxConfig}' > /etc/nginx/sites-available/${subdomain}`);
+    await execSSH(conn, nginxConfigCmd);
     await execSSH(conn, `ln -sf /etc/nginx/sites-available/${subdomain} /etc/nginx/sites-enabled/`);
     await execSSH(conn, `nginx -t && systemctl reload nginx`);
     output += `✓ Nginx configured for ${fullDomain}\n`;
