@@ -678,6 +678,7 @@ const buildDashboardTemplate = (data) => {
                         <tr class="bg-gray-900 border-b border-gray-700">
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Identifier</th>
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Repository</th>
+                            <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">URL</th>
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Timestamp</th>
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Status</th>
                             <th class="px-6 py-4 text-xs uppercase font-bold text-gray-500">Actions</th>
@@ -688,6 +689,13 @@ const buildDashboardTemplate = (data) => {
                         <tr class="border-b border-gray-700" data-deployment-id="${dep.id}" data-deployment-status="${escapeHtml(dep.status)}">
                             <td class="px-6 py-4 font-mono text-xs text-white">#DEP-${1000 + i}</td>
                             <td class="px-6 py-4 text-xs text-gray-400">${escapeHtml(dep.git_url.split('/').pop() || 'repo')}</td>
+                            <td class="px-6 py-4 text-xs">
+                                ${dep.subdomain ? `
+                                <a href="http://${escapeHtml(dep.subdomain)}.cloudedbasement.ca" target="_blank" class="text-brand hover:text-cyan-400 font-mono">
+                                    ${escapeHtml(dep.subdomain)}.cloudedbasement.ca
+                                </a>
+                                ` : '<span class="text-gray-500">—</span>'}
+                            </td>
                             <td class="px-6 py-4 text-xs text-gray-400 font-mono">${new Date(dep.deployed_at).toLocaleDateString()} ${new Date(dep.deployed_at).toLocaleTimeString()}</td>
                             <td class="px-6 py-4">
                                 <span class="deployment-status-badge px-2 py-1 text-xs font-bold uppercase rounded inline-flex items-center gap-2 ${
@@ -696,11 +704,6 @@ const buildDashboardTemplate = (data) => {
                                     dep.status === 'deploying' ? 'bg-yellow-900 text-yellow-300' :
                                     'bg-blue-900 text-blue-300'
                                 }">${(dep.status === 'pending' || dep.status === 'deploying') ? `<svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>` : ''}${dep.status === 'pending' ? 'Building' : dep.status === 'deploying' ? 'Deploying' : escapeHtml(dep.status)}</span>
-                                ${dep.status === 'success' && data.serverIp ? `
-                                <div class="mt-2">
-                                    <a href="${data.liveSiteUrl}" target="_blank" class="text-brand hover:text-cyan-400 text-xs">View Live Site →</a>
-                                </div>
-                                ` : ''}
                             </td>
                             <td class="px-6 py-4">
                                 <form method="POST" action="/deploy" style="display:inline;">
@@ -723,7 +726,7 @@ const buildDashboardTemplate = (data) => {
                             </td>
                         </tr>
                         <tr id="deployment-log-${dep.id}" class="hidden border-b border-gray-700">
-                            <td colspan="5" class="px-6 py-4 bg-black bg-opacity-30">
+                            <td colspan="6" class="px-6 py-4 bg-black bg-opacity-30">
                                 <div class="mb-2 flex justify-between items-center">
                                     <span class="text-xs font-bold uppercase text-gray-500">Deployment Output</span>
                                     <button onclick="toggleDeploymentLog(${dep.id})" class="text-gray-500 hover:text-white text-xs">Close</button>
