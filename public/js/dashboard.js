@@ -1,3 +1,8 @@
+// ============================================
+// DASHBOARD UTILITY FUNCTIONS
+// (Navigation and sidebar toggle handled by inline scripts in template)
+// ============================================
+
 // Copy to clipboard functionality - accepts element ID or direct text
 function copyToClipboard(elementIdOrText, buttonElement) {
     let textToCopy;

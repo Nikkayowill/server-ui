@@ -1,7 +1,36 @@
 const pool = require('../db');
-const { getDashboardHead, getFooter, getScripts, getResponsiveNav, escapeHtml } = require('../helpers');
+const { getDashboardHead, getFooter, getScripts, getResponsiveNav, escapeHtml, getDashboardLayoutStart, getDashboardLayoutEnd } = require('../helpers');
 const { getUserServer, hasSuccessfulPayment } = require('../utils/db-helpers');
 const { PAYMENT_STATUS, SERVER_STATUS } = require('../constants');
+
+// Dashboard navigation items - centralized for consistency
+const DASHBOARD_NAV_ITEMS = [
+  {
+    id: 'overview',
+    label: 'Overview',
+    icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>'
+  },
+  {
+    id: 'sites',
+    label: 'Sites',
+    icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>'
+  },
+  {
+    id: 'deploy',
+    label: 'Deploy',
+    icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>'
+  },
+  {
+    id: 'dev-tools',
+    label: 'Dev Tools',
+    icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>'
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>'
+  }
+];
 
 // GET /dashboard
 exports.showDashboard = async (req, res) => {
@@ -270,125 +299,19 @@ module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, ch
 /**
  * Dashboard Template Builder - Tech-View Design
  * Advanced glassmorphic dashboard with resource monitoring
+ * Uses centralized layout helpers for consistency
  */
 const buildDashboardTemplate = (data) => {
-  // Get user initial for avatar
-  const userInitial = data.userEmail ? data.userEmail.charAt(0).toUpperCase() : 'U';
-  const planDisplay = (data.plan || 'basic').toUpperCase();
+  // Layout options for the dashboard wrapper
+  const layoutOptions = {
+    userEmail: data.userEmail || 'User',
+    plan: data.plan || 'basic',
+    navItems: DASHBOARD_NAV_ITEMS,
+    pageTitle: 'Overview'
+  };
   
   return `
-<!-- Dashboard Grid Layout -->
-<div class="dashboard-grid">
-    <!-- Sidebar -->
-    <aside id="dashboard-sidebar" class="dashboard-sidebar">
-        <!-- User Section -->
-        <div class="sidebar-user">
-            <div class="sidebar-user-avatar">${userInitial}</div>
-            <div class="sidebar-user-info">
-                <div class="sidebar-user-name">${escapeHtml(data.userEmail || 'User')}</div>
-                <div class="sidebar-user-plan">${planDisplay} Plan</div>
-            </div>
-        </div>
-        
-        <!-- Server Section -->
-        <nav class="sidebar-section">
-            <h3 class="sidebar-section-title">Server</h3>
-            <ul class="sidebar-nav-list">
-                <li>
-                    <a href="#server-status" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                        Overview
-                    </a>
-                </li>
-                <li>
-                    <a href="#ssh-access" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        SSH Access
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <!-- Deploy Section -->
-        <nav class="sidebar-section">
-            <h3 class="sidebar-section-title">Deploy</h3>
-            <ul class="sidebar-nav-list">
-                <li>
-                    <a href="#deploy" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                        Git Deploy
-                    </a>
-                </li>
-                <li>
-                    <a href="#auto-deploy" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        Auto-Deploy
-                    </a>
-                </li>
-                <li>
-                    <a href="#databases" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-                        Databases
-                    </a>
-                </li>
-                <li>
-                    <a href="#domains" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                        Domains & SSL
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <!-- Account Section -->
-        <nav class="sidebar-section">
-            <h3 class="sidebar-section-title">Account</h3>
-            <ul class="sidebar-nav-list">
-                <li>
-                    <a href="#support" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        Support
-                    </a>
-                </li>
-                <li>
-                    <a href="#settings" class="sidebar-nav-link">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- Mobile Sidebar Overlay -->
-    <div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden"></div>
-
-    <!-- Main Content Area -->
-    <main class="dashboard-content">
-        <!-- Dashboard Header -->
-        <header class="flex flex-col gap-4 mb-8">
-            <div class="flex items-center gap-4">
-                <!-- Mobile Sidebar Toggle - inline in header -->
-                <button id="sidebar-toggle" class="md:hidden w-10 h-10 bg-gray-800/90 backdrop-blur-sm border border-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:text-brand hover:border-brand transition-all shadow-lg flex-shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
-                <div>
-                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand text-opacity-70 mb-2">
-                        <span class="w-1.5 h-1.5 bg-brand rounded-full animate-pulse"></span>
-                        Live Connection Established
-                    </div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
-                        Dashboard
-                    </h2>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="border-r border-white border-opacity-5 pr-4 mr-4">
-                    <p class="text-xs text-gray-500 uppercase">Local Time</p>
-                    <p class="text-sm font-bold text-white font-mono" id="clock">00:00:00</p>
-                </div>
-            </div>
-        </header>
+${getDashboardLayoutStart(layoutOptions)}
 
     ${!data.emailConfirmed ? `
     <!-- Email Verification Top Bar -->
@@ -471,177 +394,169 @@ const buildDashboardTemplate = (data) => {
     ` : ''}
 
     <!-- Content Sections -->
-    <div class="space-y-8">
-        ${(data.hasServer || data.isProvisioning) ? `
+    <div class="sections-container">
         <!-- OVERVIEW SECTION -->
-        <div id="server-status" class="bg-gray-800 rounded-lg overflow-hidden scroll-mt-24" data-server-status="${data.serverStatus}">
-            <div class="px-4 py-3 border-b border-gray-700 bg-gray-900 bg-opacity-40">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        ${data.serverStatus === 'running' ? '<svg class="w-4 h-4 text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>' : data.serverStatus === 'provisioning' ? '<svg class="animate-spin h-4 w-4 text-brand drop-shadow-[0_0_10px_rgba(45,167,223,0.8)]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><circle class="opacity-75" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="32" stroke-dashoffset="16"></circle></svg>' : '<div class="w-2 h-2 rounded-full bg-gray-500 shadow-lg"></div>'}
-                        <h4 class="text-sm font-bold uppercase tracking-wide text-white">
-                            Overview — <span class="text-brand">${data.serverName}</span>
-                        </h4>
-                    </div>
-                    <button onclick="refreshDashboard()" class="p-2 border border-white border-opacity-5 bg-transparent hover:bg-white hover:bg-opacity-5 text-brand rounded transition-transform hover:rotate-180 text-sm" title="Refresh">&#8635;</button>
+        <section id="section-overview" class="dash-section active">
+        ${(data.hasServer || data.isProvisioning) ? `
+        <div class="dash-card" data-server-status="${data.serverStatus}">
+            <div class="dash-card-header">
+                <div class="flex items-center gap-3">
+                    <span class="dash-status">
+                        <span class="dash-status-dot ${data.serverStatus}"></span>
+                        ${data.serverStatus === 'running' ? 'Online' : data.serverStatus === 'provisioning' ? 'Provisioning' : 'Offline'}
+                    </span>
                 </div>
+                <h3 class="dash-card-title">${escapeHtml(data.serverName)}</h3>
             </div>
-            <div class="p-4">
-                ${data.isProvisioning && !data.hasServer ? `
-                <!-- Provisioning Banner -->
-                <div class="bg-brand bg-opacity-10 border border-brand rounded-lg p-4 mb-4 text-center">
-                    <svg class="animate-spin h-10 w-10 text-brand mx-auto mb-3" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <circle class="opacity-75" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="32" stroke-dashoffset="16"></circle>
-                    </svg>
-                    <h3 class="text-xl font-bold text-white mb-2">Setting Up Your Server...</h3>
-                    <p class="text-gray-400 text-sm mb-2">Your server is being created. This usually takes 2-3 minutes.</p>
-                    <p class="text-brand text-xs">This page will auto-refresh when ready.</p>
-                </div>
-                ` : `
-                <div class="space-y-4 mb-6">
-                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                        <span class="text-xs text-gray-500 uppercase font-bold">IPv4 Interface</span>
-                        <span class="text-sm font-mono text-brand">${escapeHtml(data.ipAddress)}</span>
-                    </div>
-                    ${data.ipv6Address ? `
-                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                        <span class="text-xs text-gray-500 uppercase font-bold">IPv6 Interface</span>
-                        <span class="text-xs font-mono text-purple-400">${escapeHtml(data.ipv6Address)}</span>
-                    </div>
-                    ` : ''}
-                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                        <span class="text-xs text-gray-500 uppercase font-bold">Host Name</span>
-                        <span class="text-sm font-mono text-white">${escapeHtml(data.serverName)}</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                        <span class="text-xs text-gray-500 uppercase font-bold">Plan</span>
-                        <span class="text-sm font-mono text-white">${escapeHtml(data.plan.toUpperCase())}</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                        <span class="text-xs text-gray-500 uppercase font-bold">Status</span>
-                        <span class="text-sm font-mono ${data.serverStatus === 'running' ? 'text-green-500' : data.serverStatus === 'provisioning' ? 'text-brand animate-pulse' : 'text-red-400'}">${escapeHtml(data.serverStatus.toUpperCase())}</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-2 border-b border-white border-opacity-5">
-                        <span class="text-xs text-gray-500 uppercase font-bold">Sites Deployed</span>
-                        <span class="text-sm font-mono ${data.siteCount >= data.siteLimit ? 'text-red-400 font-bold' : 'text-brand'}">${data.siteCount}/${data.siteLimit}</span>
-                    </div>
-                </div>
-                <div class="flex gap-3">
-                    <form action="/server-action" method="POST" class="flex-1">
-                        <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                        <input type="hidden" name="action" value="restart">
-                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">Restart</button>
-                    </form>
-                    <form id="terminate-form" action="/delete-server" method="POST" class="flex-1">
-                        <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                        <button type="button" onclick="openTerminateModal()" class="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-300">Cancel Plan</button>
-                    </form>
-                </div>
-                `}
-            </div>
-        </div>
-
-        ${data.hasServer ? `
-        <!-- SSH Access Card -->
-        <!-- SSH ACCESS SECTION -->
-        <div id="ssh-access" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">SSH Access</h4>
-            <p class="text-xs text-gray-500 mb-4">Use these credentials to connect to your server via SSH:</p>
             
-            <div class="space-y-4">
-                <div>
-                    <p class="text-xs text-gray-400 uppercase font-bold mb-2">Username</p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="password" id="sshUsername" value="${escapeHtml(data.sshUsername)}" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <div class="flex gap-2">
-                            <button onclick="togglePassword('sshUsername', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
-                            <button onclick="navigator.clipboard.writeText('${data.sshUsername.replace(/'/g, "\\'")}')" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
-                        </div>
-                    </div>
+            ${data.isProvisioning && !data.hasServer ? `
+            <!-- Provisioning State -->
+            <div class="text-center py-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--dash-accent)] bg-opacity-10 mb-4">
+                    <svg class="animate-spin h-6 w-6 text-[var(--dash-accent)]" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                 </div>
-                
-                <div>
-                    <p class="text-xs text-gray-400 uppercase font-bold mb-2">Password</p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="password" id="sshPassword" value="${escapeHtml(data.sshPassword)}" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <div class="flex gap-2">
-                            <button onclick="togglePassword('sshPassword', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
-                            <button onclick="navigator.clipboard.writeText('${data.sshPassword.replace(/'/g, "\\'")}')" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
-                        </div>
-                    </div>
+                <h3 class="text-lg font-semibold text-[var(--dash-text-primary)] mb-2">Setting up your server...</h3>
+                <p class="text-sm text-[var(--dash-text-secondary)]">This usually takes 2-3 minutes. Page will refresh automatically.</p>
+            </div>
+            ` : `
+            <!-- Server Details -->
+            <div class="space-y-0 mb-8">
+                <div class="dash-data-row">
+                    <span class="dash-data-label">IPv4</span>
+                    <span class="dash-data-value text-[var(--dash-accent)]">${escapeHtml(data.ipAddress)}</span>
                 </div>
-                
-                <div>
-                    <p class="text-xs text-gray-400 uppercase font-bold mb-2">Connection Command (IPv4)</p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="password" id="sshCommand" value="ssh ${escapeHtml(data.sshUsername)}@${escapeHtml(data.ipAddress)}" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <div class="flex gap-2">
-                            <button onclick="togglePassword('sshCommand', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
-                            <button onclick="navigator.clipboard.writeText('ssh ${data.sshUsername.replace(/'/g, "\\'")}@${data.ipAddress.replace(/'/g, "\\'")}')" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
-                        </div>
-                    </div>
-                </div>
-                
                 ${data.ipv6Address ? `
-                <div>
-                    <p class="text-xs text-gray-400 uppercase font-bold mb-2">Connection Command (IPv6)</p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="password" id="sshCommandIPv6" value="ssh ${escapeHtml(data.sshUsername)}@[${escapeHtml(data.ipv6Address)}]" readonly class="w-full sm:flex-1 px-3 py-2 bg-black bg-opacity-30 border border-gray-700 rounded text-white font-mono text-sm">
-                        <div class="flex gap-2">
-                            <button onclick="togglePassword('sshCommandIPv6', this)" class="flex-1 sm:flex-none px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs whitespace-nowrap">Show</button>
-                            <button onclick="navigator.clipboard.writeText(\`ssh ${data.sshUsername.replace(/'/g, "\\'")}@[${data.ipv6Address.replace(/'/g, "\\'")}]\`)" class="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition-colors text-xs whitespace-nowrap">Copy</button>
-                        </div>
-                    </div>
+                <div class="dash-data-row">
+                    <span class="dash-data-label">IPv6</span>
+                    <span class="dash-data-value text-[var(--dash-text-secondary)] text-xs">${escapeHtml(data.ipv6Address)}</span>
                 </div>
                 ` : ''}
+                <div class="dash-data-row">
+                    <span class="dash-data-label">Plan</span>
+                    <span class="dash-data-value">${escapeHtml(data.plan.toUpperCase())}</span>
+                </div>
+                <div class="dash-data-row">
+                    <span class="dash-data-label">Sites</span>
+                    <span class="dash-data-value ${data.siteCount >= data.siteLimit ? 'text-[var(--dash-danger)]' : ''}">${data.siteCount} / ${data.siteLimit}</span>
+                </div>
             </div>
+            
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <form action="/server-action" method="POST" class="flex-1">
+                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                    <input type="hidden" name="action" value="restart">
+                    <button type="submit" class="dash-btn dash-btn-secondary w-full">Restart</button>
+                </form>
+                <form id="terminate-form" action="/delete-server" method="POST" class="sm:flex-initial">
+                    <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                    <button type="button" onclick="openTerminateModal()" class="dash-btn dash-btn-danger w-full sm:w-auto">Cancel Plan</button>
+                </form>
+            </div>
+            `}
         </div>
-        ` : ''}
+
         ` : `
-        <!-- Server Placeholder (No Server) -->
-        <div class="bg-gray-800 rounded-lg p-8 text-center">
-            <h3 class="text-xl font-bold text-gray-400 mb-2">Server Details</h3>
-            <p class="text-sm text-gray-500">${data.hasPaid ? 'Waiting for server setup (contact support if delayed)' : data.trialAvailable ? 'Start your free trial below to get a server' : 'Purchase a plan to see your server details here'}</p>
+        <!-- No Server State -->
+        <div class="dash-card text-center py-12">
+            <h3 class="text-lg font-semibold text-[var(--dash-text-secondary)] mb-2">No Server</h3>
+            <p class="text-sm text-[var(--dash-text-muted)]">${data.hasPaid ? 'Waiting for server setup (contact support if delayed)' : data.trialAvailable ? 'Start your free trial below to get a server' : 'Purchase a plan to see your server details here'}</p>
         </div>
         `}
+        </section>
 
-        <!-- Deploy from GitHub -->
-        <!-- GIT DEPLOY SECTION -->
-        <div id="deploy" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Git Deploy</h4>
-            ${data.hasServer ? `
-            <form action="/deploy" method="POST" class="mb-4">
-                <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
-                    <input type="text" name="git_url" placeholder="https://github.com/username/repo.git" required class="w-full px-4 py-3 bg-gray-900 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold whitespace-nowrap">Deploy Now</button>
+        <!-- SITES SECTION (Domains + SSL) -->
+        <section id="section-sites" class="dash-section">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Your Sites</h3>
+            </div>
+            ${data.domains.length > 0 ? `
+            <div class="space-y-3 mb-6">
+                ${data.domains.map(d => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg" style="background: var(--dash-bg)">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="${d.ssl_enabled ? 'text-green-400' : 'text-yellow-400'} flex-shrink-0">${d.ssl_enabled ? '🔒' : '⚠️'}</span>
+                        <div class="min-w-0">
+                            <a href="${d.ssl_enabled ? 'https' : 'http'}://${d.domain}" target="_blank" class="text-sm font-medium text-[var(--dash-text-primary)] hover:text-[var(--dash-accent)] block truncate">${escapeHtml(d.domain)}</a>
+                            <p class="text-xs text-[var(--dash-text-muted)]">${d.ssl_enabled ? 'SSL active' : 'Waiting for SSL'}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0 self-end sm:self-center">
+                        ${!d.ssl_enabled && data.hasServer ? `
+                        <form action="/enable-ssl" method="POST">
+                            <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                            <input type="hidden" name="domain" value="${escapeHtml(d.domain)}">
+                            <button type="submit" class="dash-btn dash-btn-secondary text-xs">Enable SSL</button>
+                        </form>
+                        ` : ''}
+                        <form action="/delete-domain" method="POST" onsubmit="return confirm('Remove this domain?')">
+                            <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                            <input type="hidden" name="domain_id" value="${d.id}">
+                            <button type="submit" class="dash-btn dash-btn-danger text-xs">Remove</button>
+                        </form>
+                    </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">Paste your public or private GitHub repository URL to deploy automatically.</p>
+                `).join('')}
+            </div>
+            ` : `
+            <div class="text-center py-8 text-[var(--dash-text-muted)]">
+                <p class="text-sm">No domains configured yet</p>
+            </div>
+            `}
+            
+            ${data.hasServer ? `
+            <form action="/add-domain" method="POST" class="pt-4" style="border-top: 1px solid var(--dash-card-border)">
+                <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" name="domain" placeholder="yourdomain.com" required class="flex-1 dash-input">
+                    <button type="submit" class="dash-btn dash-btn-primary w-full sm:w-auto">Add Domain</button>
+                </div>
+                <p class="text-xs text-[var(--dash-text-muted)] mt-3">Point your domain's A record to <code class="text-[var(--dash-accent)]">${escapeHtml(data.ipAddress)}</code> first.</p>
+            </form>
+            ` : ''}
+        </div>
+        </section>
+
+        <!-- DEPLOY SECTION -->
+        <section id="section-deploy" class="dash-section">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Deploy from Git</h3>
+            </div>
+            ${data.hasServer ? `
+            <form action="/deploy" method="POST">
+                <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" name="git_url" placeholder="https://github.com/username/repo.git" required class="flex-1 px-4 py-3 bg-[var(--dash-bg)] border border-[var(--dash-card-border)] rounded-lg text-white text-sm focus:border-[var(--dash-accent)] focus:outline-none">
+                    <button type="submit" class="dash-btn dash-btn-primary w-full sm:w-auto">Deploy</button>
+                </div>
+                <p class="text-xs text-[var(--dash-text-muted)] mt-3">Paste your GitHub repository URL to deploy automatically.</p>
             </form>
             ` : data.trialAvailable ? `
-            <div class="bg-green-900 bg-opacity-20 border-2 border-green-600 rounded-lg p-6 text-center">
-                <div class="text-4xl mb-3">🚀</div>
-                <h3 class="text-green-400 text-lg font-bold mb-2">Start Your Free Trial</h3>
-                <p class="text-green-300 text-sm mb-4">Get a fully-functional Basic server for 3 days — no credit card required.</p>
+            <div class="text-center py-6">
+                <div class="text-4xl mb-4">🚀</div>
+                <h3 class="text-lg font-semibold text-[var(--dash-text-primary)] mb-2">Start Your Free Trial</h3>
+                <p class="text-sm text-[var(--dash-text-secondary)] mb-6">Get a fully-functional server for 3 days — no credit card required.</p>
                 <form action="/start-trial" method="POST" class="inline-block" id="trialForm">
                     <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                    <button type="button" onclick="showTrialModal()" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] transition-all duration-300">
-                        Start 3-Day Free Trial
-                    </button>
+                    <button type="button" onclick="showTrialModal()" class="dash-btn dash-btn-primary">Start 3-Day Free Trial</button>
                 </form>
-                <p class="text-green-400 text-xs mt-3">1 GB RAM · 1 vCPU · 25 GB SSD · Full SSH access</p>
+                <p class="text-xs text-[var(--dash-text-muted)] mt-4">1 GB RAM · 1 vCPU · 25 GB SSD · Full SSH access</p>
             </div>
             
             <!-- Trial Confirmation Modal -->
-            <div id="trialModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
-                <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md mx-4 text-center">
+            <div id="trialModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+                <div class="dash-card max-w-md mx-4 text-center">
                     <div class="text-5xl mb-4">🖥️</div>
-                    <h3 class="text-xl font-bold text-white mb-3">You're about to create your own server</h3>
-                    <p class="text-gray-400 text-sm mb-6">This will provision a real Ubuntu server with full SSH access. It takes about 2-5 minutes to set up.</p>
+                    <h3 class="text-xl font-semibold text-[var(--dash-text-primary)] mb-3">Create your server</h3>
+                    <p class="text-sm text-[var(--dash-text-secondary)] mb-6">This will provision a real Ubuntu server with full SSH access. Takes about 2-5 minutes.</p>
                     <div class="flex gap-3 justify-center">
-                        <button onclick="hideTrialModal()" class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-                        <button onclick="submitTrial()" class="px-6 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 transition-colors">Proceed</button>
+                        <button onclick="hideTrialModal()" class="dash-btn dash-btn-secondary">Cancel</button>
+                        <button onclick="submitTrial()" class="dash-btn dash-btn-primary">Proceed</button>
                     </div>
                 </div>
             </div>
@@ -658,75 +573,71 @@ const buildDashboardTemplate = (data) => {
                 function submitTrial() {
                     document.getElementById('trialForm').submit();
                 }
-                // Close modal on backdrop click
-                document.getElementById('trialModal').addEventListener('click', function(e) {
+                document.getElementById('trialModal')?.addEventListener('click', function(e) {
                     if (e.target === this) hideTrialModal();
                 });
             </script>
-            <div class="mt-4 text-center">
-                <span class="text-gray-500 text-sm">or</span>
-                <a href="/pricing" class="text-brand hover:text-cyan-400 text-sm ml-2">View paid plans →</a>
+            <div class="mt-6 text-center">
+                <span class="text-[var(--dash-text-muted)] text-sm">or</span>
+                <a href="/pricing" class="text-[var(--dash-accent)] hover:underline text-sm ml-2">View paid plans →</a>
             </div>
             ` : `
-            <div class="bg-red-900 bg-opacity-20 border-2 border-red-600 rounded-lg p-4">
-                <p class="text-red-400 text-sm font-medium mb-3">⚠️ No active server detected</p>
-                <p class="text-red-300 text-xs mb-4">You must purchase a hosting plan before deploying applications from GitHub.</p>
-                <a href="/pricing" class="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors text-sm">View Plans →</a>
+            <div class="text-center py-6">
+                <p class="text-[var(--dash-text-secondary)] mb-4">No active server. Purchase a plan to deploy applications.</p>
+                <a href="/pricing" class="dash-btn dash-btn-primary">View Plans</a>
             </div>
             `}
         </div>
 
-        <!-- Auto-Deploy Section (GitHub Webhooks) -->
+        <!-- AUTO-DEPLOY SECTION -->
         ${data.hasServer ? `
-        <div id="auto-deploy" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <div class="flex items-center justify-between mb-4">
-                <h4 class="text-sm font-bold uppercase tracking-wide text-white">Auto-Deploy</h4>
+        <div id="auto-deploy" class="dash-card scroll-mt-24">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Auto-Deploy</h3>
                 ${data.autoDeployEnabled ? 
-                    `<span class="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded">ENABLED</span>` : 
-                    `<span class="px-2 py-1 bg-gray-600 text-white text-xs font-bold rounded">DISABLED</span>`
+                    `<span class="text-xs font-medium text-[var(--dash-success)]">● Enabled</span>` : 
+                    `<span class="text-xs font-medium text-[var(--dash-text-muted)]">○ Disabled</span>`
                 }
             </div>
             
             ${data.autoDeployEnabled && data.githubWebhookSecret ? `
-            <!-- Enabled State: Show webhook details -->
-            <div class="bg-gray-900 rounded-lg p-4 mb-4">
-                <p class="text-gray-400 text-xs mb-3">Add this webhook to your GitHub repository to auto-deploy on every push to main/master:</p>
-                
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Webhook URL</label>
-                        <div class="flex items-center gap-2">
-                            <code class="flex-1 bg-black p-2 rounded text-green-400 text-xs font-mono break-all">https://cloudedbasement.ca/webhook/github/${data.serverId}</code>
-                            <button onclick="navigator.clipboard.writeText('https://cloudedbasement.ca/webhook/github/${data.serverId}')" class="px-3 py-2 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-500">Copy</button>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Secret</label>
-                        <div class="flex items-center gap-2">
-                            <code id="webhookSecret" class="flex-1 bg-black p-2 rounded text-green-400 text-xs font-mono">••••••••••••••••</code>
-                            <button onclick="toggleWebhookSecret()" class="px-3 py-2 bg-gray-700 text-white text-xs rounded hover:bg-gray-600">Show</button>
-                            <button onclick="navigator.clipboard.writeText('${data.githubWebhookSecret}')" class="px-3 py-2 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-500">Copy</button>
-                        </div>
+            <p class="text-sm text-[var(--dash-text-secondary)] mb-4">Add this webhook to your GitHub repository:</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs text-[var(--dash-text-muted)] mb-2">Webhook URL</label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <code class="flex-1 px-3 py-2 bg-[var(--dash-bg)] border border-[var(--dash-card-border)] rounded-lg text-[var(--dash-accent)] text-xs font-mono overflow-x-auto break-all">https://cloudedbasement.ca/webhook/github/${data.serverId}</code>
+                        <button onclick="navigator.clipboard.writeText('https://cloudedbasement.ca/webhook/github/${data.serverId}')" class="dash-btn dash-btn-primary px-3 w-full sm:w-auto">Copy</button>
                     </div>
                 </div>
                 
-                <div class="mt-4 p-3 bg-blue-900 bg-opacity-30 border border-blue-600 rounded text-xs text-blue-300">
-                    <strong>Setup Instructions:</strong>
-                    <ol class="list-decimal list-inside mt-2 space-y-1">
-                        <li>Go to your GitHub repo → Settings → Webhooks → Add webhook</li>
-                        <li>Paste the Webhook URL above</li>
-                        <li>Set Content type to <code class="bg-black px-1 rounded">application/json</code></li>
-                        <li>Paste the Secret above</li>
-                        <li>Select "Just the push event"</li>
-                        <li>Click "Add webhook"</li>
-                    </ol>
+                <div>
+                    <label class="block text-xs text-[var(--dash-text-muted)] mb-2">Secret</label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <code id="webhookSecret" class="flex-1 px-3 py-2 bg-[var(--dash-bg)] border border-[var(--dash-card-border)] rounded-lg text-[var(--dash-accent)] text-xs font-mono">••••••••••••••••</code>
+                        <div class="flex gap-2">
+                            <button onclick="toggleWebhookSecret()" class="dash-btn dash-btn-secondary px-3 flex-1 sm:flex-initial">Show</button>
+                            <button onclick="navigator.clipboard.writeText('${data.githubWebhookSecret}')" class="dash-btn dash-btn-primary px-3 flex-1 sm:flex-initial">Copy</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <form action="/disable-auto-deploy" method="POST">
+            <div class="mt-6 p-4 bg-[var(--dash-bg)] border border-[var(--dash-card-border)] rounded-lg">
+                <p class="text-xs text-[var(--dash-text-secondary)] font-medium mb-2">Setup Instructions:</p>
+                <ol class="text-xs text-[var(--dash-text-muted)] space-y-1 list-decimal list-inside">
+                    <li>GitHub repo → Settings → Webhooks → Add webhook</li>
+                    <li>Paste the Webhook URL</li>
+                    <li>Content type: <code class="text-[var(--dash-accent)]">application/json</code></li>
+                    <li>Paste the Secret</li>
+                    <li>Select "Just the push event"</li>
+                </ol>
+            </div>
+            
+            <form action="/disable-auto-deploy" method="POST" class="mt-6">
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded hover:bg-red-700 transition-colors">Disable Auto-Deploy</button>
+                <button type="submit" class="dash-btn dash-btn-danger">Disable Auto-Deploy</button>
             </form>
             
             <script>
@@ -740,187 +651,166 @@ const buildDashboardTemplate = (data) => {
                 }
             </script>
             ` : `
-            <!-- Disabled State: Show enable button -->
-            <div class="bg-gray-900 rounded-lg p-4 mb-4">
-                <p class="text-gray-400 text-sm mb-3">🚀 <strong>Auto-deploy on git push</strong> — Every time you push to main/master, your site automatically redeploys.</p>
-                <ul class="text-gray-500 text-xs space-y-1 mb-4">
-                    <li>✓ No manual clicking "Redeploy"</li>
-                    <li>✓ Deploys in seconds after push</li>
-                    <li>✓ Secure webhook signature verification</li>
-                </ul>
-            </div>
+            <p class="text-sm text-[var(--dash-text-secondary)] mb-4">Automatically redeploy when you push to main/master.</p>
+            <ul class="text-xs text-[var(--dash-text-muted)] space-y-1 mb-6">
+                <li>✓ No manual clicking "Redeploy"</li>
+                <li>✓ Deploys in seconds after push</li>
+                <li>✓ Secure webhook signature verification</li>
+            </ul>
             
             <form action="/enable-auto-deploy" method="POST">
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                <button type="submit" class="px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] transition-all duration-300">Enable Auto-Deploy</button>
+                <button type="submit" class="dash-btn dash-btn-primary">Enable Auto-Deploy</button>
             </form>
             `}
         </div>
         ` : ''}
-
-        <!-- Sites & Deployments - Clean Card Layout -->
-        ${data.hasServer && data.deployments.length > 0 ? `
-        <div id="sites" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Your Sites</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                ${data.deployments.filter(d => d.status === 'success' && d.subdomain).map(dep => {
-                    // Find custom domains linked to this deployment
-                    const linkedDomains = data.domains.filter(dom => dom.linked_subdomain === dep.subdomain);
-                    return `
-                    <div class="bg-black bg-opacity-40 border border-gray-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Site</p>
-                                <p class="text-white font-bold">${escapeHtml(dep.subdomain)}</p>
-                            </div>
-                            <span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300">Live</span>
-                        </div>
-                        
-                        <div class="space-y-2 mb-4">
-                            <a href="https://${escapeHtml(dep.subdomain)}.cloudedbasement.ca" target="_blank" 
-                               class="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-mono">
-                                <span>🔒</span> ${escapeHtml(dep.subdomain)}.cloudedbasement.ca
-                            </a>
-                            ${linkedDomains.map(dom => `
-                            <a href="https://${escapeHtml(dom.domain)}" target="_blank" 
-                               class="flex items-center gap-2 text-sm ${dom.ssl_enabled ? 'text-green-400 hover:text-green-300' : 'text-yellow-400 hover:text-yellow-300'} font-mono">
-                                <span>${dom.ssl_enabled ? '🔒' : '⏳'}</span> ${escapeHtml(dom.domain)}
-                            </a>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="flex items-center gap-3 pt-3 border-t border-gray-700">
-                            <form method="POST" action="/deploy" class="inline">
-                                <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                                <input type="hidden" name="git_url" value="${escapeHtml(dep.git_url)}">
-                                <button type="submit" class="text-xs text-green-400 hover:text-green-300 font-bold uppercase">Redeploy</button>
-                            </form>
-                            <button onclick="toggleDeploymentLog(${dep.id})" class="text-xs text-blue-400 hover:text-blue-300 font-bold uppercase">Logs</button>
-                        </div>
-                        
-                        <div id="deployment-log-${dep.id}" class="hidden mt-3 pt-3 border-t border-gray-700">
-                            <pre class="deployment-output bg-gray-900 p-3 rounded text-xs text-green-400 font-mono overflow-x-auto max-h-48 overflow-y-auto">${escapeHtml(dep.output || 'No logs available')}</pre>
+        
+        <!-- Deployment History (within Deploy section) -->
+        ${data.deployments.length > 0 ? `
+        <div class="dash-card mt-6">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Recent Deployments</h3>
+            </div>
+            <div class="space-y-3">
+                ${data.deployments.slice(0, 5).map(dep => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg" style="background: var(--dash-bg)">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="${dep.status === 'success' ? 'text-green-400' : dep.status === 'failed' ? 'text-red-400' : 'text-yellow-400'} flex-shrink-0">
+                            ${dep.status === 'success' ? '●' : dep.status === 'failed' ? '●' : '○'}
+                        </span>
+                        <div class="min-w-0">
+                            <p class="text-sm text-[var(--dash-text-primary)] truncate">${escapeHtml(dep.git_url.split('/').pop() || 'repo')}</p>
+                            <p class="text-xs text-[var(--dash-text-muted)]">${new Date(dep.deployed_at || dep.created_at).toLocaleDateString()}</p>
                         </div>
                     </div>
-                    `;
-                }).join('')}
-            </div>
-            
-            ${data.deployments.some(d => d.status !== 'success' || !d.subdomain) ? `
-            <details class="mt-6">
-                <summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-400">Show deployment history (${data.deployments.length} total)</summary>
-                <div class="mt-3 overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead>
-                            <tr class="border-b border-gray-700">
-                                <th class="py-2 text-gray-500 font-bold">Repository</th>
-                                <th class="py-2 text-gray-500 font-bold">Status</th>
-                                <th class="py-2 text-gray-500 font-bold">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${data.deployments.slice(0, 10).map(dep => `
-                            <tr class="border-b border-gray-800">
-                                <td class="py-2 text-gray-400">${escapeHtml(dep.git_url.split('/').pop() || 'repo')}</td>
-                                <td class="py-2">
-                                    <span class="px-2 py-1 rounded text-xs ${
-                                        dep.status === 'success' ? 'bg-green-900 text-green-300' : 
-                                        dep.status === 'failed' ? 'bg-red-900 text-red-300' : 
-                                        'bg-yellow-900 text-yellow-300'
-                                    }">${escapeHtml(dep.status)}</span>
-                                </td>
-                                <td class="py-2 text-gray-500">${new Date(dep.deployed_at || dep.created_at).toLocaleDateString()}</td>
-                            </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
+                    ${dep.status === 'success' ? `
+                    <form method="POST" action="/deploy" class="flex-shrink-0 self-end sm:self-center">
+                        <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                        <input type="hidden" name="git_url" value="${escapeHtml(dep.git_url)}">
+                        <button type="submit" class="dash-btn dash-btn-secondary text-xs">Redeploy</button>
+                    </form>
+                    ` : ''}
                 </div>
-            </details>
-            ` : ''}
+                `).join('')}
+            </div>
         </div>
         ` : ''}
+        </section>
 
-        <!-- Database Status -->
-        <!-- DATABASES SECTION -->
-        <div id="databases" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Databases</h4>
+        <!-- DEV TOOLS SECTION -->
+        <section id="section-dev-tools" class="dash-section">
+        <!-- DEVELOPER TOOLS SECTION -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Developer Tools</h3>
+            </div>
+            
             ${data.hasServer ? `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <!-- SSH Access -->
+            <div class="mb-8">
+                <h5 class="text-sm font-semibold mb-4" style="color: var(--dash-text-primary)">SSH Access</h5>
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-xs mb-2" style="color: var(--dash-text-muted)">Username</label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="password" id="sshUsername" value="${escapeHtml(data.sshUsername)}" readonly class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                            <button onclick="togglePassword('sshUsername', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Show</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-2" style="color: var(--dash-text-muted)">Password</label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="password" id="sshPassword" value="${escapeHtml(data.sshPassword)}" readonly class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                            <button onclick="togglePassword('sshPassword', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Show</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-2" style="color: var(--dash-text-muted)">Connection Command</label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="password" id="sshCommand" value="ssh ${escapeHtml(data.sshUsername)}@${escapeHtml(data.ipAddress)}" readonly class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                            <button onclick="navigator.clipboard.writeText('ssh ${data.sshUsername.replace(/'/g, "\\'")}@${data.ipAddress.replace(/'/g, "\\'")}')"
+ class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Databases -->
+            <div class="pt-6" style="border-top: 1px solid var(--dash-card-border)">
+                <h5 class="text-sm font-semibold mb-4" style="color: var(--dash-text-primary)">Databases</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- PostgreSQL -->
-                <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs text-gray-400 uppercase font-bold">PostgreSQL</p>
+                <div class="p-4 rounded-lg" style="background: rgba(0,0,0,0.3); border: 1px solid var(--dash-card-border)">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-xs uppercase font-bold" style="color: var(--dash-text-secondary)">PostgreSQL</p>
                         ${data.postgresInstalled ? 
-                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Installed</span>' : 
-                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">Not Installed</span>'}
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900/50 text-green-400 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Installed</span>' : 
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900/50 text-yellow-400">Not Installed</span>'}
                     </div>
                     
                     ${data.postgresInstalled && data.postgresCredentials ? `
                     <!-- PostgreSQL Credentials -->
-                    <div class="bg-blue-900 bg-opacity-20 border border-blue-600 rounded p-3 mb-3">
-                        <p class="text-blue-300 text-xs font-bold mb-1">✓ PostgreSQL Installed & Running</p>
-                        <p class="text-gray-400 text-xs leading-relaxed">Your database server is fully set up and ready to use. Just copy the connection string below into your app's <code class="text-white bg-black bg-opacity-50 px-1 py-0.5 rounded">.env</code> file.</p>
+                    <div class="rounded-lg p-3 mb-4" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3)">
+                        <p class="text-green-400 text-xs font-bold mb-1">✓ PostgreSQL Ready</p>
+                        <p class="text-xs leading-relaxed" style="color: var(--dash-text-secondary)">Copy the connection string into your app's <code class="text-white px-1 py-0.5 rounded" style="background: rgba(0,0,0,0.4)">.env</code> file.</p>
                     </div>
-                    <div class="space-y-3 mt-4">
+                    <div class="space-y-4">
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Connection String:</p>
-                            <div class="flex gap-2">
-                                <input type="text" readonly value="postgresql://${data.postgresCredentials.dbUser}:${data.postgresCredentials.dbPassword}@${data.postgresCredentials.host}:${data.postgresCredentials.port}/${data.postgresCredentials.dbName}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="postgres-connection-string">
-                                <button onclick="copyToClipboard('postgres-connection-string', this)" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Connection String</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" readonly value="postgresql://${data.postgresCredentials.dbUser}:${data.postgresCredentials.dbPassword}@${data.postgresCredentials.host}:${data.postgresCredentials.port}/${data.postgresCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono truncate" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-connection-string">
+                                <button onclick="copyToClipboard('postgres-connection-string', this)" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <p class="text-xs text-gray-500 mb-1">Host:</p>
-                                <div class="flex gap-1">
-                                    <input type="text" readonly value="${data.postgresCredentials.host}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="postgres-host">
-                                    <button onclick="copyToClipboard('postgres-host', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Host</p>
+                                <div class="flex gap-2">
+                                    <input type="text" readonly value="${data.postgresCredentials.host}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-host">
+                                    <button onclick="copyToClipboard('postgres-host', this)" class="dash-btn dash-btn-secondary text-xs">Copy</button>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 mb-1">Port:</p>
-                                <input type="text" readonly value="${data.postgresCredentials.port}" class="bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono">
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Port</p>
+                                <input type="text" readonly value="${data.postgresCredentials.port}" class="w-full text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Database:</p>
-                            <div class="flex gap-1">
-                                <input type="text" readonly value="${data.postgresCredentials.dbName}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="postgres-dbname">
-                                <button onclick="copyToClipboard('postgres-dbname', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Database</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" readonly value="${data.postgresCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-dbname">
+                                <button onclick="copyToClipboard('postgres-dbname', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Username:</p>
-                            <div class="flex gap-1">
-                                <input type="text" readonly value="${data.postgresCredentials.dbUser}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="postgres-user">
-                                <button onclick="copyToClipboard('postgres-user', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Username</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" readonly value="${data.postgresCredentials.dbUser}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-user">
+                                <button onclick="copyToClipboard('postgres-user', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Password:</p>
-                            <div class="flex gap-1">
-                                <input type="password" readonly value="${data.postgresCredentials.dbPassword}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="postgres-password">
-                                <button onclick="togglePassword('postgres-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors" id="postgres-password-toggle">Show</button>
-                                <button onclick="copyToClipboard('postgres-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Password</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="password" readonly value="${data.postgresCredentials.dbPassword}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-password">
+                                <div class="flex gap-2">
+                                    <button onclick="togglePassword('postgres-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial" id="postgres-password-toggle">Show</button>
+                                    <button onclick="copyToClipboard('postgres-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial">Copy</button>
+                                </div>
                             </div>
                         </div>
-                        <details class="mt-3">
-                            <summary class="text-xs text-blue-400 cursor-pointer hover:text-blue-300 transition-colors">Show Code Examples</summary>
-                            <div class="mt-2 bg-black bg-opacity-50 rounded p-3 border border-gray-700">
-                                <p class="text-xs text-gray-300 mb-3"><strong>Quick Start (3 steps):</strong></p>
-                                <ol class="text-xs text-gray-400 space-y-2 mb-4 pl-4 list-decimal">
-                                    <li>On <strong>your local machine</strong>, add this code to your app (e.g., <code class="text-white bg-black bg-opacity-50 px-1 rounded">config/database.js</code>)</li>
-                                    <li>Run the install command below <strong>locally</strong> to add the driver to your <code class="text-white bg-black bg-opacity-50 px-1 rounded">package.json</code></li>
-                                    <li>Push to Git and deploy via dashboard - we'll install dependencies automatically</li>
-                                </ol>
-                                <p class="text-xs text-gray-400 mb-2"><strong>Node.js:</strong> <code class="text-xs text-gray-500">npm install pg</code> <span class="text-gray-600">(run locally)</span></p>
-                                <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto mb-3"><code>const { Pool } = require('pg');
+                        <details class="mt-4">
+                            <summary class="text-xs cursor-pointer transition-colors" style="color: var(--dash-accent)">Show Code Examples</summary>
+                            <div class="mt-3 p-4 rounded-lg" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                                <p class="text-xs mb-3" style="color: var(--dash-text-primary)"><strong>Quick Start:</strong></p>
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Node.js:</strong> <code style="color: var(--dash-text-secondary)">npm install pg</code></p>
+                                <pre class="text-xs p-3 rounded-lg overflow-x-auto mb-3 font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: 'postgresql://${data.postgresCredentials.dbUser}:${data.postgresCredentials.dbPassword}@${data.postgresCredentials.host}:${data.postgresCredentials.port}/${data.postgresCredentials.dbName}'
-});
-const result = await pool.query('SELECT NOW()');</code></pre>
-                                <p class="text-xs text-gray-400 mb-2"><strong>Python:</strong> <code class="text-xs text-gray-500">pip install psycopg2-binary</code> <span class="text-gray-600">(run locally)</span></p>
-                                <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto"><code>import psycopg2
+});</code></pre>
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Python:</strong> <code style="color: var(--dash-text-secondary)">pip install psycopg2-binary</code></p>
+                                <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>import psycopg2
 conn = psycopg2.connect(
   host='${data.postgresCredentials.host}',
   port=${data.postgresCredentials.port},
@@ -932,409 +822,197 @@ conn = psycopg2.connect(
                         </details>
                     </div>
                     ` : `
-                    <p class="text-xs text-gray-500 mt-3 mb-4">Install PostgreSQL to view credentials and connection details.</p>
+                    <p class="text-sm mt-4 mb-4" style="color: var(--dash-text-muted)">Install PostgreSQL to view credentials.</p>
                     <form action="/setup-database" method="POST">
                         <input type="hidden" name="_csrf" value="${data.csrfToken}">
                         <input type="hidden" name="database_type" value="postgres">
-                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded transition-colors">
-                            Install PostgreSQL
-                        </button>
+                        <button type="submit" class="dash-btn dash-btn-primary w-full">Install PostgreSQL</button>
                     </form>
                     `}
                 </div>
                 
                 <!-- MongoDB -->
-                <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs text-gray-400 uppercase font-bold">MongoDB</p>
+                <div class="p-4 rounded-lg" style="background: rgba(0,0,0,0.3); border: 1px solid var(--dash-card-border)">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-xs uppercase font-bold" style="color: var(--dash-text-secondary)">MongoDB</p>
                         ${data.mongodbInstalled ? 
-                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900 text-green-300 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Installed</span>' : 
-                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900 text-yellow-300">Not Installed</span>'}
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900/50 text-green-400 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Installed</span>' : 
+                          '<span class="px-2 py-1 text-xs font-bold uppercase rounded bg-yellow-900/50 text-yellow-400">Not Installed</span>'}
                     </div>
                     
                     ${data.mongodbInstalled && data.mongodbCredentials ? `
                     <!-- MongoDB Credentials -->
-                    <div class="bg-green-900 bg-opacity-20 border border-green-600 rounded p-3 mb-3">
-                        <p class="text-green-300 text-xs font-bold mb-1">✓ MongoDB Installed & Running</p>
-                        <p class="text-gray-400 text-xs leading-relaxed">Your database server is fully set up and ready to use. Just copy the connection string below into your app's <code class="text-white bg-black bg-opacity-50 px-1 py-0.5 rounded">.env</code> file.</p>
+                    <div class="rounded-lg p-3 mb-4" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3)">
+                        <p class="text-green-400 text-xs font-bold mb-1">✓ MongoDB Ready</p>
+                        <p class="text-xs leading-relaxed" style="color: var(--dash-text-secondary)">Copy the connection string into your app's <code class="text-white px-1 py-0.5 rounded" style="background: rgba(0,0,0,0.4)">.env</code> file.</p>
                     </div>
-                    <div class="space-y-3 mt-4">
+                    <div class="space-y-4">
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Connection String:</p>
-                            <div class="flex gap-2">
-                                <input type="text" readonly value="mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/${data.mongodbCredentials.dbName}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="mongodb-connection-string">
-                                <button onclick="copyToClipboard('mongodb-connection-string', this)" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Connection String</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" readonly value="mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/${data.mongodbCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono truncate" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-connection-string">
+                                <button onclick="copyToClipboard('mongodb-connection-string', this)" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <p class="text-xs text-gray-500 mb-1">Host:</p>
-                                <div class="flex gap-1">
-                                    <input type="text" readonly value="${data.mongodbCredentials.host}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="mongodb-host">
-                                    <button onclick="copyToClipboard('mongodb-host', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Host</p>
+                                <div class="flex gap-2">
+                                    <input type="text" readonly value="${data.mongodbCredentials.host}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-host">
+                                    <button onclick="copyToClipboard('mongodb-host', this)" class="dash-btn dash-btn-secondary text-xs">Copy</button>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 mb-1">Port:</p>
-                                <input type="text" readonly value="${data.mongodbCredentials.port}" class="bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono">
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Port</p>
+                                <input type="text" readonly value="${data.mongodbCredentials.port}" class="w-full text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Database:</p>
-                            <div class="flex gap-1">
-                                <input type="text" readonly value="${data.mongodbCredentials.dbName}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="mongodb-dbname">
-                                <button onclick="copyToClipboard('mongodb-dbname', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Database</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" readonly value="${data.mongodbCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-dbname">
+                                <button onclick="copyToClipboard('mongodb-dbname', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Username:</p>
-                            <div class="flex gap-1">
-                                <input type="text" readonly value="${data.mongodbCredentials.dbUser}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="mongodb-user">
-                                <button onclick="copyToClipboard('mongodb-user', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Username</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" readonly value="${data.mongodbCredentials.dbUser}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-user">
+                                <button onclick="copyToClipboard('mongodb-user', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500 mb-1">Password:</p>
-                            <div class="flex gap-1">
-                                <input type="password" readonly value="${data.mongodbCredentials.dbPassword}" class="flex-1 bg-black bg-opacity-50 border border-gray-700 text-white text-xs px-2 py-1 rounded font-mono" id="mongodb-password">
-                                <button onclick="togglePassword('mongodb-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors" id="mongodb-password-toggle">Show</button>
-                                <button onclick="copyToClipboard('mongodb-password', this)" class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors">Copy</button>
+                            <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Password</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="password" readonly value="${data.mongodbCredentials.dbPassword}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-password">
+                                <div class="flex gap-2">
+                                    <button onclick="togglePassword('mongodb-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial" id="mongodb-password-toggle">Show</button>
+                                    <button onclick="copyToClipboard('mongodb-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial">Copy</button>
+                                </div>
                             </div>
                         </div>
-                        <details class="mt-3">
-                            <summary class="text-xs text-blue-400 cursor-pointer hover:text-blue-300 transition-colors">Show Code Examples</summary>
-                            <div class="mt-2 bg-black bg-opacity-50 rounded p-3 border border-gray-700">
-                                <p class="text-xs text-gray-300 mb-3"><strong>Quick Start (3 steps):</strong></p>
-                                <ol class="text-xs text-gray-400 space-y-2 mb-4 pl-4 list-decimal">
-                                    <li>On <strong>your local machine</strong>, add this code to your app (e.g., <code class="text-white bg-black bg-opacity-50 px-1 rounded">config/database.js</code>)</li>
-                                    <li>Run the install command below <strong>locally</strong> to add the driver to your <code class="text-white bg-black bg-opacity-50 px-1 rounded">package.json</code></li>
-                                    <li>Push to Git and deploy via dashboard - we'll install dependencies automatically</li>
-                                </ol>
-                                <p class="text-xs text-gray-400 mb-2"><strong>Node.js:</strong> <code class="text-xs text-gray-500">npm install mongodb</code> <span class="text-gray-600">(run locally)</span></p>
-                                <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto mb-3"><code>const { MongoClient } = require('mongodb');
+                        <details class="mt-4">
+                            <summary class="text-xs cursor-pointer transition-colors" style="color: var(--dash-accent)">Show Code Examples</summary>
+                            <div class="mt-3 p-4 rounded-lg" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                                <p class="text-xs mb-3" style="color: var(--dash-text-primary)"><strong>Quick Start:</strong></p>
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Node.js:</strong> <code style="color: var(--dash-text-secondary)">npm install mongodb</code></p>
+                                <pre class="text-xs p-3 rounded-lg overflow-x-auto mb-3 font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/${data.mongodbCredentials.dbName}');
-await client.connect();
-const db = client.db('${data.mongodbCredentials.dbName}');</code></pre>
-                                <p class="text-xs text-gray-400 mb-2"><strong>Python:</strong> <code class="text-xs text-gray-500">pip install pymongo</code> <span class="text-gray-600">(run locally)</span></p>
-                                <pre class="text-xs text-gray-300 bg-gray-900 p-2 rounded overflow-x-auto"><code>from pymongo import MongoClient
+await client.connect();</code></pre>
+                                <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Python:</strong> <code style="color: var(--dash-text-secondary)">pip install pymongo</code></p>
+                                <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>from pymongo import MongoClient
 client = MongoClient('mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/')
 db = client['${data.mongodbCredentials.dbName}']</code></pre>
                             </div>
                         </details>
                     </div>
                     ` : `
-                    <p class="text-xs text-gray-500 mt-3 mb-4">Install MongoDB to view credentials and connection details.</p>
+                    <p class="text-sm mt-4 mb-4" style="color: var(--dash-text-muted)">Install MongoDB to view credentials.</p>
                     <form action="/setup-database" method="POST">
                         <input type="hidden" name="_csrf" value="${data.csrfToken}">
                         <input type="hidden" name="database_type" value="mongodb">
-                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded transition-colors">
-                            Install MongoDB
-                        </button>
+                        <button type="submit" class="dash-btn dash-btn-primary w-full">Install MongoDB</button>
                     </form>
                     `}
                 </div>
             </div>
-            ` : '<p class="text-gray-500 text-xs italic">Provision a server to enable databases.</p>'}
+            ` : '<p class="text-sm" style="color: var(--dash-text-muted)">Provision a server to enable databases.</p>'}
+            </div>
         </div>
+        </section>
 
-        <!-- Custom Domains -->
-        <!-- DOMAINS & SSL SECTION -->
-        <div id="domains" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Domains & SSL</h4>
-            
-            ${data.ipAddress ? `
-            <!-- DNS Configuration Instructions (Collapsible) -->
-            <details class="bg-blue-900 bg-opacity-20 border border-blue-600 rounded-lg mb-6">
-                <summary class="p-4 cursor-pointer hover:bg-blue-900 hover:bg-opacity-30 transition-colors">
-                    <span class="text-sm font-bold text-white flex items-center gap-2">
-                        <svg class="w-4 h-4 text-brand" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                        DNS Configuration — Click to expand
-                    </span>
-                </summary>
-                <div class="p-4 pt-0">
-                <p class="text-xs text-gray-300 mb-4">
-                    Point your domain to this server by adding these DNS records at your domain registrar (Namecheap, GoDaddy, Cloudflare, etc.):
-                </p>
-                
-                <div class="space-y-3">
-                    <!-- IPv4 A Records -->
-                    <div class="bg-black bg-opacity-40 rounded-lg p-3 border border-gray-700">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-brand uppercase">A Record (Root Domain)</span>
-                            <button onclick="navigator.clipboard.writeText(\`${data.ipAddress.replace(/'/g, "\\'")}\`); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy IP', 1500)" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded transition-colors">Copy IP</button>
-                        </div>
-                        <div class="grid grid-cols-[80px_1fr] gap-2 text-xs">
-                            <span class="text-gray-400">Type:</span>
-                            <span class="text-white font-mono">A</span>
-                            <span class="text-gray-400">Name:</span>
-                            <span class="text-white font-mono">@</span>
-                            <span class="text-gray-400">Value:</span>
-                            <span class="text-white font-mono">${escapeHtml(data.ipAddress)}</span>
-                            <span class="text-gray-400">TTL:</span>
-                            <span class="text-white font-mono">3600</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-black bg-opacity-40 rounded-lg p-3 border border-gray-700">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-brand uppercase">A Record (www Subdomain)</span>
-                            <button onclick="navigator.clipboard.writeText(\`${data.ipAddress.replace(/'/g, "\\'")}\`); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy IP', 1500)" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded transition-colors">Copy IP</button>
-                        </div>
-                        <div class="grid grid-cols-[80px_1fr] gap-2 text-xs">
-                            <span class="text-gray-400">Type:</span>
-                            <span class="text-white font-mono">A</span>
-                            <span class="text-gray-400">Name:</span>
-                            <span class="text-white font-mono">www</span>
-                            <span class="text-gray-400">Value:</span>
-                            <span class="text-white font-mono">${escapeHtml(data.ipAddress)}</span>
-                            <span class="text-gray-400">TTL:</span>
-                            <span class="text-white font-mono">3600</span>
-                        </div>
-                    </div>
-                    
-                    ${data.ipv6Address ? `
-                    <!-- IPv6 AAAA Records -->
-                    <div class="bg-black bg-opacity-40 rounded-lg p-3 border border-purple-700">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-purple-400 uppercase">AAAA Record (IPv6 Root)</span>
-                            <button onclick="navigator.clipboard.writeText(\`${data.ipv6Address.replace(/'/g, "\\'")}\`); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy IP', 1500)" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded transition-colors">Copy IP</button>
-                        </div>
-                        <div class="grid grid-cols-[80px_1fr] gap-2 text-xs">
-                            <span class="text-gray-400">Type:</span>
-                            <span class="text-purple-300 font-mono">AAAA</span>
-                            <span class="text-gray-400">Name:</span>
-                            <span class="text-purple-300 font-mono">@</span>
-                            <span class="text-gray-400">Value:</span>
-                            <span class="text-purple-300 font-mono break-all">${escapeHtml(data.ipv6Address)}</span>
-                            <span class="text-gray-400">TTL:</span>
-                            <span class="text-purple-300 font-mono">3600</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-black bg-opacity-40 rounded-lg p-3 border border-purple-700">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-purple-400 uppercase">AAAA Record (IPv6 www)</span>
-                            <button onclick="navigator.clipboard.writeText(\`${data.ipv6Address.replace(/'/g, "\\'")}\`); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy IP', 1500)" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded transition-colors">Copy IP</button>
-                        </div>
-                        <div class="grid grid-cols-[80px_1fr] gap-2 text-xs">
-                            <span class="text-gray-400">Type:</span>
-                            <span class="text-purple-300 font-mono">AAAA</span>
-                            <span class="text-gray-400">Name:</span>
-                            <span class="text-purple-300 font-mono">www</span>
-                            <span class="text-gray-400">Value:</span>
-                            <span class="text-purple-300 font-mono break-all">${escapeHtml(data.ipv6Address)}</span>
-                            <span class="text-gray-400">TTL:</span>
-                            <span class="text-purple-300 font-mono">3600</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>
-                
-                <div class="mt-4 pt-3 border-t border-blue-700">
-                    <p class="text-xs text-gray-400 leading-relaxed">
-                        <strong class="text-white">🔄 Auto-SSL:</strong> Once your DNS records point to your server, SSL certificates are automatically provisioned within 5 minutes. No action needed!
-                    </p>
-                </div>
-                </div>
-            </details>
-            ` : ''}
-            
-            <form action="/add-domain" method="POST" class="mb-6">
-                <input type="hidden" name="_csrf" value="${data.csrfToken}">
-                <div class="grid grid-cols-1 gap-3">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <input type="text" name="domain" placeholder="example.com" required class="w-full px-4 py-3 bg-gray-900 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                        <select name="linked_subdomain" class="w-full px-4 py-3 bg-gray-900 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                            <option value="">-- Link to deployment (optional) --</option>
-                            ${data.deployments.filter(d => d.subdomain && d.status === 'success').map(d => `
-                                <option value="${escapeHtml(d.subdomain)}">${escapeHtml(d.subdomain)}.cloudedbasement.ca</option>
-                            `).join('')}
-                        </select>
-                    </div>
-                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold w-full md:w-auto">Add Domain</button>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">Link to a deployment to serve that site on your custom domain.</p>
-            </form>
-            ${data.domains.length > 0 ? `
-                <div class="grid grid-cols-1 gap-4">
-                    ${data.domains.map(dom => {
-                        // Multi-dimensional status (DNS, SSL, HTTPS)
-                        const dnsValid = dom.ssl_dns_valid;
-                        const certExists = dom.ssl_cert_exists;
-                        const httpsReachable = dom.ssl_reachable;
-                        const sslStatus = dom.ssl_status || 'none';
-                        
-                        // DNS Status
-                        let dnsIcon, dnsLabel, dnsClass;
-                        if (dnsValid === true) {
-                            dnsIcon = '🟢'; dnsLabel = 'Connected'; dnsClass = 'text-green-400';
-                        } else if (dnsValid === false) {
-                            dnsIcon = '🟡'; dnsLabel = 'Not Connected'; dnsClass = 'text-yellow-400';
-                        } else {
-                            dnsIcon = '⚪'; dnsLabel = 'Unknown'; dnsClass = 'text-gray-400';
-                        }
-                        
-                        // SSL Status
-                        let sslIcon, sslLabel, sslClass;
-                        if (certExists && httpsReachable) {
-                            sslIcon = '🟢'; sslLabel = 'Secured'; sslClass = 'text-green-400';
-                        } else if (certExists) {
-                            sslIcon = '🟡'; sslLabel = 'Configured'; sslClass = 'text-yellow-400';
-                        } else {
-                            sslIcon = '🔴'; sslLabel = 'Not Secured'; sslClass = 'text-red-400';
-                        }
-                        
-                        // HTTPS Reachable
-                        let httpsIcon, httpsLabel, httpsClass;
-                        if (httpsReachable === true) {
-                            httpsIcon = '🟢'; httpsLabel = 'Reachable'; httpsClass = 'text-green-400';
-                        } else if (httpsReachable === false) {
-                            httpsIcon = '🔴'; httpsLabel = 'Not Reachable'; httpsClass = 'text-red-400';
-                        } else {
-                            httpsIcon = '⚪'; httpsLabel = 'Pending'; httpsClass = 'text-gray-400';
-                        }
-                        
-                        // Warning banner for DNS issues
-                        const showWarning = dnsValid === false && certExists;
-                        
-                        // Last verified
-                        const lastVerified = dom.ssl_last_verified_at 
-                            ? new Date(dom.ssl_last_verified_at).toLocaleString()
-                            : 'Never';
-                        
-                        return `
-                        <div class="bg-black bg-opacity-30 border ${showWarning ? 'border-yellow-600' : 'border-gray-700'} rounded-lg overflow-hidden">
-                            ${showWarning ? `
-                            <div class="bg-yellow-900 bg-opacity-50 px-4 py-2 border-b border-yellow-700">
-                                <p class="text-xs text-yellow-300">⚠️ Domain not pointing to our servers. HTTPS will not work until DNS is corrected.</p>
-                            </div>
-                            ` : ''}
-                            <div class="p-4">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <p class="text-white font-bold">${escapeHtml(dom.domain)}</p>
-                                        ${dom.linked_subdomain ? `<p class="text-xs text-blue-400">→ ${escapeHtml(dom.linked_subdomain)}.cloudedbasement.ca</p>` : ''}
-                                    </div>
-                                    <button onclick="openDeleteDomainModal('${escapeHtml(dom.domain)}', ${dom.id})" 
-                                            class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Delete domain">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                
-                                <div class="grid grid-cols-3 gap-2 text-xs mb-3">
-                                    <div class="bg-gray-900 rounded p-2">
-                                        <p class="text-gray-500 uppercase text-[10px] mb-1">DNS</p>
-                                        <p class="${dnsClass}">${dnsIcon} ${dnsLabel}</p>
-                                    </div>
-                                    <div class="bg-gray-900 rounded p-2">
-                                        <p class="text-gray-500 uppercase text-[10px] mb-1">SSL</p>
-                                        <p class="${sslClass}">${sslIcon} ${sslLabel}</p>
-                                    </div>
-                                    <div class="bg-gray-900 rounded p-2">
-                                        <p class="text-gray-500 uppercase text-[10px] mb-1">HTTPS</p>
-                                        <p class="${httpsClass}">${httpsIcon} ${httpsLabel}</p>
-                                    </div>
-                                </div>
-                                
-                                <p class="text-[10px] text-gray-600">Last checked: ${lastVerified}</p>
-                            </div>
-                        </div>
-                        `;
-                    }).join('')}
-                </div>
-            ` : '<p class="text-gray-500 text-xs italic">No domains configured yet.</p>'}
-        </div>
-
-        <!-- Support Tickets -->
-        <!-- SUPPORT SECTION -->
-        <div id="support" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <div class="flex justify-between items-center mb-6">
-                <h4 class="text-sm font-bold uppercase tracking-wide text-white">Support</h4>
-                <button onclick="openSubmitTicketModal()" class="px-4 py-2 bg-brand bg-opacity-90 text-black font-bold text-xs rounded-lg hover:bg-brand transition-colors">+ New</button>
+        <!-- SETTINGS SECTION -->
+        <section id="section-settings" class="dash-section">
+        
+        <!-- Support Card -->
+        <div class="dash-card mb-6">
+            <div class="dash-card-header">
+                <h4 class="dash-card-title">Support</h4>
+                <button onclick="openSubmitTicketModal()" class="dash-btn dash-btn-primary text-xs">+ New Ticket</button>
             </div>
             ${data.tickets.length > 0 ? `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     ${data.tickets.slice(0, 4).map(ticket => `
-                    <div class="bg-black bg-opacity-30 border border-gray-700 rounded-lg p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <p class="text-xs text-gray-400">Ticket #${ticket.id}</p>
-                            <span class="px-2 py-1 text-xs font-bold uppercase rounded ${ticket.status === 'resolved' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300'}">
+                    <div class="bg-black bg-opacity-30 border border-gray-700/50 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs" style="color: var(--dash-text-muted)">Ticket #${ticket.id}</span>
+                            <span class="px-2 py-1 text-xs font-bold uppercase rounded ${ticket.status === 'resolved' ? 'bg-green-900/50 text-green-400' : 'bg-blue-900/50 text-blue-400'}">
                                 ${escapeHtml(ticket.status)}
                             </span>
                         </div>
-                        <p class="text-xs text-white font-medium mb-2">${escapeHtml(ticket.subject)}</p>
-                        <span class="px-2 py-1 text-xs font-bold uppercase rounded ${ticket.priority === 'urgent' ? 'bg-red-900 text-red-300' : ticket.priority === 'high' ? 'bg-yellow-900 text-yellow-300' : 'bg-gray-700 text-gray-300'}">
+                        <p class="text-sm text-white font-medium mb-3">${escapeHtml(ticket.subject)}</p>
+                        <span class="px-2 py-1 text-xs font-bold uppercase rounded ${ticket.priority === 'urgent' ? 'bg-red-900/50 text-red-400' : ticket.priority === 'high' ? 'bg-yellow-900/50 text-yellow-400' : 'bg-gray-700/50 text-gray-400'}">
                             ${escapeHtml(ticket.priority)}
                         </span>
                     </div>
                     `).join('')}
                 </div>
-            ` : '<p class="text-gray-500 text-xs italic">No support tickets. Click "New" to create one.</p>'}
+            ` : '<p style="color: var(--dash-text-muted)" class="text-sm">No support tickets. Click "New Ticket" to create one.</p>'}
         </div>
 
-        <!-- SETTINGS SECTION -->
-        <div id="settings" class="bg-gray-800 rounded-lg p-6 scroll-mt-24">
-            <h4 class="text-sm font-bold uppercase tracking-wide text-white mb-6">Settings</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Account Settings Card -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Account</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
-                    <p class="text-xs text-gray-500 uppercase font-bold mb-2">Email</p>
-                    <p class="px-3 py-2 bg-black bg-opacity-30 rounded border border-gray-700 text-white text-xs">${data.userEmail}</p>
+                    <p class="text-xs uppercase font-semibold mb-2" style="color: var(--dash-text-muted)">Email</p>
+                    <p class="px-4 py-3 rounded-lg text-white text-sm font-mono" style="background: rgba(0,0,0,0.3); border: 1px solid var(--dash-card-border)">${data.userEmail}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-500 uppercase font-bold mb-2">Role</p>
-                    <p class="px-3 py-2 bg-black bg-opacity-30 rounded border border-gray-700 text-white text-xs">${data.userRole === 'admin' ? 'Administrator' : 'User'}</p>
+                    <p class="text-xs uppercase font-semibold mb-2" style="color: var(--dash-text-muted)">Role</p>
+                    <p class="px-4 py-3 rounded-lg text-white text-sm" style="background: rgba(0,0,0,0.3); border: 1px solid var(--dash-card-border)">${data.userRole === 'admin' ? 'Administrator' : 'User'}</p>
                 </div>
             </div>
             
-            <div class="pt-6 border-t border-gray-700 mb-6">
-                <h5 class="text-xs font-bold uppercase tracking-wide text-brand mb-4">Change Password</h5>
-                <form onsubmit="changePassword(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <input type="password" id="currentPassword" placeholder="Current" required class="px-4 py-3 bg-gray-900 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <input type="password" id="newPassword" placeholder="New Password" required class="px-4 py-3 bg-gray-900 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <input type="password" id="confirmPassword" placeholder="Confirm" required class="px-4 py-3 bg-gray-900 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none">
-                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold">Update</button>
+            <div class="pt-6 mb-8" style="border-top: 1px solid var(--dash-card-border)">
+                <h5 class="text-xs font-bold uppercase tracking-wide mb-4" style="color: var(--dash-accent)">Change Password</h5>
+                <form onsubmit="changePassword(event)" class="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-3">
+                    <input type="password" id="currentPassword" placeholder="Current Password" required class="w-full px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border); --tw-ring-color: var(--dash-accent)">
+                    <input type="password" id="newPassword" placeholder="New Password" required class="w-full px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border); --tw-ring-color: var(--dash-accent)">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required class="w-full px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border); --tw-ring-color: var(--dash-accent)">
+                    <button type="submit" class="dash-btn dash-btn-primary w-full">Update Password</button>
                 </form>
             </div>
 
-            <div class="pt-6 border-t border-gray-700">
-                <a href="/logout" class="inline-block px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Logout</a>
+            <div class="pt-6" style="border-top: 1px solid var(--dash-card-border)">
+                <a href="/logout" class="dash-btn dash-btn-danger inline-block">Logout</a>
             </div>
         </div>
-    </div>
-    </div>
-    </main>
-</div><!-- End dashboard-grid -->
+        </section>
+
+    </div><!-- End sections-container -->
+
+${getDashboardLayoutEnd()}
 
 
 <!-- Cancel Plan Confirmation Modal -->
 <div id="terminate-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center">
-    <div class="bg-gray-900 border border-red-600 rounded-lg p-8 max-w-lg w-11/12">
-        <h2 class="text-2xl font-bold text-red-500 mb-4">⚠️ Cancel Plan</h2>
-        <p class="text-gray-300 mb-4">This action will <span class="text-red-500 font-bold">CANCEL YOUR SUBSCRIPTION</span> and destroy your server and all data. There is no undo.</p>
+    <div class="bg-gray-900 border border-red-600 rounded-lg p-6 sm:p-8 max-w-lg w-11/12">
+        <h2 class="text-xl sm:text-2xl font-bold text-red-500 mb-4">⚠️ Cancel Plan</h2>
+        <p class="text-gray-300 mb-4 text-sm sm:text-base">This action will <span class="text-red-500 font-bold">CANCEL YOUR SUBSCRIPTION</span> and destroy your server and all data. There is no undo.</p>
         
-        <div class="bg-black bg-opacity-40 border border-gray-700 rounded-lg p-4 mb-4">
+        <div class="bg-black bg-opacity-40 border border-gray-700 rounded-lg p-3 sm:p-4 mb-4">
             <p class="text-xs text-gray-400 mb-2 uppercase font-bold">To confirm, type the server name below:</p>
-            <div class="flex items-center gap-2 mb-3">
-                <code class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-brand font-mono text-sm" id="droplet-name-display">${escapeHtml(data.dropletName)}    </code>
-                <button onclick="navigator.clipboard.writeText(dropletName)" class="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors text-xs">Copy</button>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-3">
+                <code class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-brand font-mono text-sm truncate" id="droplet-name-display">${escapeHtml(data.dropletName)}    </code>
+                <button onclick="navigator.clipboard.writeText(dropletName)" class="dash-btn dash-btn-secondary text-xs">Copy</button>
             </div>
             <input type="text" id="confirm-input" oninput="validateTermination()" placeholder="Paste and remove trailing spaces" class="w-full px-4 py-3 bg-black border border-gray-600 rounded text-white font-mono focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none">
         </div>
         
-        <div class="flex gap-3">
-            <button onclick="closeTerminateModal()" class="flex-1 px-4 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-            <button id="confirm-button" onclick="confirmTermination()" disabled class="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors opacity-50 cursor-not-allowed">Confirm Cancellation</button>
+        <div class="flex flex-col-reverse sm:flex-row gap-3">
+            <button onclick="closeTerminateModal()" class="dash-btn dash-btn-secondary flex-1">Cancel</button>
+            <button id="confirm-button" onclick="confirmTermination()" disabled class="dash-btn dash-btn-danger flex-1 opacity-50 cursor-not-allowed">Confirm Cancellation</button>
         </div>
     </div>
 </div>
 
 <!-- Submit Ticket Modal -->
-<div id="submitTicketModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
-    <div class="bg-gray-900 rounded-lg p-8 max-w-md w-11/12 max-h-[80vh] overflow-y-auto">
+<div id="submitTicketModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4">
+    <div class="bg-gray-900 rounded-lg p-6 sm:p-8 max-w-md w-full max-h-[85vh] overflow-y-auto">
         <h2 class="text-lg font-bold text-white mb-6">Submit Support Ticket</h2>
         <form onsubmit="submitTicket(event)" class="space-y-4">
             <div>
@@ -1353,28 +1031,28 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
                 <label class="block text-xs text-gray-400 uppercase font-bold mb-2">Description</label>
                 <textarea id="ticketDescription" placeholder="Details about your issue" required class="w-full px-4 py-3 bg-black bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-brand focus:ring-2 focus:ring-brand focus:outline-none h-32"></textarea>
             </div>
-            <div class="flex gap-3">
-                <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-bold">Submit</button>
-                <button type="button" class="flex-1 px-6 py-3 bg-gray-700 text-white font-bold" onclick="closeSubmitTicketModal()">Cancel</button>
+            <div class="flex flex-col-reverse sm:flex-row gap-3">
+                <button type="button" class="dash-btn dash-btn-secondary flex-1" onclick="closeSubmitTicketModal()">Cancel</button>
+                <button type="submit" class="dash-btn dash-btn-primary flex-1">Submit</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Delete Domain Confirmation Modal -->
-<div id="delete-domain-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center">
-    <div class="bg-gray-900 border border-red-600 rounded-lg p-6 max-w-md w-11/12">
+<div id="delete-domain-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center p-4">
+    <div class="bg-gray-900 border border-red-600 rounded-lg p-5 sm:p-6 max-w-md w-full">
         <h2 class="text-xl font-bold text-red-400 mb-4">🗑️ Delete Domain</h2>
-        <p class="text-gray-300 mb-2">Are you sure you want to delete:</p>
-        <p class="text-white font-mono bg-black px-3 py-2 rounded mb-4" id="delete-domain-name"></p>
+        <p class="text-gray-300 mb-2 text-sm sm:text-base">Are you sure you want to delete:</p>
+        <p class="text-white font-mono bg-black px-3 py-2 rounded mb-4 text-sm break-all" id="delete-domain-name"></p>
         
         <div class="bg-yellow-900 bg-opacity-30 border border-yellow-700 rounded p-3 mb-4">
-            <p class="text-yellow-300 text-sm">⚠️ This will remove the domain from your server's nginx configuration. If SSL was enabled, the certificate will remain but won't be renewed.</p>
+            <p class="text-yellow-300 text-xs sm:text-sm">⚠️ This will remove the domain from your server's nginx configuration. If SSL was enabled, the certificate will remain but won't be renewed.</p>
         </div>
         
-        <div class="flex gap-3">
-            <button onclick="closeDeleteDomainModal()" class="flex-1 px-4 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-            <button onclick="confirmDeleteDomain()" class="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">Delete Domain</button>
+        <div class="flex flex-col-reverse sm:flex-row gap-3">
+            <button onclick="closeDeleteDomainModal()" class="dash-btn dash-btn-secondary flex-1">Cancel</button>
+            <button onclick="confirmDeleteDomain()" class="dash-btn dash-btn-danger flex-1">Delete Domain</button>
         </div>
     </div>
 </div>
@@ -1492,72 +1170,74 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ==========================================
-// SIDEBAR NAVIGATION
+// HASH-BASED SECTION NAVIGATION
 // ==========================================
+console.log('[Dashboard] Hash navigation script loaded');
+console.log('[Dashboard] Sections found:', document.querySelectorAll('.dash-section').length);
+console.log('[Dashboard] Nav links found:', document.querySelectorAll('.sidebar-nav-link').length);
 
-// Mobile sidebar toggle
-const sidebar = document.getElementById('dashboard-sidebar');
-const sidebarToggle = document.getElementById('sidebar-toggle');
-const sidebarOverlay = document.getElementById('sidebar-overlay');
-
-function openSidebar() {
-    sidebar.classList.add('open');
-    sidebarOverlay.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeSidebar() {
-    sidebar.classList.remove('open');
-    sidebarOverlay.classList.add('hidden');
-    document.body.style.overflow = '';
-}
-
-sidebarToggle?.addEventListener('click', () => {
-    if (sidebar.classList.contains('open')) {
-        closeSidebar();
+// Show/hide sections based on hash
+function showSection(sectionId) {
+    console.log('[Dashboard] showSection called with:', sectionId);
+    
+    // Hide all sections
+    document.querySelectorAll('.dash-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Show target section
+    const targetSection = document.getElementById('section-' + sectionId);
+    console.log('[Dashboard] Target section element:', targetSection);
+    if (targetSection) {
+        targetSection.classList.add('active');
+        console.log('[Dashboard] Section activated:', sectionId);
     } else {
-        openSidebar();
+        console.warn('[Dashboard] Section not found: section-' + sectionId);
     }
-});
-
-sidebarOverlay?.addEventListener('click', closeSidebar);
-
-// Close sidebar on link click (mobile)
-document.querySelectorAll('.sidebar-nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        if (window.innerWidth < 768) { // md breakpoint
-            closeSidebar();
-        }
-    });
-});
-
-// Scroll-spy: highlight active section
-const sections = ['server-status', 'ssh-access', 'deploy', 'databases', 'domains', 'support', 'settings'];
-const sidebarLinks = document.querySelectorAll('.sidebar-nav-link');
-
-function updateActiveSection() {
-    let current = '';
-    const scrollPos = window.scrollY + 150; // Offset for header
     
-    sections.forEach(id => {
-        const section = document.getElementById(id);
-        if (section && section.offsetTop <= scrollPos) {
-            current = id;
-        }
-    });
-    
-    sidebarLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === '#' + current) {
+    // Update sidebar active state
+    document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionId) {
             link.classList.add('active');
-        } else {
-            link.classList.remove('active');
         }
     });
+    
+    // Update section title
+    const sectionTitle = document.getElementById('section-title');
+    if (sectionTitle) {
+        const titles = { overview: 'Overview', sites: 'Sites', deploy: 'Deploy', 'dev-tools': 'Dev Tools', settings: 'Settings' };
+        sectionTitle.textContent = titles[sectionId] || 'Overview';
+    }
 }
 
-window.addEventListener('scroll', updateActiveSection);
-updateActiveSection(); // Initial check
+// Handle hash changes
+function handleHashChange() {
+    const hash = window.location.hash.slice(1) || 'overview';
+    console.log('[Dashboard] handleHashChange, hash:', hash);
+    showSection(hash);
+}
+
+// Listen for hash changes
+window.addEventListener('hashchange', handleHashChange);
+console.log('[Dashboard] hashchange listener added');
+
+// Initial section from hash
+handleHashChange();
+
+// Add click handlers to nav links
+document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        const sectionId = link.getAttribute('data-section');
+        console.log('[Dashboard] Nav link clicked, data-section:', sectionId);
+        if (sectionId) {
+            e.preventDefault();
+            window.location.hash = sectionId;
+            console.log('[Dashboard] Hash set to:', sectionId);
+        }
+    });
+});
+console.log('[Dashboard] Click handlers attached to nav links');
 
 // ==========================================
 // DELETE DOMAIN MODAL
@@ -1584,7 +1264,7 @@ function closeDeleteDomainModal() {
 async function confirmDeleteDomain() {
     if (!deleteDomainId) return;
     
-    const btn = document.querySelector('#delete-domain-modal button.bg-red-600');
+    const btn = document.querySelector('#delete-domain-modal button.dash-btn-danger');
     btn.disabled = true;
     btn.textContent = 'Deleting...';
     

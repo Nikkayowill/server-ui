@@ -3,6 +3,22 @@
    Only brand colors and custom overrides
    ============================================ */
 
+/* ============================================
+   RESPONSIVE VISIBILITY UTILITIES
+   (Tailwind v4 not generating these from content)
+   ============================================ */
+@media (min-width: 768px) {
+    .md\:hidden {
+        display: none !important;
+    }
+    .md\:block {
+        display: block !important;
+    }
+    .md\:flex {
+        display: flex !important;
+    }
+}
+
 /* Cloud Gradient Journey - Dark Basement to Bright Sky */
 .gradient-basement-glimpse {
     background: #0a0a0f;
@@ -179,35 +195,11 @@
   position: relative;
 }
 
-/* Frosted Glass Text Effect with strong contrast */
+/* Hero title styling */
 .hero-title {
   position: relative;
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-/* Desktop only - frosted glass effect */
-@media (min-width: 769px) {
-  .hero-title::before {
-    content: attr(data-text);
-    position: absolute;
-    inset: 0;
-    background: white;
-    text-shadow: 0 0 1px #ffffff;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-color: white;
-    -webkit-mask: linear-gradient(#000 0 0) luminance;
-    mask: linear-gradient(#000 0 0) luminance, alpha;
-    backdrop-filter: blur(19px) brightness(12.5);
-    -webkit-backdrop-filter: blur(19px) brightness(12.5);
-    -webkit-text-stroke: 1px white;
-    display: flex;
-    margin: auto;
-    z-index: 1;
-    pointer-events: none;
-  }
 }
 
 /* ============================================
@@ -443,10 +435,9 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
 }
 
-/* Hero title with improved brightness and responsive text */
+/* Hero title - let Tailwind handle sizing */
 .hero-title {
-    font-size: clamp(2rem, 5vw + 1rem, 5rem);
-    line-height: 1.1;
+    /* font-size controlled by Tailwind classes */
 }
 
 /* Glossy Gradient Text for Headings */
@@ -861,8 +852,227 @@ input:focus, textarea:focus, select:focus {
     z-index: 2;
 }
 /* ============================================
-   DASHBOARD - CSS GRID LAYOUT
-   Template-inspired grid with 300px sidebar
+   DASHBOARD V2 - VERCEL-CLEAN DESIGN SYSTEM
+   Minimal, layered dark theme, spacious
+   ============================================ */
+
+/* Design Tokens - Layered Dark Theme */
+:root {
+    /* Background layers (darkest to lightest) */
+    --dash-bg-base: #000000;
+    --dash-bg: #0a0a0a;
+    --dash-bg-elevated: #111111;
+    --dash-bg-surface: #171717;
+    --dash-bg-hover: #1a1a1a;
+    
+    /* Legacy alias */
+    --dash-card-bg: var(--dash-bg-elevated);
+    --dash-card-border: #262626;
+    
+    /* Text hierarchy */
+    --dash-text-primary: #fafafa;
+    --dash-text-secondary: #a1a1a1;
+    --dash-text-muted: #525252;
+    
+    /* Accent - subtle, not loud */
+    --dash-accent: #3b82f6;
+    --dash-accent-muted: rgba(59, 130, 246, 0.15);
+    
+    /* Status colors - muted, not alarming */
+    --dash-success: #22c55e;
+    --dash-success-muted: rgba(34, 197, 94, 0.15);
+    --dash-warning: #eab308;
+    --dash-warning-muted: rgba(234, 179, 8, 0.15);
+    --dash-danger: #ef4444;
+    --dash-danger-muted: rgba(239, 68, 68, 0.15);
+    
+    /* Spacing */
+    --dash-radius: 8px;
+    --dash-radius-lg: 12px;
+    --dash-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --dash-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Component - Subtle elevation */
+.dash-card {
+    background: var(--dash-bg-elevated);
+    border: 1px solid var(--dash-card-border);
+    border-radius: var(--dash-radius-lg);
+    padding: 24px;
+}
+
+.dash-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.dash-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dash-text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* Data Row - for key/value pairs */
+.dash-data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+}
+
+.dash-data-row:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dash-data-label {
+    font-size: 13px;
+    color: var(--dash-text-secondary);
+}
+
+.dash-data-value {
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--dash-text-primary);
+}
+
+/* Button styles - Clean and minimal */
+.dash-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dash-btn-primary {
+    background: linear-gradient(145deg, rgba(135, 206, 250, 0.9) 0%, rgba(59, 130, 246, 0.85) 100%);
+    color: #000;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.dash-btn-primary:hover {
+    background: linear-gradient(145deg, rgba(135, 206, 250, 1) 0%, rgba(59, 130, 246, 0.95) 100%);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+}
+
+.dash-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--dash-card-border);
+    color: var(--dash-text-secondary);
+}
+
+.dash-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--dash-text-muted);
+    color: var(--dash-text-primary);
+}
+
+.dash-btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.dash-btn-danger:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+.dash-btn-ghost {
+    background: transparent;
+    color: var(--dash-text-muted);
+    border: none;
+}
+
+.dash-btn-ghost:hover {
+    color: var(--dash-text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Input fields - Clean */
+.dash-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+    background: var(--dash-bg);
+    border: 1px solid var(--dash-card-border);
+    border-radius: 6px;
+    color: var(--dash-text-primary);
+    transition: border-color 0.15s ease;
+}
+
+.dash-input:focus {
+    outline: none;
+    border-color: var(--dash-text-muted);
+}
+
+.dash-input::placeholder {
+    color: var(--dash-text-muted);
+}
+
+/* Dashboard Sections - Hash-based navigation */
+.dash-section {
+    display: none;
+    animation: fadeIn 0.2s ease;
+}
+
+.dash-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Status indicators */
+.dash-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.dash-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dash-status-dot.running {
+    background: var(--dash-success);
+    box-shadow: 0 0 8px var(--dash-success);
+}
+
+.dash-status-dot.stopped {
+    background: var(--dash-text-muted);
+}
+
+.dash-status-dot.provisioning {
+    background: var(--dash-accent);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   DASHBOARD LAYOUT
    ============================================ */
 
 .dashboard-grid {
@@ -870,12 +1080,12 @@ input:focus, textarea:focus, select:focus {
     width: 100%;
     min-height: 100vh;
     grid-gap: 0;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 260px 1fr;
     grid-template-rows: auto 1fr;
     grid-template-areas: 
         'sidebar header'
         'sidebar content';
-    background: #000;
+    background: var(--dash-bg);
 }
 
 /* Mobile: stack vertically */
@@ -891,9 +1101,9 @@ input:focus, textarea:focus, select:focus {
 
 .dashboard-sidebar {
     grid-area: sidebar;
-    background: linear-gradient(180deg, rgba(17, 17, 24, 0.98) 0%, rgba(10, 10, 15, 0.99) 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 80px; /* Account for fixed nav */
+    background: var(--dash-card-bg);
+    border-right: 1px solid var(--dash-card-border);
+    padding-top: 80px;
     overflow-y: auto;
     position: sticky;
     top: 0;
@@ -905,11 +1115,13 @@ input:focus, textarea:focus, select:focus {
         position: fixed;
         left: 0;
         top: 0;
-        width: 300px;
+        width: 280px;
         height: 100vh;
-        z-index: 40;
+        z-index: 45;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
+        padding-top: 70px;
+        background: var(--dash-bg-elevated);
     }
     
     .dashboard-sidebar.open {
@@ -919,45 +1131,57 @@ input:focus, textarea:focus, select:focus {
 
 .dashboard-header {
     grid-area: header;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--dash-bg);
+    border-bottom: 1px solid var(--dash-card-border);
     padding: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     min-height: 80px;
-    margin-top: 60px; /* Account for fixed nav */
+    margin-top: 60px;
 }
 
 .dashboard-content {
     grid-area: content;
-    padding: 2rem;
-    padding-top: 5rem; /* Push below fixed nav */
+    padding: 32px;
+    padding-top: 100px;
     overflow-y: auto;
-    background: #000;
+    background: var(--dash-bg);
+    /* KEY: Constrain content width and center it */
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 1400px) {
+    .dashboard-content {
+        max-width: 100%;
+        padding: 24px;
+        padding-top: 100px;
+    }
 }
 
 @media (max-width: 768px) {
     .dashboard-content {
-        padding: 1rem;
-        padding-top: 5rem; /* Push below fixed nav (60px) + breathing room */
+        padding: 16px;
+        padding-top: 80px;
     }
 }
 
 /* Sidebar Navigation Sections */
 .sidebar-section {
     display: block;
-    padding: 1.5rem 1.5rem 0;
+    padding: 1.25rem 1rem 0;
 }
 
 .sidebar-section-title {
-    margin: 0 0 0.75rem;
-    font-size: 0.75rem;
+    margin: 0 0 0.5rem;
+    padding: 0 0.75rem;
+    font-size: 11px;
     text-transform: uppercase;
-    color: var(--brand-blue);
+    color: var(--dash-text-muted);
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 .sidebar-nav-list {
@@ -974,40 +1198,39 @@ input:focus, textarea:focus, select:focus {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.625rem 0.75rem;
-    color: #99a0b0;
+    padding: 0.5rem 0.75rem;
+    color: var(--dash-text-secondary);
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.875rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
+    font-size: 0.8125rem;
+    border-radius: 6px;
+    transition: all 0.15s ease;
 }
 
 .sidebar-nav-link svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
 }
 
 .sidebar-nav-link:hover {
-    color: #fff;
+    color: var(--dash-text-primary);
     background: rgba(255, 255, 255, 0.05);
 }
 
 .sidebar-nav-link:hover svg {
-    opacity: 1;
+    opacity: 0.9;
 }
 
 .sidebar-nav-link.active {
-    color: var(--brand-blue);
-    background: rgba(135, 206, 250, 0.1);
+    color: var(--dash-text-primary);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .sidebar-nav-link.active svg {
     opacity: 1;
-    color: var(--brand-blue);
 }
 
 /* Sidebar User Section */
@@ -1015,21 +1238,21 @@ input:focus, textarea:focus, select:focus {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--dash-card-border);
 }
 
 .sidebar-user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--brand-blue), #60a5fa);
+    background: var(--dash-accent);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #000;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.875rem;
 }
 
 .sidebar-user-info {
@@ -1038,17 +1261,70 @@ input:focus, textarea:focus, select:focus {
 }
 
 .sidebar-user-name {
-    color: #fff;
+    color: var(--dash-text-primary);
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .sidebar-user-plan {
-    color: #99a0b0;
-    font-size: 0.75rem;
+    color: var(--dash-text-muted);
+    font-size: 0.6875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+}
+
+/* ============================================
+   MOBILE SIDEBAR TOGGLE
+   ============================================ */
+
+.dashboard-mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sidebar-toggle-btn {
+    display: none; /* Hidden on desktop */
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid var(--dash-card-border);
+    color: var(--dash-text-secondary);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    background: var(--dash-bg-hover);
+    color: var(--dash-text-primary);
+    border-color: var(--dash-text-muted);
+}
+
+/* Show toggle button on mobile/tablet */
+@media (max-width: 768px) {
+    .sidebar-toggle-btn {
+        display: flex;
+    }
+    
+    .dashboard-mobile-header {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Body class when sidebar is open - prevent scroll */
+body.sidebar-open {
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    body.sidebar-open .dashboard-sidebar {
+        transform: translateX(0);
+    }
 }

@@ -170,6 +170,125 @@ function getResponsiveNav(req) {
   `;
 }
 
+/**
+ * Dashboard Sidebar Component
+ * @param {Object} options - Sidebar configuration
+ * @param {string} options.userEmail - User's email for avatar
+ * @param {string} options.plan - User's plan (basic, pro, premium)
+ * @param {Array} options.navItems - Array of {id, label, icon, href}
+ * @param {string} options.activeSection - Currently active section ID
+ */
+function getDashboardSidebar(options = {}) {
+  const { userEmail = 'User', plan = 'basic', navItems = [], activeSection = 'overview' } = options;
+  const userInitial = userEmail.charAt(0).toUpperCase();
+  const planDisplay = plan.toUpperCase();
+  
+  const navItemsHtml = navItems.map(item => `
+    <li>
+      <a href="${item.href || '#' + item.id}" class="sidebar-nav-link${item.id === activeSection ? ' active' : ''}" data-section="${item.id}">
+        ${item.icon}
+        ${escapeHtml(item.label)}
+      </a>
+    </li>
+  `).join('');
+  
+  return `
+    <aside id="dashboard-sidebar" class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">${userInitial}</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">${escapeHtml(userEmail)}</div>
+          <div class="sidebar-user-plan">${planDisplay} Plan</div>
+        </div>
+      </div>
+      <nav class="sidebar-section">
+        <ul class="sidebar-nav-list">
+          ${navItemsHtml}
+        </ul>
+      </nav>
+    </aside>
+  `;
+}
+
+/**
+ * Dashboard Layout Start - Opens the dashboard grid with sidebar and overlay
+ * @param {Object} options - Layout configuration
+ * @param {string} options.userEmail - User's email
+ * @param {string} options.plan - User's plan
+ * @param {Array} options.navItems - Navigation items
+ * @param {string} options.pageTitle - Title shown in mobile header
+ */
+function getDashboardLayoutStart(options = {}) {
+  const { pageTitle = 'Overview' } = options;
+  
+  return `
+    <div class="dashboard-grid">
+      ${getDashboardSidebar(options)}
+      
+      <!-- Mobile Sidebar Overlay -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden"></div>
+      
+      <!-- Main Content Area -->
+      <main class="dashboard-content">
+        <!-- Mobile Header with Toggle -->
+        <header class="dashboard-mobile-header">
+          <button id="sidebar-toggle" type="button" class="sidebar-toggle-btn" aria-label="Toggle sidebar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <h1 id="section-title" class="text-lg font-medium text-[var(--dash-text-primary)]">${escapeHtml(pageTitle)}</h1>
+        </header>
+  `;
+}
+
+/**
+ * Dashboard Layout End - Closes the dashboard grid
+ */
+function getDashboardLayoutEnd() {
+  return `
+      </main>
+    </div>
+    
+    <script>
+    // Sidebar toggle - inline for reliability
+    (function() {
+      const toggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('dashboard-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          sidebar.classList.toggle('open');
+          if (overlay) overlay.classList.toggle('hidden');
+          document.body.classList.toggle('sidebar-open');
+        });
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', function() {
+          sidebar.classList.remove('open');
+          overlay.classList.add('hidden');
+          document.body.classList.remove('sidebar-open');
+        });
+      }
+      
+      // Close sidebar when nav link clicked (mobile)
+      document.querySelectorAll('.sidebar-nav-link').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth < 768) {
+            sidebar.classList.remove('open');
+            if (overlay) overlay.classList.add('hidden');
+            document.body.classList.remove('sidebar-open');
+          }
+        });
+      });
+    })();
+    </script>
+  `;
+}
+
 module.exports = {
   escapeHtml,
   getHTMLHead,
@@ -177,5 +296,11 @@ module.exports = {
   getScripts,
   getFooter,
   getAuthLinks,
-  getResponsiveNav
+  getResponsiveNav,
+  getDashboardSidebar,
+  getDashboardLayoutStart,
+  getDashboardLayoutEnd
 };
+
+
+

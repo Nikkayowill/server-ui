@@ -48,6 +48,11 @@ export default {
     'text-brand',
     'bg-brand',
     'border-brand',
-    'glow-brand'
+    'glow-brand',
+    // Responsive display utilities for sidebar
+    'md:hidden',
+    'md:block',
+    'hidden',
+    'block'
   ]
 }
