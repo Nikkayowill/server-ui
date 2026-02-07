@@ -41,6 +41,7 @@ const dashboardController = require('./controllers/dashboardController');
 const paymentController = require('./controllers/paymentController');
 const serverController = require('./controllers/serverController');
 const adminController = require('./controllers/adminController');
+const adminUpdatesController = require('./controllers/adminUpdatesController');
 const domainController = require('./controllers/domainController');
 const githubWebhookController = require('./controllers/githubWebhookController');
 const errorHandler = require('./middleware/errorHandler');
@@ -305,6 +306,7 @@ app.post('/disable-domain-autodeploy', requireAuth, csrfProtection, serverContro
 app.get('/dashboard', requireAuth, csrfProtection, dashboardController.showDashboard);
 app.post('/submit-ticket', requireAuth, csrfProtection, dashboardController.submitSupportTicket);
 app.post('/change-password', requireAuth, csrfProtection, dashboardController.changePassword);
+app.post('/apply-updates', requireAuth, csrfProtection, dashboardController.applyUpdates);
 app.post('/dashboard/dismiss-next-steps', requireAuth, csrfProtection, (req, res) => {
   req.session.dismissedNextSteps = true;
   res.json({ success: true });
@@ -319,6 +321,18 @@ app.post('/admin/delete-user/:id', requireAuth, requireAdmin, csrfProtection, ad
 app.post('/admin/cancel-provisioning/:id', requireAuth, requireAdmin, csrfProtection, adminController.cancelProvisioning);
 app.post('/admin/delete-server/:id', requireAuth, requireAdmin, csrfProtection, adminController.deleteServer);
 app.post('/admin/destroy-droplet/:id', requireAuth, requireAdmin, csrfProtection, adminController.destroyDroplet);
+
+// Admin - Server Updates (secure update orchestration)
+app.get('/admin/updates', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.showUpdates);
+app.get('/admin/updates/:id', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.showUpdateDetail);
+app.post('/admin/updates/create', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.createUpdate);
+app.post('/admin/updates/kill-switch', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.toggleKillSwitch);
+app.post('/admin/updates/:id/test', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.testUpdate);
+app.post('/admin/updates/:id/release', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.releaseUpdate);
+app.post('/admin/updates/:id/push', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.pushUpdate);
+app.post('/admin/updates/:id/retry', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.retryFailedServers);
+app.post('/admin/updates/:id/archive', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.archiveUpdate);
+app.post('/admin/updates/:id/delete', requireAuth, requireAdmin, csrfProtection, adminUpdatesController.deleteUpdate);
 
 // Admin - domain management (API endpoints only - UI is in /admin/users)
 app.get('/admin/domains/list', requireAuth, requireAdmin, domainController.listDomains);

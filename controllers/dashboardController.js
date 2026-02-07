@@ -2,6 +2,7 @@ const pool = require('../db');
 const { getDashboardHead, getFooter, getScripts, getResponsiveNav, escapeHtml, getDashboardLayoutStart, getDashboardLayoutEnd } = require('../helpers');
 const { getUserServer, hasSuccessfulPayment } = require('../utils/db-helpers');
 const { PAYMENT_STATUS, SERVER_STATUS } = require('../constants');
+const serverUpdates = require('../services/serverUpdates');
 
 // Dashboard navigation items - centralized for consistency
 const DASHBOARD_NAV_ITEMS = [
@@ -112,6 +113,14 @@ exports.showDashboard = async (req, res) => {
             [userId]
         );
 
+        // Get pending server updates (if user has a server)
+        let pendingUpdates = [];
+        let updateHistory = [];
+        if (server?.id) {
+            pendingUpdates = await serverUpdates.getPendingUpdates(server.id);
+            updateHistory = await serverUpdates.getUpdateHistory(server.id);
+        }
+
         // Check if user is eligible for free trial (comprehensive check to match /start-trial endpoint)
         const trialCheckResult = await pool.query(
             'SELECT trial_used, browser_fingerprint FROM users WHERE id = $1',
@@ -201,7 +210,10 @@ exports.showDashboard = async (req, res) => {
             trialAvailable,
             // Auto-deploy fields
             autoDeployEnabled: server?.auto_deploy_enabled === true,
-            githubWebhookSecret: server?.github_webhook_secret || null
+            githubWebhookSecret: server?.github_webhook_secret || null,
+            // Server updates
+            pendingUpdates,
+            updateHistory
         });
 
         res.send(`
@@ -294,7 +306,53 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, changePassword };
+// POST /apply-updates - Apply all pending updates to user's server
+const applyUpdates = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    
+    // Get user's server
+    const { getUserServer } = require('../utils/db-helpers');
+    const server = await getUserServer(userId);
+    
+    if (!server) {
+      return res.redirect('/dashboard?error=No server found');
+    }
+    
+    // Verify server is in a state where updates can be applied
+    if (server.status !== 'running') {
+      return res.redirect('/dashboard?error=Server is not running. Updates can only be applied to running servers.');
+    }
+    
+    if (!server.ip_address || !server.ssh_password) {
+      return res.redirect('/dashboard?error=Server is missing connection details. Please contact support.');
+    }
+    
+    // Get pending updates for this server
+    const pending = await serverUpdates.getPendingUpdates(server.id);
+    
+    if (pending.length === 0) {
+      return res.redirect('/dashboard?success=Server already up to date');
+    }
+    
+    // Apply all pending updates
+    const results = await serverUpdates.applyAllPendingUpdates(server, 'user');
+    
+    const successCount = results.filter(r => r.success).length;
+    const failCount = results.filter(r => !r.success).length;
+    
+    if (failCount === 0) {
+      return res.redirect(`/dashboard?success=${successCount} update(s) applied successfully`);
+    } else {
+      return res.redirect(`/dashboard?error=${failCount} update(s) failed. ${successCount} succeeded.`);
+    }
+  } catch (error) {
+    console.error('[DASHBOARD] Apply updates error:', error);
+    res.redirect('/dashboard?error=Failed to apply updates. Please try again or contact support.');
+  }
+};
+
+module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, changePassword, applyUpdates };
 
 /**
  * Dashboard Template Builder - Tech-View Design
@@ -923,6 +981,84 @@ db = client['${data.mongodbCredentials.dbName}']</code></pre>
 
         <!-- SETTINGS SECTION -->
         <section id="section-settings" class="dash-section">
+        
+        <!-- Server Updates Card -->
+        ${data.hasServer ? `
+        <div class="dash-card mb-6">
+            <div class="dash-card-header">
+                <h4 class="dash-card-title">Server Updates</h4>
+                ${data.pendingUpdates.length > 0 ? `
+                <span class="px-2 py-1 text-xs font-bold uppercase rounded bg-orange-900/50 text-orange-400">${data.pendingUpdates.length} available</span>
+                ` : `
+                <span class="px-2 py-1 text-xs font-bold uppercase rounded bg-green-900/50 text-green-400">✓ Up to date</span>
+                `}
+            </div>
+            
+            ${data.pendingUpdates.length > 0 ? `
+            <div class="space-y-3 mb-4">
+                <p class="text-xs text-gray-500 mb-2">Review what will be installed before applying:</p>
+                ${data.pendingUpdates.map(update => `
+                <div class="bg-black bg-opacity-30 border border-gray-700/50 rounded-lg p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-white font-medium">${escapeHtml(update.title)}</span>
+                            ${update.is_critical ? '<span class="ml-2 text-xs text-red-400">⚠️ Critical</span>' : ''}
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium ${
+                          update.type === 'security' ? 'text-red-400' :
+                          update.type === 'config' ? 'text-yellow-400' :
+                          update.type === 'feature' ? 'text-blue-400' : 'text-purple-400'
+                        }">
+                            <span class="w-2 h-2 rounded-full ${
+                              update.type === 'security' ? 'bg-red-500' :
+                              update.type === 'config' ? 'bg-yellow-500' :
+                              update.type === 'feature' ? 'bg-blue-500' : 'bg-purple-500'
+                            }"></span>
+                            ${update.type}
+                        </span>
+                    </div>
+                    ${update.description ? `<p class="text-gray-400 text-sm mb-3">${escapeHtml(update.description)}</p>` : ''}
+                    ${update.version ? `<p class="text-gray-500 text-xs">Version: ${escapeHtml(update.version)}</p>` : ''}
+                </div>
+                `).join('')}
+            </div>
+            
+            <form method="POST" action="/apply-updates" class="flex justify-end">
+                <input type="hidden" name="_csrf" value="${data.csrfToken}">
+                <button type="submit" class="dash-btn dash-btn-primary" onclick="return confirm('Apply ${data.pendingUpdates.length} update(s) to your server?')">
+                    Apply All Updates
+                </button>
+            </form>
+            ` : `
+            <p class="text-sm" style="color: var(--dash-text-muted)">Your server is running the latest patches and configurations.</p>
+            `}
+            
+            <!-- Update History (Transparency) -->
+            ${data.updateHistory && data.updateHistory.length > 0 ? `
+            <div class="mt-6 pt-4 border-t border-gray-700">
+                <h5 class="text-xs font-bold uppercase text-gray-400 mb-3">Update History</h5>
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                    ${data.updateHistory.slice(0, 10).map(log => `
+                    <div class="flex items-center justify-between text-xs py-2 border-b border-gray-800">
+                        <div>
+                            <span class="text-white">${escapeHtml(log.title)}</span>
+                            ${log.version ? `<span class="text-gray-500 ml-1">v${escapeHtml(log.version)}</span>` : ''}
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="${log.status === 'success' ? 'text-green-400' : 'text-red-400'}">
+                                ${log.status === 'success' ? '✓' : '✗'} ${escapeHtml(log.status)}
+                            </span>
+                            <span class="text-gray-500">${new Date(log.applied_at).toLocaleDateString()}</span>
+                            <span class="text-gray-600">${log.trigger_type === 'customer' ? 'by you' : 'auto'}</span>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+                ${data.updateHistory.length > 10 ? `<p class="text-xs text-gray-500 mt-2">+ ${data.updateHistory.length - 10} more</p>` : ''}
+            </div>
+            ` : ''}
+        </div>
+        ` : ''}
         
         <!-- Support Card -->
         <div class="dash-card mb-6">

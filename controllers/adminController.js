@@ -109,6 +109,12 @@ ${getHTMLHead('Admin Dashboard')}
             <h3 class="sidebar-section-title">Quick Links</h3>
             <ul class="sidebar-nav-list">
                 <li>
+                    <a href="/admin/updates" class="sidebar-nav-link text-orange-400">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Server Updates
+                    </a>
+                </li>
+                <li>
                     <a href="https://cloud.digitalocean.com/droplets" target="_blank" class="sidebar-nav-link">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         DigitalOcean
