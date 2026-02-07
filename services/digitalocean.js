@@ -356,13 +356,13 @@ async function syncDigitalOceanDroplets() {
   try {
     console.log('[Sync] Starting DigitalOcean droplet sync...');
     
-    // Get all servers marked as running
+    // Get all servers marked as running or stopped (active in our DB)
     const result = await pool.query(
-      "SELECT * FROM servers WHERE status = 'running'"
+      "SELECT * FROM servers WHERE status IN ('running', 'stopped', 'provisioning')"
     );
     
     if (result.rows.length === 0) {
-      console.log('[Sync] No running servers to sync');
+      console.log('[Sync] No active servers to sync');
       return;
     }
     
@@ -375,25 +375,31 @@ async function syncDigitalOceanDroplets() {
     });
     
     const droplets = dropletsResponse.data.droplets;
+    const dropletIds = new Set(droplets.map(d => String(d.id)));
     const dropletNames = droplets.map(d => d.name);
     
-    console.log(`[Sync] Found ${result.rows.length} servers in DB, ${droplets.length} droplets in DO`);
+    console.log(`[Sync] Found ${result.rows.length} active servers in DB, ${droplets.length} droplets in DO`);
     
     // Check each server
     for (const server of result.rows) {
-      const expectedName = `basement-${server.user_id}-`;
-      const dropletExists = dropletNames.some(name => name.startsWith(expectedName));
+      let dropletExists = false;
+      
+      // Prefer matching by droplet_id (most reliable)
+      if (server.droplet_id) {
+        dropletExists = dropletIds.has(String(server.droplet_id));
+      } else {
+        // Fall back to name pattern matching
+        const expectedName = `basement-${server.user_id}-`;
+        dropletExists = dropletNames.some(name => name.startsWith(expectedName));
+      }
       
       if (!dropletExists) {
-        console.log(`[Sync] Droplet missing for server ${server.id} (user ${server.user_id})`);
+        console.log(`[Sync] Droplet missing for server ${server.id} (user ${server.user_id}, droplet_id ${server.droplet_id || 'unknown'})`);
         
-        // Update database - mark as deleted
-        await pool.query(
-          "UPDATE servers SET status = 'deleted' WHERE id = $1",
-          [server.id]
-        );
+        // Delete the server record since the droplet no longer exists
+        await pool.query('DELETE FROM servers WHERE id = $1', [server.id]);
         
-        console.log(`[Sync] Updated server ${server.id} status to 'deleted'`);
+        console.log(`[Sync] Deleted stale server record ${server.id}`);
       }
     }
     

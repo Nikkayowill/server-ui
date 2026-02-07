@@ -278,7 +278,7 @@ ${getHTMLHead('Admin Dashboard')}
                   <td class="px-4 py-3 text-xs text-gray-400 font-mono">#${s.id}</td>
                   <td class="px-4 py-3 text-sm text-white">${escapeHtml(s.owner_email || '-')}</td>
                   <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded bg-blue-900 text-blue-300">${escapeHtml(s.plan)}</span></td>
-                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded ${s.status === 'running' ? 'bg-green-900 text-green-300' : s.status === 'provisioning' ? 'bg-yellow-900 text-yellow-300' : 'bg-red-900 text-red-300'}">${escapeHtml(s.status)}</span></td>
+                  <td class="px-4 py-3 text-xs"><span class="px-2 py-1 rounded ${s.status === 'running' ? 'bg-green-900 text-green-300' : s.status === 'provisioning' ? 'bg-yellow-900 text-yellow-300' : s.status === 'deleted' ? 'bg-gray-900 text-gray-500' : 'bg-red-900 text-red-300'}">${escapeHtml(s.status)}</span></td>
                   <td class="px-4 py-3 text-xs font-mono text-brand">${escapeHtml(s.ip_address || '-')}</td>
                   <td class="px-4 py-3 text-xs text-gray-400">${new Date(s.created_at).toLocaleDateString()}</td>
                   <td class="px-4 py-3">
@@ -289,10 +289,17 @@ ${getHTMLHead('Admin Dashboard')}
                         <button type="submit" class="px-2 py-1 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">Cancel</button>
                       </form>
                       ` : ''}
-                      <form method="POST" action="/admin/destroy-droplet/${s.id}" class="inline" onsubmit="return confirm('DESTROY droplet #${s.id}? Cannot be undone!');">
+                      ${s.status === 'deleted' ? `
+                      <form method="POST" action="/admin/delete-server/${s.id}" class="inline" onsubmit="return confirm('Remove server record #${s.id}?');">
+                        <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+                        <button type="submit" class="px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">Remove Record</button>
+                      </form>
+                      ` : `
+                      <form method="POST" action="/admin/destroy-droplet/${s.id}" class="inline" onsubmit="return confirm('DESTROY droplet for server #${s.id}? This will delete the droplet from DigitalOcean and remove the server record. Cannot be undone!');">
                         <input type="hidden" name="_csrf" value="${req.csrfToken()}">
                         <button type="submit" class="px-2 py-1 bg-red-800 text-white text-xs rounded hover:bg-red-900">Destroy</button>
                       </form>
+                      `}
                     </div>
                   </td>
                 </tr>
@@ -451,18 +458,18 @@ const deleteServer = async (req, res) => {
   }
 };
 
-// POST /admin/destroy-droplet/:id - Destroy actual DigitalOcean droplet
+// POST /admin/destroy-droplet/:id - Destroy actual DigitalOcean droplet and delete server record
 const destroyDroplet = async (req, res) => {
   try {
     const serverId = req.params.id;
-    const { destroyDroplet } = require('../services/digitalocean');
+    const { destroyDropletByServerId } = require('../services/digitalocean');
     
-    await destroyDroplet(serverId);
+    const result = await destroyDropletByServerId(serverId);
     
-    res.redirect('/admin?success=Droplet destroyed and server deleted successfully');
+    res.redirect('/admin?success=' + encodeURIComponent(result.message || 'Droplet destroyed and server deleted successfully'));
   } catch (error) {
     console.error('Destroy droplet error:', error);
-    res.redirect('/admin?error=Failed to destroy droplet: ' + error.message);
+    res.redirect('/admin?error=Failed to destroy droplet: ' + encodeURIComponent(error.message));
   }
 };
 
