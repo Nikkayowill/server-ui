@@ -19,15 +19,15 @@ if (process.env.SENTRY_DSN) {
 }
 
 const express = require('express');
-const rateLimit = require('express-rate-limit');
+// express-rate-limit used via middleware/rateLimiter, not directly
 const helmet = require('helmet');
-const { body, validationResult } = require('express-validator');
+const { body } = require('express-validator');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const pool = require('./db');
-const { getHTMLHead, getDashboardHead, getScripts, getFooter, getAuthLinks, getResponsiveNav } = require('./helpers');
+// Helpers imported by controllers directly — not needed in index.js
 const { createRealServer: createRealServerService, syncDigitalOceanDroplets: syncDigitalOceanDropletsService } = require('./services/digitalocean');
 const { monitorSubscriptions } = require('./services/subscriptionMonitor');
 const { checkAndProvisionSSL } = require('./services/autoSSL');

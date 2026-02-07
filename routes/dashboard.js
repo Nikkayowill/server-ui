@@ -11,4 +11,7 @@ router.get('/dashboard', requireAuth, dashboardController.showDashboard);
 router.post('/submit-ticket', requireAuth, csrfProtection, dashboardController.submitSupportTicket);
 router.post('/change-password', requireAuth, csrfProtection, dashboardController.changePassword);
 
+// Credentials API - fetch-on-demand for security (not embedded in HTML)
+router.get('/api/credentials', requireAuth, dashboardController.getCredentials);
+
 module.exports = router;

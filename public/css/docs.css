@@ -1,0 +1,48 @@
+/* Documentation page specific styles */
+/* Extracted from pagesController.js showDocs() */
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background: #000;
+  padding-top: 60px; /* Clear the fixed nav */
+}
+
+.docs-sidebar {
+  background: #111827;
+  border-right: 1px solid #374151;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+.docs-content {
+  background: #000;
+  padding: 48px;
+  overflow-y: auto;
+}
+
+.docs-content-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .docs-layout {
+    grid-template-columns: 220px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+  }
+  .docs-sidebar {
+    display: none;
+  }
+  .docs-content {
+    padding: 24px;
+  }
+}
