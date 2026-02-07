@@ -111,7 +111,7 @@ ${getHTMLHead('Pricing - Basement')}
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server restart controls</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Email support from a real developer</li>
             </ul>
@@ -164,7 +164,7 @@ ${getHTMLHead('Pricing - Basement')}
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server restart controls</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
               <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Weekly automated backups</span></li>
               <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Direct developer support (12hr)</span></li>
@@ -209,7 +209,7 @@ ${getHTMLHead('Pricing - Basement')}
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server restart controls</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Weekly automated backups</li>
               <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300 font-semibold">Direct access to developer support</span></li>
@@ -248,7 +248,7 @@ ${getHTMLHead('Pricing - Basement')}
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Automatic SSL (Let's Encrypt)</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Free Subdomain</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Environment Variables</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Server Controls</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Server Restart</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Managed Security Updates</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Weekly Automated Backups</td><td class="text-center text-red-400">✗</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Developer Support</td><td class="text-center">Email (24-48hr)</td><td class="text-center text-blue-300">Email (12-24hr)</td><td class="text-center text-purple-300 font-semibold">Direct Access</td></tr>
