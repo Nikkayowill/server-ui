@@ -105,11 +105,14 @@ ${getHTMLHead('Pricing - Basement')}
             <ul class="space-y-2 text-sm text-gray-300">
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> GitHub auto-deploy (push to deploy)</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free SSL certificates</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + automatic SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Email support from a real developer</li>
             </ul>
           </div>
@@ -155,10 +158,14 @@ ${getHTMLHead('Pricing - Basement')}
             <ul class="space-y-2 text-sm text-gray-300">
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> GitHub auto-deploy (push to deploy)</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + free SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + automatic SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
               <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Weekly automated backups</span></li>
               <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Direct developer support (12hr)</span></li>
             </ul>
@@ -196,10 +203,14 @@ ${getHTMLHead('Pricing - Basement')}
             <ul class="space-y-2 text-sm text-gray-300">
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> GitHub auto-deploy (push to deploy)</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + free SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + automatic SSL</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server controls (start/stop/restart)</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
               <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Weekly automated backups</li>
               <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300 font-semibold">Direct access to developer support</span></li>
               <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300">2x the RAM for heavy workloads</span></li>
@@ -231,10 +242,14 @@ ${getHTMLHead('Pricing - Basement')}
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Sites/Projects</td><td class="text-center">2</td><td class="text-center">5</td><td class="text-center">10</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">SSH & Root Access</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Git Deployment</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">GitHub Auto-Deploy</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">One-Click Database</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Custom Domains</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Free SSL (Let's Encrypt)</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Automatic SSL (Let's Encrypt)</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Free Subdomain</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Environment Variables</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Server Controls</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+              <tr class="border-b border-gray-800"><td class="py-3 px-4">Managed Security Updates</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Weekly Automated Backups</td><td class="text-center text-red-400">✗</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Developer Support</td><td class="text-center">Email (24-48hr)</td><td class="text-center text-blue-300">Email (12-24hr)</td><td class="text-center text-purple-300 font-semibold">Direct Access</td></tr>
               <tr class="border-b border-gray-800"><td class="py-3 px-4">Debug & Config Help</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
