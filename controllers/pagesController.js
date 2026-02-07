@@ -11,6 +11,7 @@ const { showDocs } = require('./pages/docsController');
 const { showContact, submitContact } = require('./pages/contactController');
 const { showHome } = require('./pages/homeController');
 const { showSafety } = require('./pages/safetyController');
+const { showCompare } = require('./pages/compareController');
 
 module.exports = {
   showAbout,
@@ -22,5 +23,6 @@ module.exports = {
   showContact,
   submitContact,
   showHome,
-  showSafety
+  showSafety,
+  showCompare
 };

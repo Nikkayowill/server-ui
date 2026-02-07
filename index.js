@@ -161,6 +161,7 @@ app.get('/health', async (req, res) => {
 app.get('/', pagesController.showHome);
 app.get('/about', pagesController.showAbout);
 app.get('/is-this-safe', pagesController.showSafety);
+app.get('/compare', pagesController.showCompare);
 
 // Register route (GET)
 app.get('/register', csrfProtection, authController.showRegister);

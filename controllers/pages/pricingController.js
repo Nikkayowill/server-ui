@@ -310,6 +310,8 @@ ${getHTMLHead('Pricing - Basement')}
         <p class="text-sm text-gray-400">
           Questions about security or how this works? 
           <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium ml-1">Is Clouded Basement safe?</a>
+          <span class="mx-2 text-gray-600">·</span>
+          <a href="/compare" class="text-brand hover:text-cyan-400 underline font-medium">See how we compare</a>
         </p>
       </section>
     </main>

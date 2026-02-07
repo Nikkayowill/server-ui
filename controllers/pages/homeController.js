@@ -285,6 +285,68 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       </div>
     </section>
 
+    <!-- How We Compare Section -->
+    <section class="py-20 md:py-28 relative">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">How We Compare</h2>
+          <p class="text-gray-400 max-w-xl mx-auto">The convenience of a PaaS with the control of your own server.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- PaaS Column -->
+          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800">
+            <h3 class="text-base font-bold text-gray-300 mb-1">PaaS</h3>
+            <p class="text-xs text-gray-500 mb-4">Heroku · Render · Railway</p>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Quick setup</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Git deployments</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> No SSH or root access</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Shared containers</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Ephemeral filesystem</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Vendor lock-in</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-4">From $5–25/mo per service</p>
+          </div>
+          
+          <!-- Basement Column (highlighted) -->
+          <div class="p-5 rounded-xl bg-gray-900/50 border border-blue-500/50 relative">
+            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-medium text-white bg-blue-600 rounded">BEST OF BOTH</span>
+            <h3 class="text-base font-bold text-blue-400 mb-1">Clouded Basement</h3>
+            <p class="text-xs text-gray-500 mb-4">Managed VPS hosting</p>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Quick setup (~2 min)</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Git deployments</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Dedicated VPS (not shared)</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Persistent filesystem</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> No lock-in — take it and go</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-4">From $15/mo flat</p>
+          </div>
+          
+          <!-- DIY VPS Column -->
+          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800">
+            <h3 class="text-base font-bold text-gray-300 mb-1">DIY VPS</h3>
+            <p class="text-xs text-gray-500 mb-4">DigitalOcean · Linode · Vultr</p>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
+              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Dedicated server</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> No managed deployments</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Manual SSL & security setup</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> No dashboard or GUI</li>
+              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> 30–60 min setup time</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-4">From $4–6/mo + your time</p>
+          </div>
+        </div>
+        
+        <p class="text-center text-gray-500 text-sm mt-10">
+          <a href="/compare" class="text-blue-400 hover:text-blue-300 underline">See the full comparison with Heroku, Render, and Railway →</a>
+        </p>
+      </div>
+    </section>
+
     <!-- Pricing Section -->
     <section class="py-20 md:py-28 relative">
       <div class="max-w-5xl mx-auto px-4 sm:px-6">
@@ -374,6 +436,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
                     <li><a href="/pricing" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Pricing</a></li>
                     <li><a href="/docs" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Documentation</a></li>
                     <li><a href="/contact" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Contact</a></li>
+                    <li><a href="/compare" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Compare</a></li>
                     <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
                 </ul>
             </div>
