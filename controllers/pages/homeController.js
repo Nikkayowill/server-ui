@@ -1,4 +1,4 @@
-const { getHTMLHead, getScripts, getFooter, getResponsiveNav } = require('../../helpers');
+const { getHTMLHead, getScripts, getResponsiveNav } = require('../../helpers');
 
 exports.showHome = async (req, res) => {
   const flashMessage = req.session.flashMessage;

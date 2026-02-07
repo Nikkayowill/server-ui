@@ -311,8 +311,7 @@ const applyUpdates = async (req, res) => {
   try {
     const userId = req.session.userId;
     
-    // Get user's server
-    const { getUserServer } = require('../utils/db-helpers');
+    // Get user's server (getUserServer imported at top of file)
     const server = await getUserServer(userId);
     
     if (!server) {
@@ -352,7 +351,74 @@ const applyUpdates = async (req, res) => {
   }
 };
 
-module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, changePassword, applyUpdates };
+// GET /api/credentials - Fetch sensitive credentials on demand (not embedded in HTML)
+const getCredentials = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    // Get user's server
+    const server = await getUserServer(userId);
+    
+    if (!server) {
+      return res.status(404).json({ error: 'No server found' });
+    }
+    
+    const credentialType = req.query.type; // 'ssh', 'postgres', 'mongodb', or 'all'
+    
+    const response = {};
+    
+    if (credentialType === 'ssh' || credentialType === 'all') {
+      response.ssh = {
+        username: server.ssh_username || 'root',
+        password: server.ssh_password || '',
+        ip: server.ip_address || '',
+        command: `ssh ${server.ssh_username || 'root'}@${server.ip_address || ''}`
+      };
+    }
+    
+    if (credentialType === 'postgres' || credentialType === 'all') {
+      if (server.postgres_installed && server.postgres_db_password) {
+        response.postgres = {
+          host: server.ip_address || 'localhost',
+          port: '5432',
+          database: server.postgres_db_name || 'app_db',
+          username: server.postgres_db_user || 'basement_user',
+          password: server.postgres_db_password || '',
+          connectionString: `postgresql://${server.postgres_db_user || 'basement_user'}:${server.postgres_db_password || ''}@${server.ip_address || 'localhost'}:5432/${server.postgres_db_name || 'app_db'}`
+        };
+      }
+    }
+    
+    if (credentialType === 'mongodb' || credentialType === 'all') {
+      if (server.mongodb_installed && server.mongodb_db_password) {
+        const userEncoded = encodeURIComponent(server.mongodb_db_user || 'basement_user');
+        const passEncoded = encodeURIComponent(server.mongodb_db_password || '');
+        response.mongodb = {
+          host: server.ip_address || 'localhost',
+          port: '27017',
+          database: server.mongodb_db_name || 'app_db',
+          username: server.mongodb_db_user || 'basement_user',
+          password: server.mongodb_db_password || '',
+          connectionString: `mongodb://${userEncoded}:${passEncoded}@${server.ip_address || 'localhost'}:27017/${server.mongodb_db_name || 'app_db'}`
+        };
+      }
+    }
+    
+    // Log credential access for audit
+    console.log(`[CREDENTIALS] User ${userId} accessed ${credentialType} credentials`);
+    
+    res.json(response);
+  } catch (error) {
+    console.error('[CREDENTIALS] Error:', error);
+    res.status(500).json({ error: 'Failed to retrieve credentials' });
+  }
+};
+
+module.exports = { showDashboard: exports.showDashboard, submitSupportTicket, changePassword, applyUpdates, getCredentials };
 
 /**
  * Dashboard Template Builder - Tech-View Design
@@ -772,23 +838,22 @@ ${getDashboardLayoutStart(layoutOptions)}
                     <div>
                         <label class="block text-xs mb-2" style="color: var(--dash-text-muted)">Username</label>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="password" id="sshUsername" value="${escapeHtml(data.sshUsername)}" readonly class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
-                            <button onclick="togglePassword('sshUsername', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Show</button>
+                            <input type="password" id="sshUsername" value="••••••••" readonly data-credential="ssh" data-field="username" class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                            <button onclick="fetchAndShowCredential('ssh', 'username', 'sshUsername', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Show</button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs mb-2" style="color: var(--dash-text-muted)">Password</label>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="password" id="sshPassword" value="${escapeHtml(data.sshPassword)}" readonly class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
-                            <button onclick="togglePassword('sshPassword', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Show</button>
+                            <input type="password" id="sshPassword" value="••••••••" readonly data-credential="ssh" data-field="password" class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                            <button onclick="fetchAndShowCredential('ssh', 'password', 'sshPassword', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Show</button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs mb-2" style="color: var(--dash-text-muted)">Connection Command</label>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="password" id="sshCommand" value="ssh ${escapeHtml(data.sshUsername)}@${escapeHtml(data.ipAddress)}" readonly class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
-                            <button onclick="navigator.clipboard.writeText('ssh ${data.sshUsername.replace(/'/g, "\\'")}@${data.ipAddress.replace(/'/g, "\\'")}')"
- class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
+                            <input type="password" id="sshCommand" value="ssh ••••@••••" readonly data-credential="ssh" data-field="command" class="flex-1 px-3 py-2 rounded-lg text-white font-mono text-sm" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                            <button onclick="fetchAndCopyCredential('ssh', 'command')" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
                         </div>
                     </div>
                 </div>
@@ -811,71 +876,66 @@ ${getDashboardLayoutStart(layoutOptions)}
                     <!-- PostgreSQL Credentials -->
                     <div class="rounded-lg p-3 mb-4" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3)">
                         <p class="text-green-400 text-xs font-bold mb-1">✓ PostgreSQL Ready</p>
-                        <p class="text-xs leading-relaxed" style="color: var(--dash-text-secondary)">Copy the connection string into your app's <code class="text-white px-1 py-0.5 rounded" style="background: rgba(0,0,0,0.4)">.env</code> file.</p>
+                        <p class="text-xs leading-relaxed" style="color: var(--dash-text-secondary)">Click Show/Copy to reveal credentials (loaded securely on-demand).</p>
                     </div>
                     <div class="space-y-4">
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Connection String</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" readonly value="postgresql://${data.postgresCredentials.dbUser}:${data.postgresCredentials.dbPassword}@${data.postgresCredentials.host}:${data.postgresCredentials.port}/${data.postgresCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono truncate" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-connection-string">
-                                <button onclick="copyToClipboard('postgres-connection-string', this)" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
+                                <input type="password" readonly value="postgresql://••••:••••@••••:5432/••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono truncate" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-connection-string" data-credential="postgres" data-field="connectionString">
+                                <button onclick="fetchAndCopyCredential('postgres', 'connectionString')" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Host</p>
                                 <div class="flex gap-2">
-                                    <input type="text" readonly value="${data.postgresCredentials.host}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-host">
-                                    <button onclick="copyToClipboard('postgres-host', this)" class="dash-btn dash-btn-secondary text-xs">Copy</button>
+                                    <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-host" data-credential="postgres" data-field="host">
+                                    <button onclick="fetchAndCopyCredential('postgres', 'host')" class="dash-btn dash-btn-secondary text-xs">Copy</button>
                                 </div>
                             </div>
                             <div>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Port</p>
-                                <input type="text" readonly value="${data.postgresCredentials.port}" class="w-full text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                                <input type="text" readonly value="5432" class="w-full text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
                             </div>
                         </div>
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Database</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" readonly value="${data.postgresCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-dbname">
-                                <button onclick="copyToClipboard('postgres-dbname', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
+                                <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-dbname" data-credential="postgres" data-field="database">
+                                <button onclick="fetchAndCopyCredential('postgres', 'database')" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Username</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" readonly value="${data.postgresCredentials.dbUser}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-user">
-                                <button onclick="copyToClipboard('postgres-user', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
+                                <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-user" data-credential="postgres" data-field="username">
+                                <button onclick="fetchAndCopyCredential('postgres', 'username')" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Password</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="password" readonly value="${data.postgresCredentials.dbPassword}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-password">
+                                <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="postgres-password" data-credential="postgres" data-field="password">
                                 <div class="flex gap-2">
-                                    <button onclick="togglePassword('postgres-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial" id="postgres-password-toggle">Show</button>
-                                    <button onclick="copyToClipboard('postgres-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial">Copy</button>
+                                    <button onclick="fetchAndShowCredential('postgres', 'password', 'postgres-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial" id="postgres-password-toggle">Show</button>
+                                    <button onclick="fetchAndCopyCredential('postgres', 'password')" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial">Copy</button>
                                 </div>
                             </div>
                         </div>
                         <details class="mt-4">
                             <summary class="text-xs cursor-pointer transition-colors" style="color: var(--dash-accent)">Show Code Examples</summary>
                             <div class="mt-3 p-4 rounded-lg" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
-                                <p class="text-xs mb-3" style="color: var(--dash-text-primary)"><strong>Quick Start:</strong></p>
+                                <p class="text-xs mb-3" style="color: var(--dash-text-primary)"><strong>Quick Start:</strong> Click Copy on Connection String above, then paste into your .env</p>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Node.js:</strong> <code style="color: var(--dash-text-secondary)">npm install pg</code></p>
                                 <pre class="text-xs p-3 rounded-lg overflow-x-auto mb-3 font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>const { Pool } = require('pg');
 const pool = new Pool({
-  connectionString: 'postgresql://${data.postgresCredentials.dbUser}:${data.postgresCredentials.dbPassword}@${data.postgresCredentials.host}:${data.postgresCredentials.port}/${data.postgresCredentials.dbName}'
+  connectionString: process.env.DATABASE_URL  // Paste connection string in .env
 });</code></pre>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Python:</strong> <code style="color: var(--dash-text-secondary)">pip install psycopg2-binary</code></p>
-                                <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>import psycopg2
-conn = psycopg2.connect(
-  host='${data.postgresCredentials.host}',
-  port=${data.postgresCredentials.port},
-  database='${data.postgresCredentials.dbName}',
-  user='${data.postgresCredentials.dbUser}',
-  password='${data.postgresCredentials.dbPassword}'
-)</code></pre>
+                                <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>import os
+import psycopg2
+conn = psycopg2.connect(os.environ['DATABASE_URL'])</code></pre>
                             </div>
                         </details>
                     </div>
@@ -902,65 +962,65 @@ conn = psycopg2.connect(
                     <!-- MongoDB Credentials -->
                     <div class="rounded-lg p-3 mb-4" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3)">
                         <p class="text-green-400 text-xs font-bold mb-1">✓ MongoDB Ready</p>
-                        <p class="text-xs leading-relaxed" style="color: var(--dash-text-secondary)">Copy the connection string into your app's <code class="text-white px-1 py-0.5 rounded" style="background: rgba(0,0,0,0.4)">.env</code> file.</p>
+                        <p class="text-xs leading-relaxed" style="color: var(--dash-text-secondary)">Click Show/Copy to reveal credentials (loaded securely on-demand).</p>
                     </div>
                     <div class="space-y-4">
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Connection String</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" readonly value="mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/${data.mongodbCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono truncate" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-connection-string">
-                                <button onclick="copyToClipboard('mongodb-connection-string', this)" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
+                                <input type="password" readonly value="mongodb://••••:••••@••••:27017/••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono truncate" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-connection-string" data-credential="mongodb" data-field="connectionString">
+                                <button onclick="fetchAndCopyCredential('mongodb', 'connectionString')" class="dash-btn dash-btn-primary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Host</p>
                                 <div class="flex gap-2">
-                                    <input type="text" readonly value="${data.mongodbCredentials.host}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-host">
-                                    <button onclick="copyToClipboard('mongodb-host', this)" class="dash-btn dash-btn-secondary text-xs">Copy</button>
+                                    <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-host" data-credential="mongodb" data-field="host">
+                                    <button onclick="fetchAndCopyCredential('mongodb', 'host')" class="dash-btn dash-btn-secondary text-xs">Copy</button>
                                 </div>
                             </div>
                             <div>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Port</p>
-                                <input type="text" readonly value="${data.mongodbCredentials.port}" class="w-full text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                                <input type="text" readonly value="27017" class="w-full text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
                             </div>
                         </div>
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Database</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" readonly value="${data.mongodbCredentials.dbName}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-dbname">
-                                <button onclick="copyToClipboard('mongodb-dbname', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
+                                <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-dbname" data-credential="mongodb" data-field="database">
+                                <button onclick="fetchAndCopyCredential('mongodb', 'database')" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Username</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" readonly value="${data.mongodbCredentials.dbUser}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-user">
-                                <button onclick="copyToClipboard('mongodb-user', this)" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
+                                <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-user" data-credential="mongodb" data-field="username">
+                                <button onclick="fetchAndCopyCredential('mongodb', 'username')" class="dash-btn dash-btn-secondary text-xs w-full sm:w-auto">Copy</button>
                             </div>
                         </div>
                         <div>
                             <p class="text-xs mb-2" style="color: var(--dash-text-muted)">Password</p>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="password" readonly value="${data.mongodbCredentials.dbPassword}" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-password">
+                                <input type="password" readonly value="••••••••" class="flex-1 text-white text-xs px-3 py-2 rounded-lg font-mono" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)" id="mongodb-password" data-credential="mongodb" data-field="password">
                                 <div class="flex gap-2">
-                                    <button onclick="togglePassword('mongodb-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial" id="mongodb-password-toggle">Show</button>
-                                    <button onclick="copyToClipboard('mongodb-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial">Copy</button>
+                                    <button onclick="fetchAndShowCredential('mongodb', 'password', 'mongodb-password', this)" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial" id="mongodb-password-toggle">Show</button>
+                                    <button onclick="fetchAndCopyCredential('mongodb', 'password')" class="dash-btn dash-btn-secondary text-xs flex-1 sm:flex-initial">Copy</button>
                                 </div>
                             </div>
                         </div>
                         <details class="mt-4">
                             <summary class="text-xs cursor-pointer transition-colors" style="color: var(--dash-accent)">Show Code Examples</summary>
                             <div class="mt-3 p-4 rounded-lg" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
-                                <p class="text-xs mb-3" style="color: var(--dash-text-primary)"><strong>Quick Start:</strong></p>
+                                <p class="text-xs mb-3" style="color: var(--dash-text-primary)"><strong>Quick Start:</strong> Click Copy on Connection String above, then paste into your .env</p>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Node.js:</strong> <code style="color: var(--dash-text-secondary)">npm install mongodb</code></p>
                                 <pre class="text-xs p-3 rounded-lg overflow-x-auto mb-3 font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>const { MongoClient } = require('mongodb');
-const client = new MongoClient('mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/${data.mongodbCredentials.dbName}');
+const client = new MongoClient(process.env.MONGODB_URL);  // Paste connection string in .env
 await client.connect();</code></pre>
                                 <p class="text-xs mb-2" style="color: var(--dash-text-muted)"><strong>Python:</strong> <code style="color: var(--dash-text-secondary)">pip install pymongo</code></p>
-                                <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>from pymongo import MongoClient
-client = MongoClient('mongodb://${data.mongodbCredentials.dbUserEncoded}:${data.mongodbCredentials.dbPasswordEncoded}@${data.mongodbCredentials.host}:${data.mongodbCredentials.port}/')
-db = client['${data.mongodbCredentials.dbName}']</code></pre>
+                                <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: rgba(0,0,0,0.4); color: var(--dash-text-secondary)"><code>import os
+from pymongo import MongoClient
+client = MongoClient(os.environ['MONGODB_URL'])</code></pre>
                             </div>
                         </details>
                     </div>

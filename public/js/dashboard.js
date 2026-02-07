@@ -3,6 +3,121 @@
 // (Navigation and sidebar toggle handled by inline scripts in template)
 // ============================================
 
+// Cache for fetched credentials to avoid repeated API calls
+const credentialsCache = {};
+
+// Fetch credentials securely on-demand
+async function fetchCredentials(type) {
+    // Return cached if available
+    if (credentialsCache[type]) {
+        return credentialsCache[type];
+    }
+    
+    try {
+        const response = await fetch(`/dashboard/api/credentials?type=${type}`, {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch credentials');
+        }
+        
+        const data = await response.json();
+        credentialsCache[type] = data;
+        return data;
+    } catch (error) {
+        console.error('Error fetching credentials:', error);
+        throw error;
+    }
+}
+
+// Fetch and show a specific credential field
+async function fetchAndShowCredential(type, field, inputId, buttonElement) {
+    try {
+        buttonElement.textContent = '...';
+        buttonElement.disabled = true;
+        
+        const credentials = await fetchCredentials(type);
+        const input = document.getElementById(inputId);
+        
+        if (!input || !credentials[type]) {
+            throw new Error('Credential not found');
+        }
+        
+        const value = credentials[type][field];
+        if (value === undefined) {
+            throw new Error('Field not found');
+        }
+        
+        if (input.type === 'password') {
+            input.value = value;
+            input.type = 'text';
+            buttonElement.textContent = 'Hide';
+        } else {
+            input.type = 'password';
+            input.value = '••••••••';
+            buttonElement.textContent = 'Show';
+        }
+        
+        buttonElement.disabled = false;
+    } catch (error) {
+        console.error('Error showing credential:', error);
+        buttonElement.textContent = 'Error';
+        setTimeout(() => {
+            buttonElement.textContent = 'Show';
+            buttonElement.disabled = false;
+        }, 2000);
+    }
+}
+
+// Fetch credential and copy to clipboard
+async function fetchAndCopyCredential(type, field, buttonElement) {
+    // Find the button that was clicked if not passed
+    if (!buttonElement) {
+        buttonElement = event?.target;
+    }
+    
+    try {
+        if (buttonElement) {
+            buttonElement.textContent = '...';
+            buttonElement.disabled = true;
+        }
+        
+        const credentials = await fetchCredentials(type);
+        
+        if (!credentials[type]) {
+            throw new Error('Credential type not found');
+        }
+        
+        const value = credentials[type][field];
+        if (value === undefined) {
+            throw new Error('Field not found');
+        }
+        
+        await navigator.clipboard.writeText(value);
+        
+        if (buttonElement) {
+            buttonElement.textContent = '✓';
+            buttonElement.classList.add('bg-green-600');
+            setTimeout(() => {
+                buttonElement.textContent = 'Copy';
+                buttonElement.classList.remove('bg-green-600');
+                buttonElement.disabled = false;
+            }, 1500);
+        }
+    } catch (error) {
+        console.error('Error copying credential:', error);
+        if (buttonElement) {
+            buttonElement.textContent = 'Error';
+            setTimeout(() => {
+                buttonElement.textContent = 'Copy';
+                buttonElement.disabled = false;
+            }, 2000);
+        }
+    }
+}
+
 // Copy to clipboard functionality - accepts element ID or direct text
 function copyToClipboard(elementIdOrText, buttonElement) {
     let textToCopy;
