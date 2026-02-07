@@ -6,6 +6,7 @@ const getStripe = () => {
 const pool = require('../db');
 const { createRealServer, destroyDroplet } = require('../services/digitalocean');
 const { getHTMLHead, getScripts, getFooter, getResponsiveNav, escapeHtml } = require('../helpers');
+const { sendEmail } = require('../services/email');
 
 // Pricing plans configuration (monthly and yearly prices in CENTS for Stripe)
 // Yearly = 10% discount (monthly × 12 × 0.90)
@@ -770,8 +771,34 @@ exports.stripeWebhook = async (req, res) => {
               const userEmail = userResult.rows[0].email;
               console.log(`Payment failed for user ${userId} (${userEmail})`);
               
-              // TODO: Send payment failed email notification
-              // Note: Stripe will automatically retry and eventually cancel if all retries fail
+              // Send payment failed email to customer
+              const customerHtml = `
+                <h2>Payment Failed</h2>
+                <p>Hi there,</p>
+                <p>We were unable to process your latest payment for your Clouded Basement subscription.</p>
+                <p>Please update your payment method to avoid service interruption. Stripe will automatically retry the charge, but if all retries fail your server will be cancelled.</p>
+                <p>If you need help, reply to this email or submit a support ticket from your dashboard.</p>
+                <p>— Clouded Basement</p>
+              `;
+              const customerText = `Payment Failed\n\nWe were unable to process your latest payment for your Clouded Basement subscription.\n\nPlease update your payment method to avoid service interruption. Stripe will automatically retry the charge, but if all retries fail your server will be cancelled.\n\nIf you need help, reply to this email or submit a support ticket from your dashboard.`;
+              
+              sendEmail(userEmail, 'Action Required: Payment Failed - Clouded Basement', customerHtml, customerText)
+                .catch(err => console.error(`[PAYMENT] Failed to send payment-failed email to ${userEmail}:`, err.message));
+              
+              // Send notification to admin
+              const adminHtml = `
+                <h2>Payment Failed</h2>
+                <p><strong>User ID:</strong> ${userId}</p>
+                <p><strong>Email:</strong> ${userEmail}</p>
+                <p><strong>Invoice:</strong> ${invoice.id}</p>
+                <p><strong>Subscription:</strong> ${invoice.subscription}</p>
+                <p><strong>Time:</strong> ${new Date().toISOString()}</p>
+                <p>Stripe will auto-retry. Monitor for cancellation.</p>
+              `;
+              const adminText = `Payment Failed\nUser: ${userId} (${userEmail})\nInvoice: ${invoice.id}\nSubscription: ${invoice.subscription}`;
+              
+              sendEmail('support@cloudedbasement.ca', `[Payment Failed] User ${userId} - ${userEmail}`, adminHtml, adminText)
+                .catch(err => console.error(`[PAYMENT] Failed to send payment-failed admin notification:`, err.message));
             }
           }
           

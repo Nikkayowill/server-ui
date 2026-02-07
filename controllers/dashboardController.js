@@ -3,6 +3,7 @@ const { getDashboardHead, getFooter, getScripts, getResponsiveNav, escapeHtml, g
 const { getUserServer, hasSuccessfulPayment } = require('../utils/db-helpers');
 const { PAYMENT_STATUS, SERVER_STATUS } = require('../constants');
 const serverUpdates = require('../services/serverUpdates');
+const { sendEmail } = require('../services/email');
 
 // Dashboard navigation items - centralized for consistency
 const DASHBOARD_NAV_ITEMS = [
@@ -257,6 +258,29 @@ const submitSupportTicket = async (req, res) => {
 
     // Log audit event
     console.log(`[TICKET] New ticket #${ticketId} submitted by user ${userId}`);
+
+    // Send email notification to business email
+    try {
+      const userResult = await pool.query('SELECT email FROM users WHERE id = $1', [userId]);
+      const userEmail = userResult.rows[0]?.email || 'unknown';
+
+      const html = `
+        <h2>New Support Ticket #${ticketId}</h2>
+        <p><strong>From:</strong> ${userEmail} (User ID: ${userId})</p>
+        <p><strong>Priority:</strong> ${priority.toUpperCase()}</p>
+        <p><strong>Subject:</strong> ${subject.trim()}</p>
+        <hr style="border: 1px solid #ddd; margin: 20px 0;">
+        <p><strong>Description:</strong></p>
+        <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${description.trim()}</p>
+      `;
+      const text = `New Support Ticket #${ticketId}\nFrom: ${userEmail} (User ID: ${userId})\nPriority: ${priority}\nSubject: ${subject.trim()}\n\nDescription:\n${description.trim()}`;
+
+      await sendEmail('support@cloudedbasement.ca', `[Ticket #${ticketId}] ${subject.trim()}`, html, text);
+      console.log(`[TICKET] Email notification sent for ticket #${ticketId}`);
+    } catch (emailErr) {
+      console.error(`[TICKET] Failed to send email notification for ticket #${ticketId}:`, emailErr.message);
+      // Don't fail the ticket submission if email fails
+    }
 
     res.json({ success: true, message: 'Ticket submitted', ticketId });
   } catch (error) {
