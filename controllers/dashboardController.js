@@ -49,117 +49,166 @@ exports.showDashboard = async (req, res) => {
         
         // Check if coming from payment (show provisioning UI even if server not created yet)
         const isProvisioning = req.query.provisioning === 'true';
+        
+        // Demo mode: admin-only, renders dashboard with fake server data for content creation
+        const isDemoMode = req.query.demo === 'true' && req.session.userRole === 'admin';
 
         // Check if user has paid
-        const hasPaid = await hasSuccessfulPayment(userId);
+        const hasPaid = isDemoMode ? true : await hasSuccessfulPayment(userId);
 
         // Get user's server info (using helper)
-        const server = await getUserServer(userId);
-        const hasServer = !!server;
+        const server = isDemoMode ? null : await getUserServer(userId);
+        const hasServer = isDemoMode ? true : !!server;
+        
+        // Demo mode: generate realistic mock data
+        const demoServer = isDemoMode ? {
+            id: 999,
+            status: 'running',
+            hostname: 'basement-core',
+            plan: req.query.demoPlan || 'pro',
+            ip_address: '143.198.167.42',
+            ipv6_address: '2604:a880:800:c1::1a9:d001',
+            ssh_username: 'root',
+            ssh_password: 'demo-password-hidden',
+            droplet_name: `basement-${userId}-1738900000000`,
+            site_limit: 5,
+            postgres_installed: true,
+            postgres_db_name: 'app_db',
+            postgres_db_user: 'basement_user',
+            postgres_db_password: 'demo-pg-pass',
+            mongodb_installed: false,
+            auto_deploy_enabled: true,
+            github_webhook_secret: 'whsec_demo1234567890',
+            created_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000) // 12 days ago
+        } : null;
+        
+        const activeServer = isDemoMode ? demoServer : server;
+        
         // Explicit boolean check - if column doesn't exist, treats as false (safe default)
-        const postgresInstalled = server?.postgres_installed === true;
-        const mongodbInstalled = server?.mongodb_installed === true;
+        const postgresInstalled = activeServer?.postgres_installed === true;
+        const mongodbInstalled = activeServer?.mongodb_installed === true;
         
         // Extract database credentials if they exist
         const postgresCredentials = postgresInstalled ? {
-            dbName: server?.postgres_db_name || 'app_db',
-            dbUser: server?.postgres_db_user || 'basement_user',
-            dbPassword: server?.postgres_db_password || '',
-            host: server?.ip_address || 'localhost',
+            dbName: activeServer?.postgres_db_name || 'app_db',
+            dbUser: activeServer?.postgres_db_user || 'basement_user',
+            dbPassword: activeServer?.postgres_db_password || '',
+            host: activeServer?.ip_address || 'localhost',
             port: '5432'
         } : null;
         
         const mongodbCredentials = mongodbInstalled ? {
-            dbName: server?.mongodb_db_name || 'app_db',
-            dbUser: server?.mongodb_db_user || 'basement_user',
-            dbPassword: server?.mongodb_db_password || '',
-            host: server?.ip_address || 'localhost',
+            dbName: activeServer?.mongodb_db_name || 'app_db',
+            dbUser: activeServer?.mongodb_db_user || 'basement_user',
+            dbPassword: activeServer?.mongodb_db_password || '',
+            host: activeServer?.ip_address || 'localhost',
             port: '27017',
             // URL-encoded versions for connection strings
-            dbUserEncoded: encodeURIComponent(server?.mongodb_db_user || 'basement_user'),
-            dbPasswordEncoded: encodeURIComponent(server?.mongodb_db_password || '')
+            dbUserEncoded: encodeURIComponent(activeServer?.mongodb_db_user || 'basement_user'),
+            dbPasswordEncoded: encodeURIComponent(activeServer?.mongodb_db_password || '')
         } : null;
 
         // Get payment details to determine plan
-        const paymentResult = hasPaid ? await pool.query(
+        const paymentResult = (hasPaid && !isDemoMode) ? await pool.query(
             'SELECT plan FROM payments WHERE user_id = $1 AND status = $2 ORDER BY created_at DESC LIMIT 1',
             [userId, PAYMENT_STATUS.SUCCEEDED]
         ) : { rows: [] };
-        const paidPlan = paymentResult.rows[0]?.plan || 'basic';
+        const paidPlan = isDemoMode ? (demoServer.plan) : (paymentResult.rows[0]?.plan || 'basic');
 
         // Get deployments
-        const deploymentsResult = await pool.query(
+        const deploymentsResult = isDemoMode ? { rows: [] } : await pool.query(
             'SELECT * FROM deployments WHERE user_id = $1 ORDER BY deployed_at DESC NULLS LAST, created_at DESC',
             [userId]
         );
+        
+        // Demo mode: realistic deployment history
+        const demoDeployments = isDemoMode ? [
+            { id: 101, git_url: 'https://github.com/demo-user/my-saas-app', branch: 'main', status: 'success', subdomain: 'my-saas-app', deployed_at: new Date(Date.now() - 2 * 60 * 60 * 1000), created_at: new Date(Date.now() - 2 * 60 * 60 * 1000), deployment_type: 'github' },
+            { id: 100, git_url: 'https://github.com/demo-user/landing-page', branch: 'main', status: 'success', subdomain: 'landing-page', deployed_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), deployment_type: 'github' },
+            { id: 99, git_url: 'https://github.com/demo-user/api-backend', branch: 'production', status: 'success', subdomain: 'api-backend', deployed_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), deployment_type: 'github' }
+        ] : [];
 
         // Count unique sites for this server (distinct git_urls)
-        const siteCountResult = hasServer ? await pool.query(
+        const siteCountResult = (hasServer && !isDemoMode) ? await pool.query(
             'SELECT COUNT(DISTINCT git_url) as count FROM deployments WHERE server_id = $1',
             [server.id]
-        ) : { rows: [{ count: 0 }] };
+        ) : { rows: [{ count: isDemoMode ? 3 : 0 }] };
         
-        const siteCount = parseInt(siteCountResult.rows[0]?.count || 0);
-        const siteLimit = server?.site_limit || 2;
+        const siteCount = isDemoMode ? 3 : parseInt(siteCountResult.rows[0]?.count || 0);
+        const siteLimit = activeServer?.site_limit || 2;
 
         // Get domains
-        const domainsResult = await pool.query(
+        const domainsResult = isDemoMode ? { rows: [] } : await pool.query(
             'SELECT * FROM domains WHERE user_id = $1 ORDER BY created_at DESC',
             [userId]
         );
+        
+        // Demo mode: realistic domains
+        const demoDomains = isDemoMode ? [
+            { id: 201, domain: 'myapp.com', ssl_enabled: true, verified: true, created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
+            { id: 202, domain: 'api.myapp.com', ssl_enabled: true, verified: true, created_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) }
+        ] : [];
 
         // Get support tickets
-        const ticketsResult = await pool.query(
+        const ticketsResult = isDemoMode ? { rows: [] } : await pool.query(
             'SELECT * FROM support_tickets WHERE user_id = $1 ORDER BY created_at DESC',
             [userId]
         );
+        
+        // Demo mode: realistic tickets
+        const demoTickets = isDemoMode ? [
+            { id: 301, subject: 'Help with custom Nginx config', priority: 'normal', status: 'resolved', created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000) }
+        ] : [];
 
         // Get pending server updates (if user has a server)
         let pendingUpdates = [];
         let updateHistory = [];
-        if (server?.id) {
+        if (server?.id && !isDemoMode) {
             pendingUpdates = await serverUpdates.getPendingUpdates(server.id);
             updateHistory = await serverUpdates.getUpdateHistory(server.id);
         }
 
         // Check if user is eligible for free trial (comprehensive check to match /start-trial endpoint)
-        const trialCheckResult = await pool.query(
-            'SELECT trial_used, browser_fingerprint FROM users WHERE id = $1',
-            [userId]
-        );
-        
-        let trialAvailable = !trialCheckResult.rows[0]?.trial_used && !hasServer && !hasPaid;
-        
-        // Additional checks to match /start-trial endpoint validation
-        if (trialAvailable) {
-            // Must have fingerprint (JS enabled)
-            const userFingerprint = trialCheckResult.rows[0]?.browser_fingerprint;
-            if (!userFingerprint) {
-                trialAvailable = false;
-            } else {
-                // Check if IP or fingerprint already used trial within 90 days
-                const clientIp = req.ip || req.socket.remoteAddress;
-                
-                const ipTrialCheck = await pool.query(
-                    `SELECT id FROM users 
-                     WHERE signup_ip = $1 
-                     AND trial_used = true 
-                     AND trial_used_at > NOW() - INTERVAL '90 days'
-                     AND id != $2`,
-                    [clientIp, userId]
-                );
-                
-                const fpTrialCheck = await pool.query(
-                    `SELECT id FROM users 
-                     WHERE browser_fingerprint = $1 
-                     AND trial_used = true 
-                     AND trial_used_at > NOW() - INTERVAL '90 days'
-                     AND id != $2`,
-                    [userFingerprint, userId]
-                );
-                
-                if (ipTrialCheck.rows.length > 0 || fpTrialCheck.rows.length > 0) {
+        let trialAvailable = false;
+        if (!isDemoMode) {
+            const trialCheckResult = await pool.query(
+                'SELECT trial_used, browser_fingerprint FROM users WHERE id = $1',
+                [userId]
+            );
+            
+            trialAvailable = !trialCheckResult.rows[0]?.trial_used && !hasServer && !hasPaid;
+            
+            // Additional checks to match /start-trial endpoint validation
+            if (trialAvailable) {
+                // Must have fingerprint (JS enabled)
+                const userFingerprint = trialCheckResult.rows[0]?.browser_fingerprint;
+                if (!userFingerprint) {
                     trialAvailable = false;
+                } else {
+                    // Check if IP or fingerprint already used trial within 90 days
+                    const clientIp = req.ip || req.socket.remoteAddress;
+                    
+                    const ipTrialCheck = await pool.query(
+                        `SELECT id FROM users 
+                         WHERE signup_ip = $1 
+                         AND trial_used = true 
+                         AND trial_used_at > NOW() - INTERVAL '90 days'
+                         AND id != $2`,
+                        [clientIp, userId]
+                    );
+                    
+                    const fpTrialCheck = await pool.query(
+                        `SELECT id FROM users 
+                         WHERE browser_fingerprint = $1 
+                         AND trial_used = true 
+                         AND trial_used_at > NOW() - INTERVAL '90 days'
+                         AND id != $2`,
+                        [userFingerprint, userId]
+                    );
+                    
+                    if (ipTrialCheck.rows.length > 0 || fpTrialCheck.rows.length > 0) {
+                        trialAvailable = false;
+                    }
                 }
             }
         }
@@ -167,41 +216,41 @@ exports.showDashboard = async (req, res) => {
         const csrfToken = typeof req.csrfToken === 'function' ? req.csrfToken() : '';
         
         // Show provisioning UI if: coming from payment OR server exists with provisioning status
-        const showProvisioningUI = isProvisioning || (hasServer && server?.status === 'provisioning');
+        const showProvisioningUI = isProvisioning || (hasServer && activeServer?.status === 'provisioning');
 
         // Compute live site URL: prefer SSL domain > any domain > IP
-        const domains = domainsResult.rows || [];
+        const domains = isDemoMode ? demoDomains : (domainsResult.rows || []);
         const sslDomain = domains.find(d => d.ssl_enabled);
         const liveSiteUrl = sslDomain 
             ? `https://${sslDomain.domain}` 
-            : (domains.length > 0 ? `http://${domains[0].domain}` : `http://${server?.ip_address || ''}`);
+            : (domains.length > 0 ? `http://${domains[0].domain}` : `http://${activeServer?.ip_address || ''}`);
 
         const dashboardHTML = buildDashboardTemplate({
             flashSuccess,
             flashError,
             emailConfirmed,
-            serverStatus: server?.status || (isProvisioning ? 'provisioning' : 'unknown'),
-            serverName: server?.hostname || 'basement-core',
-            plan: (server?.plan || paidPlan || 'basic').toString(),
-            ipAddress: server?.ip_address || '',
-            ipv6Address: server?.ipv6_address || '',
-            serverIp: server?.ip_address || '',
-            sshUsername: server?.ssh_username || 'root',
-            sshPassword: server?.ssh_password || '',
-            dropletName: server?.droplet_name || `basement-${userId}-unknown`,
+            serverStatus: activeServer?.status || (isProvisioning ? 'provisioning' : 'unknown'),
+            serverName: activeServer?.hostname || 'basement-core',
+            plan: (activeServer?.plan || paidPlan || 'basic').toString(),
+            ipAddress: activeServer?.ip_address || '',
+            ipv6Address: activeServer?.ipv6_address || '',
+            serverIp: activeServer?.ip_address || '',
+            sshUsername: activeServer?.ssh_username || 'root',
+            sshPassword: activeServer?.ssh_password || '',
+            dropletName: activeServer?.droplet_name || `basement-${userId}-unknown`,
             userId: userId,
-            serverId: server?.id || null,
+            serverId: activeServer?.id || null,
             csrfToken,
-            deployments: deploymentsResult.rows || [],
+            deployments: isDemoMode ? demoDeployments : (deploymentsResult.rows || []),
             domains: domains,
-            tickets: ticketsResult.rows || [],
+            tickets: isDemoMode ? demoTickets : (ticketsResult.rows || []),
             liveSiteUrl,
             userEmail: req.session.userEmail,
             userRole: req.session.userRole,
             hasPaid,
             hasServer,
             isProvisioning: showProvisioningUI,
-            dismissedNextSteps: req.session.dismissedNextSteps || false,
+            dismissedNextSteps: isDemoMode ? true : (req.session.dismissedNextSteps || false),
             postgresInstalled,
             mongodbInstalled,
             postgresCredentials,
@@ -210,8 +259,8 @@ exports.showDashboard = async (req, res) => {
             siteLimit,
             trialAvailable,
             // Auto-deploy fields
-            autoDeployEnabled: server?.auto_deploy_enabled === true,
-            githubWebhookSecret: server?.github_webhook_secret || null,
+            autoDeployEnabled: activeServer?.auto_deploy_enabled === true,
+            githubWebhookSecret: activeServer?.github_webhook_secret || null,
             // Server updates
             pendingUpdates,
             updateHistory

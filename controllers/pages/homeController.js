@@ -19,7 +19,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       <!-- Animated rainbow stripe background -->
       <div class="hero-stripes"></div>
       
-      <div class="max-w-screen-xl px-8 md:px-12 lg:px-16 mx-auto text-center relative z-20 hero-content">
+      <div class="max-w-3xl px-4 sm:px-6 mx-auto text-center relative z-20 hero-content">
         <!-- Hero Heading -->
         <div class="relative inline-block mb-6 z-30">
           <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] px-4 py-4">
@@ -48,7 +48,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
 
     <!-- Social Proof / Trust Indicators -->
     <section class="py-8 md:py-12">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 md:gap-12 text-sm text-gray-400">
           <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -73,14 +73,14 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Why Choose Section -->
-    <section class="py-20 md:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <section class="py-16 md:py-24 relative">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-12">
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Clouded Basement?</h2>
-          <p class="text-gray-400 max-w-xl mx-auto">Control and convenience — not one or the other.</p>
+          <p class="text-gray-400 max-w-md mx-auto">Control and convenience — not one or the other.</p>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <!-- Card 1 -->
           <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
             <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
@@ -151,14 +151,14 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- How It Works Section -->
-    <section class="py-20 md:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <section class="py-16 md:py-24 relative">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-12">
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
-          <p class="text-gray-400 max-w-xl mx-auto">From idea to live server — without the setup stress</p>
+          <p class="text-gray-400 max-w-md mx-auto">From idea to live server — without the setup stress</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <!-- Step 1 -->
           <div class="p-5 rounded-xl bg-gray-900/30 border border-gray-800">
             <div class="flex items-center gap-3 mb-3">
@@ -192,14 +192,14 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- What You Get Section -->
-    <section class="py-20 md:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <section class="py-16 md:py-24 relative">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-12">
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">What you get</h2>
-          <p class="text-gray-400 max-w-xl mx-auto">Everything to run a production app — without managing infrastructure.</p>
+          <p class="text-gray-400 max-w-md mx-auto">Everything to run a production app — without managing infrastructure.</p>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
             <div class="flex items-start gap-3">
               <span class="text-green-400 mt-0.5">✓</span>
@@ -286,14 +286,14 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- How We Compare Section -->
-    <section class="py-20 md:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <section class="py-16 md:py-24 relative">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-12">
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">How We Compare</h2>
-          <p class="text-gray-400 max-w-xl mx-auto">The convenience of a PaaS with the control of your own server.</p>
+          <p class="text-gray-400 max-w-md mx-auto">The convenience of a PaaS with the control of your own server.</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <!-- PaaS Column -->
           <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800">
             <h3 class="text-base font-bold text-gray-300 mb-1">PaaS</h3>
@@ -348,15 +348,15 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
     </section>
 
     <!-- Pricing Section -->
-    <section class="py-20 md:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <section class="py-16 md:py-24 relative">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-12">
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Pricing</h2>
-          <p class="text-gray-400 max-w-xl mx-auto">Simple monthly pricing · No usage surprises · Cancel anytime</p>
+          <p class="text-gray-400 max-w-md mx-auto">Simple monthly pricing · No usage surprises · Cancel anytime</p>
           <p class="text-blue-400 text-sm mt-3">💬 Every plan includes real developer support</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <!-- Basic -->
           <div class="relative p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
             <div class="flex items-start justify-between mb-2">
@@ -406,7 +406,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       </div>
       
       <!-- CTA Content -->
-      <div class="max-w-screen-sm px-8 md:px-12 lg:px-16 mx-auto text-center relative z-10 mb-20">
+      <div class="max-w-xl px-4 sm:px-6 mx-auto text-center relative z-10 mb-20">
         <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
         <p class="mb-8 text-lg text-gray-300">Deploy your server in minutes. No credit card required to explore.</p>
         <p class="mb-8 text-gray-400 text-sm">
@@ -424,7 +424,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
       
       <!-- Footer Content -->
       <footer class="relative z-10 py-12">
-        <div class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center md:text-left">
                 <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
@@ -448,7 +448,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
                 </ul>
             </div>
         </div>
-        <div class="text-center mt-10 pt-6 max-w-6xl mx-auto px-8">
+        <div class="text-center mt-10 pt-6 max-w-3xl mx-auto px-4">
             <p class="mb-3">
                 <a href="/is-this-safe" class="text-brand text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
             </p>

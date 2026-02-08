@@ -75,7 +75,7 @@ ${getHTMLHead('Pricing - Basement')}
         </div>
       </section>
       
-      <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- BASIC -->
         <div class="bg-gray-900 border border-gray-700 rounded-lg p-8 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300">
           <div class="border-b border-blue-400/20 pb-6 mb-6">
@@ -306,7 +306,7 @@ ${getHTMLHead('Pricing - Basement')}
       </section>
       
       <!-- Trust Link -->
-      <section class="max-w-6xl mx-auto px-8 md:px-12 lg:px-16 pb-12 text-center">
+      <section class="max-w-3xl mx-auto px-4 sm:px-6 pb-12 text-center">
         <p class="text-sm text-gray-400">
           Questions about security or how this works? 
           <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium ml-1">Is Clouded Basement safe?</a>

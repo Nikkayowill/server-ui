@@ -6,7 +6,7 @@ ${getHTMLHead('Compare Hosting Platforms - Clouded Basement vs Heroku, Render, D
     ${getResponsiveNav(req)}
     
     <main class="bg-black min-h-screen pt-24 pb-16">
-      <section class="max-w-5xl mx-auto px-8 md:px-12 lg:px-16">
+      <section class="max-w-3xl mx-auto px-4 sm:px-6">
         
         <!-- Page Header -->
         <div class="text-center mb-16">
