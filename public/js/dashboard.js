@@ -437,3 +437,80 @@ function startDemoDeploy(event) {
     
     return false;
 }
+
+// ============================================
+// DEMO ADD DOMAIN
+// ============================================
+
+function addDemoDomain(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const domainInput = form.querySelector('input[name="domain"]');
+    const domain = domainInput?.value || 'demo.cloudedbasement.ca';
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    // Disable button and show loading
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="animate-pulse">Adding...</span>';
+    }
+    
+    // Simulate delay
+    setTimeout(() => {
+        // Find the domains list container
+        const domainsSection = form.closest('section') || form.parentElement;
+        const domainsContainer = domainsSection?.querySelector('.space-y-3') || 
+                                  domainsSection?.querySelector('.text-center.py-8');
+        
+        if (domainsContainer) {
+            // Create new domain card
+            const newDomainHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg gap-3 animate-pulse" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border);">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="text-yellow-400 shrink-0">⏳</span>
+                        <div class="min-w-0">
+                            <a href="https://${domain}" target="_blank" class="text-sm font-medium text-[var(--dash-text-primary)] hover:text-[var(--dash-accent)] block truncate">${domain}</a>
+                            <p class="text-xs text-[var(--dash-text-muted)]">Setting up SSL...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Replace "no domains" message or append to list
+            if (domainsContainer.classList.contains('text-center')) {
+                domainsContainer.outerHTML = `<div class="space-y-3">${newDomainHTML}</div>`;
+            } else {
+                domainsContainer.insertAdjacentHTML('beforeend', newDomainHTML);
+            }
+        }
+        
+        // Show success and reset form
+        domainInput.value = '';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '✓ Added!';
+            submitBtn.classList.add('bg-green-600');
+            setTimeout(() => {
+                submitBtn.innerHTML = 'Add Domain';
+                submitBtn.classList.remove('bg-green-600');
+            }, 2000);
+        }
+        
+        // After 3 seconds, update to show SSL complete
+        setTimeout(() => {
+            const pendingDomain = document.querySelector('.animate-pulse');
+            if (pendingDomain) {
+                pendingDomain.classList.remove('animate-pulse');
+                pendingDomain.querySelector('.text-yellow-400').textContent = '🔒';
+                pendingDomain.querySelector('.text-yellow-400').classList.remove('text-yellow-400');
+                pendingDomain.querySelector('.text-yellow-400')?.classList.add('text-green-400');
+                const statusText = pendingDomain.querySelector('.text-xs');
+                if (statusText) statusText.textContent = 'SSL active';
+            }
+        }, 3000);
+        
+    }, 1500);
+    
+    return false;
+}

@@ -710,13 +710,13 @@ ${getDashboardLayoutStart(layoutOptions)}
             `}
             
             ${data.hasServer ? `
-            <form action="/add-domain" method="POST" class="pt-4" style="border-top: 1px solid var(--dash-card-border)">
+            <form action="/add-domain" method="POST" class="pt-4" style="border-top: 1px solid var(--dash-card-border)" ${data.isDemoMode ? 'onsubmit="return addDemoDomain(event)"' : ''}>
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" name="domain" placeholder="yourdomain.com" required class="flex-1 dash-input">
+                    <input type="text" name="domain" placeholder="yourdomain.com" ${data.isDemoMode ? 'value="demo.cloudedbasement.ca"' : ''} required class="flex-1 dash-input">
                     <button type="submit" class="dash-btn dash-btn-primary w-full sm:w-auto">Add Domain</button>
                 </div>
-                <p class="text-xs text-[var(--dash-text-muted)] mt-3">Point your domain's A record to <code class="text-[var(--dash-accent)]">${escapeHtml(data.ipAddress)}</code> first.</p>
+                <p class="text-xs text-[var(--dash-text-muted)] mt-3">${data.isDemoMode ? '<span class="text-yellow-400">(Demo mode)</span> ' : ''}Point your domain's A record to <code class="text-[var(--dash-accent)]">${escapeHtml(data.ipAddress)}</code> first.</p>
             </form>
             ` : ''}
         </div>
