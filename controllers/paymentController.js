@@ -12,7 +12,7 @@ const { sendEmail } = require('../services/email');
 // Yearly = 10% discount (monthly × 12 × 0.90)
 const PRICING_PLANS = {
   basic: { name: 'Basic', monthly: 1500, yearly: 16200, was: 25, description: 'Perfect for side projects', features: ['1GB RAM', '1 CPU', '25GB Storage', '2 sites'] },
-  pro: { name: 'Pro', monthly: 3500, yearly: 37800, was: 60, description: 'Most popular • For production apps', features: ['2GB RAM', '2 CPUs', '60GB Storage', '5 sites'] },
+  pro: { name: 'Pro', monthly: 3500, yearly: 37800, was: 60, description: 'Best Value • For production apps', features: ['2GB RAM', '2 CPUs', '60GB Storage', '5 sites'] },
   priority: { name: 'Pro', monthly: 3500, yearly: 37800, was: 60, description: 'Most popular • For production apps', features: ['2GB RAM', '2 CPUs', '60GB Storage', '5 sites'] }, // legacy
   premium: { name: 'Premium', monthly: 7500, yearly: 81000, was: 120, description: 'For serious projects', features: ['4GB RAM', '2 CPUs', '80GB Storage', '10 sites'] }
 };
