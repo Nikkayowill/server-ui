@@ -1269,8 +1269,8 @@ exports.addDomain = async (req, res) => {
     const linkedSubdomain = req.body.linked_subdomain || null; // Optional: link to existing deployment
     const userId = req.session.userId;
 
-    // Validate domain format
-    const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/;
+    // Validate domain format (supports subdomains like sub.example.com)
+    const domainRegex = /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
     if (!domain || !domainRegex.test(domain)) {
       return res.redirect('/dashboard?error=Invalid domain format');
     }
