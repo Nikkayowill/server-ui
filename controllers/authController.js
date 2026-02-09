@@ -277,7 +277,8 @@ const handleRegister = async (req, res) => {
 const showLogin = (req, res) => {
   const flashMessage = req.session.flashMessage;
   delete req.session.flashMessage;
-  const message = escapeHtml(req.query.message || '');
+  const success = escapeHtml(req.query.message || req.query.success || '');
+  const warning = escapeHtml(req.query.warning || '');
   const error = escapeHtml(req.query.error || '');
   const userEmail = escapeHtml(req.query.email || '');
   const showResend = req.query.error && req.query.error.includes('confirm your email') && userEmail;
@@ -311,8 +312,9 @@ ${getHTMLHead('Login - Basement')}
       <div class="max-w-md w-full bg-gray-900/80 backdrop-blur-xl border border-blue-500/30 rounded p-6 shadow-[0_0_70px_rgba(0,102,255,0.25),0_0_110px_rgba(0,102,255,0.12),inset_0_0_35px_rgba(0,102,255,0.03)]">
         <h1 class="text-2xl font-bold text-white text-center mb-6">LOGIN</h1>
         
-        ${message ? `<div class="bg-green-500/10 border border-green-500/30 text-green-300 px-4 py-2.5 rounded mb-5 text-sm">${message}</div>` : ''}
-        ${error ? `<div class="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-2.5 rounded mb-5 text-sm">${error}</div>` : ''}
+        ${success ? `<div class="bg-green-500/10 border border-green-500/30 text-green-300 px-4 py-2.5 rounded mb-5 text-sm flex items-center gap-2"><svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>${success}</div>` : ''}
+        ${warning ? `<div class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 px-4 py-2.5 rounded mb-5 text-sm flex items-center gap-2"><svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>${warning}</div>` : ''}
+        ${error ? `<div class="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-2.5 rounded mb-5 text-sm flex items-center gap-2"><svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${error}</div>` : ''}
         ${showResend ? `<div class="bg-blue-500/10 border border-blue-500/30 text-blue-300 px-4 py-2.5 rounded mb-5 text-sm"><a href="/resend-confirmation?email=${encodeURIComponent(req.query.email)}" class="text-blue-400 hover:text-blue-300 underline">Resend confirmation email</a></div>` : ''}
         
         <form method="POST" action="/login" class="space-y-4">
@@ -671,8 +673,8 @@ ${getHTMLHead('Verify Email - Basement')}
           Enter it below to verify your account.
         </p>
         
-        ${error ? `<div class="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-6">${error}</div>` : ''}
-        ${success ? `<div class="bg-green-900 border border-green-700 text-green-300 px-4 py-3 rounded-lg mb-6">${success}</div>` : ''}
+        ${error ? `<div class="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 rounded-lg mb-6 flex items-center gap-2 text-sm"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${error}</div>` : ''}
+        ${success ? `<div class="bg-green-500/10 border border-green-500/30 text-green-300 px-4 py-3 rounded-lg mb-6 flex items-center gap-2 text-sm"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>${success}</div>` : ''}
         
         <form method="POST" action="/verify-email" id="verifyForm" class="space-y-6">
           <div>
@@ -840,8 +842,8 @@ ${getHTMLHead('Forgot Password - Basement')}
         <h1 class="text-2xl font-bold text-white text-center mb-2">RESET PASSWORD</h1>
         <p class="text-center text-gray-400 text-sm mb-6">Enter your email to receive a reset link</p>
         
-        ${message ? `<div class="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded text-blue-300 text-sm">${message}</div>` : ''}
-        ${error ? `<div class="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded text-red-300 text-sm">${error}</div>` : ''}
+        ${message ? `<div class="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded text-blue-300 text-sm flex items-center gap-2"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>${message}</div>` : ''}
+        ${error ? `<div class="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded text-red-300 text-sm flex items-center gap-2"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${error}</div>` : ''}
         
         <form method="POST" action="/forgot-password" class="space-y-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">
@@ -960,8 +962,8 @@ ${getHTMLHead('Reset Password - Basement')}
         <h1 class="text-2xl font-bold text-white text-center mb-2">SET NEW PASSWORD</h1>
         <p class="text-center text-gray-400 text-sm mb-6">Enter your new password below</p>
         
-        ${errorMsg ? `<div class="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded text-red-400 text-sm">${errorMsg}</div>` : ''}
-        ${successMsg ? `<div class="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded text-green-400 text-sm">${successMsg}</div>` : ''}
+        ${errorMsg ? `<div class="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded text-red-300 text-sm flex items-center gap-2"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${errorMsg}</div>` : ''}
+        ${successMsg ? `<div class="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded text-green-300 text-sm flex items-center gap-2"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>${successMsg}</div>` : ''}
         
         <form method="POST" action="/reset-password/${token}" class="space-y-4">
           <input type="hidden" name="_csrf" value="${req.csrfToken()}">

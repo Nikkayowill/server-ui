@@ -12,7 +12,7 @@ function requireAuth(req, res, next) {
     if (acceptsJson || isApiPath || req.xhr) {
       return res.status(401).json({ error: 'Session expired. Please log in again.' });
     }
-    res.redirect('/login?message=Please login to proceed with payment');
+    res.redirect('/login?warning=Please login to continue');
   }
 }
 
