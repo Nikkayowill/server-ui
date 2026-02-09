@@ -75,187 +75,131 @@ ${getHTMLHead('Pricing - Basement')}
         </div>
       </section>
       
-      <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- BASIC -->
-        <div class="bg-gray-900 border border-gray-700 rounded-lg p-8 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300">
-          <div class="border-b border-blue-400/20 pb-6 mb-6">
-            <div class="text-xl font-bold text-white mb-2">Basic</div>
-            <div class="flex items-baseline gap-2 mb-2">
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+        <!-- All plans include -->
+        <div class="text-center mb-10">
+          <p class="text-gray-400 text-sm">All plans include: SSH access, Git deployment, custom domains, automatic SSL, databases, and managed updates</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- BASIC -->
+          <div class="flex flex-col bg-gray-900/50 border border-gray-700 rounded-xl p-6 hover:border-blue-500/50 transition-all">
+            <div class="mb-6">
+              <div class="text-lg font-bold text-white mb-1">Basic</div>
+              <div class="text-gray-400 text-sm">Side projects & learning</div>
+            </div>
+            
+            <div class="mb-6">
               <div class="pricing-amount" data-monthly="15" data-yearly="162">
-                <span class="text-4xl font-extrabold text-blue-300 price-value">$15</span>
-                <span class="text-base font-normal text-gray-300 price-interval">/mo</span>
+                <span class="text-4xl font-bold text-white price-value">$15</span>
+                <span class="text-gray-400 price-interval">/mo</span>
               </div>
             </div>
-            <div class="text-sm text-gray-300">Perfect for side projects & learning</div>
+            
+            <div class="space-y-3 text-sm mb-6 flex-1">
+              <div class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white">1 GB</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white">1 vCPU</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white">25 GB SSD</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white">1 TB/mo</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white">2</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Support</span><span class="text-white">Email</span></div>
+            </div>
+            
+            <a href="/pay?plan=basic&interval=monthly" class="plan-cta block w-full py-3 border border-gray-600 text-gray-300 text-center font-medium rounded-lg hover:bg-gray-800 hover:border-gray-500 transition-all" data-plan="basic">Get Started</a>
           </div>
           
-          <div class="mb-6">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Server Specs</h5>
-            <ul class="space-y-2 text-sm">
-              <li class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white font-medium">1 GB</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white font-medium">1 vCPU</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white font-medium">25 GB NVMe SSD</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white font-medium">1 TB/mo</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white font-medium">2 sites</span></li>
-            </ul>
-          </div>
-          
-          <div class="mb-6">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Features Included</h5>
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> GitHub auto-deploy (push to deploy)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + automatic SSL</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server restart controls</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Email support from a real developer</li>
-            </ul>
-          </div>
-          
-          <div class="mb-8">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-red-400 mb-3">Not Included</h5>
-            <ul class="space-y-2 text-sm text-gray-500">
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Automated backups</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Priority support</li>
-            </ul>
-          </div>
-          
-          <a href="/pay?plan=basic&interval=monthly" class="plan-cta block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm" data-plan="basic">Select Basic</a>
-        </div>
-        
-        <!-- PRO -->
-        <div class="bg-gray-900 border-2 border-blue-500 rounded-lg p-8 relative transform md:scale-[1.02] shadow-[0_0_40px_rgba(59,130,246,0.2)] hover:shadow-[0_0_50px_rgba(59,130,246,0.3)] transition-all duration-300">
-          <div class="popular-badge">Best Value</div>
-          <div class="border-b border-blue-300 pb-6 mb-6">
-            <div class="text-xl font-bold text-white mb-2">Pro</div>
-            <div class="flex items-baseline gap-2 mb-2">
+          <!-- PRO -->
+          <div class="flex flex-col bg-gray-900/80 border-2 border-blue-500 rounded-xl p-6 relative shadow-[0_0_30px_rgba(59,130,246,0.15)]">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">MOST POPULAR</div>
+            
+            <div class="mb-6">
+              <div class="text-lg font-bold text-white mb-1">Pro</div>
+              <div class="text-gray-400 text-sm">Production apps & freelancers</div>
+            </div>
+            
+            <div class="mb-6">
               <div class="pricing-amount" data-monthly="35" data-yearly="378">
-                <span class="text-4xl font-extrabold text-blue-300 price-value">$35</span>
-                <span class="text-base font-normal text-gray-300 price-interval">/mo</span>
+                <span class="text-4xl font-bold text-white price-value">$35</span>
+                <span class="text-gray-400 price-interval">/mo</span>
               </div>
             </div>
-            <div class="text-sm text-gray-300">Best for production apps & freelancers</div>
+            
+            <div class="space-y-3 text-sm mb-6 flex-1">
+              <div class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white">2 GB</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white">2 vCPUs</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white">60 GB SSD</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white">3 TB/mo</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white">5</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Support</span><span class="text-blue-400">Priority (12hr)</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Backups</span><span class="text-blue-400">Weekly</span></div>
+            </div>
+            
+            <a href="/pay?plan=pro&interval=monthly" class="plan-cta block w-full py-3 bg-blue-600 text-white text-center font-bold rounded-lg hover:bg-blue-500 transition-all" data-plan="pro">Get Started</a>
           </div>
           
-          <div class="mb-6">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Server Specs</h5>
-            <ul class="space-y-2 text-sm">
-              <li class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white font-medium">2 GB</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white font-medium">2 vCPUs</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white font-medium">60 GB NVMe SSD</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white font-medium">3 TB/mo</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white font-medium">5 sites</span></li>
-            </ul>
-          </div>
-          
-          <div class="mb-6">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Everything in Basic, plus:</h5>
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> GitHub auto-deploy (push to deploy)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + automatic SSL</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server restart controls</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
-              <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Weekly automated backups</span></li>
-              <li class="flex items-center gap-2"><span class="text-blue-400 font-bold">★</span> <span class="text-blue-300">Direct developer support (12hr)</span></li>
-            </ul>
-          </div>
-          
-          <a href="/pay?plan=pro&interval=monthly" class="plan-cta block w-full px-6 py-3 bg-blue-600 text-white text-center font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm" data-plan="pro">Select Pro</a>
-        </div>
-        
-        <!-- PREMIUM -->
-        <div class="bg-gray-900 border border-gray-700 rounded-lg p-8 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300">
-          <div class="border-b border-blue-400/20 pb-6 mb-6">
-            <div class="text-xl font-bold text-white mb-2">Premium</div>
-            <div class="flex items-baseline gap-2 mb-2">
+          <!-- PREMIUM -->
+          <div class="flex flex-col bg-gray-900/50 border border-gray-700 rounded-xl p-6 hover:border-purple-500/50 transition-all">
+            <div class="mb-6">
+              <div class="text-lg font-bold text-white mb-1">Premium</div>
+              <div class="text-gray-400 text-sm">Agencies & high-traffic</div>
+            </div>
+            
+            <div class="mb-6">
               <div class="pricing-amount" data-monthly="75" data-yearly="810">
-                <span class="text-4xl font-extrabold text-blue-300 price-value">$75</span>
-                <span class="text-base font-normal text-gray-300 price-interval">/mo</span>
+                <span class="text-4xl font-bold text-white price-value">$75</span>
+                <span class="text-gray-400 price-interval">/mo</span>
               </div>
             </div>
-            <div class="text-sm text-gray-300">For agencies & high-traffic apps</div>
+            
+            <div class="space-y-3 text-sm mb-6 flex-1">
+              <div class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white">4 GB</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white">2 vCPUs</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white">80 GB SSD</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white">4 TB/mo</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white">10</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Support</span><span class="text-purple-400">Direct access</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Backups</span><span class="text-purple-400">Weekly</span></div>
+            </div>
+            
+            <a href="/pay?plan=premium&interval=monthly" class="plan-cta block w-full py-3 border border-gray-600 text-gray-300 text-center font-medium rounded-lg hover:bg-gray-800 hover:border-gray-500 transition-all" data-plan="premium">Get Started</a>
           </div>
-          
-          <div class="mb-6">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Server Specs</h5>
-            <ul class="space-y-2 text-sm">
-              <li class="flex justify-between"><span class="text-gray-400">RAM</span><span class="text-white font-medium">4 GB</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">CPU</span><span class="text-white font-medium">2 vCPUs</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Storage</span><span class="text-white font-medium">80 GB NVMe SSD</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Bandwidth</span><span class="text-white font-medium">4 TB/mo</span></li>
-              <li class="flex justify-between"><span class="text-gray-400">Sites</span><span class="text-white font-medium">10 sites</span></li>
-            </ul>
-          </div>
-          
-          <div class="mb-6">
-            <h5 class="text-xs font-bold uppercase tracking-wide text-blue-400 mb-3">Everything in Pro, plus:</h5>
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click Git deployment</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> GitHub auto-deploy (push to deploy)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> One-click database (Postgres/MongoDB)</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Custom domains + automatic SSL</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Free .cloudedbasement.ca subdomain</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Environment variables</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Deployment history & logs</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Server restart controls</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Managed security updates</li>
-              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Weekly automated backups</li>
-              <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300 font-semibold">Direct access to developer support</span></li>
-              <li class="flex items-center gap-2"><span class="text-purple-400 font-bold">★</span> <span class="text-purple-300">2x the RAM for heavy workloads</span></li>
-            </ul>
-          </div>
-          
-          <a href="/pay?plan=premium&interval=monthly" class="plan-cta block w-full px-6 py-3 bg-transparent border border-blue-500 text-blue-400 text-center font-medium rounded hover:bg-blue-600 hover:text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all uppercase tracking-wider text-sm" data-plan="premium">Select Premium</a>
         </div>
       </section>
       
-      <!-- Feature Comparison Table -->
-      <section class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16 pb-16">
-        <h2 class="text-2xl font-bold text-white text-center mb-8">Full Feature Comparison</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-gray-700">
-                <th class="text-left py-3 px-4 text-gray-400 font-medium">Feature</th>
-                <th class="text-center py-3 px-4 text-gray-300 font-bold">Basic</th>
-                <th class="text-center py-3 px-4 text-blue-300 font-bold">Pro</th>
-                <th class="text-center py-3 px-4 text-purple-300 font-bold">Premium</th>
-              </tr>
-            </thead>
-            <tbody class="text-gray-300">
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">RAM</td><td class="text-center">1 GB</td><td class="text-center">2 GB</td><td class="text-center">4 GB</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">vCPUs</td><td class="text-center">1</td><td class="text-center">2</td><td class="text-center">2</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">NVMe SSD Storage</td><td class="text-center">25 GB</td><td class="text-center">60 GB</td><td class="text-center">80 GB</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Monthly Bandwidth</td><td class="text-center">1 TB</td><td class="text-center">3 TB</td><td class="text-center">4 TB</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Sites/Projects</td><td class="text-center">2</td><td class="text-center">5</td><td class="text-center">10</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">SSH & Root Access</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Git Deployment</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">GitHub Auto-Deploy</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">One-Click Database</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Custom Domains</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Automatic SSL (Let's Encrypt)</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Free Subdomain</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Environment Variables</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Server Restart</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Managed Security Updates</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Weekly Automated Backups</td><td class="text-center text-red-400">✗</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Developer Support</td><td class="text-center">Email (24-48hr)</td><td class="text-center text-blue-300">Email (12-24hr)</td><td class="text-center text-purple-300 font-semibold">Direct Access</td></tr>
-              <tr class="border-b border-gray-800"><td class="py-3 px-4">Debug & Config Help</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <!-- What's Included (collapsed by default) -->
+      <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
+        <details class="group">
+          <summary class="flex items-center justify-center gap-2 cursor-pointer text-gray-400 hover:text-white transition-colors py-4">
+            <span class="text-sm font-medium">View full feature comparison</span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="overflow-x-auto mt-6">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 text-gray-400 font-medium">Feature</th>
+                  <th class="text-center py-3 px-4 text-gray-300">Basic</th>
+                  <th class="text-center py-3 px-4 text-blue-400">Pro</th>
+                  <th class="text-center py-3 px-4 text-purple-400">Premium</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-300">
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">SSH & Root Access</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Git Deployment</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">GitHub Auto-Deploy</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">One-Click Database</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Custom Domains</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Automatic SSL</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Free Subdomain</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Environment Variables</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Managed Security Updates</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Weekly Backups</td><td class="text-center text-gray-500">—</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr class="border-b border-gray-800"><td class="py-2 px-4">Priority Support</td><td class="text-center text-gray-500">—</td><td class="text-center text-green-400">✓</td><td class="text-center text-green-400">✓</td></tr>
+                <tr><td class="py-2 px-4">Direct Developer Access</td><td class="text-center text-gray-500">—</td><td class="text-center text-gray-500">—</td><td class="text-center text-green-400">✓</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
       </section>
       
       <!-- Tech Stack Info -->
