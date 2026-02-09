@@ -356,3 +356,84 @@ document.querySelectorAll('form:not([action="/setup-database"])').forEach(form =
         }
     });
 });
+// ============================================
+// DEMO DEPLOY ANIMATION
+// ============================================
+
+function startDemoDeploy(event) {
+    event.preventDefault();
+    
+    const progressDiv = document.getElementById('demo-deploy-progress');
+    const statusText = document.getElementById('demo-deploy-status');
+    const logDiv = document.getElementById('demo-deploy-log');
+    const spinnerDiv = document.getElementById('demo-deploy-spinner');
+    
+    if (!progressDiv || !statusText || !logDiv) {
+        console.error('Demo deploy elements not found');
+        return false;
+    }
+    
+    // Get the git URL from form
+    const gitUrlInput = document.querySelector('input[name="git_url"]');
+    const gitUrl = gitUrlInput?.value || 'https://github.com/demo-user/project';
+    
+    // Show progress area
+    progressDiv.classList.remove('hidden');
+    
+    // Animation sequence
+    const steps = [
+        { delay: 0, status: 'Cloning repository...', log: `> git clone ${gitUrl}` },
+        { delay: 1500, status: 'Cloning repository...', log: '> Receiving objects: 100% (128/128), done.' },
+        { delay: 2500, status: 'Installing dependencies...', log: '> npm install' },
+        { delay: 4000, status: 'Installing dependencies...', log: '> added 847 packages in 12.3s' },
+        { delay: 5500, status: 'Building application...', log: '> npm run build' },
+        { delay: 7000, status: 'Building application...', log: '> ✓ Build completed successfully' },
+        { delay: 8500, status: 'Deploying to server...', log: '> Uploading to /var/www/app...' },
+        { delay: 10000, status: 'Deploying to server...', log: '> Configuring nginx reverse proxy...' },
+        { delay: 11500, status: 'Starting application...', log: '> pm2 start ecosystem.config.js' },
+        { delay: 13000, status: 'Verifying deployment...', log: '> Health check: OK (HTTP 200)' },
+    ];
+    
+    // Clear initial log
+    logDiv.innerHTML = '';
+    
+    // Run through steps
+    steps.forEach(step => {
+        setTimeout(() => {
+            statusText.textContent = step.status;
+            const logLine = document.createElement('p');
+            logLine.textContent = step.log;
+            logDiv.appendChild(logLine);
+            // Auto-scroll to bottom
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }, step.delay);
+    });
+    
+    // Final success state
+    setTimeout(() => {
+        statusText.textContent = 'Deployment successful!';
+        statusText.classList.remove('text-[var(--dash-text-primary)]');
+        statusText.classList.add('text-green-400');
+        
+        // Replace spinner with checkmark
+        spinnerDiv.innerHTML = `
+            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+        `;
+        
+        // Add final log entry
+        const finalLine = document.createElement('p');
+        finalLine.className = 'text-green-400 font-semibold';
+        finalLine.textContent = '> ✓ Deployment complete! Your app is now live.';
+        logDiv.appendChild(finalLine);
+        
+        // Add a link to view the deployment
+        const linkLine = document.createElement('p');
+        linkLine.className = 'mt-2';
+        linkLine.innerHTML = '<span class="text-[var(--dash-accent)]">→ https://app.basement.cloudedbasement.ca</span>';
+        logDiv.appendChild(linkLine);
+    }, 14500);
+    
+    return false;
+}

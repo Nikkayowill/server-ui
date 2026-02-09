@@ -253,6 +253,7 @@ exports.showDashboard = async (req, res) => {
             hasServer,
             isProvisioning: showProvisioningUI,
             isDemoProvisioning,
+            isDemoMode,
             dismissedNextSteps: isDemoMode ? true : (req.session.dismissedNextSteps || false),
             postgresInstalled,
             mongodbInstalled,
@@ -728,14 +729,30 @@ ${getDashboardLayoutStart(layoutOptions)}
                 <h3 class="dash-card-title">Deploy from Git</h3>
             </div>
             ${data.hasServer ? `
-            <form action="/deploy" method="POST">
+            <form action="/deploy" method="POST" ${data.isDemoMode ? 'onsubmit="return startDemoDeploy(event)"' : ''}>
                 <input type="hidden" name="_csrf" value="${data.csrfToken}">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" name="git_url" placeholder="https://github.com/username/repo.git" required class="flex-1 px-4 py-3 bg-[var(--dash-bg)] border border-[var(--dash-card-border)] rounded-lg text-white text-sm focus:border-[var(--dash-accent)] focus:outline-none">
+                    <input type="text" name="git_url" placeholder="https://github.com/username/repo.git" ${data.isDemoMode ? 'value="https://github.com/demo-user/new-project"' : ''} required class="flex-1 px-4 py-3 bg-[var(--dash-bg)] border border-[var(--dash-card-border)] rounded-lg text-white text-sm focus:border-[var(--dash-accent)] focus:outline-none">
                     <button type="submit" class="dash-btn dash-btn-primary w-full sm:w-auto">Deploy</button>
                 </div>
-                <p class="text-xs text-[var(--dash-text-muted)] mt-3">Paste your GitHub repository URL to deploy automatically.</p>
+                <p class="text-xs text-[var(--dash-text-muted)] mt-3">${data.isDemoMode ? '<span class="text-yellow-400">(Demo mode)</span> Click Deploy to see the animation' : 'Paste your GitHub repository URL to deploy automatically.'}</p>
             </form>
+            
+            <!-- Demo Deploy Progress (hidden by default) -->
+            <div id="demo-deploy-progress" class="hidden mt-6 p-4 rounded-lg" style="background: var(--dash-bg); border: 1px solid var(--dash-card-border)">
+                <div class="flex items-center gap-3 mb-3">
+                    <div id="demo-deploy-spinner" class="w-5 h-5">
+                        <svg class="animate-spin h-5 w-5 text-[var(--dash-accent)]" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <span id="demo-deploy-status" class="text-sm font-medium text-[var(--dash-text-primary)]">Cloning repository...</span>
+                </div>
+                <div id="demo-deploy-log" class="font-mono text-xs text-[var(--dash-text-muted)] space-y-1">
+                    <p>> git clone https://github.com/demo-user/new-project</p>
+                </div>
+            </div>
             ` : data.trialAvailable ? `
             <div class="text-center py-6">
                 <div class="text-4xl mb-4">🚀</div>
