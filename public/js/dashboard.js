@@ -210,20 +210,31 @@ async function dismissNextSteps() {
 const serverStatusElement = document.querySelector('[data-server-status]');
 const urlParams = new URLSearchParams(window.location.search);
 const isProvisioningParam = urlParams.get('provisioning') === 'true';
+const isDemoProvisioning = serverStatusElement?.dataset.demoProvisioning === 'true';
 
 // Check if we're in provisioning state (either from data attribute or URL param)
 const currentStatus = serverStatusElement?.dataset.serverStatus;
 const isProvisioning = currentStatus === 'provisioning' || isProvisioningParam;
 
 if (isProvisioning && currentStatus !== 'running') {
-    console.log('Server is provisioning, will auto-refresh in 10 seconds...');
-    setTimeout(() => {
-        console.log('Auto-refreshing dashboard to check server status...');
-        // Remove the provisioning param on refresh to avoid infinite loop once server is ready
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete('provisioning');
-        window.location.href = newUrl.toString();
-    }, 10000); // 10 seconds
+    // Demo provisioning mode: wait 30 seconds then show populated dashboard
+    if (isDemoProvisioning) {
+        console.log('Demo provisioning mode: will show running dashboard in 30 seconds...');
+        setTimeout(() => {
+            console.log('Demo provisioning complete, redirecting to running dashboard...');
+            window.location.href = '/dashboard?demo=true';
+        }, 30000); // 30 seconds for demo
+    } else {
+        // Real provisioning: refresh after 10 seconds to check status
+        console.log('Server is provisioning, will auto-refresh in 10 seconds...');
+        setTimeout(() => {
+            console.log('Auto-refreshing dashboard to check server status...');
+            // Remove the provisioning param on refresh to avoid infinite loop once server is ready
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('provisioning');
+            window.location.href = newUrl.toString();
+        }, 10000); // 10 seconds
+    }
 }
 
 // Auto-fade alerts after 5 seconds

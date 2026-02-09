@@ -52,18 +52,20 @@ exports.showDashboard = async (req, res) => {
         
         // Demo mode: admin-only, renders dashboard with fake server data for content creation
         const isDemoMode = req.query.demo === 'true' && req.session.userRole === 'admin';
+        const isDemoProvisioning = isDemoMode && req.query.state === 'provisioning';
 
         // Check if user has paid
         const hasPaid = isDemoMode ? true : await hasSuccessfulPayment(userId);
 
         // Get user's server info (using helper)
         const server = isDemoMode ? null : await getUserServer(userId);
-        const hasServer = isDemoMode ? true : !!server;
+        // In demo provisioning state, pretend there's no server yet so provisioning UI shows
+        const hasServer = isDemoMode ? !isDemoProvisioning : !!server;
         
         // Demo mode: generate realistic mock data
         const demoServer = isDemoMode ? {
             id: 999,
-            status: 'running',
+            status: isDemoProvisioning ? 'provisioning' : 'running',
             hostname: 'basement-core',
             plan: req.query.demoPlan || 'pro',
             ip_address: '143.198.167.42',
@@ -215,8 +217,8 @@ exports.showDashboard = async (req, res) => {
 
         const csrfToken = typeof req.csrfToken === 'function' ? req.csrfToken() : '';
         
-        // Show provisioning UI if: coming from payment OR server exists with provisioning status
-        const showProvisioningUI = isProvisioning || (hasServer && activeServer?.status === 'provisioning');
+        // Show provisioning UI if: coming from payment OR server exists with provisioning status OR demo provisioning
+        const showProvisioningUI = isProvisioning || isDemoProvisioning || (hasServer && activeServer?.status === 'provisioning');
 
         // Compute live site URL: prefer SSL domain > any domain > IP
         const domains = isDemoMode ? demoDomains : (domainsResult.rows || []);
@@ -229,7 +231,7 @@ exports.showDashboard = async (req, res) => {
             flashSuccess,
             flashError,
             emailConfirmed,
-            serverStatus: activeServer?.status || (isProvisioning ? 'provisioning' : 'unknown'),
+            serverStatus: activeServer?.status || (isProvisioning || isDemoProvisioning ? 'provisioning' : 'unknown'),
             serverName: activeServer?.hostname || 'basement-core',
             plan: (activeServer?.plan || paidPlan || 'basic').toString(),
             ipAddress: activeServer?.ip_address || '',
@@ -250,6 +252,7 @@ exports.showDashboard = async (req, res) => {
             hasPaid,
             hasServer,
             isProvisioning: showProvisioningUI,
+            isDemoProvisioning,
             dismissedNextSteps: isDemoMode ? true : (req.session.dismissedNextSteps || false),
             postgresInstalled,
             mongodbInstalled,
@@ -595,7 +598,7 @@ ${getDashboardLayoutStart(layoutOptions)}
         <!-- OVERVIEW SECTION -->
         <section id="section-overview" class="dash-section active">
         ${(data.hasServer || data.isProvisioning) ? `
-        <div class="dash-card" data-server-status="${data.serverStatus}">
+        <div class="dash-card" data-server-status="${data.serverStatus}" ${data.isDemoProvisioning ? 'data-demo-provisioning="true"' : ''}>
             <div class="dash-card-header">
                 <div class="flex items-center gap-3">
                     <span class="dash-status">
