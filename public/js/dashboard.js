@@ -431,7 +431,7 @@ function startDemoDeploy(event) {
         // Add a link to view the deployment
         const linkLine = document.createElement('p');
         linkLine.className = 'mt-2';
-        linkLine.innerHTML = '<span class="text-[var(--dash-accent)]">→ https://app.basement.cloudedbasement.ca</span>';
+        linkLine.innerHTML = '→ <a href="https://demo.cloudedbasement.ca" target="_blank" class="text-[var(--dash-accent)] hover:underline">https://demo.cloudedbasement.ca</a>';
         logDiv.appendChild(linkLine);
     }, 14500);
     
