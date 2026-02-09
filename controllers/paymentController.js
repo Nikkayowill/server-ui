@@ -24,6 +24,43 @@ exports.showCheckout = (req, res) => {
     return res.redirect('/dashboard?error=Please confirm your email before purchasing');
   }
   
+  // Demo mode: admin-only fake checkout that skips Stripe
+  if (req.query.demo === 'true' && req.session.userRole === 'admin') {
+    const plan = req.query.plan || 'pro';
+    const selectedPlan = PRICING_PLANS[plan] || PRICING_PLANS.pro;
+    
+    // Render a simple "processing" page that auto-redirects to provisioning
+    return res.send(`
+${getHTMLHead('Processing Payment - Clouded Basement')}
+      ${getResponsiveNav(req)}
+      
+      <main class="bg-gray-900 min-h-screen flex items-center justify-center py-24 px-4">
+        <div class="max-w-md w-full bg-gray-800 border border-brand rounded-lg p-8 text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand bg-opacity-20 mb-6">
+            <svg class="animate-spin h-8 w-8 text-brand" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-white mb-2">Processing Payment...</h1>
+          <p class="text-gray-400 text-sm mb-4">Confirming your ${escapeHtml(selectedPlan.name)} subscription</p>
+          <div class="text-5xl font-bold text-brand mb-2">$${selectedPlan.monthly / 100}<span class="text-2xl text-gray-400">/month</span></div>
+          <p class="text-gray-500 text-xs">(Demo mode — no actual charge)</p>
+        </div>
+      </main>
+      
+      ${getFooter()}
+      ${getScripts('nav.js')}
+      
+      <script>
+        // Auto-redirect to provisioning after 3 seconds
+        setTimeout(() => {
+          window.location.href = '/dashboard?demo=true&state=provisioning&demoPlan=${plan}';
+        }, 3000);
+      </script>
+    `);
+  }
+  
   const plan = req.query.plan || 'basic';
   const interval = req.query.interval || 'monthly';
   const selectedPlan = PRICING_PLANS[plan] || PRICING_PLANS.basic;
