@@ -5,3 +5,6 @@ node_modules/
 logs/
 *.log
 .env.example
+passwords.txt
+server.log
+*.jar
