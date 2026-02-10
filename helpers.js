@@ -156,7 +156,7 @@ function getResponsiveNav(req) {
     <nav class="main-nav">
         <div class="nav-container">
             <a href="/" class="nav-logo">
-                <img src="/TransparentLogo.svg" alt="Clouded Basement">
+                <img src="/Clouded%20Basement.png" alt="Clouded Basement">
             </a>
             <ul class="nav-links">
                 ${navLinks}
