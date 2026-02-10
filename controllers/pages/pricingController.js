@@ -245,14 +245,14 @@ ${getHTMLHead('Pricing - Basement')}
         </div>
       </section>
       
-      <!-- Trust Link -->
+      <!-- Trust Links -->
       <section class="max-w-3xl mx-auto px-4 sm:px-6 pb-12 text-center">
-        <p class="text-sm text-gray-400">
-          Questions about security or how this works? 
-          <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium ml-1">Is Clouded Basement safe?</a>
-          <span class="mx-2 text-gray-600">·</span>
-          <a href="/compare" class="text-brand hover:text-cyan-400 underline font-medium">See how we compare</a>
-        </p>
+        <p class="text-gray-400 text-sm mb-4">Questions about security or how this works?</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+          <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium text-sm">Is Clouded Basement safe?</a>
+          <span class="hidden sm:inline text-gray-600">·</span>
+          <a href="/compare" class="text-brand hover:text-cyan-400 underline font-medium text-sm">See how we compare</a>
+        </div>
       </section>
     </main>
     
