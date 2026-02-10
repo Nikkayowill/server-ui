@@ -28,7 +28,7 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
           </h1>
         </div>
         
-        <p class="mb-8 text-base font-normal text-gray-400 lg:text-lg sm:px-16 xl:px-48 relative z-30">Clouded Basement gives you a ready-to-use environment so you can focus on building, deploying, and moving fast — not configuring servers.</p>
+        <p class="mb-8 text-base lg:text-lg font-normal text-gray-400 max-w-2xl mx-auto relative z-30">Clouded Basement gives you a ready-to-use environment so you can focus on building, deploying, and moving fast — not configuring servers.</p>
         <div class="flex flex-col mb-4 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
           <a href="/register" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
             Try for free
