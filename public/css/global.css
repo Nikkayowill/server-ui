@@ -462,6 +462,11 @@ h3, h4 {
     background-clip: text;
 }
 
+/* Lock viewport — prevent horizontal nudge on mobile */
+html {
+    overflow-x: hidden;
+}
+
 /* True black background */
 body {
     font-family: 'Inter', sans-serif;
