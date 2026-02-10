@@ -6,9 +6,18 @@ ${getHTMLHead('Documentation - Basement')}
     <link rel="stylesheet" href="/css/docs.css">
     ${getResponsiveNav(req)}
     
+    <!-- Mobile TOC toggle -->
+    <button class="docs-toc-toggle" id="docsTocToggle" aria-label="Table of contents">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h16"/></svg>
+    </button>
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
+    <div class="docs-sidebar-backdrop" id="docsSidebarBackdrop"></div>
+
     <div class="docs-layout">
       <!-- Sidebar TOC -->
-      <aside class="docs-sidebar">
+      <aside class="docs-sidebar" id="docsSidebar">
         <div class="px-5 py-8">
           <h2 class="text-sm font-bold text-white uppercase tracking-wider mb-6">On This Page</h2>
           <nav>

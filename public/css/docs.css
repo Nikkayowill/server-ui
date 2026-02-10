@@ -1,32 +1,134 @@
 /* Documentation page specific styles */
-/* Extracted from pagesController.js showDocs() */
 
+/* Two-column grid: sidebar + content.
+   The sidebar column is a fixed width; content fills the rest.
+   min-height ensures the grid is at least viewport height so sticky
+   has room to work. */
 .docs-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
   background: #000;
-  padding-top: 60px; /* Clear the fixed nav */
+  padding-top: 60px;
 }
 
+/* DESKTOP SIDEBAR — position: sticky
+   align-self: start is critical — without it, the grid item stretches
+   to the full row height (same as the content column), which means
+   there is no overflow for sticky to act on. With align-self: start,
+   the sidebar shrinks to its own content height and sticks in place
+   as the page scrolls.
+   
+   top: 60px offsets below the fixed nav bar.
+   height is capped to viewport minus nav so it doesn't overflow.
+   overflow-y: auto lets the sidebar scroll internally if its links
+   ever exceed the viewport. */
 .docs-sidebar {
-  background: #111827;
-  border-right: 1px solid #374151;
+  background: rgba(17, 24, 39, 0.98);
+  border-right: 1px solid #1f2937;
   position: sticky;
   top: 60px;
+  align-self: start;
   height: calc(100vh - 60px);
   overflow-y: auto;
+  z-index: 40;
+}
+
+/* Scrollbar styling for sidebar */
+.docs-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.docs-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.docs-sidebar::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 2px;
 }
 
 .docs-content {
   background: #000;
   padding: 48px;
-  overflow-y: auto;
 }
 
 .docs-content-inner {
   max-width: 800px;
   margin: 0 auto;
+}
+
+/* Mobile TOC toggle button */
+.docs-toc-toggle {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1d4ed8;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #fff;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: background 0.2s, transform 0.2s;
+}
+.docs-toc-toggle:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+.docs-toc-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #374151;
+  border: 1px solid #4b5563;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: background 0.2s, transform 0.2s, opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+.scroll-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.scroll-to-top:hover {
+  background: #4b5563;
+  transform: scale(1.05);
+}
+.scroll-to-top svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Backdrop overlay */
+.docs-sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+}
+.docs-sidebar-backdrop.active {
+  display: block;
 }
 
 @media (max-width: 1024px) {
@@ -39,9 +141,30 @@
   .docs-layout {
     grid-template-columns: 1fr;
   }
+
   .docs-sidebar {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 1px solid #1f2937;
+    padding-top: 60px;
   }
+  .docs-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .docs-toc-toggle {
+    display: flex;
+  }
+
+  .scroll-to-top {
+    bottom: 80px;
+  }
+
   .docs-content {
     padding: 24px;
   }

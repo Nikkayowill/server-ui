@@ -106,7 +106,7 @@ ${getHTMLHead('Pricing - Basement')}
           
           <!-- PRO -->
           <div class="flex flex-col bg-gray-900/80 border-2 border-blue-500 rounded-xl p-6 relative shadow-[0_0_30px_rgba(59,130,246,0.15)]">
-            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">MOST POPULAR</div>
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">BEST VALUE</div>
             
             <div class="mb-6">
               <div class="text-lg font-bold text-white mb-1">Pro</div>

@@ -463,8 +463,11 @@ h3, h4 {
 }
 
 /* Lock viewport — prevent horizontal nudge on mobile */
+/* Using clip instead of hidden: clip prevents horizontal scroll
+   but does NOT create a new scroll context, so position:sticky
+   still works correctly for descendant elements. */
 html {
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 /* True black background */
@@ -473,7 +476,7 @@ body {
     background: #000000;
     color: var(--text-primary);
     position: relative;
-    overflow-x: hidden;
+    overflow-x: clip;
     min-height: 100vh;
 }
 

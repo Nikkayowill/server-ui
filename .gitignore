@@ -8,3 +8,4 @@ logs/
 passwords.txt
 server.log
 *.jarnul
+nul

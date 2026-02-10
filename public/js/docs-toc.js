@@ -53,3 +53,58 @@ if (window.location.hash) {
     targetLink.classList.add('text-blue-400', 'border-blue-500');
   }
 }
+
+// Mobile sidebar toggle
+const tocToggle = document.getElementById('docsTocToggle');
+const sidebar = document.getElementById('docsSidebar');
+const backdrop = document.getElementById('docsSidebarBackdrop');
+
+function openSidebar() {
+  sidebar.classList.add('open');
+  backdrop.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+if (tocToggle) {
+  tocToggle.addEventListener('click', () => {
+    if (sidebar.classList.contains('open')) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  });
+}
+
+if (backdrop) {
+  backdrop.addEventListener('click', closeSidebar);
+}
+
+// Close sidebar when a TOC link is clicked on mobile
+tocLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+      closeSidebar();
+    }
+  });
+});
+
+// Scroll to top button
+const scrollToTopBtn = document.getElementById('scrollToTop');
+if (scrollToTopBtn) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) {
+      scrollToTopBtn.classList.add('visible');
+    } else {
+      scrollToTopBtn.classList.remove('visible');
+    }
+  });
+  scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}

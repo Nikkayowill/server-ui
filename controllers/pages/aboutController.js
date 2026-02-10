@@ -2,40 +2,124 @@ const { getHTMLHead, getScripts, getFooter, getResponsiveNav } = require('../../
 
 exports.showAbout = (req, res) => {
   res.send(`
-${getHTMLHead('About - Basement')}
+${getHTMLHead('About - Clouded Basement')}
     ${getResponsiveNav(req)}
     
-    <main class="bg-black min-h-screen pt-24 pb-16">
-      <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-8">ABOUT BASEMENT</h1>
+    <main class="bg-black min-h-screen pt-36 sm:pt-40 pb-20">
+      <div class="max-w-3xl mx-auto px-6 sm:px-8">
         
-        <p class="text-gray-300 text-lg mb-8">I'm Kayo, an IT Web Programming student at NSCC in Halifax, graduating May 2026. Before switching to tech, I worked as a tradesman — different tools, same problem-solving mindset.</p>
+        <!-- Header -->
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">About Clouded Basement</h1>
+        <p class="text-lg sm:text-xl text-gray-400 leading-relaxed mb-16 lg:mb-24 max-w-2xl">Reliable VPS hosting made simple. Full server control without the hassle.</p>
         
-        <h2 class="text-2xl font-bold text-white mt-12 mb-4">WHY I BUILT THIS</h2>
+        <!-- What it is -->
+        <div class="mb-16 lg:mb-24">
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8]">Clouded Basement provides developers with full VPS control without the hassle. Deploy your applications quickly, with automated setup and monitoring, while keeping access to the underlying system.</p>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mt-5">Whether you want a testing environment or a production deployment, Clouded Basement handles the hard parts so you can focus on building.</p>
+        </div>
         
-        <p class="text-gray-300 mb-4">I wanted to prove I could build and deploy a real production application from the ground up. Not just for a grade, but something that actually handles payments, provisions servers, and solves a real problem.</p>
+        <div class="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent mb-16 lg:mb-24"></div>
         
-        <p class="text-gray-300 mb-8">Cloud hosting doesn't need to be complicated. You shouldn't need a PhD to deploy a Node app or a static site. Basement gives you a real server you can SSH into, plus a dashboard for the routine stuff. Simple.</p>
+        <!-- Founder -->
+        <div class="mb-16 lg:mb-24">
+          <div class="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 mb-8">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden ring-1 ring-white/10 flex-shrink-0">
+              <img src="/hero%20personal%20portfolio.jpg" alt="Kayo Williams" class="w-full h-full object-cover">
+            </div>
+            <div class="pt-1">
+              <h2 class="text-2xl sm:text-3xl font-bold text-white mb-1">Kayo Williams</h2>
+              <p class="text-blue-400 text-sm font-medium tracking-wide">Founder & Developer</p>
+            </div>
+          </div>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8]">Before tech, I worked in the trades for an oil and heating company. Diagnosing complex systems, troubleshooting under pressure, and solving problems methodically were part of the job — skills I now apply to building and maintaining infrastructure.</p>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mt-5">Clouded Basement is my way of creating a platform that's both reliable and usable, designed from the ground up with real-world developer needs in mind.</p>
+        </div>
         
-        <h2 class="text-2xl font-bold text-white mt-12 mb-4">HOW IT WORKS</h2>
+        <div class="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent mb-16 lg:mb-24"></div>
         
-        <p class="text-gray-300 mb-4">I'm running this as a small operation. The infrastructure is enterprise-grade (DigitalOcean droplets), but I'm building features incrementally based on what users actually need. Current setup handles individual developers and small teams deploying web apps, APIs, and services.</p>
+        <!-- Why it exists -->
+        <div class="mb-16 lg:mb-24">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Why Clouded Basement exists</h2>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mb-8">Deploying apps shouldn't be this painful. Most platforms hide too much of the system, and managing a raw VPS means hours of manual configuration. Clouded Basement sits in the middle.</p>
+          
+          <div class="space-y-4 pl-1">
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">A real VPS with full SSH and root access</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">Automated provisioning, updates, and monitoring</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">GitHub integration — connect your repo, click deploy, your site is live</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">Free subdomain included with every server</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">Custom domains with automatic SSL via Let's Encrypt</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">Nginx, Node.js, and Python pre-installed and ready</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1.5 text-xs">&#9679;</span>
+              <p class="text-gray-300">Hardened security out of the box — firewall, rate limiting, security headers</p>
+            </div>
+          </div>
+          
+          <p class="text-gray-500 text-sm mt-8 italic">You retain control, but without spending hours on setup.</p>
+        </div>
         
-        <p class="text-gray-300 mb-8">As more people use it, I expand capabilities. I prioritize stability over speed — every feature gets tested properly before it ships.</p>
+        <div class="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent mb-16 lg:mb-24"></div>
         
-        <h2 class="text-2xl font-bold text-white mt-12 mb-4">THE TECH</h2>
+        <!-- Technology -->
+        <div class="mb-16 lg:mb-24">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Technology & reliability</h2>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mb-6">Built with stability and maintainability as priorities. Automation ensures smooth operations, while critical tasks are monitored to guarantee predictable performance.</p>
+          <p class="text-gray-500 text-sm leading-relaxed">Node.js &middot; Express &middot; PostgreSQL &middot; Stripe &middot; DigitalOcean &middot; Ubuntu LTS &middot; Let's Encrypt &middot; Nginx &middot; Helmet &middot; bcrypt</p>
+        </div>
         
-        <p class="text-gray-300 mb-8">Built with <strong class="text-white">Node.js</strong>, <strong class="text-white">Express</strong>, <strong class="text-white">PostgreSQL</strong>, and <strong class="text-white">Stripe</strong>. Servers run <strong class="text-white">Ubuntu LTS</strong> on <strong class="text-white">DigitalOcean</strong>. Security includes automated OS updates and DDoS protection.</p>
+        <div class="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent mb-16 lg:mb-24"></div>
         
-        <h2 class="text-2xl font-bold text-white mt-12 mb-4">OPEN SOURCE</h2>
+        <!-- Approach -->
+        <div class="mb-16 lg:mb-24">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Our approach</h2>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8]">We're not competing with hyperscale providers. The goal is simple: a hosting platform that works reliably and reduces friction, letting developers focus on their projects.</p>
+          <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mt-5">New features are added gradually, guided by real user needs and practical considerations — not arbitrary checklists.</p>
+        </div>
         
-        <p class="text-gray-300 mb-4">The entire dashboard and deployment tooling is open source. You can see how everything works, contribute improvements, or fork it for your own projects. Transparency matters.</p>
+        <div class="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent mb-16 lg:mb-24"></div>
         
-        <p class="mb-8"><a href="#" class="text-blue-300 underline hover:text-blue-200 transition-colors" target="_blank" rel="noopener noreferrer">View on GitHub →</a></p>
+        <!-- Links -->
+        <div class="mb-16 lg:mb-24">
+          <div class="flex flex-col sm:flex-row gap-6 sm:gap-12">
+            <a href="https://github.com/Nikkayowill/CloudedBasement" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm group">
+              GitHub <span class="inline-block transition-transform group-hover:translate-x-0.5">&rarr;</span>
+            </a>
+            <a href="/docs" class="text-gray-400 hover:text-white transition-colors text-sm group">
+              Documentation <span class="inline-block transition-transform group-hover:translate-x-0.5">&rarr;</span>
+            </a>
+            <a href="/pricing" class="text-gray-400 hover:text-white transition-colors text-sm group">
+              Pricing <span class="inline-block transition-transform group-hover:translate-x-0.5">&rarr;</span>
+            </a>
+          </div>
+        </div>
         
-        <p class="mt-12 pt-8 border-t border-blue-500/30 text-gray-300">This is my capstone project and portfolio piece. If you're evaluating my work or have questions about the technical implementation, <a href="/contact" class="text-blue-300 underline hover:text-blue-200 transition-colors">reach out</a>.</p>
+        <!-- CTA -->
+        <div class="pt-12 border-t border-white/5">
+          <h3 class="text-xl font-semibold text-white mb-3">Get in touch</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-lg">Questions about the platform, tech details, or just want to connect? Clouded Basement is maintained steadily with reliability and clarity as priorities.</p>
+          <a href="/contact" class="inline-flex items-center text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors group">
+            Contact us <span class="inline-block ml-1 transition-transform group-hover:translate-x-0.5">&rarr;</span>
+          </a>
+        </div>
         
-        <a href="/" class="inline-block mt-8 px-6 py-3 text-white border border-blue-400 rounded-lg bg-blue-600 hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(135,206,250,0.6)] transition-all font-medium uppercase tracking-wider text-sm">Back to home</a>
       </div>
     </main>
     
