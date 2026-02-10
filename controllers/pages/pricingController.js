@@ -76,10 +76,6 @@ ${getHTMLHead('Pricing - Basement')}
       </section>
       
       <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
-        <!-- All plans include -->
-        <div class="text-center mb-10">
-          <p class="text-gray-400 text-sm">All plans include: SSH access, Git deployment, custom domains, automatic SSL, databases, and managed updates</p>
-        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- BASIC -->
