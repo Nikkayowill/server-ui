@@ -23,7 +23,8 @@ ${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
         <!-- Hero Heading -->
         <div class="relative inline-block mb-6 z-30">
           <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] px-4 py-4">
-            Ship Without <span class="whitespace-nowrap">Getting Stuck</span><br class="hidden sm:block"> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">On Infrastructure.</span>
+            <span class="whitespace-nowrap">Ship Without Getting Stuck</span><br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">On Infrastructure.</span>
           </h1>
         </div>
         
