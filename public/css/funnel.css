@@ -251,6 +251,21 @@
   );
 }
 
+/* ── Feature cards — Cruip gradient-border style ── */
+.funnel-feature-card {
+  background:
+    linear-gradient(#0d0d1a, #0d0d1a) padding-box,
+    linear-gradient(45deg, rgba(75,85,99,0.25), rgba(148,163,184,0.5), rgba(75,85,99,0.25)) border-box;
+  transition: transform 350ms ease, box-shadow 350ms ease;
+}
+.funnel-feature-card:hover {
+  transform: translateY(-4px);
+  background:
+    linear-gradient(#0d0d1a, #0d0d1a) padding-box,
+    linear-gradient(45deg, rgba(96,165,250,0.4), rgba(103,232,249,0.5), rgba(96,165,250,0.4)) border-box;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(96,165,250,0.06);
+}
+
 /* ── Cards / surface ── */
 .funnel-card {
   background: rgba(17, 24, 39, 0.35);
