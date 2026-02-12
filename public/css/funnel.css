@@ -31,6 +31,43 @@
   padding-bottom: var(--funnel-gap);
   padding-left: var(--funnel-px);
   padding-right: var(--funnel-px);
+  position: relative;
+}
+
+/* Glowing separator line between sections */
+.funnel-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(96, 165, 250, 0.25) 30%,
+    rgba(96, 165, 250, 0.4) 50%,
+    rgba(96, 165, 250, 0.25) 70%,
+    transparent 100%
+  );
+}
+
+/* Soft spotlight bloom that washes onto the section heading */
+.funnel-section::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 15%;
+  right: 15%;
+  height: 260px;
+  background: radial-gradient(
+    ellipse 45% 100% at 50% 0%,
+    rgba(96, 165, 250, 0.16) 0%,
+    rgba(96, 165, 250, 0.08) 35%,
+    rgba(96, 165, 250, 0.03) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
 /* Tablet */
