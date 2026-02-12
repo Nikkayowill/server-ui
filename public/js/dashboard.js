@@ -390,7 +390,7 @@ function startDemoDeploy(event) {
         { delay: 7000, status: 'Building application...', log: '> ✓ Build completed successfully' },
         { delay: 8500, status: 'Deploying to server...', log: '> Uploading to /var/www/app...' },
         { delay: 10000, status: 'Deploying to server...', log: '> Configuring nginx reverse proxy...' },
-        { delay: 11500, status: 'Starting application...', log: '> pm2 start ecosystem.config.js' },
+        { delay: 11500, status: 'Starting application...', log: '> sudo systemctl restart app.service' },
         { delay: 13000, status: 'Verifying deployment...', log: '> Health check: OK (HTTP 200)' },
     ];
     

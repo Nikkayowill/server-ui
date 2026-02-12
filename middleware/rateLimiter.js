@@ -40,10 +40,28 @@ const deploymentLimiter = rateLimit({
   keyGenerator: (req) => req.session?.userId?.toString() || 'anonymous' // Rate limit by user ID only
 });
 
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 8, // 8 login attempts per 15 minutes per IP
+  message: 'Too many login attempts, please try again in 15 minutes.',
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const registrationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // 5 registration attempts per hour per IP
+  message: 'Too many registration attempts, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 module.exports = {
   generalLimiter,
   contactLimiter,
   paymentLimiter,
   emailVerifyLimiter,
-  deploymentLimiter
+  deploymentLimiter,
+  loginLimiter,
+  registrationLimiter
 };

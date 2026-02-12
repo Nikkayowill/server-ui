@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
     "build:css": "npx tailwindcss -i ./input.css -o ./public/css/tailwind.css --minify",
     "watch:css": "npx tailwindcss -i ./input.css -o ./public/css/tailwind.css --watch"
   },
@@ -36,6 +37,7 @@
     "stripe": "^20.1.2"
   },
   "devDependencies": {
+    "nodemon": "^3.1.11",
     "tailwindcss": "^4.1.18"
   }
 }

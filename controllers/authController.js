@@ -530,8 +530,7 @@ const handleLogout = (req, res) => {
       console.error('Session destroy error:', err);
       return res.redirect('/');
     }
-    res.clearCookie('connect.sid');
-    res.clearCookie('sessionId'); // Clear custom session cookie name too
+    res.clearCookie('sessionId');
     res.redirect('/login?message=Successfully logged out');
   });
 };
@@ -547,7 +546,8 @@ const resendConfirmation = async (req, res) => {
     // Find user
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (result.rows.length === 0) {
-      return res.redirect('/login?error=Account not found');
+      // Return same message whether email exists or not (prevent enumeration)
+      return res.redirect('/verify-email?message=If that email is registered, a confirmation code has been sent.');
     }
 
     const user = result.rows[0];
@@ -677,6 +677,7 @@ ${getHTMLHead('Verify Email - Basement')}
         ${success ? `<div class="bg-green-500/10 border border-green-500/30 text-green-300 px-4 py-3 rounded-lg mb-6 flex items-center gap-2 text-sm"><svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>${success}</div>` : ''}
         
         <form method="POST" action="/verify-email" id="verifyForm" class="space-y-6">
+          <input type="hidden" name="_csrf" value="${req.csrfToken()}">
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Verification Code</label>
             <input type="text" name="code" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required
@@ -708,7 +709,11 @@ ${getHTMLHead('Verify Email - Basement')}
         btn.disabled = true;
         
         try {
-          const response = await fetch('/resend-code', { method: 'POST' });
+          const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+          const response = await fetch('/resend-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken }
+          });
           if (response.ok) {
             alert('Code resent! Check your email.');
           } else {

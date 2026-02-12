@@ -1,463 +1,343 @@
-const { getHTMLHead, getScripts, getResponsiveNav } = require('../../helpers');
+const { getHTMLHead, getScripts, getResponsiveNav, getFooter } = require('../../helpers');
 
+/**
+ * Funnel Homepage — Isolated layout system
+ * 
+ * Structure: Hero → Problem → Solution → How It Works → Trust (Pricing) → Final CTA → Footer
+ * Layout:    funnel.css (self-contained, does not inherit app UI)
+ * Width:     --funnel-prose (38rem / ~60ch) for text, --funnel-wide (56rem) for grids
+ * Rhythm:    funnel-section provides consistent vertical spacing (4rem mobile, 6rem desktop)
+ * 
+ * Heading hierarchy: h1 (hero) → h2 (each section) → h3 (cards / steps)
+ */
 exports.showHome = async (req, res) => {
   const flashMessage = req.session.flashMessage;
   delete req.session.flashMessage;
   
   res.send(`
-${getHTMLHead('Clouded Basement Hosting - Fast, Simple Cloud Hosting')}
+${getHTMLHead('Clouded Basement — Fast, Simple Cloud Hosting')}
+    <link rel="stylesheet" href="/css/funnel.css">
     ${getResponsiveNav(req)}
     
     ${flashMessage ? `
-    <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 p-4 mb-4 text-sm text-cyan-400 bg-gray-800 border border-cyan-500/30 rounded-lg shadow-lg" role="alert">
+    <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 p-4 text-sm text-cyan-400 bg-gray-800/90 border border-cyan-500/20 rounded-lg shadow-lg" role="alert">
       ${flashMessage}
     </div>
     ` : ''}
-    
-    <!-- Hero Section with Animated Rainbow Stripes -->
-    <section class="hero-wrapper relative min-h-screen flex items-center justify-center pt-32 pb-20 lg:pb-24">
-      <!-- Animated rainbow stripe background -->
-      <div class="hero-stripes"></div>
-      
-      <div class="max-w-3xl lg:max-w-5xl px-4 sm:px-6 mx-auto text-center relative z-20 hero-content">
-        <!-- Hero Heading -->
-        <div class="relative inline-block mb-6 z-30">
-          <h1 class="hero-title text-[1.65rem] sm:text-4xl md:text-5xl lg:text-[3.4rem] font-extrabold tracking-tight leading-[1.15] py-4">
-            <span>Ship Without Getting Stuck</span><br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">On Infrastructure.</span>
+
+    <main class="funnel">
+
+      <!-- ═══════════════════════════════════════
+           1. HERO
+           Primary value prop · One sentence · Primary CTA
+           ═══════════════════════════════════════ -->
+      <section class="funnel-hero">
+        <div class="hero-stripes"></div>
+        <div class="text-center relative z-20">
+          <h1 class="funnel-heading-1 mb-6 max-w-3xl mx-auto px-6">
+            Ship&nbsp;Without&nbsp;Getting<br>
+            <span class="funnel-gradient-text">Stuck&nbsp;on&nbsp;Infrastructure.</span>
           </h1>
-        </div>
-        
-        <p class="mb-8 text-base lg:text-lg font-normal text-gray-400 max-w-2xl mx-auto relative z-30">Clouded Basement gives you a ready-to-use environment so you can focus on building, deploying, and moving fast — not configuring servers.</p>
-        <div class="flex flex-col items-center mb-4 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-          <a href="/register" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
-            Try for free
-            <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-            </svg>
-          </a>
-          <a href="/docs" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-gray-300 border border-gray-700 rounded-lg hover:border-blue-500 hover:bg-blue-500/10 hover:text-white transition-all duration-300">
-            See how it works
-          </a>
-        </div>
-        <p class="text-sm text-gray-500 mt-6">
-          Production-ready in 2 minutes · Full root SSH · No lock-in
-          <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline ml-2">Is this safe? →</a>
-        </p>
-      </div>
-    </section>
-
-    <!-- Social Proof / Trust Indicators -->
-    <section class="py-10 md:py-14">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 md:gap-12 text-sm text-gray-400">
-          <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            <span>Your own VPS (not shared)</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            <span>Cancel anytime</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            <span>Founder support</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Why Choose Section -->
-    <section class="py-16 md:py-24 lg:py-28 relative">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 md:mb-14">
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Clouded Basement?</h2>
-          <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto">Control and convenience — not one or the other.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
-          <!-- Card 1 -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
-              </svg>
-            </div>
-            <h3 class="text-base font-medium text-white mb-2">Your server, not a black box</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">Every project runs on its own VPS with full root access. No abstractions, no vendor lock-in.</p>
-          </div>
-          
-          <!-- Card 2 -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-            </div>
-            <h3 class="text-base font-medium text-white mb-2">Zero-setup infrastructure</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">SSL, Nginx, Node.js, Python, Git — all configured and ready in minutes.</p>
-          </div>
-          
-          <!-- Card 3 -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-              </svg>
-            </div>
-            <h3 class="text-base font-medium text-white mb-2">Founder support</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">Every ticket is reviewed by the founder. Real answers from someone who knows the system.</p>
-          </div>
-          
-          <!-- Card 4 -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h3 class="text-base font-medium text-white mb-2">Simple, predictable pricing</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">Flat monthly pricing. Cancel anytime. No usage surprises or complicated tiers.</p>
-          </div>
-          
-          <!-- Card 5 -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-              </svg>
-            </div>
-            <h3 class="text-base font-medium text-white mb-2">No vendor lock-in</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">Your server, your data, your code. Take it anywhere, anytime. We don't trap you.</p>
-          </div>
-          
-          <!-- Card 6 -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h3 class="text-base font-medium text-white mb-2">Ready in 2 minutes</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">From signup to live server. No waiting, no manual provisioning, no delays.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section class="py-16 md:py-24 lg:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 md:mb-14">
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
-          <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto">From idea to live server — without the setup stress</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          <!-- Step 1 -->
-          <div class="p-5 rounded-xl bg-gray-900/30 border border-gray-800">
-            <div class="flex items-center gap-3 mb-3">
-              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold">1</span>
-              <h3 class="text-base font-medium text-white">Choose a plan</h3>
-            </div>
-            <p class="text-gray-400 text-sm leading-relaxed">Pick the resources you need. No hidden configs, no surprise limits.</p>
-          </div>
-          
-          <!-- Step 2 -->
-          <div class="p-5 rounded-xl bg-gray-900/30 border border-gray-800">
-            <div class="flex items-center gap-3 mb-3">
-              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold">2</span>
-              <h3 class="text-base font-medium text-white">We prepare everything</h3>
-            </div>
-            <p class="text-gray-400 text-sm leading-relaxed">We provision Ubuntu with Nginx, Node, Python, and SSL — ready in 2 minutes.</p>
-          </div>
-          
-          <!-- Step 3 -->
-          <div class="p-5 rounded-xl bg-gray-900/30 border border-gray-800">
-            <div class="flex items-center gap-3 mb-3">
-              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold">3</span>
-              <h3 class="text-base font-medium text-white">Deploy your way</h3>
-            </div>
-            <p class="text-gray-400 text-sm leading-relaxed">SSH in like a normal VPS, or deploy directly from GitHub with one click.</p>
-          </div>
-        </div>
-        
-        <p class="mt-10 text-center text-gray-500 text-sm">Every server is isolated, yours alone, and can be accessed or moved at any time.</p>
-      </div>
-    </section>
-
-    <!-- What You Get Section -->
-    <section class="py-16 md:py-24 lg:py-28 relative">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 md:mb-14">
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">What you get</h2>
-          <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto">Everything to run a production app — without managing infrastructure.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Dedicated VPS</h4>
-                <p class="text-gray-500 text-sm">Your own isolated server</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Ubuntu 22.04 LTS</h4>
-                <p class="text-gray-500 text-sm">Latest stable release</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Full root SSH</h4>
-                <p class="text-gray-500 text-sm">Complete server control</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Nginx preconfigured</h4>
-                <p class="text-gray-500 text-sm">Ready to serve apps</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Node.js & Python</h4>
-                <p class="text-gray-500 text-sm">Modern runtimes installed</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">GitHub deployments</h4>
-                <p class="text-gray-500 text-sm">One-click from repo</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Custom domains + Free SSL</h4>
-                <p class="text-gray-500 text-sm">HTTPS via Let's Encrypt</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <div>
-                <h4 class="text-white font-medium mb-1">Secure by default</h4>
-                <p class="text-gray-500 text-sm">Hardened security settings out of the box</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <p class="text-center text-gray-500 text-sm mt-10">Install anything else you need — it's your server.</p>
-      </div>
-    </section>
-
-    <!-- How We Compare Section -->
-    <section class="py-16 md:py-24 lg:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 md:mb-14">
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">How We Compare</h2>
-          <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto">The convenience of a PaaS with the control of your own server.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          <!-- PaaS Column -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800">
-            <h3 class="text-base font-bold text-gray-300 mb-1">PaaS</h3>
-            <p class="text-xs text-gray-500 mb-4">Heroku · Render · Railway</p>
-            <ul class="space-y-2 text-sm text-gray-400">
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Quick setup</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Git deployments</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> No SSH or root access</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Shared containers</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Ephemeral filesystem</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Vendor lock-in</li>
-            </ul>
-            <p class="text-xs text-gray-500 mt-4">From $5–25/mo per service</p>
-          </div>
-          
-          <!-- Basement Column (highlighted) -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-blue-500/50 relative">
-            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-medium text-white bg-blue-600 rounded">BEST OF BOTH</span>
-            <h3 class="text-base font-bold text-blue-400 mb-1">Clouded Basement</h3>
-            <p class="text-xs text-gray-500 mb-4">Managed VPS hosting</p>
-            <ul class="space-y-2 text-sm text-gray-300">
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Quick setup (~2 min)</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Git deployments</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Dedicated VPS (not shared)</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Persistent filesystem</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> No lock-in — take it and go</li>
-            </ul>
-            <p class="text-xs text-gray-500 mt-4">From $15/mo flat</p>
-          </div>
-          
-          <!-- DIY VPS Column -->
-          <div class="p-5 rounded-xl bg-gray-900/50 border border-gray-800">
-            <h3 class="text-base font-bold text-gray-300 mb-1">DIY VPS</h3>
-            <p class="text-xs text-gray-500 mb-4">DigitalOcean · Linode · Vultr</p>
-            <ul class="space-y-2 text-sm text-gray-400">
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Full SSH & root access</li>
-              <li class="flex items-start gap-2"><span class="text-green-400">✓</span> Dedicated server</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> No managed deployments</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> Manual SSL & security setup</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> No dashboard or GUI</li>
-              <li class="flex items-start gap-2"><span class="text-red-400">✗</span> 30–60 min setup time</li>
-            </ul>
-            <p class="text-xs text-gray-500 mt-4">From $4–6/mo + your time</p>
-          </div>
-        </div>
-        
-        <p class="text-center text-gray-500 text-sm mt-10">
-          <a href="/compare" class="text-blue-400 hover:text-blue-300 underline">See the full comparison with Heroku, Render, and Railway →</a>
-        </p>
-      </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="py-16 md:py-24 lg:py-28 relative">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 md:mb-14">
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Pricing</h2>
-          <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto">Simple monthly pricing · No usage surprises · Cancel anytime</p>
-          <p class="text-blue-400 text-sm mt-3">💬 Every plan includes real developer support</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          <!-- Basic -->
-          <div class="relative p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="flex items-start justify-between mb-2">
-              <h3 class="text-lg font-medium text-white">Basic</h3>
-              <span class="px-1.5 py-0.5 text-[8px] font-medium text-white rounded bg-red-500 uppercase">3-day trial</span>
-            </div>
-            <p class="text-3xl font-bold text-white">$15<span class="text-sm font-normal text-gray-500">/mo</span></p>
-            <p class="text-gray-500 text-sm mt-3 mb-5">1 GB RAM · 1 vCPU · 25 GB SSD · 2 sites</p>
-            <a href="/pay?plan=basic&interval=monthly" class="block w-full py-2 text-center text-sm font-medium rounded border border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">Deploy Basic</a>
-          </div>
-          
-          <!-- Pro - Featured -->
-          <div class="relative p-5 rounded-xl bg-gray-900/50 border border-blue-500/50 hover:border-blue-400 transition-colors">
-            <div class="flex items-start justify-between mb-2">
-              <h3 class="text-lg font-medium text-white">Pro</h3>
-              <span class="px-1.5 py-0.5 text-[8px] font-medium text-white rounded bg-red-500 uppercase">3-day trial</span>
-            </div>
-            <p class="text-3xl font-bold text-white">$35<span class="text-sm font-normal text-gray-500">/mo</span></p>
-            <p class="text-gray-500 text-sm mt-3 mb-5">2 GB RAM · 2 vCPUs · 50 GB SSD · 5 sites</p>
-            <a href="/pay?plan=pro&interval=monthly" class="block w-full py-2 text-center text-sm font-medium rounded bg-blue-600 text-white hover:bg-blue-500 transition-all">Deploy Pro</a>
-          </div>
-          
-          <!-- Premium -->
-          <div class="relative p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-blue-500/30 transition-colors">
-            <div class="flex items-start justify-between mb-2">
-              <h3 class="text-lg font-medium text-white">Premium</h3>
-              <span class="px-1.5 py-0.5 text-[8px] font-medium text-white rounded bg-red-500 uppercase">3-day trial</span>
-            </div>
-            <p class="text-3xl font-bold text-white">$75<span class="text-sm font-normal text-gray-500">/mo</span></p>
-            <p class="text-gray-500 text-sm mt-3 mb-5">4 GB RAM · 2 vCPUs · 80 GB SSD · 10 sites</p>
-            <a href="/pay?plan=premium&interval=monthly" class="block w-full py-2 text-center text-sm font-medium rounded border border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">Deploy Premium</a>
-          </div>
-        </div>
-        
-        <p class="text-center text-gray-500 text-sm mt-10">
-          No contracts. Cancel anytime. 
-          <a href="/pricing" class="text-blue-400 hover:text-blue-300 underline">Full pricing details →</a>
-        </p>
-      </div>
-    </section>
-
-    <!-- Final CTA Section with Footer -->
-    <section class="py-16 md:py-24 lg:py-28 relative overflow-hidden">
-      <!-- Radial gradient reflection matching hero colors (intensified) -->
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 100%, rgba(96, 165, 250, 0.25) 0%, rgba(232, 121, 249, 0.18) 35%, rgba(94, 234, 212, 0.14) 65%, transparent 100%);"></div>
-      </div>
-      
-      <!-- CTA Content -->
-      <div class="max-w-xl px-4 sm:px-6 mx-auto text-center relative z-10 mb-16 md:mb-24">
-        <h2 class="mb-4 text-3xl md:text-4xl font-extrabold text-white">Ready to get started?</h2>
-        <p class="mb-8 text-lg text-gray-300">Deploy your server in minutes. No credit card required to explore.</p>
-        <p class="mb-8 text-gray-400 text-sm">
-          <span class="text-gray-500">Got questions about server ownership or setup?</span>
-          Every VPS is yours with full root access, automated provisioning, and one-click deployments.
-          <a href="/faq" class="text-brand hover:text-cyan-400 underline ml-1">See the full FAQ →</a>
-        </p>
-        <a href="/register" class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">
-          Sign up
-          <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-          </svg>
-        </a>
-      </div>
-      
-      <!-- Footer Content -->
-      <footer class="relative z-10 py-12">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <div class="text-center md:text-left">
-                <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
-            </div>
-            <div class="text-center md:text-left">
-                <h4 class="text-blue-400 text-sm font-bold mb-3">Quick Links</h4>
-                <ul class="space-y-2">
-                    <li><a href="/about" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">About</a></li>
-                    <li><a href="/pricing" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Pricing</a></li>
-                    <li><a href="/docs" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Documentation</a></li>
-                    <li><a href="/contact" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Contact</a></li>
-                    <li><a href="/compare" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Compare</a></li>
-                    <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
-                </ul>
-            </div>
-            <div class="text-center md:text-left">
-                <h4 class="text-blue-400 text-sm font-bold mb-3">Legal</h4>
-                <ul class="space-y-2">
-                    <li><a href="/terms" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Terms of Service</a></li>
-                    <li><a href="/privacy" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Privacy Policy</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-center mt-10 pt-6 max-w-6xl mx-auto px-4">
-            <p class="mb-3">
-                <a href="/is-this-safe" class="text-brand text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
+          <div class="funnel-prose mx-auto">
+            <p class="funnel-body max-w-lg mx-auto mb-10">A ready-to-use server so you can focus<br>on building — not configuring.</p>
+            <a href="/register" class="funnel-btn funnel-btn-primary">
+              Try 3 Days Free
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+              <a href="/docs" class="funnel-btn funnel-btn-secondary">
+            Read Docs              
+           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+            <p class="mt-8 funnel-body-sm" style="color: #6b7280">
+              Push to GitHub, we handle the rest · Live in&nbsp;minutes
             </p>
-            <p class="text-gray-500 text-xs">&copy; ${new Date().getFullYear()} Basement. All rights reserved.</p>
+          </div>
         </div>
-      </footer>
-    </section>
-    
-    ${getScripts('nav.js')}
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           2. PROBLEM
+           Frame the pain clearly
+           ═══════════════════════════════════════ -->
+      <section class="funnel-section funnel-bg-problem">
+        <div class="funnel-prose text-center">
+          <p class="funnel-kicker mb-4 reveal">The Problem</p>
+          <h2 class="funnel-heading-2 mb-6 reveal">Every hour on config<br>is an hour not&nbsp;shipping.</h2>
+          <p class="funnel-body mx-auto reveal" style="max-width: 36rem">
+            You just want to push your code and have it go live. Instead you're stuck configuring Nginx, SSL certificates, firewall rules, and deploy&nbsp;scripts.
+          </p>
+          <p class="funnel-body mx-auto mt-4 reveal" style="max-width: 36rem">
+            That stuff should already be done for&nbsp;you.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           3. SOLUTION
+           What Clouded Basement does + dashboard proof
+           ═══════════════════════════════════════ -->
+      <section class="funnel-section funnel-bg-solution">
+        <div class="funnel-wide">
+
+          <header class="funnel-prose text-center mb-12">
+            <p class="funnel-kicker mb-4 reveal">The Solution</p>
+            <h2 class="funnel-heading-2 mb-4 reveal">So we set it up&nbsp;for&nbsp;you.</h2>
+            <p class="funnel-body reveal">Connect your GitHub repo, push your code, and it's live. We handle&nbsp;everything&nbsp;else.</p>
+          </header>
+
+          <!-- Dashboard status card — production-grade preview -->
+          <div class="mb-14 reveal" style="max-width: 520px; margin-left: auto; margin-right: auto; margin-bottom: 5rem">
+              <div style="overflow: hidden; border-radius: 0.75rem; border: 1px solid rgba(100,140,255,0.15); background: #0d0d1a; box-shadow: 0 0 80px 20px rgba(59,130,246,0.12), 0 0 40px 10px rgba(139,92,246,0.08), 0 0 120px 40px rgba(34,211,238,0.06), 0 25px 60px -12px rgba(0,0,0,0.7)">
+
+              <!-- Deploy from Git -->
+              <div class="px-5 py-4" style="border-bottom: 1px solid rgba(255,255,255,0.06)">
+                <p class="text-xs font-semibold mb-3" style="color: #d1d5db">Deploy from Git</p>
+                <div class="flex gap-2">
+                  <div class="flex-1 px-3.5 py-2.5 rounded-lg text-xs funnel-mono truncate" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #60a5fa">https://github.com/you/my-saas-app.git</div>
+                  <div class="px-4 py-2.5 rounded-lg text-xs font-semibold flex-shrink-0" style="background: #2563eb; color: white">Deploy</div>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                  <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background: #22c55e"></span>
+                  <span class="text-[10px]" style="color: #6b7280">Auto-deploy enabled</span>
+                </div>
+              </div>
+
+              <!-- Recent Deployments header -->
+              <div class="px-5 pt-4 pb-2">
+                <p class="text-xs font-semibold" style="color: #d1d5db">Recent Deployments</p>
+              </div>
+
+              <!-- Deployment row 1 — success -->
+              <div class="flex items-center justify-between px-5 py-3" style="border-bottom: 1px solid rgba(255,255,255,0.04)">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="flex-shrink-0 text-xs" style="color: #4ade80">\u25cf</span>
+                  <div class="min-w-0">
+                    <p class="text-sm funnel-mono truncate" style="color: #e5e7eb">my-saas-app</p>
+                    <p class="text-[10px]" style="color: #6b7280">2/12/2026</p>
+                  </div>
+                </div>
+                <div class="px-3 py-1.5 rounded-md text-[10px] font-medium flex-shrink-0" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af">Redeploy</div>
+              </div>
+
+              <!-- Deployment row 2 — success -->
+              <div class="flex items-center justify-between px-5 py-3" style="border-bottom: 1px solid rgba(255,255,255,0.04)">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="flex-shrink-0 text-xs" style="color: #4ade80">\u25cf</span>
+                  <div class="min-w-0">
+                    <p class="text-sm funnel-mono truncate" style="color: #e5e7eb">landing-page</p>
+                    <p class="text-[10px]" style="color: #6b7280">2/9/2026</p>
+                  </div>
+                </div>
+                <div class="px-3 py-1.5 rounded-md text-[10px] font-medium flex-shrink-0" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af">Redeploy</div>
+              </div>
+
+              <!-- Deployment row 3 — success -->
+              <div class="flex items-center justify-between px-5 py-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="flex-shrink-0 text-xs" style="color: #4ade80">\u25cf</span>
+                  <div class="min-w-0">
+                    <p class="text-sm funnel-mono truncate" style="color: #e5e7eb">api-backend</p>
+                    <p class="text-[10px]" style="color: #6b7280">2/7/2026</p>
+                  </div>
+                </div>
+                <div class="px-3 py-1.5 rounded-md text-[10px] font-medium flex-shrink-0" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af">Redeploy</div>
+              </div>
+
+            </div>
+            <!-- Caption -->
+            <p class="text-center mt-6 text-[11px]" style="color: #4b5563">Your deploy dashboard — paste a repo, click deploy</p>
+          </div>
+
+          <!-- Feature grid (3×2 → optimized for desktop readability) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8 reveal-stagger">
+            <div class="flex gap-4">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(59,130,246,0.08)">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="#60a5fa" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 8V3m0 0L4 6m3-3l3 3m4 5v6m0 0l-3-3m3 3l3-3"/></svg>
+              </div>
+              <div>
+                <h3 class="funnel-heading-3 mb-1">Push to GitHub, it's&nbsp;live</h3>
+                <p class="funnel-body-sm">Connect your repo once. Every push auto-deploys — no scripts,&nbsp;no&nbsp;CI.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(34,197,94,0.08)">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="#4ade80" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </div>
+              <div>
+                <h3 class="funnel-heading-3 mb-1">Zero-setup infrastructure</h3>
+                <p class="funnel-body-sm">SSL, Nginx, Node.js, Python, Git — configured and ready in&nbsp;minutes.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(168,85,247,0.08)">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="#a78bfa" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              </div>
+              <div>
+                <h3 class="funnel-heading-3 mb-1">Founder support</h3>
+                <p class="funnel-body-sm">Every ticket reviewed by the founder. Real answers, not&nbsp;bots.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(234,179,8,0.08)">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="#facc15" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <h3 class="funnel-heading-3 mb-1">Flat, predictable pricing</h3>
+                <p class="funnel-body-sm">No usage surprises or complicated tiers. Cancel&nbsp;anytime.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(249,115,22,0.08)">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="#fb923c" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <h3 class="funnel-heading-3 mb-1">Full access if you want&nbsp;it</h3>
+                <p class="funnel-body-sm">SSH and root access are there when you need them. Most people&nbsp;don't.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(236,72,153,0.08)">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="#f472b6" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <h3 class="funnel-heading-3 mb-1">Ready in 2 minutes</h3>
+                <p class="funnel-body-sm">From signup to live server. No waiting, no manual&nbsp;provisioning.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           4. HOW IT WORKS
+           Three-step flow
+           ═══════════════════════════════════════ -->
+      <section class="funnel-section funnel-bg-process">
+        <div class="funnel-wide">
+
+          <header class="funnel-prose text-center mb-12">
+            <p class="funnel-kicker mb-4 reveal">How It Works</p>
+            <h2 class="funnel-heading-2 mb-4 reveal">From idea to live&nbsp;server</h2>
+            <p class="funnel-body reveal">Three steps. No DevOps&nbsp;required.</p>
+          </header>
+
+          <div class="reveal-stagger">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+              <div class="text-center">
+                <p class="font-mono text-xs tracking-widest mb-4 mx-auto" style="color: #4b5563">01</p>
+                <h3 class="funnel-heading-3 mb-2">Choose a plan</h3>
+                <p class="funnel-body-sm max-w-xs mx-auto">Pick the resources you need. No hidden configs, no surprise&nbsp;limits.</p>
+              </div>
+              <div class="text-center">
+                <p class="font-mono text-xs tracking-widest mb-4 mx-auto" style="color: #4b5563">02</p>
+                <h3 class="funnel-heading-3 mb-2">We set up everything</h3>
+                <p class="funnel-body-sm max-w-xs mx-auto">Ubuntu with Nginx, Node, Python, and SSL — provisioned in 2&nbsp;minutes.</p>
+              </div>
+              <div class="text-center">
+                <p class="font-mono text-xs tracking-widest mb-4 mx-auto" style="color: #4b5563">03</p>
+                <h3 class="funnel-heading-3 mb-2">Push and it's live</h3>
+                <p class="funnel-body-sm max-w-xs mx-auto">Connect your GitHub repo. Every push auto-deploys your&nbsp;app.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           5. TRUST — PRICING
+           Transparent pricing = trust signal
+           ═══════════════════════════════════════ -->
+      <section class="funnel-section funnel-bg-trust">
+        <div class="funnel-wide" style="max-width: 52rem">
+
+          <header class="funnel-prose text-center mb-12">
+            <p class="funnel-kicker mb-4 reveal">Pricing</p>
+            <h2 class="funnel-heading-2 mb-4 reveal">One price. No&nbsp;surprises.</h2>
+            <p class="funnel-body reveal">No usage surprises. Cancel anytime. Every plan includes real developer&nbsp;support.</p>
+          </header>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch reveal-stagger">
+
+            <!-- Basic -->
+            <div class="funnel-card p-6 md:p-7 flex flex-col">
+              <h3 class="funnel-heading-3 mb-1">Basic</h3>
+              <p class="funnel-body-sm mb-4" style="color: #6b7280">Side projects &amp; experiments</p>
+              <p class="text-4xl font-bold text-white mb-1">$15<span class="text-base font-normal" style="color: #6b7280">/mo</span></p>
+              <p class="text-xs mb-6" style="color: #4b5563">3-day free trial included</p>
+              <ul class="space-y-2 funnel-body-sm mb-8 flex-1">
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 1 GB RAM · 1 vCPU</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 25 GB SSD</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 2 sites</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> GitHub auto-deploy</li>
+              </ul>
+              <a href="/pay?plan=basic&interval=monthly" class="funnel-btn funnel-btn-subtle w-full">Deploy Basic</a>
+            </div>
+
+            <!-- Pro — featured -->
+            <div class="funnel-card-featured p-6 md:p-7 flex flex-col relative md:-my-3">
+              <span class="funnel-badge">Most Popular</span>
+              <h3 class="funnel-heading-3 mb-1 mt-2">Pro</h3>
+              <p class="funnel-body-sm mb-4" style="color: #6b7280">Production apps &amp; growing projects</p>
+              <p class="text-4xl font-bold text-white mb-1">$35<span class="text-base font-normal" style="color: #6b7280">/mo</span></p>
+              <p class="text-xs mb-6" style="color: #4b5563">3-day free trial included</p>
+              <ul class="space-y-2 funnel-body-sm mb-8 flex-1" style="color: #d1d5db">
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 2 GB RAM · 2 vCPUs</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 50 GB SSD</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 5 sites</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> GitHub auto-deploy</li>
+              </ul>
+              <a href="/pay?plan=pro&interval=monthly" class="funnel-btn funnel-btn-primary w-full">Deploy Pro</a>
+            </div>
+
+            <!-- Premium -->
+            <div class="funnel-card p-6 md:p-7 flex flex-col">
+              <h3 class="funnel-heading-3 mb-1">Premium</h3>
+              <p class="funnel-body-sm mb-4" style="color: #6b7280">Established apps &amp; high&nbsp;traffic</p>
+              <p class="text-4xl font-bold text-white mb-1">$55<span class="text-base font-normal" style="color: #6b7280">/mo</span></p>
+              <p class="text-xs mb-6" style="color: #4b5563">3-day free trial included</p>
+              <ul class="space-y-2 funnel-body-sm mb-8 flex-1">
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 4 GB RAM · 2 vCPUs</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 80 GB SSD</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> 10 sites</li>
+                <li class="flex items-center gap-2"><span style="color: #4ade80; font-size: 10px">●</span> GitHub auto-deploy</li>
+              </ul>
+              <a href="/pay?plan=premium&interval=monthly" class="funnel-btn funnel-btn-subtle w-full">Deploy Premium</a>
+            </div>
+
+          </div>
+
+          <p class="text-center mt-10 funnel-body-sm" style="color: #6b7280">
+            No contracts. Cancel anytime.
+            <a href="/pricing" class="underline" style="color: #60a5fa">Full pricing details →</a>
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           6. FINAL CTA
+           One last push to convert
+           ═══════════════════════════════════════ -->
+      <section class="funnel-section funnel-bg-cta">
+        <div class="funnel-prose text-center">
+          <h2 class="funnel-heading-2 mb-4 reveal">Try it for 3&nbsp;days. Free.</h2>
+          <p class="funnel-body mb-8 reveal">Deploy your server in minutes.<br> No credit card required to&nbsp;explore.</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 reveal">
+            <a href="/register" class="funnel-btn funnel-btn-primary">
+              Sign up free
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+            <a href="/is-this-safe" class="funnel-btn funnel-btn-ghost">Is this safe? →</a>
+          </div>
+          <p class="mt-6 funnel-body-sm reveal"><a href="/docs" class="underline hover:text-white transition-colors" style="color: #60a5fa">See how it works? →</a></p>
+        </div>
+      </section>
+
+    </main>
+
+    ${getFooter()}
+
+    ${getScripts('nav.js', 'scroll-reveal.js')}
   `);
 };

@@ -60,10 +60,10 @@ ${getHTMLHead('Pricing - Basement')}
       <!-- Free Trial Banner -->
       ${trialBanner}
       
-      <section class="py-12 px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Simple, Transparent Pricing</h1>
-        <p class="text-gray-300 text-lg mb-4">One server, deploy as many times as you want.</p>
-        <p class="text-blue-400 text-sm mb-8 max-w-md mx-auto">I update, add security, and backup your server for you — you can focus on shipping your apps.</p>
+      <section class="py-12 px-6 sm:px-8 text-center">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-4">Simple, Transparent&nbsp;Pricing</h1>
+        <p class="text-gray-300 text-base md:text-lg mb-4">One server, deploy as many times as you want.</p>
+        <p class="text-blue-400 text-sm mb-8 max-w-md mx-auto">I update, add security, and backup your server for you — you can focus on shipping&nbsp;your&nbsp;apps.</p>
         
         <!-- Billing Toggle -->
         <div class="flex items-center justify-center gap-4 mb-12">
@@ -75,9 +75,9 @@ ${getHTMLHead('Pricing - Basement')}
         </div>
       </section>
       
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+      <section class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-10 pb-16">
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
           <!-- BASIC -->
           <div class="flex flex-col bg-gray-900/50 border border-gray-700 rounded-xl p-6 hover:border-blue-500/50 transition-all">
             <div class="mb-6">
@@ -141,8 +141,8 @@ ${getHTMLHead('Pricing - Basement')}
             </div>
             
             <div class="mb-6">
-              <div class="pricing-amount" data-monthly="75" data-yearly="810">
-                <span class="text-4xl font-bold text-white price-value">$75</span>
+              <div class="pricing-amount" data-monthly="55" data-yearly="594">
+                <span class="text-4xl font-bold text-white price-value">$55</span>
                 <span class="text-gray-400 price-interval">/mo</span>
               </div>
             </div>
@@ -163,7 +163,7 @@ ${getHTMLHead('Pricing - Basement')}
       </section>
       
       <!-- What's Included (collapsed by default) -->
-      <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
+      <section class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-10 pb-16">
         <details class="group">
           <summary class="flex items-center justify-center gap-2 cursor-pointer text-gray-400 hover:text-white transition-colors py-4">
             <span class="text-sm font-medium">View full feature comparison</span>
@@ -199,9 +199,9 @@ ${getHTMLHead('Pricing - Basement')}
       </section>
       
       <!-- Tech Stack Info -->
-      <section class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16 pb-16">
-        <h2 class="text-2xl font-bold text-white text-center mb-8">What's Pre-Installed</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+      <section class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-10 pb-16">
+        <h2 class="text-xl font-bold text-white text-center mb-6">What's Pre-Installed</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
           <div class="bg-gray-900 rounded-lg p-4 border border-gray-800">
             <div class="text-2xl mb-2">🐧</div>
             <div class="text-white font-medium text-sm">Ubuntu 22.04</div>
@@ -246,7 +246,7 @@ ${getHTMLHead('Pricing - Basement')}
       </section>
       
       <!-- Trust Links -->
-      <section class="max-w-3xl mx-auto px-4 sm:px-6 pb-12 text-center">
+      <section class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-10 pb-12 text-center">
         <p class="text-gray-400 text-sm mb-4">Questions about security or how this works?</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
           <a href="/is-this-safe" class="text-brand hover:text-cyan-400 underline font-medium text-sm">Is Clouded Basement safe?</a>

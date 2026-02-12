@@ -33,7 +33,7 @@ const { monitorSubscriptions } = require('./services/subscriptionMonitor');
 const { checkAndProvisionSSL } = require('./services/autoSSL');
 const { sendServerRequestEmail } = require('./services/email');
 const { requireAuth, requireAdmin } = require('./middleware/auth');
-const { generalLimiter, contactLimiter, paymentLimiter, emailVerifyLimiter, deploymentLimiter } = require('./middleware/rateLimiter');
+const { generalLimiter, contactLimiter, paymentLimiter, emailVerifyLimiter, deploymentLimiter, loginLimiter, registrationLimiter } = require('./middleware/rateLimiter');
 const pagesController = require('./controllers/pagesController');
 const gettingStartedController = require('./controllers/gettingStartedController');
 const authController = require('./controllers/authController');
@@ -140,20 +140,13 @@ app.get('/health', async (req, res) => {
     
     res.status(200).json({
       status: 'ok',
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development',
-      uptime: process.uptime(),
       database: dbCheck.rows.length > 0 ? 'connected' : 'error'
     });
   } catch (error) {
     console.error('[HEALTH] Database check failed:', error.message);
     res.status(503).json({
       status: 'degraded',
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development',
-      uptime: process.uptime(),
-      database: 'disconnected',
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Database unavailable'
+      database: 'disconnected'
     });
   }
 });
@@ -180,6 +173,7 @@ app.post('/contact',
 
 // Register POST handler
 app.post('/register',
+  registrationLimiter,
   csrfProtection,
   [
     body('email').trim().isEmail().normalizeEmail(),
@@ -194,6 +188,7 @@ app.get('/login', csrfProtection, authController.showLogin);
 
 // Login POST handler
 app.post('/login',
+  loginLimiter,
   csrfProtection,
   [
     body('email').trim().isEmail().normalizeEmail(),
@@ -226,12 +221,12 @@ app.get('/auth/google/callback',
 );
 
 // Email confirmation route
-app.get('/confirm-email/:token', authController.confirmEmail);
+app.get('/confirm-email/:token', emailVerifyLimiter, authController.confirmEmail);
 
 // Code verification routes
-app.get('/verify-email', authController.showVerifyEmail);
-app.post('/verify-email', emailVerifyLimiter, authController.verifyEmailCode);
-app.post('/resend-code', emailVerifyLimiter, authController.resendCode);
+app.get('/verify-email', csrfProtection, authController.showVerifyEmail);
+app.post('/verify-email', emailVerifyLimiter, csrfProtection, authController.verifyEmailCode);
+app.post('/resend-code', emailVerifyLimiter, csrfProtection, authController.resendCode);
 app.get('/resend-confirmation', emailVerifyLimiter, authController.resendConfirmation);
 
 // Password reset routes

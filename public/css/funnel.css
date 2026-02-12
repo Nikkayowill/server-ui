@@ -1,0 +1,411 @@
+/* ============================================
+   FUNNEL PAGE — ISOLATED LAYOUT SYSTEM
+   
+   This file controls the homepage/funnel page ONLY.
+   It does not inherit from or affect the app UI.
+   
+   Layout system:
+   - Vertical rhythm: 6rem (96px) between sections on desktop, 4rem (64px) on mobile
+   - Content width: max-w-[38rem] (~60ch) for prose, max-w-[56rem] for wider elements
+   - Type scale: clamp()-based fluid sizing
+   - All spacing derives from a 0.5rem base unit
+   ============================================ */
+
+/* ── Page wrapper ── */
+.funnel {
+  --funnel-gap: 3rem;
+  --funnel-gap-lg: 7rem;
+  --funnel-prose: 40rem;    /* ~60-65 characters */
+  --funnel-wide: 60rem;     /* dashboard mockup, pricing grid */
+  --funnel-px: 1.25rem;     /* horizontal page padding */
+  --funnel-bg: #000000;
+
+  background: var(--funnel-bg);
+  color: #e5e7eb;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Section rhythm ── */
+.funnel-section {
+  padding-top: var(--funnel-gap);
+  padding-bottom: var(--funnel-gap);
+  padding-left: var(--funnel-px);
+  padding-right: var(--funnel-px);
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+  .funnel {
+    --funnel-px: 2rem;
+    --funnel-gap: 4rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .funnel {
+    --funnel-px: 3rem;
+  }
+  .funnel-section {
+    padding-top: var(--funnel-gap-lg);
+    padding-bottom: var(--funnel-gap-lg);
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1024px) {
+  .funnel {
+    --funnel-px: 4rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .funnel {
+    --funnel-px: 6rem;
+  }
+}
+
+/* ── Content containers ── */
+.funnel-prose {
+  max-width: var(--funnel-prose);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.funnel-wide {
+  max-width: var(--funnel-wide);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Typography ── */
+.funnel-heading-1 {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-size: clamp(2rem, 5vw + 0.5rem, 4.25rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.funnel-heading-2 {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-size: clamp(1.5rem, 3vw + 0.5rem, 2.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.funnel-heading-3 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(0.9375rem, 1vw + 0.25rem, 1.125rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.funnel-body {
+  font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+  line-height: 1.7;
+  color: #9ca3af;
+}
+
+.funnel-body-sm {
+  font-size: clamp(0.8125rem, 0.25vw + 0.75rem, 0.9375rem);
+  line-height: 1.65;
+  color: #9ca3af;
+}
+
+.funnel-kicker {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(96, 165, 250, 0.6);
+}
+
+/* ── Buttons ── */
+.funnel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: all 150ms ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.funnel-btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+.funnel-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.6s ease;
+}
+.funnel-btn-primary:hover {
+  background: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 20px rgba(37, 99, 235, 0.4),
+    0 0 30px rgba(96, 165, 250, 0.3);
+}
+.funnel-btn-primary:hover::before {
+  left: 100%;
+}
+.funnel-btn-primary:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.funnel-btn-ghost {
+  color: #9ca3af;
+  background: transparent;
+}
+.funnel-btn-ghost:hover {
+  color: #ffffff;
+}
+
+.funnel-btn-subtle {
+  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.04);
+}
+.funnel-btn-subtle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Section backgrounds ──
+   Each section gets a unique backdrop spotlight.
+   Colors are brand-adjacent, very low opacity (3-7%).
+   Positioned off-center for organic depth. 
+   Alternating base tones: #000 → #040810 for gentle edges. */
+
+/* Warm tension — problem framing */
+.funnel-bg-problem {
+  background-color: #030608;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 30% 50%, rgba(251, 146, 60, 0.04) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 40% at 80% 70%, rgba(168, 85, 247, 0.03) 0%, transparent 100%);
+}
+
+/* Cool confidence — solution/proof */
+.funnel-bg-solution {
+  background-color: #000000;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 60% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 100%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(34, 211, 238, 0.03) 0%, transparent 100%);
+}
+
+/* Violet progression — process/steps */
+.funnel-bg-process {
+  background-color: #030608;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(124, 58, 237, 0.045) 0%, transparent 100%),
+    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(59, 130, 246, 0.03) 0%, transparent 100%);
+}
+
+/* Blue trust — pricing/commitment */
+.funnel-bg-trust {
+  background-color: #000000;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(30, 58, 138, 0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(34, 211, 238, 0.025) 0%, transparent 100%);
+}
+
+/* Energized — final push */
+.funnel-bg-cta {
+  background-color: #030608;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 50% 30%, rgba(59, 130, 246, 0.055) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 40% at 40% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 100%);
+}
+
+/* Keep generic versions as fallback */
+.funnel-bg-subtle {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(15, 23, 42, 0.18) 40%,
+    rgba(15, 23, 42, 0.18) 60%,
+    transparent 100%
+  );
+}
+
+.funnel-bg-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 40%,
+    rgba(30, 58, 138, 0.07) 0%,
+    transparent 100%
+  );
+}
+
+/* ── Cards / surface ── */
+.funnel-card {
+  background: rgba(17, 24, 39, 0.35);
+  border: 1px solid rgba(75, 85, 99, 0.15);
+  border-radius: 0.75rem;
+}
+
+/* ── Badge ── */
+.funnel-badge {
+  position: absolute;
+  top: -0.625rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.2rem 0.75rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  background: #2563eb;
+  background-image: none;
+  border-radius: 9999px;
+  white-space: nowrap;
+  filter: none;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.funnel-card-featured {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 0.75rem;
+  box-shadow: 0 0 60px rgba(59, 130, 246, 0.06);
+}
+
+/* ── Dividers ── */
+.funnel-divider {
+  border-top: 1px solid rgba(75, 85, 99, 0.15);
+}
+
+/* ── Utility ── */
+.funnel-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.funnel-gradient-text {
+  background: linear-gradient(135deg, #60a5fa 0%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Hero-specific ── */
+.funnel-hero {
+  min-height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 6.5rem var(--funnel-px) 3.5rem;
+}
+
+.funnel-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  background: linear-gradient(to bottom, transparent, #030608);
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .funnel-hero {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 6rem var(--funnel-px) 4rem;
+  }
+  .funnel-hero::after {
+    height: 12rem;
+  }
+}
+
+/* ── Footer-specific ── */
+.funnel-footer {
+  border-top: 1px solid rgba(75, 85, 99, 0.15);
+  padding: 3rem var(--funnel-px) 2rem;
+}
+
+@media (min-width: 768px) {
+  .funnel-footer {
+    padding: 3.5rem var(--funnel-px) 2.5rem;
+  }
+}
+
+.funnel-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .funnel-footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .funnel-footer-grid {
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 3rem;
+  }
+}
+
+.funnel-footer a {
+  transition: color 150ms ease;
+}
+.funnel-footer a:hover {
+  color: #ffffff;
+}
+
+/* ── Pricing card hover ── */
+.funnel-card,
+.funnel-card-featured {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.funnel-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(75, 85, 99, 0.3);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+.funnel-card-featured:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 60px rgba(59, 130, 246, 0.12);
+}
+
+/* ── Desktop refinements ── */
+@media (min-width: 1024px) {
+  .funnel-heading-1 {
+    letter-spacing: -0.035em;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .funnel * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

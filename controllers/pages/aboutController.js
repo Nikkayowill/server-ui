@@ -9,8 +9,8 @@ ${getHTMLHead('About - Clouded Basement')}
       <div class="max-w-3xl mx-auto px-6 sm:px-8">
         
         <!-- Header -->
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">About Clouded Basement</h1>
-        <p class="text-lg sm:text-xl text-gray-400 leading-relaxed mb-16 lg:mb-24 max-w-2xl">Reliable VPS hosting made simple. Full server control without the hassle.</p>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">About Clouded&nbsp;Basement</h1>
+        <p class="text-lg sm:text-xl text-gray-400 leading-relaxed mb-16 lg:mb-24 max-w-2xl">Reliable VPS hosting made simple. Full server control without&nbsp;the&nbsp;hassle.</p>
         
         <!-- What it is -->
         <div class="mb-16 lg:mb-24">
@@ -39,7 +39,7 @@ ${getHTMLHead('About - Clouded Basement')}
         
         <!-- Why it exists -->
         <div class="mb-16 lg:mb-24">
-          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Why Clouded Basement exists</h2>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Why Clouded Basement&nbsp;exists</h2>
           <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mb-8">Deploying apps shouldn't be this painful. Most platforms hide too much of the system, and managing a raw VPS means hours of manual configuration. Clouded Basement sits in the middle.</p>
           
           <div class="space-y-4 pl-1">
@@ -80,7 +80,7 @@ ${getHTMLHead('About - Clouded Basement')}
         
         <!-- Technology -->
         <div class="mb-16 lg:mb-24">
-          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Technology & reliability</h2>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Technology &&nbsp;reliability</h2>
           <p class="text-gray-300 text-base sm:text-lg leading-[1.8] mb-6">Built with stability and maintainability as priorities. Automation ensures smooth operations, while critical tasks are monitored to guarantee predictable performance.</p>
           <p class="text-gray-500 text-sm leading-relaxed">Node.js &middot; Express &middot; PostgreSQL &middot; Stripe &middot; DigitalOcean &middot; Ubuntu LTS &middot; Let's Encrypt &middot; Nginx &middot; Helmet &middot; bcrypt</p>
         </div>

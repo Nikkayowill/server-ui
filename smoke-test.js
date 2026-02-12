@@ -174,7 +174,7 @@ async function runTests() {
     const html = await res.text();
     const hasBasic = html.includes('Basic') || html.includes('$15');
     const hasPro = html.includes('Pro') || html.includes('$35');
-    const hasPremium = html.includes('Premium') || html.includes('$75');
+    const hasPremium = html.includes('Premium') || html.includes('$55');
     if (!hasBasic || !hasPro || !hasPremium) {
       throw new Error('Missing pricing plans');
     }

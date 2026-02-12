@@ -68,7 +68,7 @@ ${getHTMLHead('Security & Trust - Clouded Basement')}
           
           <ul class="list-none space-y-3 mb-6">
             <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['✓'] before:absolute before:left-0 before:text-green-400"><strong class="text-white">Full SSH access</strong> — export, backup, or migrate your data at any time</li>
-            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['✓'] before:absolute before:left-0 before:text-green-400"><strong class="text-white">Standard deployment</strong> — your server uses standard tools (Node.js, PM2, Nginx) with no proprietary configurations</li>
+            <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['✓'] before:absolute before:left-0 before:text-green-400"><strong class="text-white">Standard deployment</strong> — your server uses standard tools (Node.js, systemd, Nginx) with no proprietary configurations</li>
             <li class="text-gray-300 text-lg leading-relaxed pl-6 relative before:content-['✓'] before:absolute before:left-0 before:text-green-400"><strong class="text-white">Business continuity</strong> — even if Clouded Basement ceased operations, your server would continue running on DigitalOcean with your existing credentials</li>
           </ul>
           

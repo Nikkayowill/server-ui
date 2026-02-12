@@ -77,9 +77,9 @@ const PRICING_PLANS = {
   },
   premium: {
     name: 'Premium Plan',
-    monthlyPrice: 7500,     // $75.00/month
-    yearlyPrice: 81000,     // $810.00/year (save 10%)
-    displayPrice: '$75/mo',
+    monthlyPrice: 5500,     // $55.00/month
+    yearlyPrice: 59400,     // $594.00/year (save 10%)
+    displayPrice: '$55/mo',
     ram: '4GB',
     cpu: 2,
     storage: '80GB',

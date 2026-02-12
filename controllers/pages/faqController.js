@@ -7,7 +7,7 @@ ${getHTMLHead('FAQ - Basement')}
     
     <main class="bg-black min-h-screen pt-24 pb-16">
       <div class="max-w-4xl mx-auto px-8 md:px-12 lg:px-16">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white text-center mb-4">Frequently Asked Questions</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white text-center mb-4">Frequently Asked&nbsp;Questions</h1>
         <p class="text-gray-400 text-center mb-16">Quick answers to common questions</p>
         
         <div class="space-y-4">
@@ -63,7 +63,7 @@ ${getHTMLHead('FAQ - Basement')}
         </div>
         
         <div class="bg-gray-800/30 border border-blue-500/20 rounded-lg p-12 text-center">
-            <h2 class="text-3xl font-bold text-white mb-4">Still Have Questions?</h2>
+            <h2 class="text-3xl font-bold text-white mb-4">Still Have&nbsp;Questions?</h2>
             <p class="text-gray-400 mb-8">Can't find the answer you're looking for? Our support team is here to help.</p>
             <a href="/contact" class="inline-block px-8 py-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300 uppercase tracking-wider text-sm">Contact Support</a>
         </div>

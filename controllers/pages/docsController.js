@@ -40,8 +40,8 @@ ${getHTMLHead('Documentation - Basement')}
         <div class="docs-content-inner">
           <!-- Page Header -->
           <header class="mb-12">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">Technical Documentation</h1>
-            <p class="text-base lg:text-lg text-gray-400 leading-relaxed">Complete technical reference for Clouded Basement — infrastructure details, deployment methods, and system architecture.</p>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">Technical&nbsp;Documentation</h1>
+            <p class="text-base lg:text-lg text-gray-400 leading-relaxed">Complete technical reference for Clouded Basement — infrastructure details, deployment methods, and system&nbsp;architecture.</p>
           </header>
 
           <!-- Section 1: Overview -->

@@ -21,7 +21,7 @@ function getHTMLHead(title) {
     <link rel="icon" type="image/svg+xml" href="/Favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/tailwind.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/global.css">
@@ -39,11 +39,11 @@ function getDashboardHead(title) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
+    <title>${escapeHtml(title)}</title>
     <link rel="icon" type="image/svg+xml" href="/Favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/tailwind.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/global.css">
@@ -70,40 +70,60 @@ function getScripts(...scripts) {
 // Footer
 function getFooter() {
   return `
-    <footer class="py-12 mt-12 md:mt-20 relative overflow-hidden">
-        <!-- Gradient reflection continuing from Final CTA -->
+    <footer class="mt-12 md:mt-20 relative overflow-hidden">
+        <!-- Gradient reflection -->
         <div class="absolute inset-0 pointer-events-none">
-          <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 0%, rgba(96, 165, 250, 0.15) 0%, rgba(232, 121, 249, 0.1) 35%, rgba(94, 234, 212, 0.08) 65%, transparent 100%);"></div>
+          <div class="absolute inset-0" style="background-image: radial-gradient(circle 600px at 50% 0%, rgba(96, 165, 250, 0.12) 0%, rgba(232, 121, 249, 0.07) 35%, rgba(94, 234, 212, 0.05) 65%, transparent 100%);"></div>
         </div>
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-            <div class="text-center md:text-left">
-                <h3 class="text-blue-400 text-base font-bold mb-4">Basement</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Cloud hosting without the headache. Fast, simple, powerful.</p>
-            </div>
-            <div class="text-center md:text-left">
-                <h4 class="text-blue-400 text-sm font-bold mb-3">Quick Links</h4>
-                <ul class="space-y-2">
-                    <li><a href="/about" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">About</a></li>
-                    <li><a href="/pricing" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Pricing</a></li>
-                    <li><a href="/compare" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Compare</a></li>
-                    <li><a href="/docs" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Documentation</a></li>
-                    <li><a href="/contact" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Contact</a></li>
-                    <li><a href="/faq" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">FAQ</a></li>
-                </ul>
-            </div>
-            <div class="text-center md:text-left">
-                <h4 class="text-blue-400 text-sm font-bold mb-3">Legal</h4>
-                <ul class="space-y-2">
-                    <li><a href="/terms" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Terms of Service</a></li>
-                    <li><a href="/privacy" class="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-300">Privacy Policy</a></li>
-                </ul>
+
+        <!-- Top border -->
+        <div class="max-w-2xl mx-auto px-5 sm:px-8">
+          <div class="border-t border-gray-800"></div>
+        </div>
+
+        <!-- Main footer columns — center-aligned -->
+        <div class="max-w-2xl mx-auto px-5 sm:px-8 pt-10 pb-6 relative z-10">
+            <div class="flex flex-wrap justify-center gap-12 sm:gap-16 text-center">
+
+                <!-- Product -->
+                <div>
+                    <h4 class="text-white text-xs font-bold tracking-wide uppercase mb-3">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/pricing" class="text-gray-400 text-sm hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="/compare" class="text-gray-400 text-sm hover:text-white transition-colors">Compare</a></li>
+                        <li><a href="/docs" class="text-gray-400 text-sm hover:text-white transition-colors">Docs</a></li>
+                        <li><a href="/faq" class="text-gray-400 text-sm hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-white text-xs font-bold tracking-wide uppercase mb-3">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/about" class="text-gray-400 text-sm hover:text-white transition-colors">About</a></li>
+                        <li><a href="/contact" class="text-gray-400 text-sm hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="/is-this-safe" class="text-gray-400 text-sm hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-white text-xs font-bold tracking-wide uppercase mb-3">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/terms" class="text-gray-400 text-sm hover:text-white transition-colors">Terms</a></li>
+                        <li><a href="/privacy" class="text-gray-400 text-sm hover:text-white transition-colors">Privacy</a></li>
+                    </ul>
+                </div>
+
             </div>
         </div>
-        <div class="text-center mt-10 pt-6 max-w-3xl mx-auto px-4">
-            <p class="mb-3">
-                <a href="/is-this-safe" class="text-brand text-base font-medium hover:text-cyan-400 transition-colors duration-300 underline">Is Clouded Basement safe?</a>
-            </p>
-            <p class="text-gray-500 text-xs">&copy; ${new Date().getFullYear()} Basement. All rights reserved.</p>
+
+        <!-- Bottom bar -->
+        <div class="max-w-2xl mx-auto px-5 sm:px-8 pb-8 relative z-10">
+            <div class="border-t border-gray-800/60 pt-6 flex flex-col items-center gap-3 text-center">
+                <p class="text-gray-600 text-xs">&copy; ${new Date().getFullYear()} Clouded Basement. All rights reserved.</p>
+                <a href="/is-this-safe" class="text-blue-400 text-xs font-medium hover:text-blue-300 transition-colors">Is Clouded Basement safe? &rarr;</a>
+            </div>
         </div>
     </footer>
 `;
@@ -156,7 +176,7 @@ function getResponsiveNav(req) {
     <nav class="main-nav">
         <div class="nav-container">
             <a href="/" class="nav-logo">
-                <img src="/Clouded%20Basement.png" alt="Clouded Basement">
+                <img src="/Minimalist%20Logo%20Suite%20for%20Clouded%20Basement.png" alt="Clouded Basement">
             </a>
             <ul class="nav-links">
                 ${navLinks}
@@ -278,7 +298,7 @@ function getDashboardLayoutEnd() {
       // Close sidebar when nav link clicked (mobile)
       document.querySelectorAll('.sidebar-nav-link').forEach(function(link) {
         link.addEventListener('click', function() {
-          if (window.innerWidth < 768) {
+          if (window.innerWidth < 1024) {
             sidebar.classList.remove('open');
             if (overlay) overlay.classList.add('hidden');
             document.body.classList.remove('sidebar-open');

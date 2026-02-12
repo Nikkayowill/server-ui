@@ -11,7 +11,7 @@ ${getHTMLHead('Compare Hosting Platforms - Clouded Basement vs Heroku, Render, D
         <!-- Page Header -->
         <div class="text-center mb-16">
           <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4">How We Compare</h1>
-          <p class="text-gray-400 text-lg max-w-2xl mx-auto">Every platform makes trade-offs. Here's an honest look at where Clouded Basement fits.</p>
+          <p class="text-gray-400 text-lg max-w-2xl mx-auto">Every platform makes trade-offs. Here's an honest look at where Clouded Basement&nbsp;fits.</p>
         </div>
 
         <!-- TL;DR Positioning -->
@@ -174,7 +174,7 @@ ${getHTMLHead('Compare Hosting Platforms - Clouded Basement vs Heroku, Render, D
         
         <!-- vs DIY VPS -->
         <div class="mb-16">
-          <h2 class="text-2xl font-bold text-white mb-6">Clouded Basement vs. DIY VPS <span class="text-gray-500 text-lg font-normal">(DigitalOcean, Linode, Vultr)</span></h2>
+          <h2 class="text-2xl font-bold text-white mb-6">Clouded Basement vs. DIY&nbsp;VPS <span class="text-gray-500 text-lg font-normal">(DigitalOcean, Linode, Vultr)</span></h2>
           <div class="grid md:grid-cols-2 gap-6">
             <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
               <h3 class="text-blue-400 font-bold mb-3">What you skip with Basement</h3>
@@ -294,7 +294,7 @@ ${getHTMLHead('Compare Hosting Platforms - Clouded Basement vs Heroku, Render, D
 
         <!-- Best For Section -->
         <div class="mb-16">
-          <h2 class="text-2xl font-bold text-white text-center mb-8">Who is Basement best for?</h2>
+          <h2 class="text-2xl font-bold text-white text-center mb-8">Who is Basement best&nbsp;for?</h2>
           <div class="grid md:grid-cols-3 gap-6">
             <div class="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
               <div class="text-3xl mb-3">🚀</div>
@@ -316,7 +316,7 @@ ${getHTMLHead('Compare Hosting Platforms - Clouded Basement vs Heroku, Render, D
 
         <!-- Honest Disclaimer -->
         <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-8 mb-16">
-          <h2 class="text-xl font-bold text-white mb-4">When we're not the right fit</h2>
+          <h2 class="text-xl font-bold text-white mb-4">When we're not the right&nbsp;fit</h2>
           <ul class="space-y-3 text-gray-300 text-sm">
             <li class="flex items-start gap-3">
               <span class="text-yellow-400 mt-0.5">→</span>
@@ -335,7 +335,7 @@ ${getHTMLHead('Compare Hosting Platforms - Clouded Basement vs Heroku, Render, D
 
         <!-- CTA -->
         <div class="text-center">
-          <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Ready to try it?</h2>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Ready to try&nbsp;it?</h2>
           <p class="text-gray-400 mb-8">3-day free trial. No credit card. Real server in 2 minutes.</p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
             <a href="/register" class="inline-flex items-center justify-center px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,102,255,0.6)] transition-all duration-300">

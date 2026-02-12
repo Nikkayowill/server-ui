@@ -252,7 +252,7 @@ exports.deploy = async (req, res) => {
     }
 
     // Extract repo name from URL
-    const repoName = gitUrl.split('/').pop().replace('.git', '');
+    const repoName = gitUrl.split('/').pop().replace('.git', '').replace(/[^a-zA-Z0-9_-]/g, '');
     
     // Generate subdomain for this deployment (Vercel-style)
     const subdomain = generateSubdomain(repoName, userId);
@@ -523,7 +523,7 @@ async function injectEnvVars(conn, repoName, output, deploymentId, serverId) {
     // Create .env file content
     const envContent = envResult.rows
       .map(row => `${row.key}=${row.value}`)
-      .join('\\n');
+      .join('\n');
     
     // Write .env file (escape quotes and newlines for shell)
     const escapedContent = envContent.replace(/'/g, "'\\''");

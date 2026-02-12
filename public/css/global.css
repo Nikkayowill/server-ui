@@ -4,6 +4,81 @@
    ============================================ */
 
 /* ============================================
+   SCROLL REVEAL ANIMATIONS
+   Subtle entrance animations triggered by IntersectionObserver.
+   Disabled for users who prefer reduced motion.
+   ============================================ */
+@keyframes revealUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes revealScale {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Elements waiting to be revealed */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.97);
+}
+
+/* When IntersectionObserver adds .revealed */
+.reveal.revealed {
+    animation: revealUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.reveal-scale.revealed {
+    animation: revealScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Stagger children: cards in grids */
+.reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(16px);
+}
+.reveal-stagger.revealed > * {
+    animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.reveal-stagger.revealed > *:nth-child(1) { animation-delay: 0ms; }
+.reveal-stagger.revealed > *:nth-child(2) { animation-delay: 80ms; }
+.reveal-stagger.revealed > *:nth-child(3) { animation-delay: 160ms; }
+.reveal-stagger.revealed > *:nth-child(4) { animation-delay: 240ms; }
+.reveal-stagger.revealed > *:nth-child(5) { animation-delay: 320ms; }
+.reveal-stagger.revealed > *:nth-child(6) { animation-delay: 400ms; }
+.reveal-stagger.revealed > *:nth-child(7) { animation-delay: 450ms; }
+.reveal-stagger.revealed > *:nth-child(8) { animation-delay: 500ms; }
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-scale,
+    .reveal-stagger > * {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+    }
+}
+
+/* ============================================
    RESPONSIVE VISIBILITY UTILITIES
    (Tailwind v4 not generating these from content)
    ============================================ */
@@ -425,14 +500,20 @@
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+}
+
+/* Body text — prevent orphan last word */
+p, li, blockquote {
+    text-wrap: pretty;
 }
 
 /* Hero heading - Space Grotesk with responsive sizing */
 .hero-heading {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
 }
 
 /* Hero title - let Tailwind handle sizing */
@@ -440,8 +521,8 @@ h1, h2, h3, h4, h5, h6 {
     /* font-size controlled by Tailwind classes */
 }
 
-/* Glossy Gradient Text for Headings */
-h1, h2 {
+/* Glossy Gradient Text - hero only */
+.hero-title {
     background: linear-gradient(145deg, 
         rgba(255, 255, 255, 1) 0%, 
         rgba(255, 255, 255, 1) 30%,
@@ -453,13 +534,20 @@ h1, h2 {
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
 }
 
-h3, h4 {
-    background: linear-gradient(145deg, 
+/* Section headings - subtle white-to-gray gradient for depth */
+section h2 {
+    background: linear-gradient(180deg, 
         rgba(255, 255, 255, 1) 0%, 
-        rgba(135, 206, 250, 0.85) 100%);
+        rgba(200, 210, 230, 0.9) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+/* Card/sub headings - plain white, no gradient */
+h3, h4 {
+    color: white;
+    -webkit-text-fill-color: white;
 }
 
 /* Lock viewport — prevent horizontal nudge on mobile */
@@ -560,7 +648,7 @@ button, a, input, textarea, select {
 }
 
 .nav-logo img {
-    height: 140px;
+    height: 90px;
     width: auto;
     transition: transform 0.3s ease;
 }
@@ -1096,8 +1184,8 @@ input:focus, textarea:focus, select:focus {
     background: var(--dash-bg);
 }
 
-/* Mobile: stack vertically */
-@media (max-width: 768px) {
+/* Mobile + Tablet: stack vertically */
+@media (max-width: 1024px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
@@ -1118,24 +1206,7 @@ input:focus, textarea:focus, select:focus {
     height: 100vh;
 }
 
-@media (max-width: 768px) {
-    .dashboard-sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 280px;
-        height: 100vh;
-        z-index: 45;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        padding-top: 70px;
-        background: var(--dash-bg-elevated);
-    }
-    
-    .dashboard-sidebar.open {
-        transform: translateX(0);
-    }
-}
+/* 768px sidebar rules merged into 1024px block below */
 
 .dashboard-header {
     grid-area: header;
@@ -1166,6 +1237,28 @@ input:focus, textarea:focus, select:focus {
         max-width: 100%;
         padding: 24px;
         padding-top: 100px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-sidebar {
+        z-index: 45;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        background: var(--dash-bg-elevated);
+        padding-top: 70px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-content {
+        padding: 20px;
+        padding-top: 90px;
     }
 }
 
@@ -1206,13 +1299,15 @@ input:focus, textarea:focus, select:focus {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
+    padding: 0.625rem 0.75rem;
     color: var(--dash-text-secondary);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.8125rem;
     border-radius: 6px;
     transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 40px;
 }
 
 .sidebar-nav-link svg {
@@ -1316,12 +1411,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Show toggle button on mobile/tablet */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .sidebar-toggle-btn {
         display: flex;
     }
     
     .dashboard-mobile-header {
+        margin-top: 0.5rem;
         margin-bottom: 1.5rem;
     }
 }
@@ -1331,7 +1427,7 @@ body.sidebar-open {
     overflow: hidden;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     body.sidebar-open .dashboard-sidebar {
         transform: translateX(0);
     }
