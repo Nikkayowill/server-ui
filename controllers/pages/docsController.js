@@ -254,7 +254,7 @@ ${getHTMLHead('Documentation - Basement')}
                 
                 <div class="bg-yellow-950/20 border-l-4 border-yellow-500 rounded-r-lg p-6 mt-8">
                   <h3 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
-                    <span>⚠️</span> Failure Handling
+                    Failure Handling
                   </h3>
                   <div class="space-y-3 text-gray-300 leading-relaxed">
                     <p>
@@ -457,7 +457,7 @@ ${getHTMLHead('Documentation - Basement')}
                   
                   <div class="bg-yellow-950/20 border-l-4 border-yellow-500 rounded-r-lg p-6">
                     <h3 class="text-white text-lg font-semibold mb-4 flex items-center gap-2">
-                      <span>⚠️</span> Limitations
+                      Limitations
                     </h3>
                     <ul class="space-y-3 text-gray-300">
                       <li class="flex gap-3">
@@ -848,42 +848,6 @@ ${getHTMLHead('Documentation - Basement')}
                       </li>
                     </ul>
                   </div>
-                  
-                  <div class="bg-red-950/20 border-l-4 border-red-500 rounded-r-lg p-6">
-                    <h3 class="text-white text-lg font-semibold mb-4">Not Suitable For</h3>
-                    <p class="text-gray-300 leading-relaxed mb-4">
-                      Be honest with yourself about whether this platform fits your needs. Clouded Basement is <strong class="text-white">not appropriate for</strong>:
-                    </p>
-                    <ul class="space-y-3 text-gray-300">
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>Production applications with strict uptime requirements (use AWS, GCP, Azure)</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>Enterprise customers requiring compliance certifications (SOC 2, HIPAA, PCI-DSS)</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>High-traffic applications needing auto-scaling or load balancing</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>Teams requiring multi-server environments, staging/production separation</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>Projects with complex CI/CD pipelines and automated testing workflows</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>Applications requiring geographic distribution or edge caching (Cloudflare, Vercel better fit)</div>
-                      </li>
-                    </ul>
-                    <p class="text-gray-300 leading-relaxed mt-6 pt-4 border-t border-red-800/30">
-                      This platform is designed for <strong class="text-white">indie developers, side projects, prototypes, and small applications</strong> where simplicity and cost matter more than enterprise features.
-                    </p>
-                  </div>
                 </div>
               </section>
               
@@ -899,7 +863,7 @@ ${getHTMLHead('Documentation - Basement')}
                   <!-- What's Working Now -->
                   <div class="bg-green-950/20 border-l-4 border-green-500 rounded-r-lg p-6">
                     <h3 class="text-xl font-semibold text-white mb-5 flex items-center gap-2">
-                      <span>✅</span> What's Working Now
+                      What's Working Now
                     </h3>
                     <ul class="space-y-4 text-gray-300">
                       <li class="flex gap-3">
@@ -912,15 +876,27 @@ ${getHTMLHead('Documentation - Basement')}
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
-                        <div><strong class="text-white">One-click SSL:</strong> Certbot automation via SSH, Let's Encrypt certificates installed in 60 seconds, auto-renewal configured</div>
+                        <div><strong class="text-white">GitHub auto-deploy:</strong> Push to main/master and your site redeploys automatically. HMAC SHA-256 webhook verification, per-server and per-domain webhook support, enable/disable from the dashboard.</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
-                        <div><strong class="text-white">Server controls:</strong> Power on/off/restart/delete via DigitalOcean API. No SSH required for power management.</div>
+                        <div><strong class="text-white">Auto-assigned subdomains:</strong> Every deployment gets a Vercel-style subdomain (yourapp-123.cloudedbasement.ca) with DNS records created automatically via DigitalOcean API.</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
-                        <div><strong class="text-white">Trial enforcement:</strong> 3-day trial from provisioning. Automatic power-off at day 3, permanent destruction at day 10. Monitored every 6 hours.</div>
+                        <div><strong class="text-white">One-click SSL:</strong> Certbot automation via SSH, Let's Encrypt certificates installed in 60 seconds, auto-renewal configured. Template-based Nginx config generation for static and proxy setups.</div>
+                      </li>
+                      <li class="flex gap-3">
+                        <span class="text-green-400 mt-1 flex-shrink-0">•</span>
+                        <div><strong class="text-white">Stripe subscription billing:</strong> Embedded checkout with 3D Secure support. Recurring subscriptions with automatic renewal. Webhook handling for payments, failures, refunds, and cancellations. Server auto-provisioned on payment success.</div>
+                      </li>
+                      <li class="flex gap-3">
+                        <span class="text-green-400 mt-1 flex-shrink-0">•</span>
+                        <div><strong class="text-white">Server controls:</strong> Power on/off/restart/delete via DigitalOcean API. No SSH required for power management. Server deletion cancels Stripe subscription and destroys droplet automatically.</div>
+                      </li>
+                      <li class="flex gap-3">
+                        <span class="text-green-400 mt-1 flex-shrink-0">•</span>
+                        <div><strong class="text-white">Trial system:</strong> 3-day trial from provisioning. Automatic power-off at day 3, permanent destruction at day 10. Abuse prevention via IP tracking, browser fingerprinting, and daily caps.</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
@@ -936,15 +912,27 @@ ${getHTMLHead('Documentation - Basement')}
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
-                        <div><strong class="text-white">Deployment history:</strong> All deployment logs stored in database with timestamps. Real-time log streaming during active deployments.</div>
+                        <div><strong class="text-white">Deployment history:</strong> All deployment logs stored in database with timestamps. Real-time log streaming during active deployments. Deployment deletion cleans up DNS records automatically.</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
-                        <div><strong class="text-white">Domain management:</strong> Add unlimited custom domains via dashboard. DNS configuration instructions displayed. Domain-server linkage tracked in database. Admin panel with full CRUD operations.</div>
+                        <div><strong class="text-white">Domain management:</strong> Add unlimited custom domains via dashboard. DNS configuration instructions displayed. Per-domain auto-deploy with individual webhook secrets. Admin panel with full CRUD operations.</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-green-400 mt-1 flex-shrink-0">•</span>
                         <div><strong class="text-white">One-click database provisioning:</strong> PostgreSQL and MongoDB installation via SSH automation. Takes 2-3 minutes. Generates credentials, creates users, configures authentication. Connection strings displayed in dashboard.</div>
+                      </li>
+                      <li class="flex gap-3">
+                        <span class="text-green-400 mt-1 flex-shrink-0">•</span>
+                        <div><strong class="text-white">Support tickets:</strong> Submit tickets directly from the dashboard. Email notification sent to support team.</div>
+                      </li>
+                      <li class="flex gap-3">
+                        <span class="text-green-400 mt-1 flex-shrink-0">•</span>
+                        <div><strong class="text-white">SSL health monitoring:</strong> Background reconciliation job runs every 30 minutes checking DNS resolution, certificate existence via SSH, and TLS handshake for every domain. Tracks six states (none, pending, active, orphaned, expired, unreachable). Auto-SSL provisioning checks every 5 minutes for domains ready for certificates. Granular status dashboard for admins and customers coming soon.</div>
+                      </li>
+                      <li class="flex gap-3">
+                        <span class="text-green-400 mt-1 flex-shrink-0">•</span>
+                        <div><strong class="text-white">Managed server updates:</strong> Admin creates bash scripts (security patches, config changes, feature updates) that go through a draft → tested → released workflow. Scripts are validated against 30+ dangerous patterns and SHA-256 hashed for integrity. Admin tests on a single server before release, then can mass-push to all servers with rate limiting. Global kill switch for emergencies. Customers can apply pending updates from their dashboard.</div>
                       </li>
                     </ul>
                   </div>
@@ -952,31 +940,19 @@ ${getHTMLHead('Documentation - Basement')}
                   <!-- Actively Being Built -->
                   <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                      <span>🔧</span> Actively Being Built
+                      Actively Being Built
                     </h3>
                     <p class="text-gray-300 mb-4">
-                      Platform is stable. Current focus: <strong class="text-white">final testing before first paying customers</strong>.
+                      Platform is live. Current focus: <strong class="text-white">UI polish, admin tooling, and features customers are asking for</strong>.
                     </p>
                     <ul class="space-y-3 text-gray-300">
                       <li class="flex gap-3">
                         <span class="text-blue-400 mt-1 flex-shrink-0">•</span>
-                        <div>Monitoring trial system behavior in production environment</div>
+                        <div>SSL status dashboard — surfacing the collected health data (DNS validity, cert status, reachability) in the admin and customer UI</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-blue-400 mt-1 flex-shrink-0">•</span>
-                        <div>Stress-testing concurrent deployments (10+ simultaneous users)</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-blue-400 mt-1 flex-shrink-0">•</span>
-                        <div>Verifying backup restoration procedures with real droplet recovery</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-blue-400 mt-1 flex-shrink-0">•</span>
-                        <div>Edge case handling (DigitalOcean API timeouts, corrupted deployments, SSH failures)</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-blue-400 mt-1 flex-shrink-0">•</span>
-                        <div>Email delivery testing across multiple providers (SendGrid, Gmail OAuth2, SMTP)</div>
+                        <div>Homepage and landing page refinements</div>
                       </li>
                     </ul>
                   </div>
@@ -984,7 +960,7 @@ ${getHTMLHead('Documentation - Basement')}
                   <!-- Planned Features -->
                   <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                      <span>📋</span> Planned Features
+                      Planned Features
                     </h3>
                     <p class="text-gray-300 mb-5 italic">
                       These get built when customers need them. No fixed timeline (solo dev).
@@ -1020,7 +996,7 @@ ${getHTMLHead('Documentation - Basement')}
                   <!-- Under Consideration -->
                   <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                      <span>💭</span> Under Consideration
+                      Under Consideration
                     </h3>
                     <p class="text-gray-300 mb-5">
                       Might build based on customer demand. Not committed.
@@ -1029,10 +1005,6 @@ ${getHTMLHead('Documentation - Basement')}
                       <li class="flex gap-3">
                         <span class="text-gray-500 mt-1 flex-shrink-0">•</span>
                         <div><strong class="text-white">Multiple servers per customer:</strong> Lift one-server database constraint. Staging/production environments. Requires billing changes (per-server pricing vs per-account).</div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-gray-500 mt-1 flex-shrink-0">•</span>
-                        <div><strong class="text-white">CI/CD webhooks:</strong> Auto-deploy on git push. Requires webhook secret validation, GitHub/GitLab integration, and event processing.</div>
                       </li>
                       <li class="flex gap-3">
                         <span class="text-gray-500 mt-1 flex-shrink-0">•</span>
@@ -1045,54 +1017,6 @@ ${getHTMLHead('Documentation - Basement')}
                       <li class="flex gap-3">
                         <span class="text-gray-500 mt-1 flex-shrink-0">•</span>
                         <div><strong class="text-white">Firewall management UI:</strong> Open/close ports beyond default 22/80/443. Currently requires manual SSH and ufw commands.</div>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <!-- Not Planned -->
-                  <div class="bg-red-950/20 border-l-4 border-red-500 rounded-r-lg p-6">
-                    <h3 class="text-white text-lg font-semibold mb-4 flex items-center gap-2">
-                      <span>❌</span> Not Planned
-                    </h3>
-                    <p class="text-gray-300 mb-5">
-                      Wrong scope for this platform. Use specialized providers if you need these features.
-                    </p>
-                    <ul class="space-y-4 text-gray-300">
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>
-                          <strong class="text-white">Docker/containerization:</strong> Adds orchestration complexity, security isolation concerns, and resource overhead. Out of scope. Use Railway, Render, or Fly.io if you need containers.
-                        </div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>
-                          <strong class="text-white">Kubernetes orchestration:</strong> Enterprise feature for wrong market. If you need K8s, use GKE (Google), EKS (AWS), or AKS (Azure).
-                        </div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>
-                          <strong class="text-white">Load balancing / auto-scaling:</strong> Infrastructure complexity beyond solo founder capacity. Use AWS Elastic Load Balancer, GCP Load Balancing, or Cloudflare Load Balancing.
-                        </div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>
-                          <strong class="text-white">Edge caching / CDN:</strong> Not rebuilding Cloudflare. Use Cloudflare (free tier works great), Fastly, or Vercel Edge Network.
-                        </div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>
-                          <strong class="text-white">Compliance certifications:</strong> No SOC 2, HIPAA, PCI-DSS audits planned. Solo founder, no legal team. If you need compliance, use AWS, GCP, or Azure with certified services.
-                        </div>
-                      </li>
-                      <li class="flex gap-3">
-                        <span class="text-red-400 mt-1 flex-shrink-0">•</span>
-                        <div>
-                          <strong class="text-white">24/7 enterprise support:</strong> Best-effort email support only. Response time typically same-day during Atlantic Time business hours. No on-call support staff.
-                        </div>
                       </li>
                     </ul>
                   </div>

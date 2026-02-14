@@ -63,7 +63,20 @@ app.use(logger);
 
 // Security headers
 app.use(helmet({
-  contentSecurityPolicy: false, // Allow inline scripts for Stripe
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://js.stripe.com", "https://unpkg.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
+      connectSrc: ["'self'", "https://api.stripe.com", "https://m.stripe.com", "https://r.stripe.com", "https://q.stripe.com"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+    },
+  },
 }));
 
 app.use(express.static('public'));

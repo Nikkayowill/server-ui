@@ -56,21 +56,114 @@ ${getHTMLHead('Clouded Basement — Fast, Simple Cloud Hosting')}
       </section>
 
       <!-- ═══════════════════════════════════════
-           2. PROBLEM
-           Frame the pain clearly
-           ═══════════════════════════════════════ -->
-      <section class="funnel-section funnel-bg-problem">
-        <div class="funnel-prose text-center">
-          <p class="funnel-kicker mb-4 reveal">The Problem</p>
-          <h2 class="funnel-heading-2 mb-6 reveal">Every hour on config<br>is an hour not&nbsp;shipping.</h2>
-          <p class="funnel-body mx-auto reveal" style="max-width: 36rem">
-            You just want to push your code and have it go live. Instead you're stuck configuring Nginx, SSL certificates, firewall rules, and deploy&nbsp;scripts.
+     2. PROBLEM SECTION
+     Horizontal balance: text left, terminal right
+     Desktop: 1:1 side-by-side, both ~same height
+     Mobile: stacked, centered text
+     ═══════════════════════════════════════ -->
+<section class="funnel-section funnel-bg-problem">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      
+      <!-- LEFT COLUMN: Copy -->
+      <div class="funnel-problem-copy space-y-5">
+        <p class="funnel-kicker reveal">The Problem</p>
+        <h2 class="funnel-heading-2 reveal">
+          Every hour on config<br class="hidden sm:inline"> is an hour not&nbsp;shipping.
+        </h2>
+        <div class="space-y-4 text-gray-400">
+          <p class="funnel-body reveal">
+            You just want to push your code and have it go live. Instead you're wrestling with Nginx configs, broken SSL certificates, firewall rules that lock you out, and deploy scripts that fail&nbsp;silently.
           </p>
-          <p class="funnel-body mx-auto mt-4 reveal" style="max-width: 36rem">
-            That stuff should already be done for&nbsp;you.
+          <p class="funnel-body reveal">
+            You didn't sign up to be a sysadmin. You signed up to build something. That infrastructure stuff should already be done&nbsp;for&nbsp;you.
           </p>
         </div>
-      </section>
+      </div>
+
+      <!-- RIGHT COLUMN: Terminal Card -->
+      <div class="reveal">
+        <div class="w-full max-w-lg mx-auto lg:max-w-none lg:ml-auto">
+          <!-- Terminal window -->
+          <div class="rounded-lg border border-white/[0.08] bg-[#0d0d15] shadow-xl overflow-hidden max-h-[400px]">
+            
+            <!-- Title bar -->
+            <div class="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02] border-b border-white/[0.05]">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+              <span class="text-[10px] text-gray-600 ml-2 font-mono">deploy@vps:~$</span>
+            </div>
+
+            <!-- Terminal content — constrained height, tighter spacing -->
+            <div class="px-4 py-3.5 space-y-2 font-mono text-[10.5px] leading-[1.5] text-gray-400">
+              
+              <!-- Command 1: nginx config error -->
+              <div class="space-y-0.5">
+                <p>
+                  <span class="text-green-400">$</span> 
+                  <span class="text-gray-300">sudo nginx -t</span>
+                </p>
+                <p class="text-red-400 pl-2">nginx: [emerg] unknown directive "proxy_passs"</p>
+                <p class="text-red-400 pl-2">nginx: configuration file test failed</p>
+              </div>
+
+              <!-- Command 2: SSL / DNS failure -->
+              <div class="space-y-0.5 pt-1">
+                <p>
+                  <span class="text-green-400">$</span> 
+                  <span class="text-gray-300">sudo certbot --nginx -d myapp.com</span>
+                </p>
+                <p class="text-red-400 pl-2">DNS problem: NXDOMAIN looking up A for myapp.com</p>
+                <p class="text-gray-500 pl-2">check DNS A record or wait for propagation</p>
+              </div>
+
+              <!-- Command 3: Service failed -->
+              <div class="space-y-0.5 pt-1">
+                <p>
+                  <span class="text-green-400">$</span> 
+                  <span class="text-gray-300">sudo systemctl status myapp</span>
+                </p>
+                <p>
+                  <span class="text-red-500">●</span> 
+                  <span class="text-gray-300">myapp.service</span> - 
+                  <span class="text-red-400">failed</span>
+                </p>
+                <p class="text-gray-500 pl-4">Error: EADDRINUSE: port 3000 already in use</p>
+              </div>
+
+              <!-- Command 4: Firewall check -->
+              <div class="space-y-0.5 pt-1">
+                <p>
+                  <span class="text-green-400">$</span> 
+                  <span class="text-gray-300">sudo ufw status</span>
+                </p>
+                <p>
+                  <span class="text-gray-400">Status:</span> 
+                  <span class="text-yellow-400">inactive</span>
+                  <span class="text-gray-600 text-[9px]"> (port 22 open to world)</span>
+                </p>
+              </div>
+
+              <!-- Command 5: Cursor blinking -->
+              <div class="pt-1.5">
+                <span class="text-green-400">$</span>
+                <span class="inline-block w-1.5 h-3 bg-gray-300 ml-1 animate-pulse align-middle"></span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Caption below terminal -->
+          <p class="text-center mt-3 text-[11px] text-gray-600 italic font-light">
+            3 hours in. Still not deployed.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       <!-- ═══════════════════════════════════════
            3. SOLUTION

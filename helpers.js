@@ -23,7 +23,7 @@ function getHTMLHead(title) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/tailwind.css">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" integrity="sha384-+Bl0lf5p8/ohqkq+KZo/rczUOIZfQpTE+zDHmmjdpnuuLiXwLaTmgCPIYAho9GqV" crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/global.css">
 </head>
 <body>
@@ -45,7 +45,7 @@ function getDashboardHead(title) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/tailwind.css">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" integrity="sha384-+Bl0lf5p8/ohqkq+KZo/rczUOIZfQpTE+zDHmmjdpnuuLiXwLaTmgCPIYAho9GqV" crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/global.css">
 </head>
 <body>
@@ -58,7 +58,7 @@ function getScripts(...scripts) {
   const scriptTags = scripts.map(script => `<script src="/js/${script}"></script>`).join('\n    ');
   const cacheBuster = Date.now(); // Force browser to reload JS files
   return `
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js" integrity="sha384-1kLJYX46ZnwQlslYwA2oUgv/EzbmdyB4kkcJ7y1lTUYKb8kIKDM0o8JAUE0iBnii" crossorigin="anonymous"></script>
     <script src="/js/cookie-consent.js?v=${cacheBuster}"></script>
     <script src="/js/spotlight.js"></script>
     ${scriptTags}
@@ -163,10 +163,8 @@ function getResponsiveNav(req) {
   } else {
     navLinks = `
       <li><a href="/" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-blue-400 hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(0,102,255,0.8)]">Home</a></li>
-      <li><a href="/about" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-blue-400 hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(0,102,255,0.8)]">About</a></li>
       <li><a href="/docs" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-blue-400 hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(0,102,255,0.8)]">Docs</a></li>
       <li><a href="/pricing" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-blue-400 hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(0,102,255,0.8)]">Pricing</a></li>
-      <li><a href="/contact" class="uppercase tracking-wider text-gray-400 text-xs transition-all duration-300 hover:text-blue-400 hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(0,102,255,0.8)]">Contact</a></li>
       ${getAuthLinks(req)}
       ${userInitial ? `<li class="ml-4"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-blue-500/30 border border-blue-400/20 hover:scale-110 hover:shadow-[0_0_20px_rgba(0,102,255,0.6)] transition-all duration-300 cursor-pointer" title="${req.session.userEmail}">${userInitial}</div></li>` : ''}
     `;

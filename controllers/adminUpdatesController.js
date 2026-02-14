@@ -371,7 +371,7 @@ apt upgrade -y" class="w-full px-3 py-2 bg-gray-900 border border-gray-700 round
     </div>
 
     ${getFooter()}
-    <script src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js" defer integrity="sha384-l8f0VcPi/M1iHPv8egOnY/15TDwqgbOR1anMIJWvU6nLRgZVLTLSaNqi/TOoT5Fh" crossorigin="anonymous"></script>
     ${getScripts('nav.js', 'dashboard.js')}
     `);
   } catch (error) {
